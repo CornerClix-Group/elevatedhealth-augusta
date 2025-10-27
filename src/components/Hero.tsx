@@ -35,25 +35,25 @@ const Hero = () => {
       </div>
 
       {/* Content - MindBloom inspired layout */}
-      <div className="container mx-auto px-4 relative z-10 pt-32 pb-20">
-        <div className="max-w-5xl mx-auto">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10 pt-32 pb-20">
+        <div className="max-w-6xl mx-auto text-left">
           {/* Main Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-secondary leading-tight animate-fade-in-up">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 text-secondary leading-tight animate-fade-in-up max-w-4xl">
             Rediscover Balance, Clarity, and Hope with KETRA™.
           </h1>
 
           {/* Subheading */}
-          <p className="text-xl sm:text-2xl md:text-3xl mb-12 text-secondary/90 max-w-3xl animate-fade-in-up leading-relaxed" style={{ animationDelay: "0.2s" }}>
+          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-10 md:mb-12 text-secondary/90 max-w-3xl animate-fade-in-up leading-relaxed" style={{ animationDelay: "0.2s" }}>
             Experience physician-led ketamine therapy for rapid relief from depression, anxiety, and PTSD in Augusta, GA.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+          <div className="flex flex-col sm:flex-row gap-4 mb-12 md:mb-16 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
             <Button 
               variant="cta" 
               size="xl" 
               onClick={scrollToContact} 
-              className="gap-2 text-lg px-8 py-6"
+              className="gap-2 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6"
             >
               <Calendar className="h-5 w-5" />
               Book Consultation
@@ -62,16 +62,17 @@ const Hero = () => {
               <Button 
                 variant="hero" 
                 size="xl" 
-                className="gap-2 text-lg px-8 py-6 w-full"
+                className="gap-2 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 w-full"
               >
                 <Phone className="h-5 w-5" />
-                Call Now: (706) 550-9202
+                <span className="hidden sm:inline">Call Now: (706) 550-9202</span>
+                <span className="sm:hidden">(706) 550-9202</span>
               </Button>
             </a>
           </div>
 
           {/* Trust Indicator */}
-          <div className="text-secondary/80 text-sm sm:text-base animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
+          <div className="text-secondary/80 text-sm sm:text-base animate-fade-in-up max-w-xl" style={{ animationDelay: "0.6s" }}>
             <p className="font-semibold mb-2">Proudly serving Augusta, GA and surrounding areas</p>
             <p>Specialized care for veterans and first responders</p>
           </div>
