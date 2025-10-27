@@ -1,7 +1,6 @@
 import { CheckCircle, Zap, Target, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import ketraLogo from "@/assets/ketra-logo-transparent.png";
 
 const KetraTherapy = () => {
   const benefits = [
@@ -34,8 +33,8 @@ const KetraTherapy = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex justify-center mb-8">
-              <img src={ketraLogo} alt="KETRA - From Darkness, Light" className="h-32 md:h-40" />
+            <div className="inline-block bg-accent/10 text-accent px-6 py-3 rounded-full text-sm font-semibold mb-6">
+              KETRA™ Therapy
             </div>
             <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
               What is KETRA™ Therapy?
