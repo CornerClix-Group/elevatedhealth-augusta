@@ -48,7 +48,7 @@ const Veterans = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-block bg-gold/10 text-gold-dark px-6 py-3 rounded-full text-sm font-semibold mb-6 border border-gold/20">
+            <div className="inline-block bg-accent/10 text-accent px-6 py-3 rounded-full text-sm font-semibold mb-6 border border-accent/20">
               Coverage & Support Programs
             </div>
             <h2 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
@@ -63,9 +63,9 @@ const Veterans = () => {
           {/* Programs Grid */}
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             {programs.map((program, index) => (
-              <Card key={index} className="p-8 border-gold/20 hover:border-gold/40 transition-all duration-300 hover:shadow-lg">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold/10 mb-6">
-                  <program.icon className="h-8 w-8 text-gold-dark" />
+              <Card key={index} className="p-8 border-accent/20 hover:border-accent/40 transition-all duration-300 hover:shadow-lg">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 mb-6">
+                  <program.icon className="h-8 w-8 text-accent" />
                 </div>
                 <h3 className="text-2xl font-bold mb-3 text-foreground">{program.title}</h3>
                 <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -74,7 +74,7 @@ const Veterans = () => {
                 <ul className="space-y-3">
                   {program.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start gap-2">
-                      <CheckCircle className="h-5 w-5 text-gold flex-shrink-0 mt-0.5" />
+                      <CheckCircle className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
                       <span className="text-sm text-muted-foreground">{feature}</span>
                     </li>
                   ))}
@@ -85,7 +85,7 @@ const Veterans = () => {
 
           {/* Why This Matters Section */}
           <div className="mb-16">
-            <Card className="p-8 md:p-12 border-gold/20 bg-card/50 backdrop-blur">
+            <Card className="p-8 md:p-12 border-accent/20 bg-card/50 backdrop-blur">
               <h3 className="text-2xl md:text-3xl font-bold mb-6 text-foreground text-center">
                 Why Your Mental Health Matters
               </h3>
@@ -114,7 +114,7 @@ const Veterans = () => {
           </div>
 
           {/* CTA Section */}
-          <div className="bg-gradient-to-br from-gold/10 to-gold-light/5 border border-gold/20 rounded-2xl p-8 md:p-12 text-center">
+          <div className="bg-primary/5 border border-accent/20 rounded-2xl p-8 md:p-12 text-center">
             <h3 className="text-3xl font-bold mb-4 text-foreground">We're Here When You're Ready</h3>
             <p className="text-xl mb-8 text-muted-foreground max-w-2xl mx-auto">
               Connect with us to verify your coverage and learn how we can support your mental health journey
