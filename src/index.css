@@ -26,11 +26,11 @@ All colors MUST be HSL.
     --primary-light: 210 75% 55%;
     --primary-dark: 210 85% 32%;
 
-    /* Secondary - Warm gold (honor, veterans) */
-    --secondary: 43 85% 55%;
+    /* Secondary - Calming teal (KETRA brand color, healing, tranquility) */
+    --secondary: 175 60% 70%;
     --secondary-foreground: 215 25% 15%;
-    --secondary-light: 43 90% 65%;
-    --secondary-dark: 43 80% 45%;
+    --secondary-light: 170 65% 80%;
+    --secondary-dark: 180 70% 55%;
 
     /* Accent - Soft teal (calming, healing) */
     --accent: 185 65% 55%;
@@ -78,7 +78,7 @@ All colors MUST be HSL.
     --popover-foreground: 210 20% 95%;
     --primary: 210 75% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 43 80% 60%;
+    --secondary: 175 55% 65%;
     --secondary-foreground: 215 25% 12%;
     --accent: 185 60% 50%;
     --accent-foreground: 0 0% 100%;
