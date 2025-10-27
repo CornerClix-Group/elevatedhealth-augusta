@@ -1,4 +1,5 @@
 import { MapPin, Phone, Mail } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Footer = () => {
   const scrollToSection = (id: string) => {
@@ -15,9 +16,7 @@ const Footer = () => {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             {/* Brand */}
             <div className="md:col-span-2">
-              <h3 className="text-2xl font-bold mb-4">
-                Elevated Health <span className="text-secondary">Augusta</span>
-              </h3>
+              <img src={logo} alt="Elevated Health Augusta - Restore, Repair, Renew" className="h-16 mb-4 brightness-0 invert" />
               <p className="text-background/80 mb-4">
                 Physician-led mental health care specializing in KETRA™ ketamine therapy 
                 for depression, anxiety, and PTSD. Proudly serving Augusta, GA and our veterans.

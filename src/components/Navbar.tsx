@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -31,9 +32,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-primary">
-              Elevated Health <span className="text-secondary">Augusta</span>
-            </h1>
+            <img src={logo} alt="Elevated Health Augusta - Restore, Repair, Renew" className="h-12 md:h-16" />
           </div>
 
           {/* Desktop Menu */}
