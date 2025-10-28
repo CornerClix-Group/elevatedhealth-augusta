@@ -113,6 +113,15 @@ const Footer = () => {
             </div>
           </div>
 
+          {/* Disclaimer */}
+          <div className="border-t border-background/20 pt-8 pb-6">
+            <div className="bg-background/10 rounded-lg p-4 md:p-6">
+              <p className="text-background/70 text-sm leading-relaxed">
+                <strong className="text-background/90">Important Disclaimer:</strong> Coverage and eligibility vary by plan, diagnosis, prior treatments, and medical-necessity review. Elevated Health Augusta will help you verify benefits and request referrals. IV ketamine for depression/anxiety is an off-label use. SPRAVATO® is FDA-approved for specific indications and administered only in-clinic under REMS with monitoring.
+              </p>
+            </div>
+          </div>
+
           {/* Bottom Bar */}
           <div className="border-t border-background/20 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-background/60 text-sm">
