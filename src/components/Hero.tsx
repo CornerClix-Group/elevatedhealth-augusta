@@ -1,13 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { Calendar, Phone } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-therapy.jpg";
+import { SITE_CONFIG } from "@/lib/siteConfig";
 
 const Hero = () => {
-  const scrollToContact = () => {
-    const element = document.getElementById("contact");
+  const navigate = useNavigate();
+
+  const scrollToCompare = () => {
+    const element = document.getElementById("compare");
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const handleMilitaryClick = () => {
+    navigate(SITE_CONFIG.routes.militaryVeteran);
   };
 
   return (
@@ -39,42 +47,40 @@ const Hero = () => {
         <div className="max-w-6xl mx-auto text-left">
           {/* Main Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 text-secondary leading-tight animate-fade-in-up max-w-4xl">
-            Rediscover Balance, Clarity, and Hope with Elevated Health.
+            Physician-led ketamine care in Evans, GA
           </h1>
 
           {/* Subheading */}
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-10 md:mb-12 text-secondary/90 max-w-3xl animate-fade-in-up leading-relaxed" style={{ animationDelay: "0.2s" }}>
-            Experience physician-led ketamine therapy for rapid relief from depression, anxiety, and PTSD in Augusta, GA.
+          <p className="text-lg sm:text-xl md:text-2xl mb-10 md:mb-12 text-secondary/90 max-w-3xl animate-fade-in-up leading-relaxed" style={{ animationDelay: "0.2s" }}>
+            We offer IV Ketamine infusions and SPRAVATO® (esketamine) nasal spray for adults who haven't found relief with standard treatments.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-12 md:mb-16 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+          <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
             <Button 
               variant="cta" 
               size="xl" 
-              onClick={scrollToContact} 
+              onClick={scrollToCompare} 
               className="gap-2 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6"
             >
-              <Calendar className="h-5 w-5" />
-              Book Consultation
+              Compare IV Ketamine vs SPRAVATO®
+              <ArrowRight className="h-5 w-5" />
             </Button>
-            <a href="tel:7065509202" className="w-full sm:w-auto">
-              <Button 
-                variant="hero" 
-                size="xl" 
-                className="gap-2 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 w-full"
-              >
-                <Phone className="h-5 w-5" />
-                <span className="hidden sm:inline">Call Now: (706) 550-9202</span>
-                <span className="sm:hidden">(706) 550-9202</span>
-              </Button>
-            </a>
+            <Button 
+              variant="hero" 
+              size="xl" 
+              onClick={handleMilitaryClick}
+              className="gap-2 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6"
+            >
+              Military/Veteran Benefits
+            </Button>
           </div>
 
-          {/* Trust Indicator */}
-          <div className="text-secondary/80 text-sm sm:text-base animate-fade-in-up max-w-xl" style={{ animationDelay: "0.6s" }}>
-            <p className="font-semibold mb-2">Proudly serving Augusta, GA and surrounding areas</p>
-            <p>Specialized care for veterans and first responders</p>
+          {/* Clinic Location */}
+          <div className="text-secondary/80 text-sm sm:text-base animate-fade-in-up max-w-3xl" style={{ animationDelay: "0.6s" }}>
+            <p className="leading-relaxed">
+              {SITE_CONFIG.clinicName} — {SITE_CONFIG.address.full} • {SITE_CONFIG.phone}
+            </p>
           </div>
         </div>
       </div>
