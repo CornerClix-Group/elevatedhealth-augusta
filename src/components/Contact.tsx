@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
+import { MapPin, Phone, Mail, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
@@ -17,7 +17,8 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Form validation
+    
+    // Basic validation
     if (!formData.name || !formData.email || !formData.phone || !formData.message) {
       toast({
         title: "Missing Information",
@@ -27,10 +28,21 @@ const Contact = () => {
       return;
     }
 
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Simulate form submission
     toast({
-      title: "Message Sent!",
-      description: "Thank you for contacting us. We'll respond within 24 hours.",
+      title: "Consultation Request Received!",
+      description: "Thank you for reaching out. We'll contact you within 24 hours to schedule your consultation.",
     });
     setFormData({ name: "", email: "", phone: "", message: "" });
   };
@@ -40,29 +52,31 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 bg-gradient-subtle">
+    <section id="contact" className="py-24 bg-primary">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
-              Get in <span className="text-primary">Touch</span>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-primary-foreground">
+              Schedule Your Consultation
             </h2>
-            <p className="text-xl text-muted-foreground">
-              Ready to begin your journey to better mental health? Contact us today.
+            <p className="text-xl text-primary-foreground/90">
+              Take the first step toward better mental health. We're here to help.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12">
-            {/* Contact Information */}
-            <div className="space-y-8">
-              <Card className="p-6">
-                <h3 className="text-2xl font-semibold mb-6 text-foreground">Contact Information</h3>
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Contact Information & Map */}
+            <div className="space-y-6">
+              <Card className="p-8 bg-card/95 backdrop-blur">
+                <h3 className="text-2xl font-semibold mb-6 text-foreground">Visit Our Clinic</h3>
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
-                    <MapPin className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                    <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="h-6 w-6 text-accent" />
+                    </div>
                     <div>
-                      <div className="font-semibold text-foreground mb-1">Location</div>
-                      <p className="text-muted-foreground">
+                      <div className="font-semibold text-foreground mb-1">Address</div>
+                      <p className="text-muted-foreground leading-relaxed">
                         7013 Evans Town Center Blvd<br />
                         Suite 203<br />
                         Evans, GA 30809
@@ -71,62 +85,59 @@ const Contact = () => {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <Phone className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                    <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
+                      <Phone className="h-6 w-6 text-accent" />
+                    </div>
                     <div>
                       <div className="font-semibold text-foreground mb-1">Phone</div>
-                      <a href="tel:7065509202" className="text-primary hover:underline">
+                      <a href="tel:7065509202" className="text-accent hover:underline text-lg">
                         (706) 550-9202
                       </a>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <Mail className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                    <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
+                      <Mail className="h-6 w-6 text-accent" />
+                    </div>
                     <div>
                       <div className="font-semibold text-foreground mb-1">Email</div>
-                      <a href="mailto:info@elevatedhealthaugusta.com" className="text-primary hover:underline">
+                      <a 
+                        href="mailto:info@elevatedhealthaugusta.com" 
+                        className="text-accent hover:underline break-all"
+                      >
                         info@elevatedhealthaugusta.com
                       </a>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <Clock className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
-                    <div>
-                      <div className="font-semibold text-foreground mb-1">Hours</div>
-                      <p className="text-muted-foreground">
-                        Monday - Friday: 8:00 AM - 6:00 PM<br />
-                        Saturday: 9:00 AM - 2:00 PM<br />
-                        Sunday: Closed
-                      </p>
                     </div>
                   </div>
                 </div>
               </Card>
 
-              {/* Map */}
-              <Card className="p-2 overflow-hidden">
+              {/* Google Map */}
+              <Card className="overflow-hidden bg-card/95 backdrop-blur">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3319.8!2d-82.1285!3d33.5343!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDMyJzAzLjUiTiA4MsKwMDcnNDIuNiJX!5e0!3m2!1sen!2sus!4v1234567890"
                   width="100%"
-                  height="300"
+                  height="320"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  className="rounded-lg"
                   title="Elevated Health Augusta Location"
                 />
               </Card>
             </div>
 
             {/* Contact Form */}
-            <Card className="p-8">
-              <h3 className="text-2xl font-semibold mb-6 text-foreground">Send Us a Message</h3>
+            <Card className="p-8 lg:p-10 bg-card/95 backdrop-blur">
+              <h3 className="text-2xl font-semibold mb-2 text-foreground">Request a Consultation</h3>
+              <p className="text-muted-foreground mb-8">
+                Fill out the form below and we'll reach out within 24 hours to schedule your appointment.
+              </p>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
-                    Full Name *
+                  <label htmlFor="name" className="block text-sm font-semibold text-foreground mb-2">
+                    Full Name <span className="text-destructive">*</span>
                   </label>
                   <Input
                     id="name"
@@ -134,14 +145,15 @@ const Contact = () => {
                     type="text"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="John Doe"
+                    placeholder="Enter your full name"
+                    className="border-2 focus:border-gold focus:ring-gold"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                    Email Address *
+                  <label htmlFor="email" className="block text-sm font-semibold text-foreground mb-2">
+                    Email Address <span className="text-destructive">*</span>
                   </label>
                   <Input
                     id="email"
@@ -149,14 +161,15 @@ const Contact = () => {
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="john@example.com"
+                    placeholder="your.email@example.com"
+                    className="border-2 focus:border-gold focus:ring-gold"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
-                    Phone Number *
+                  <label htmlFor="phone" className="block text-sm font-semibold text-foreground mb-2">
+                    Phone Number <span className="text-destructive">*</span>
                   </label>
                   <Input
                     id="phone"
@@ -165,32 +178,38 @@ const Contact = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="(706) 555-0123"
+                    className="border-2 focus:border-gold focus:ring-gold"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
-                    Message *
+                  <label htmlFor="message" className="block text-sm font-semibold text-foreground mb-2">
+                    Tell Us About Your Needs <span className="text-destructive">*</span>
                   </label>
                   <Textarea
                     id="message"
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder="Tell us about your needs and how we can help..."
+                    placeholder="Share what brings you here and how we can help..."
                     rows={5}
+                    className="border-2 focus:border-gold focus:ring-gold resize-none"
                     required
                   />
                 </div>
 
-                <Button type="submit" variant="hero" size="lg" className="w-full gap-2">
-                  <Send className="h-4 w-4" />
-                  Send Message
+                <Button 
+                  type="submit" 
+                  size="lg" 
+                  className="w-full gap-2 bg-gold hover:bg-gold-dark text-gold-foreground font-semibold"
+                >
+                  <Calendar className="h-5 w-5" />
+                  Book a Consultation
                 </Button>
 
                 <p className="text-sm text-muted-foreground text-center">
-                  We typically respond within 24 hours during business days
+                  By submitting this form, you agree to our privacy policy. We'll never share your information.
                 </p>
               </form>
             </Card>
