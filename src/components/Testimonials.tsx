@@ -7,13 +7,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
-import { useRef } from "react";
 
 const Testimonials = () => {
-  const plugin = useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: true })
-  );
 
   const testimonials = [
     {
@@ -57,13 +52,10 @@ const Testimonials = () => {
           </div>
 
           <Carousel
-            plugins={[plugin.current]}
             opts={{
               align: "center",
               loop: true,
             }}
-            onMouseEnter={plugin.current.stop}
-            onMouseLeave={plugin.current.reset}
             className="w-full"
           >
             <CarouselContent>
