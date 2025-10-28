@@ -1,6 +1,10 @@
 import { MapPin, Phone, Mail } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { SITE_CONFIG } from "@/lib/siteConfig";
 
 const Footer = () => {
+  const navigate = useNavigate();
+  
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -16,17 +20,25 @@ const Footer = () => {
             {/* Brand */}
             <div className="md:col-span-2">
               <h3 className="text-2xl font-bold mb-4">
-                Elevated Health <span className="text-primary">Augusta</span>
+                {SITE_CONFIG.clinicName}
               </h3>
               <p className="text-background/80 mb-4">
-                Physician-led mental health care specializing in KETRA™ ketamine therapy 
-                for depression, anxiety, and PTSD. Proudly serving Augusta, GA and our veterans.
+                Physician-led ketamine therapy for treatment-resistant depression, anxiety, and PTSD. 
+                Proudly serving veterans, first responders, and the Augusta community.
               </p>
-              <div className="flex gap-4 text-background/80">
-                <MapPin className="h-5 w-5 flex-shrink-0" />
-                <div>
-                  <p>7013 Evans Town Center Blvd</p>
-                  <p>Suite 203, Evans, GA 30809</p>
+              <div className="space-y-3 text-background/80">
+                <div className="flex gap-3">
+                  <MapPin className="h-5 w-5 flex-shrink-0 mt-1" />
+                  <div>
+                    <p>{SITE_CONFIG.address.line1}</p>
+                    <p>{SITE_CONFIG.address.cityStateZip}</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <Phone className="h-5 w-5 flex-shrink-0" />
+                  <a href={`tel:${SITE_CONFIG.phoneRaw}`} className="hover:text-secondary transition-colors">
+                    {SITE_CONFIG.phone}
+                  </a>
                 </div>
               </div>
             </div>
@@ -41,13 +53,27 @@ const Footer = () => {
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => scrollToSection("ketra")} className="hover:text-secondary transition-colors">
-                    KETRA™ Therapy
+                  <button 
+                    onClick={() => navigate(SITE_CONFIG.routes.ivKetamine)} 
+                    className="hover:text-secondary transition-colors"
+                  >
+                    IV Ketamine
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => scrollToSection("veterans")} className="hover:text-secondary transition-colors">
-                    Veterans Program
+                  <button 
+                    onClick={() => navigate(SITE_CONFIG.routes.spravato)} 
+                    className="hover:text-secondary transition-colors"
+                  >
+                    SPRAVATO®
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => navigate(SITE_CONFIG.routes.militaryVeteran)} 
+                    className="hover:text-secondary transition-colors"
+                  >
+                    Benefits & Advocacy
                   </button>
                 </li>
                 <li>
@@ -68,21 +94,21 @@ const Footer = () => {
               <h4 className="font-semibold mb-4 text-lg">Contact</h4>
               <ul className="space-y-3 text-background/80">
                 <li>
-                  <a href="tel:7065509202" className="flex items-center gap-2 hover:text-secondary transition-colors">
+                  <a href={`tel:${SITE_CONFIG.phoneRaw}`} className="flex items-center gap-2 hover:text-secondary transition-colors">
                     <Phone className="h-4 w-4" />
-                    (706) 550-9202
+                    {SITE_CONFIG.phone}
                   </a>
                 </li>
                 <li>
-                  <a href="mailto:info@elevatedhealthaugusta.com" className="flex items-center gap-2 hover:text-secondary transition-colors">
+                  <a href="mailto:care@elevatedhealthaugusta.com" className="flex items-center gap-2 hover:text-secondary transition-colors">
                     <Mail className="h-4 w-4" />
-                    info@elevatedhealthaugusta.com
+                    care@elevatedhealthaugusta.com
                   </a>
                 </li>
               </ul>
               <div className="mt-4 text-background/80">
                 <p className="text-sm">Mon-Fri: 8AM - 6PM</p>
-                <p className="text-sm">Sat-Sun: By Appointment Only</p>
+                <p className="text-sm">Sat-Sun: By Appointment</p>
               </div>
             </div>
           </div>
@@ -90,7 +116,7 @@ const Footer = () => {
           {/* Bottom Bar */}
           <div className="border-t border-background/20 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-background/60 text-sm">
-              <p>© 2025 Elevated Health Augusta. All rights reserved.</p>
+              <p>© 2025 {SITE_CONFIG.clinicName}. All rights reserved.</p>
               <div className="flex gap-6">
                 <button className="hover:text-secondary transition-colors">Privacy Policy</button>
                 <button className="hover:text-secondary transition-colors">Terms of Service</button>
@@ -98,8 +124,7 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-center mt-4 text-background/40 text-xs">
-              KETRA™ is a proprietary therapy protocol. Individual results may vary. 
-              Consult with a physician to determine if treatment is appropriate for you.
+              Individual results may vary. Consult with a physician to determine if treatment is appropriate for you.
             </p>
           </div>
         </div>

@@ -1,10 +1,20 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Menu, X, Phone, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { SITE_CONFIG } from "@/lib/siteConfig";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isTreatmentsOpen, setIsTreatmentsOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,11 +51,34 @@ const Navbar = () => {
             <button onClick={() => scrollToSection("about")} className="text-foreground hover:text-primary transition-colors">
               About
             </button>
-            <button onClick={() => scrollToSection("ketra")} className="text-foreground hover:text-primary transition-colors">
-              KETRA™ Therapy
-            </button>
-            <button onClick={() => scrollToSection("veterans")} className="text-foreground hover:text-primary transition-colors">
-              Veterans
+            
+            {/* Treatments Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 text-foreground hover:text-primary transition-colors focus:outline-none">
+                Treatments
+                <ChevronDown className="h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-card border-border z-50 shadow-lg">
+                <DropdownMenuItem 
+                  onClick={() => navigate(SITE_CONFIG.routes.ivKetamine)}
+                  className="cursor-pointer hover:bg-muted focus:bg-muted"
+                >
+                  IV Ketamine
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => navigate(SITE_CONFIG.routes.spravato)}
+                  className="cursor-pointer hover:bg-muted focus:bg-muted"
+                >
+                  SPRAVATO® Nasal Spray
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <button 
+              onClick={() => navigate(SITE_CONFIG.routes.militaryVeteran)} 
+              className="text-foreground hover:text-primary transition-colors"
+            >
+              Military/Veteran
             </button>
             <button onClick={() => scrollToSection("insurance")} className="text-foreground hover:text-primary transition-colors">
               Insurance
@@ -53,10 +86,10 @@ const Navbar = () => {
             <button onClick={() => scrollToSection("contact")} className="text-foreground hover:text-primary transition-colors">
               Contact
             </button>
-            <a href="tel:7065509202">
+            <a href={`tel:${SITE_CONFIG.phoneRaw}`}>
               <Button variant="cta" size="lg" className="gap-2">
                 <Phone className="h-4 w-4" />
-                (706) 550-9202
+                {SITE_CONFIG.phone}
               </Button>
             </a>
           </div>
@@ -78,11 +111,48 @@ const Navbar = () => {
               <button onClick={() => scrollToSection("about")} className="text-left py-2 text-foreground hover:text-primary transition-colors">
                 About
               </button>
-              <button onClick={() => scrollToSection("ketra")} className="text-left py-2 text-foreground hover:text-primary transition-colors">
-                KETRA™ Therapy
-              </button>
-              <button onClick={() => scrollToSection("veterans")} className="text-left py-2 text-foreground hover:text-primary transition-colors">
-                Veterans
+              
+              {/* Treatments Mobile Submenu */}
+              <div>
+                <button 
+                  onClick={() => setIsTreatmentsOpen(!isTreatmentsOpen)}
+                  className="flex items-center justify-between w-full text-left py-2 text-foreground hover:text-primary transition-colors"
+                >
+                  Treatments
+                  <ChevronDown className={`h-4 w-4 transition-transform ${isTreatmentsOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {isTreatmentsOpen && (
+                  <div className="pl-4 mt-2 space-y-2 animate-fade-in">
+                    <button 
+                      onClick={() => {
+                        navigate(SITE_CONFIG.routes.ivKetamine);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="block w-full text-left py-2 text-sm text-foreground/80 hover:text-primary transition-colors"
+                    >
+                      IV Ketamine
+                    </button>
+                    <button 
+                      onClick={() => {
+                        navigate(SITE_CONFIG.routes.spravato);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="block w-full text-left py-2 text-sm text-foreground/80 hover:text-primary transition-colors"
+                    >
+                      SPRAVATO® Nasal Spray
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <button 
+                onClick={() => {
+                  navigate(SITE_CONFIG.routes.militaryVeteran);
+                  setIsMobileMenuOpen(false);
+                }}
+                className="text-left py-2 text-foreground hover:text-primary transition-colors"
+              >
+                Military/Veteran
               </button>
               <button onClick={() => scrollToSection("insurance")} className="text-left py-2 text-foreground hover:text-primary transition-colors">
                 Insurance
@@ -90,10 +160,10 @@ const Navbar = () => {
               <button onClick={() => scrollToSection("contact")} className="text-left py-2 text-foreground hover:text-primary transition-colors">
                 Contact
               </button>
-              <a href="tel:7065509202" className="w-full">
+              <a href={`tel:${SITE_CONFIG.phoneRaw}`} className="w-full">
                 <Button variant="cta" size="lg" className="w-full gap-2">
                   <Phone className="h-4 w-4" />
-                  (706) 550-9202
+                  {SITE_CONFIG.phone}
                 </Button>
               </a>
             </div>
