@@ -104,25 +104,48 @@ const handler = async (req: Request): Promise<Response> => {
       <p>Thank you for choosing Elevated Health Augusta.</p>
     `;
 
-    // Send email to provider with CC to clinic using Resend API
-    const providerEmailResponse = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${RESEND_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "Elevated Health Augusta <onboarding@resend.dev>",
-        to: [providerEmail],
-        cc: ["care@elevatedhealthaugusta.com"],
-        reply_to: patientEmail,
-        subject: `Referral Request for ${patientName} - ${benefitType.toUpperCase()}`,
-        html: providerEmailHtml,
-      }),
-    });
-
-    const providerResult = await providerEmailResponse.json();
-    console.log("Provider email sent:", providerResult);
+    // Send email to provider (or just clinic if provider unknown) using Resend API
+    let providerResult = null;
+    
+    // Only send to provider if we have a valid email
+    if (providerEmail && providerEmail !== "unknown" && providerEmail !== "custom") {
+      const providerEmailResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "Elevated Health Augusta <onboarding@resend.dev>",
+          to: [providerEmail],
+          cc: ["care@elevatedhealthaugusta.com"],
+          reply_to: patientEmail,
+          subject: `Referral Request for ${patientName} - ${benefitType.toUpperCase()}`,
+          html: providerEmailHtml,
+        }),
+      });
+      providerResult = await providerEmailResponse.json();
+      console.log("Provider email sent:", providerResult);
+    } else {
+      // Send only to clinic if no valid provider email
+      console.log("No valid provider email, sending to clinic only");
+      const clinicEmailResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "Elevated Health Augusta <onboarding@resend.dev>",
+          to: ["care@elevatedhealthaugusta.com"],
+          reply_to: patientEmail,
+          subject: `Referral Request for ${patientName} - ${benefitType.toUpperCase()} (No Provider Contact)`,
+          html: providerEmailHtml,
+        }),
+      });
+      providerResult = await clinicEmailResponse.json();
+      console.log("Clinic-only email sent:", providerResult);
+    }
 
     // Send confirmation email to patient
     const patientEmailResponse = await fetch("https://api.resend.com/emails", {
