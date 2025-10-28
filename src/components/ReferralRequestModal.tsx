@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { trackModalOpen, trackFormSubmit } from "@/lib/analytics";
@@ -26,8 +27,10 @@ const referralSchema = z.object({
   patientEmail: z.string().trim().email("Invalid email address").max(255),
   patientPhone: z.string().trim().min(10, "Phone number must be at least 10 digits").max(20),
   benefitType: z.enum(["tricare", "va", "other"]),
-  providerName: z.string().trim().min(1, "Provider name is required").max(100),
-  providerEmail: z.string().trim().email("Invalid provider email").max(255),
+  providerName: z.string().trim().max(100),
+  providerEmail: z.string().trim().max(255).refine((val) => val === "unknown" || val === "" || z.string().email().safeParse(val).success, {
+    message: "Invalid provider email"
+  }),
   diagnosis: z.string().trim().min(1, "Diagnosis is required").max(500),
   priorTreatments: z.string().trim().min(1, "Prior treatments information is required").max(1000),
   webhookUrl: z.string().trim().url("Invalid webhook URL").optional().or(z.literal("")),
@@ -259,27 +262,53 @@ export const ReferralRequestModal = ({ isOpen, onClose }: ReferralRequestModalPr
               
               <div className="space-y-2">
                 <Label htmlFor="providerName">Provider Name *</Label>
-                <Input
-                  id="providerName"
+                <Select
                   value={formData.providerName}
-                  onChange={(e) => handleChange("providerName", e.target.value)}
-                  placeholder="Dr. Smith"
-                  required
-                  maxLength={100}
-                />
+                  onValueChange={(value) => handleChange("providerName", value)}
+                >
+                  <SelectTrigger id="providerName" aria-required="true">
+                    <SelectValue placeholder="Select or enter provider name" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="unknown">Unknown / Don't Have Provider Yet</SelectItem>
+                    <SelectItem value="custom">Enter Provider Name</SelectItem>
+                  </SelectContent>
+                </Select>
+                {formData.providerName === "custom" && (
+                  <Input
+                    value={formData.providerName === "custom" ? "" : formData.providerName}
+                    onChange={(e) => handleChange("providerName", e.target.value)}
+                    placeholder="Dr. Smith"
+                    maxLength={100}
+                    className="mt-2"
+                  />
+                )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="providerEmail">Provider Email *</Label>
-                <Input
-                  id="providerEmail"
-                  type="email"
+                <Select
                   value={formData.providerEmail}
-                  onChange={(e) => handleChange("providerEmail", e.target.value)}
-                  placeholder="provider@clinic.com"
-                  required
-                  maxLength={255}
-                />
+                  onValueChange={(value) => handleChange("providerEmail", value)}
+                >
+                  <SelectTrigger id="providerEmail" aria-required="true">
+                    <SelectValue placeholder="Select or enter provider email" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="unknown">Unknown / Don't Have Email</SelectItem>
+                    <SelectItem value="custom">Enter Provider Email</SelectItem>
+                  </SelectContent>
+                </Select>
+                {formData.providerEmail === "custom" && (
+                  <Input
+                    type="email"
+                    value={formData.providerEmail === "custom" ? "" : formData.providerEmail}
+                    onChange={(e) => handleChange("providerEmail", e.target.value)}
+                    placeholder="provider@clinic.com"
+                    maxLength={255}
+                    className="mt-2"
+                  />
+                )}
               </div>
             </div>
 
@@ -289,35 +318,67 @@ export const ReferralRequestModal = ({ isOpen, onClose }: ReferralRequestModalPr
               
               <div className="space-y-2">
                 <Label htmlFor="diagnosis">Diagnosis *</Label>
-                <Textarea
-                  id="diagnosis"
+                <Select
                   value={formData.diagnosis}
-                  onChange={(e) => handleChange("diagnosis", e.target.value)}
-                  placeholder="e.g., Treatment-Resistant Depression, Major Depressive Disorder"
-                  rows={2}
-                  required
-                  maxLength={500}
-                  aria-describedby="diagnosis-help"
-                />
-                <p id="diagnosis-help" className="text-xs text-muted-foreground">
-                  Please provide your current diagnosis
-                </p>
+                  onValueChange={(value) => handleChange("diagnosis", value)}
+                >
+                  <SelectTrigger id="diagnosis" aria-required="true">
+                    <SelectValue placeholder="Select your diagnosis" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Treatment-Resistant Depression">Treatment-Resistant Depression</SelectItem>
+                    <SelectItem value="Major Depressive Disorder">Major Depressive Disorder</SelectItem>
+                    <SelectItem value="PTSD">PTSD</SelectItem>
+                    <SelectItem value="Anxiety Disorder">Anxiety Disorder</SelectItem>
+                    <SelectItem value="Bipolar Depression">Bipolar Depression</SelectItem>
+                    <SelectItem value="unknown">Unknown / Not Yet Diagnosed</SelectItem>
+                    <SelectItem value="custom">Other Diagnosis</SelectItem>
+                  </SelectContent>
+                </Select>
+                {formData.diagnosis === "custom" && (
+                  <Textarea
+                    value={formData.diagnosis === "custom" ? "" : formData.diagnosis}
+                    onChange={(e) => handleChange("diagnosis", e.target.value)}
+                    placeholder="Please describe your diagnosis"
+                    rows={2}
+                    maxLength={500}
+                    className="mt-2"
+                  />
+                )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="priorTreatments">Prior Treatments Tried *</Label>
-                <Textarea
-                  id="priorTreatments"
+                <Select
                   value={formData.priorTreatments}
-                  onChange={(e) => handleChange("priorTreatments", e.target.value)}
-                  placeholder="e.g., SSRIs (Prozac, Zoloft), SNRIs (Effexor), therapy (CBT), etc."
-                  rows={3}
-                  required
-                  maxLength={1000}
-                  aria-describedby="treatments-help"
-                />
+                  onValueChange={(value) => handleChange("priorTreatments", value)}
+                >
+                  <SelectTrigger id="priorTreatments" aria-required="true">
+                    <SelectValue placeholder="Select prior treatments" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SSRIs (e.g., Prozac, Zoloft, Lexapro)">SSRIs (e.g., Prozac, Zoloft, Lexapro)</SelectItem>
+                    <SelectItem value="SNRIs (e.g., Effexor, Cymbalta)">SNRIs (e.g., Effexor, Cymbalta)</SelectItem>
+                    <SelectItem value="Multiple antidepressants">Multiple antidepressants</SelectItem>
+                    <SelectItem value="Therapy (CBT, DBT, etc.)">Therapy (CBT, DBT, etc.)</SelectItem>
+                    <SelectItem value="Combination of medications and therapy">Combination of medications and therapy</SelectItem>
+                    <SelectItem value="unknown">Unknown / No Prior Treatment</SelectItem>
+                    <SelectItem value="custom">Other / Multiple Treatments</SelectItem>
+                  </SelectContent>
+                </Select>
+                {formData.priorTreatments === "custom" && (
+                  <Textarea
+                    value={formData.priorTreatments === "custom" ? "" : formData.priorTreatments}
+                    onChange={(e) => handleChange("priorTreatments", e.target.value)}
+                    placeholder="Please describe your prior treatments"
+                    rows={3}
+                    maxLength={1000}
+                    className="mt-2"
+                    aria-describedby="treatments-help"
+                  />
+                )}
                 <p id="treatments-help" className="text-xs text-muted-foreground">
-                  List medications and therapies you've tried previously ({formData.priorTreatments.length}/1000)
+                  {formData.priorTreatments === "custom" ? `${formData.priorTreatments.length}/1000 characters` : "Select the treatments you've tried"}
                 </p>
               </div>
             </div>
