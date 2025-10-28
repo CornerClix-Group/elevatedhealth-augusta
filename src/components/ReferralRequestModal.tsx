@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { trackModalOpen, trackFormSubmit } from "@/lib/analytics";
 
 interface ReferralRequestModalProps {
   isOpen: boolean;
@@ -48,6 +49,13 @@ export const ReferralRequestModal = ({ isOpen, onClose }: ReferralRequestModalPr
     webhookUrl: "",
   });
 
+  // Track modal open
+  useEffect(() => {
+    if (isOpen) {
+      trackModalOpen('referral_request_modal');
+    }
+  }, [isOpen]);
+
   const handleChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
   };
@@ -68,12 +76,14 @@ export const ReferralRequestModal = ({ isOpen, onClose }: ReferralRequestModalPr
       if (error) throw error;
 
       if (data?.success) {
+        trackFormSubmit('referral_request', true);
         setShowThankYou(true);
       } else {
         throw new Error("Failed to submit referral request");
       }
     } catch (error) {
       console.error("Referral submission error:", error);
+      trackFormSubmit('referral_request', false);
       if (error instanceof z.ZodError) {
         toast({
           title: "Validation error",
@@ -113,15 +123,15 @@ export const ReferralRequestModal = ({ isOpen, onClose }: ReferralRequestModalPr
   if (showThankYou) {
     return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" role="alertdialog" aria-labelledby="thank-you-title">
           <DialogHeader>
-            <DialogTitle className="text-2xl text-center">Thank You!</DialogTitle>
+            <DialogTitle id="thank-you-title" className="text-2xl text-center">Thank You!</DialogTitle>
             <DialogDescription className="text-base pt-4 text-center">
               Your referral request has been submitted successfully.
             </DialogDescription>
           </DialogHeader>
-          <div className="py-6 text-center space-y-4">
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+          <div className="py-6 text-center space-y-4" role="status" aria-live="polite">
+            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center" aria-hidden="true">
               <svg
                 className="w-8 h-8 text-primary"
                 fill="none"
@@ -146,7 +156,7 @@ export const ReferralRequestModal = ({ isOpen, onClose }: ReferralRequestModalPr
             </p>
           </div>
           <DialogFooter>
-            <Button onClick={handleClose} className="w-full">
+            <Button onClick={handleClose} className="w-full" aria-label="Close confirmation dialog">
               Close
             </Button>
           </DialogFooter>
@@ -157,15 +167,19 @@ export const ReferralRequestModal = ({ isOpen, onClose }: ReferralRequestModalPr
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent 
+        className="sm:max-w-2xl max-h-[90vh] overflow-y-auto"
+        aria-labelledby="referral-form-title"
+        aria-describedby="referral-form-description"
+      >
         <DialogHeader>
-          <DialogTitle className="text-2xl">Send Referral Request</DialogTitle>
-          <DialogDescription className="text-base pt-2">
+          <DialogTitle id="referral-form-title" className="text-2xl">Send Referral Request</DialogTitle>
+          <DialogDescription id="referral-form-description" className="text-base pt-2">
             Fill out this form and we'll help send your referral request to your provider.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} aria-label="Referral request form">
           <div className="space-y-6 py-4">
             {/* Patient Information */}
             <div className="space-y-4">
@@ -210,10 +224,12 @@ export const ReferralRequestModal = ({ isOpen, onClose }: ReferralRequestModalPr
               </div>
 
               <div className="space-y-2">
-                <Label>Benefit Type *</Label>
+                <Label id="benefit-type-label">Benefit Type *</Label>
                 <RadioGroup
                   value={formData.benefitType}
                   onValueChange={(value) => handleChange("benefitType", value)}
+                  aria-labelledby="benefit-type-label"
+                  aria-required="true"
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="tricare" id="tricare" />
@@ -325,10 +341,20 @@ export const ReferralRequestModal = ({ isOpen, onClose }: ReferralRequestModalPr
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={handleClose} 
+              disabled={isSubmitting}
+              aria-label="Cancel referral request"
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              aria-label={isSubmitting ? "Submitting referral request" : "Submit referral request"}
+            >
               {isSubmitting ? "Submitting..." : "Submit Request"}
             </Button>
           </DialogFooter>

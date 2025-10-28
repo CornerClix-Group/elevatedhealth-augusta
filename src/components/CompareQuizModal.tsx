@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Dialog,
@@ -13,6 +13,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { trackModalOpen, trackQuizComplete, trackCTAClick } from "@/lib/analytics";
 
 interface CompareQuizModalProps {
   isOpen: boolean;
@@ -64,6 +65,13 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResult, setShowResult] = useState(false);
 
+  // Track modal open
+  useEffect(() => {
+    if (isOpen && currentQuestion === 0 && Object.keys(answers).length === 0) {
+      trackModalOpen('compare_quiz_modal');
+    }
+  }, [isOpen, currentQuestion, answers]);
+
   const handleAnswer = (value: string) => {
     setAnswers({ ...answers, [currentQuestion]: value });
   };
@@ -72,6 +80,8 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
+      const result = calculateResult();
+      trackQuizComplete('treatment_comparison_quiz', result);
       setShowResult(true);
     }
   };
@@ -118,15 +128,20 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
 
     return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent 
+          className="sm:max-w-lg"
+          role="alertdialog"
+          aria-labelledby="quiz-result-title"
+          aria-describedby="quiz-result-description"
+        >
           <DialogHeader>
-            <DialogTitle className="text-2xl">Your Recommendation</DialogTitle>
-            <DialogDescription className="text-base pt-4">
+            <DialogTitle id="quiz-result-title" className="text-2xl">Your Recommendation</DialogTitle>
+            <DialogDescription id="quiz-result-description" className="text-base pt-4">
               Based on your responses, {isSpravato ? "SPRAVATO®" : "IV Ketamine"} may be a good fit for you.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="py-4">
+          <div className="py-4" role="status" aria-live="polite">
             <p className="text-muted-foreground mb-4">
               This is only a general guide. A comprehensive evaluation with our physician is required 
               to determine the best treatment for your specific situation.
@@ -138,18 +153,22 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
               onClick={handleRestart}
               variant="outline"
               className="w-full sm:w-auto"
+              aria-label="Restart treatment comparison quiz"
             >
               Restart Quiz
             </Button>
             <Button
               onClick={() => {
-                navigate(isSpravato ? SITE_CONFIG.routes.spravato : SITE_CONFIG.routes.ivKetamine);
+                const destination = isSpravato ? SITE_CONFIG.routes.spravato : SITE_CONFIG.routes.ivKetamine;
+                trackCTAClick('quiz_learn_more', destination);
+                navigate(destination);
                 handleClose();
               }}
               className="w-full sm:w-auto gap-2"
+              aria-label={`Learn more about ${isSpravato ? "SPRAVATO" : "IV Ketamine"}`}
             >
               Learn More
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -159,12 +178,16 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent 
+        className="sm:max-w-lg"
+        aria-labelledby="quiz-question-title"
+        aria-describedby="quiz-question-description"
+      >
         <DialogHeader>
-          <DialogTitle className="text-2xl">
+          <DialogTitle id="quiz-question-title" className="text-2xl">
             Question {currentQuestion + 1} of {questions.length}
           </DialogTitle>
-          <DialogDescription className="text-base pt-2">
+          <DialogDescription id="quiz-question-description" className="text-base pt-2">
             {currentQ.question}
           </DialogDescription>
         </DialogHeader>
@@ -173,6 +196,8 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
           <RadioGroup
             value={answers[currentQuestion] || ""}
             onValueChange={handleAnswer}
+            aria-label={currentQ.question}
+            aria-required="true"
           >
             {currentQ.options.map((option) => (
               <div key={option.value} className="flex items-center space-x-3 mb-3">
@@ -194,8 +219,9 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
               onClick={handleBack}
               variant="outline"
               className="w-full sm:w-auto gap-2"
+              aria-label="Go to previous question"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               Back
             </Button>
           )}
@@ -203,9 +229,10 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
             onClick={handleNext}
             disabled={!canProceed}
             className="w-full sm:w-auto gap-2"
+            aria-label={currentQuestion < questions.length - 1 ? "Go to next question" : "See quiz results"}
           >
             {currentQuestion < questions.length - 1 ? "Next" : "See Results"}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Button>
         </DialogFooter>
       </DialogContent>

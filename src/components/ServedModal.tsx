@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { trackModalOpen, trackCTAClick } from "@/lib/analytics";
 
 const MODAL_STORAGE_KEY = "served-modal-last-shown";
 const DAYS_BETWEEN_SHOWS = 30;
@@ -34,6 +35,7 @@ export const ServedModal = () => {
 
       if (daysSinceLastShown >= DAYS_BETWEEN_SHOWS) {
         setIsOpen(true);
+        trackModalOpen('served_modal');
       }
     };
 
@@ -48,6 +50,7 @@ export const ServedModal = () => {
   };
 
   const handleMilitaryClick = () => {
+    trackCTAClick('military_veteran_benefits', '/military-veteran');
     localStorage.setItem(MODAL_STORAGE_KEY, new Date().toISOString());
     setIsOpen(false);
     navigate("/military-veteran");
@@ -59,9 +62,10 @@ export const ServedModal = () => {
         id="served-modal"
         className="sm:max-w-md"
         aria-describedby="served-modal-description"
+        role="alertdialog"
       >
         <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold">
+          <DialogTitle className="text-2xl font-semibold" id="served-modal-title">
             Have you served our country?
           </DialogTitle>
           <DialogDescription id="served-modal-description" className="text-base pt-2">
@@ -74,7 +78,7 @@ export const ServedModal = () => {
             onClick={handleMilitaryClick}
             className="w-full"
             size="lg"
-            aria-label="Learn about military and veteran benefits"
+            aria-label="Yes, I am military or veteran - learn about benefits"
           >
             Yes — Military/Veteran Benefits
           </Button>
@@ -83,7 +87,7 @@ export const ServedModal = () => {
             variant="outline"
             className="w-full"
             size="lg"
-            aria-label="Continue to main site"
+            aria-label="No, continue to main website"
           >
             No, continue to main site
           </Button>
