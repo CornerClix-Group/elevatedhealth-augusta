@@ -146,7 +146,7 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Enter your full name"
-                    className="border-2 focus:border-gold focus:ring-gold"
+                    className="border-2 focus:border-accent focus:ring-accent"
                     required
                   />
                 </div>
@@ -162,7 +162,7 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="your.email@example.com"
-                    className="border-2 focus:border-gold focus:ring-gold"
+                    className="border-2 focus:border-accent focus:ring-accent"
                     required
                   />
                 </div>
@@ -178,7 +178,7 @@ const Contact = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="(706) 555-0123"
-                    className="border-2 focus:border-gold focus:ring-gold"
+                    className="border-2 focus:border-accent focus:ring-accent"
                     required
                   />
                 </div>
@@ -194,7 +194,7 @@ const Contact = () => {
                     onChange={handleChange}
                     placeholder="Share what brings you here and how we can help..."
                     rows={5}
-                    className="border-2 focus:border-gold focus:ring-gold resize-none"
+                    className="border-2 focus:border-accent focus:ring-accent resize-none"
                     required
                   />
                 </div>
@@ -202,7 +202,7 @@ const Contact = () => {
                 <Button 
                   type="submit" 
                   size="lg" 
-                  className="w-full gap-2 bg-gold hover:bg-gold-dark text-gold-foreground font-semibold"
+                  className="w-full gap-2 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
                 >
                   <Calendar className="h-5 w-5" />
                   Book a Consultation
