@@ -8,6 +8,7 @@ import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ChatBot from "@/components/ChatBot";
+import { ServedModal } from "@/components/ServedModal";
 
 const Index = () => {
   return (
@@ -24,6 +25,7 @@ const Index = () => {
       </main>
       <Footer />
       <ChatBot />
+      <ServedModal />
     </div>
   );
 };
