@@ -29,18 +29,25 @@ const Navbar = () => {
     // If not on home page, navigate to home first
     if (location.pathname !== '/') {
       navigate('/');
-      // Wait for navigation and then scroll
+      // Wait for navigation, scroll to top, then to section
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "instant" });
+        setTimeout(() => {
+          const element = document.getElementById(id);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 50);
+      }, 100);
+    } else {
+      // Scroll to top first, then to section
+      window.scrollTo({ top: 0, behavior: "instant" });
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
           element.scrollIntoView({ behavior: "smooth" });
         }
-      }, 100);
-    } else {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
+      }, 50);
     }
     setIsMobileMenuOpen(false);
   };
