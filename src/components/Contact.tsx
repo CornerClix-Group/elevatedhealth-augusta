@@ -125,6 +125,15 @@ const Contact = () => {
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Elevated Health Augusta Location"
                 />
+                <div className="p-4 border-t border-border flex justify-end">
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Elevated%20Health%20Augusta%2C%20Evans%2C%20GA"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="outline" size="sm">Open in Google Maps</Button>
+                  </a>
+                </div>
               </Card>
             </div>
 
