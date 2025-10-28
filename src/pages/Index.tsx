@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Treatments from "@/components/Treatments";
+import Compare from "@/components/Compare";
 import About from "@/components/About";
 import KetraTherapy from "@/components/KetraTherapy";
 import Veterans from "@/components/Veterans";
@@ -18,6 +19,7 @@ const Index = () => {
       <main>
         <Hero />
         <Treatments />
+        <Compare />
         <About />
         <KetraTherapy />
         <Veterans />
