@@ -28,7 +28,7 @@ ${SITE_CONFIG.clinicName}
 ${SITE_CONFIG.address.full}
 Phone: ${SITE_CONFIG.phone}
 
-This clinic offers FDA-approved SPRAVATO® (esketamine) nasal spray for Treatment-Resistant Depression (TRD) and Major Depressive Disorder with acute suicidal ideation or behavior, as well as off-label IV ketamine therapy for qualifying conditions.
+This clinic offers FDA-approved SPRAVATO® (esketamine) nasal spray for Treatment-Resistant Depression (TRD), as well as off-label IV ketamine therapy for qualifying conditions.
 
 I believe this specialized treatment may be beneficial for my case, and I'd like to explore coverage options under my TRICARE plan.
 
