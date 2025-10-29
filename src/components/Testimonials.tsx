@@ -22,7 +22,7 @@ const Testimonials = () => {
       location: "Evans, GA"
     },
     {
-      quote: "As a combat veteran, I carried guilt about needing help for my PTSD. The team here understood without me having to explain. The treatment worked faster than I expected, and for the first time in a decade, I'm sleeping through the night.",
+      quote: "As a combat Veteran, I carried guilt about needing help for my PTSD. The team here understood without me having to explain. The treatment worked faster than I expected, and for the first time in a decade, I'm sleeping through the night.",
       initials: "T.W.",
       location: "Martinez, GA"
     },

@@ -7,7 +7,7 @@ const Veterans = () => {
     {
       icon: Shield,
       title: "VA Community Care",
-      description: "We accept VA Community Care referrals for eligible veterans seeking mental health treatment",
+      description: "We accept VA Community Care referrals for eligible Veterans seeking mental health treatment",
       features: [
         "Streamlined authorization process",
         "Direct billing to VA",

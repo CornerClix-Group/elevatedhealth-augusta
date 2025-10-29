@@ -43,8 +43,8 @@ const questions = [
     id: 3,
     question: "How do you prefer to receive treatment?",
     options: [
-      { value: "infusion", label: "IV infusion", weight: { spravato: 0, iv: 2 } },
-      { value: "nasal", label: "Nasal spray", weight: { spravato: 2, iv: 0 } },
+      { value: "infusion", label: "IV infusion", weight: { spravato: 0, iv: 3 } },
+      { value: "nasal", label: "Nasal spray", weight: { spravato: 3, iv: 0 } },
       { value: "either", label: "Either is fine", weight: { spravato: 1, iv: 1 } },
     ],
   },

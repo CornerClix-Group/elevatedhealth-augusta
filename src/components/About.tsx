@@ -53,8 +53,8 @@ const About = () => {
                 and treatment-resistant conditions.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                We are proud to serve both the Augusta community and our nation's veterans, offering specialized 
-                programs for those who have served. At our Evans, GA facility, you'll find a welcoming environment 
+                We are proud to serve both the Augusta community and our nation's Veterans, offering specialized 
+                programs for those who have served. At our Evans, GA facility, you'll find a welcoming environment
                 where medical excellence meets heartfelt compassion.
               </p>
               <div className="flex items-center gap-4 pt-4 border-t border-border mt-6">

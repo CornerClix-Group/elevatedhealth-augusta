@@ -40,8 +40,6 @@ const KetraTherapy = () => {
     "Treatment-Resistant Depression",
     "Anxiety Disorders",
     "PTSD and Trauma",
-    "Chronic Pain with Depression",
-    "Suicidal Ideation",
   ];
 
   const scrollToContact = () => {
@@ -146,7 +144,7 @@ const KetraTherapy = () => {
               <h3 className="text-2xl font-semibold mb-4 text-foreground">What to Expect</h3>
               <p className="text-muted-foreground mb-4 leading-relaxed">
                 Treatment typically involves a series of sessions in our comfortable, clinical setting. Each session 
-                lasts approximately 60-90 minutes under direct physician supervision. You'll relax in a private room 
+                lasts approximately 60-90 minutes. You'll relax in a private room 
                 while we monitor your vital signs and response to treatment.
               </p>
               <p className="text-muted-foreground leading-relaxed">

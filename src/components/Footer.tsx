@@ -24,7 +24,7 @@ const Footer = () => {
               </h3>
               <p className="text-background/80 mb-4">
                 Physician-led ketamine therapy for treatment-resistant depression, anxiety, and PTSD. 
-                Proudly serving veterans, first responders, and the Augusta community.
+                Proudly serving Veterans, first responders, and the Augusta community.
               </p>
               <div className="space-y-3 text-background/80">
                 <div className="flex gap-3">
