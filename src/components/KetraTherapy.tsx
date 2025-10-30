@@ -50,7 +50,7 @@ const KetraTherapy = () => {
   };
 
   return (
-    <section id="ketra" className="py-24 bg-gradient-subtle">
+    <section id="ketra" className="py-24 bg-gradient-subtle scroll-mt-20">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* Hero Section */}

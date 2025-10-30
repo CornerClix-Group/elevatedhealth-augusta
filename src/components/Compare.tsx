@@ -7,7 +7,7 @@ const Compare = () => {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
 
   return (
-    <section id="compare" className="py-16 md:py-24 bg-background">
+    <section id="compare" className="py-16 md:py-24 bg-background scroll-mt-20">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12 md:mb-16">

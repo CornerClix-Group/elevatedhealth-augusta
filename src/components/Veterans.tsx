@@ -44,7 +44,7 @@ const Veterans = () => {
   };
 
   return (
-    <section id="veterans" className="py-24 bg-gradient-subtle">
+    <section id="veterans" className="py-24 bg-gradient-subtle scroll-mt-20">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">

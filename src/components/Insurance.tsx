@@ -37,7 +37,7 @@ const Insurance = () => {
   };
 
   return (
-    <section id="insurance" className="py-24 bg-background">
+    <section id="insurance" className="py-24 bg-background scroll-mt-20">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* BCBS Announcement Hero */}
