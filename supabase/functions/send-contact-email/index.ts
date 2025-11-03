@@ -43,7 +43,7 @@ const handler = async (req: Request): Promise<Response> => {
       connection: {
         hostname: "smtp.paubox.com",
         port: 587,
-        tls: true,
+        tls: false,
         auth: {
           username: "care@elevatedhealthaugusta.com",
           password: PAUBOX_SMTP_PASSWORD!,
@@ -56,7 +56,8 @@ const handler = async (req: Request): Promise<Response> => {
       to: "care@elevatedhealthaugusta.com",
       replyTo: validatedData.email,
       subject: "New Inquiry from Elevated Health Augusta",
-      content: `
+      content: "auto",
+      html: `
         <!DOCTYPE html>
         <html>
           <head>
