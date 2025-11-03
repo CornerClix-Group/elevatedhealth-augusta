@@ -127,7 +127,12 @@ const Footer = () => {
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-background/60 text-sm">
               <p>© 2025 {SITE_CONFIG.clinicName}. All rights reserved.</p>
               <div className="flex gap-6">
-                <button className="hover:text-secondary transition-colors">Privacy Policy</button>
+                <button 
+                  onClick={() => navigate("/privacy-policy")} 
+                  className="hover:text-secondary transition-colors"
+                >
+                  Privacy Policy
+                </button>
                 <button className="hover:text-secondary transition-colors">Terms of Service</button>
                 <button className="hover:text-secondary transition-colors">HIPAA Notice</button>
               </div>
