@@ -45,8 +45,8 @@ const Contact = () => {
 
       // Success
       toast({
-        title: "Message Sent Successfully!",
-        description: "We'll get back to you within 24 hours. If urgent, please call us at (706) 550-9202."
+        title: "Thank You for Reaching Out!",
+        description: "Thank you for reaching out to Elevated Health Augusta. We've received your message and will be in touch soon. Please do not include personal medical information in this form."
       });
       
       setFormData({

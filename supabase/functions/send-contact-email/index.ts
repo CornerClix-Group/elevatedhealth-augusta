@@ -2,8 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
-const GMAIL_USER = Deno.env.get("GMAIL_USER");
-const GMAIL_APP_PASSWORD = Deno.env.get("GMAIL_APP_PASSWORD");
+const PAUBOX_SMTP_PASSWORD = Deno.env.get("PAUBOX_SMTP_PASSWORD");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -39,24 +38,24 @@ const handler = async (req: Request): Promise<Response> => {
       timeStyle: 'long'
     });
 
-    // Send email via Gmail SMTP
+    // Send email via Paubox HIPAA-compliant SMTP
     const client = new SMTPClient({
       connection: {
-        hostname: "smtp.gmail.com",
+        hostname: "smtp.paubox.com",
         port: 587,
         tls: true,
         auth: {
-          username: GMAIL_USER!,
-          password: GMAIL_APP_PASSWORD!,
+          username: "care@elevatedhealthaugusta.com",
+          password: PAUBOX_SMTP_PASSWORD!,
         },
       },
     });
 
     await client.send({
-      from: GMAIL_USER!,
+      from: "care@elevatedhealthaugusta.com",
       to: "care@elevatedhealthaugusta.com",
       replyTo: validatedData.email,
-      subject: `New Contact Form Submission from ${validatedData.name}`,
+      subject: "New Inquiry from Elevated Health Augusta",
       content: "auto",
       html: `
         <!DOCTYPE html>
@@ -122,7 +121,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     await client.close();
 
-    console.log("Email sent successfully via Gmail");
+    console.log("Email sent successfully via Paubox HIPAA-compliant SMTP");
 
     return new Response(
       JSON.stringify({ 
