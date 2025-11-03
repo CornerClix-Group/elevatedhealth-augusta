@@ -93,8 +93,31 @@ Thank you for considering my request.`;
           </div>
         </section>
 
+        {/* Advocacy Section */}
+        <section id="mv-advocacy" className="py-16 md:py-24 bg-background">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-center">
+                How We Support Military-Connected Patients
+              </h2>
+              <Card>
+                <CardContent className="p-6 md:p-8">
+                  <ul className="space-y-4">
+                    {advocacyItems.map((item, index) => (
+                      <li key={index} className="flex gap-3 items-start">
+                        <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
+                        <span className="text-base leading-relaxed">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
         {/* TRICARE Portal Section */}
-        <section id="tricare-portal" className="py-16 md:py-24 bg-background">
+        <section id="tricare-portal" className="py-16 md:py-24 bg-muted/30">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto">
               <Card>
@@ -126,7 +149,7 @@ Thank you for considering my request.`;
         </section>
 
         {/* VA Portal Section */}
-        <section id="va-portal" className="py-16 md:py-24 bg-muted/30">
+        <section id="va-portal" className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto">
               <Card>
@@ -151,29 +174,6 @@ Thank you for considering my request.`;
                     <Copy className="h-4 w-4" />
                     Copy VA Template
                   </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Advocacy Section */}
-        <section id="mv-advocacy" className="py-16 md:py-24 bg-background">
-          <div className="container mx-auto px-4 sm:px-6">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-center">
-                How We Support Military-Connected Patients
-              </h2>
-              <Card>
-                <CardContent className="p-6 md:p-8">
-                  <ul className="space-y-4">
-                    {advocacyItems.map((item, index) => (
-                      <li key={index} className="flex gap-3 items-start">
-                        <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
-                        <span className="text-base leading-relaxed">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </CardContent>
               </Card>
             </div>
