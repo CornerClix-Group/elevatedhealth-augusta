@@ -56,8 +56,7 @@ const handler = async (req: Request): Promise<Response> => {
       to: "care@elevatedhealthaugusta.com",
       replyTo: validatedData.email,
       subject: "New Inquiry from Elevated Health Augusta",
-      content: "auto",
-      html: `
+      content: `
         <!DOCTYPE html>
         <html>
           <head>
