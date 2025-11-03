@@ -1,7 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const GMAIL_USER = Deno.env.get("GMAIL_USER");
+const GMAIL_APP_PASSWORD = Deno.env.get("GMAIL_APP_PASSWORD");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -37,18 +39,25 @@ const handler = async (req: Request): Promise<Response> => {
       timeStyle: 'long'
     });
 
-    // Send email to clinic using Resend API
-    const emailResponse = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
+    // Send email via Gmail SMTP
+    const client = new SMTPClient({
+      connection: {
+        hostname: "smtp.gmail.com",
+        port: 587,
+        tls: true,
+        auth: {
+          username: GMAIL_USER!,
+          password: GMAIL_APP_PASSWORD!,
+        },
       },
-      body: JSON.stringify({
-      from: "Elevated Health Augusta <onboarding@resend.dev>",
-      to: ["care@elevatedhealthaugusta.com"],
+    });
+
+    await client.send({
+      from: GMAIL_USER!,
+      to: "care@elevatedhealthaugusta.com",
       replyTo: validatedData.email,
       subject: `New Contact Form Submission from ${validatedData.name}`,
+      content: "auto",
       html: `
         <!DOCTYPE html>
         <html>
@@ -109,17 +118,11 @@ const handler = async (req: Request): Promise<Response> => {
           </body>
         </html>
       `,
-      })
     });
 
-    if (!emailResponse.ok) {
-      const errorData = await emailResponse.json();
-      throw new Error(`Resend API error: ${JSON.stringify(errorData)}`);
-    }
+    await client.close();
 
-    const emailData = await emailResponse.json();
-
-    console.log("Email sent successfully:", emailData);
+    console.log("Email sent successfully via Gmail");
 
     return new Response(
       JSON.stringify({ 
@@ -153,7 +156,7 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(
       JSON.stringify({ 
         error: "Failed to send email",
-        message: error.message 
+        message: error.message || "Unknown error occurred"
       }),
       {
         status: 500,
