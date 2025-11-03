@@ -120,9 +120,15 @@ const Veterans = () => {
               Connect with us to verify your coverage and learn how we can support your mental health journey
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="default" size="xl" onClick={scrollToContact} className="gap-2">
-                <Calendar className="h-5 w-5" />
-                Schedule Consultation
+              <Button variant="default" size="xl" asChild className="gap-2">
+                <a
+                  href="https://calendar.app.google/dmUqXpAwVspD7Nyi9"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Calendar className="h-5 w-5" />
+                  Schedule Consultation
+                </a>
               </Button>
               <a href="tel:7065509202">
                 <Button variant="outline" size="xl" className="gap-2 border-2">

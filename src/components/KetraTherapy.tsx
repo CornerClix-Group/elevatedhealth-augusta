@@ -185,9 +185,15 @@ const KetraTherapy = () => {
             <p className="text-xl mb-8 opacity-90">
               Schedule a consultation to learn if KETRA™ therapy is right for you
             </p>
-            <Button variant="cta" size="xl" onClick={scrollToContact} className="gap-2">
-              <Calendar className="h-5 w-5" />
-              Book Your Consultation
+            <Button variant="cta" size="xl" asChild className="gap-2">
+              <a
+                href="https://calendar.app.google/dmUqXpAwVspD7Nyi9"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Calendar className="h-5 w-5" />
+                Book Your Consultation
+              </a>
             </Button>
           </div>
         </div>
