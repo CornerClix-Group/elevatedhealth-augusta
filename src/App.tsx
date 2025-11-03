@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import IVKetamine from "./pages/IVKetamine";
 import MilitaryVeteran from "./pages/MilitaryVeteran";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import HipaaNotice from "./pages/HipaaNotice";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/iv-ketamine" element={<IVKetamine />} />
           <Route path="/military-veteran" element={<MilitaryVeteran />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/hipaa-notice" element={<HipaaNotice />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

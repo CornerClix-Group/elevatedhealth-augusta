@@ -134,7 +134,12 @@ const Footer = () => {
                   Privacy Policy
                 </button>
                 <button className="hover:text-secondary transition-colors">Terms of Service</button>
-                <button className="hover:text-secondary transition-colors">HIPAA Notice</button>
+                <button 
+                  onClick={() => navigate("/hipaa-notice")} 
+                  className="hover:text-secondary transition-colors"
+                >
+                  HIPAA Notice
+                </button>
               </div>
             </div>
             <p className="text-center mt-4 text-background/40 text-xs">
