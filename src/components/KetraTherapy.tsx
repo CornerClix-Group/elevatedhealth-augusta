@@ -1,7 +1,7 @@
 import { CheckCircle, Shield, ArrowRight, Calendar, Heart, Clock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import ketraLogo from "@/assets/ketra-logo-transparent.png";
+import ketraLogo from "@/assets/ketra-logo-new.png";
 
 const KetraTherapy = () => {
   const coreValues = [
