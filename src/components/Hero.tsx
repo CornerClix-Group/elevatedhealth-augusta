@@ -51,7 +51,7 @@ const Hero = () => {
         <div className="max-w-6xl mx-auto text-left">
           {/* Clinic Name & Tagline */}
           <div className="mb-6 md:mb-8 animate-fade-in-up">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 text-accent leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 text-primary leading-tight">
               Elevated Health Augusta
             </h1>
             <p className="text-2xl sm:text-3xl md:text-4xl text-white font-semibold italic">
