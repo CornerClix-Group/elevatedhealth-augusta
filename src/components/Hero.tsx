@@ -5,6 +5,16 @@ import heroImage from "@/assets/hero-therapy.jpg";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 const Hero = () => {
   const navigate = useNavigate();
+  
+  const scrollToBooking = () => {
+    const element = document.getElementById("booking");
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+  };
+  
   const scrollToCompare = () => {
     const element = document.getElementById("compare");
     if (element) {
@@ -13,14 +23,15 @@ const Hero = () => {
       });
     }
   };
+  
   const handleMilitaryClick = () => {
     navigate(SITE_CONFIG.routes.militaryVeteran);
   };
-  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+  return <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Video Background with Fallback Image */}
       <div className="absolute inset-0 z-0">
         {/* Fallback image - replace with video element when video is ready */}
-        <img src={heroImage} alt="Calming therapy environment at Elevated Health Augusta" className="w-full h-full object-cover" />
+        <img src={heroImage} alt="Modern wellness clinic at Elevated Health Augusta" className="w-full h-full object-cover" />
         {/* Video element - uncomment when video is available
          <video
           autoPlay
@@ -32,43 +43,62 @@ const Hero = () => {
           <source src="/path-to-your-video.mp4" type="video/mp4" />
          </video>
          */}
-        <div className="absolute inset-0 bg-foreground/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-foreground/60 via-foreground/50 to-foreground/40" />
       </div>
 
-      {/* Content - MindBloom inspired layout */}
+      {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 relative z-10 pt-32 pb-20">
         <div className="max-w-6xl mx-auto text-left">
-          {/* Main Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 text-secondary leading-tight animate-fade-in-up max-w-4xl">
-            Expert-led ketamine care in Evans, GA
-          </h1>
+          {/* Clinic Name & Tagline */}
+          <div className="mb-6 md:mb-8 animate-fade-in-up">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 text-white leading-tight">
+              Elevated Health Augusta
+            </h1>
+            <p className="text-2xl sm:text-3xl md:text-4xl text-accent font-semibold italic">
+              Healing Elevated. Science-Driven, Patient-Focused.
+            </p>
+          </div>
 
-          {/* Subheading */}
+          {/* Services Description */}
           <p style={{
           animationDelay: "0.2s"
-        }} className="text-lg sm:text-xl md:text-2xl mb-10 md:mb-12 max-w-3xl animate-fade-in-up leading-relaxed text-zinc-50 font-extrabold">
-            We offer IV Ketamine infusions and SPRAVATO® (esketamine) nasal spray for adults who haven't found relief with standard treatments.
+        }} className="text-lg sm:text-xl md:text-2xl mb-8 md:mb-10 max-w-4xl animate-fade-in-up leading-relaxed text-white">
+            Specializing in <span className="font-bold text-accent">IV Ketamine</span>, <span className="font-bold text-accent">SPRAVATO®</span>, <span className="font-bold text-accent">Hormone Replacement Therapy</span>, and <span className="font-bold text-accent">Weight Loss Programs</span> — modern, evidence-based solutions for lasting wellness.
           </p>
 
-          {/* CTAs */}
+          {/* Primary CTA */}
           <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-in-up" style={{
           animationDelay: "0.4s"
         }}>
-            <Button variant="cta" size="xl" onClick={scrollToCompare} className="gap-2 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6">
-              Compare IV Ketamine vs SPRAVATO®
+            <Button 
+              variant="cta" 
+              size="xl" 
+              onClick={scrollToBooking} 
+              className="gap-2 text-base sm:text-lg px-8 sm:px-10 py-6 sm:py-7 shadow-2xl hover:scale-105 transition-transform"
+            >
+              Book Your Free 30-Minute Consultation
               <ArrowRight className="h-5 w-5" />
             </Button>
-            <Button variant="hero" size="xl" onClick={handleMilitaryClick} className="gap-2 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6">
+          </div>
+
+          {/* Secondary CTAs */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-in-up" style={{
+          animationDelay: "0.5s"
+        }}>
+            <Button variant="hero" size="lg" onClick={scrollToCompare} className="gap-2">
+              Compare Treatments
+            </Button>
+            <Button variant="hero" size="lg" onClick={handleMilitaryClick} className="gap-2">
               Military/Veteran Benefits
             </Button>
           </div>
 
           {/* Clinic Location */}
-          <div className="text-secondary/80 text-sm sm:text-base animate-fade-in-up max-w-3xl" style={{
+          <div className="text-white/90 text-sm sm:text-base animate-fade-in-up max-w-3xl" style={{
           animationDelay: "0.6s"
         }}>
             <p className="leading-relaxed">
-              {SITE_CONFIG.clinicName} — {SITE_CONFIG.address.full} • {SITE_CONFIG.phone}
+              {SITE_CONFIG.address.full} • {SITE_CONFIG.phone}
             </p>
           </div>
         </div>
