@@ -13,6 +13,8 @@ export const SITE_CONFIG = {
   routes: {
     militaryVeteran: "/military-veteran",
     ivKetamine: "/iv-ketamine",
-    spravato: "/spravato"
+    spravato: "/spravato",
+    hormoneReplacement: "/hormone-replacement",
+    weightLoss: "/weight-loss"
   }
 } as const;

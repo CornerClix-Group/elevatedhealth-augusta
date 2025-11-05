@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import IVKetamine from "./pages/IVKetamine";
+import Spravato from "./pages/Spravato";
+import HormoneReplacement from "./pages/HormoneReplacement";
+import WeightLoss from "./pages/WeightLoss";
 import MilitaryVeteran from "./pages/MilitaryVeteran";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import HipaaNotice from "./pages/HipaaNotice";
@@ -22,6 +25,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/iv-ketamine" element={<IVKetamine />} />
+          <Route path="/spravato" element={<Spravato />} />
+          <Route path="/hormone-replacement" element={<HormoneReplacement />} />
+          <Route path="/weight-loss" element={<WeightLoss />} />
           <Route path="/military-veteran" element={<MilitaryVeteran />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/hipaa-notice" element={<HipaaNotice />} />
