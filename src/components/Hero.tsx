@@ -51,10 +51,10 @@ const Hero = () => {
         <div className="max-w-6xl mx-auto text-left">
           {/* Clinic Name & Tagline */}
           <div className="mb-6 md:mb-8 animate-fade-in-up">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 text-white leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 text-accent leading-tight">
               Elevated Health Augusta
             </h1>
-            <p className="text-2xl sm:text-3xl md:text-4xl text-accent font-semibold italic">
+            <p className="text-2xl sm:text-3xl md:text-4xl text-white font-semibold italic">
               Healing Elevated. Science-Driven, Patient-Focused.
             </p>
           </div>
@@ -63,7 +63,7 @@ const Hero = () => {
           <p style={{
           animationDelay: "0.2s"
         }} className="text-lg sm:text-xl md:text-2xl mb-8 md:mb-10 max-w-4xl animate-fade-in-up leading-relaxed text-white">
-            Specializing in <span className="font-bold text-accent">IV Ketamine</span>, <span className="font-bold text-accent">SPRAVATO®</span>, <span className="font-bold text-accent">Hormone Replacement Therapy</span>, and <span className="font-bold text-accent">Weight Loss Programs</span> — modern, evidence-based solutions for lasting wellness.
+            Specializing in <span className="font-bold text-white">IV Ketamine</span>, <span className="font-bold text-white">SPRAVATO®</span>, <span className="font-bold text-white">Hormone Replacement Therapy</span>, and <span className="font-bold text-white">Weight Loss Programs</span> — modern, evidence-based solutions for lasting wellness.
           </p>
 
           {/* Primary CTA */}
