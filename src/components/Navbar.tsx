@@ -9,6 +9,7 @@ import {
 import { Menu, X, ChevronDown } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import logo from "@/assets/elevated-health-logo.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -61,9 +62,9 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <h1 className="text-xl md:text-2xl font-bold text-primary">
-              Elevated Health <span className="text-foreground">Augusta</span>
-            </h1>
+            <button onClick={() => scrollToSection("hero")} className="focus:outline-none">
+              <img src={logo} alt="Elevated Health Augusta" className="h-12 md:h-16 w-auto" />
+            </button>
           </div>
 
           {/* Desktop Menu */}
