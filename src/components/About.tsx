@@ -41,6 +41,12 @@ const About = () => {
                 and treatment-resistant conditions.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
+                We believe in collaborative care. Our team works closely with your existing healthcare providers—
+                including your primary care physician, psychiatrist, and therapists—to ensure comprehensive, 
+                coordinated treatment. We strongly encourage our patients to maintain a relationship with a primary 
+                care physician, as this partnership allows us to provide the most effective and holistic care possible.
+              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed">
                 We are proud to serve both the Augusta community and our nation's Veterans, offering specialized 
                 programs for those who have served. At our Evans, GA facility, you'll find a welcoming environment
                 where medical excellence meets heartfelt compassion.
