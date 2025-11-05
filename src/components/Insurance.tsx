@@ -38,8 +38,15 @@ const Insurance = () => {
   ];
 
   const scrollToContact = () => {
-    const element = document.getElementById("contact");
-    if (element) element.scrollIntoView({ behavior: "smooth" });
+    // Navigate to homepage if not already there
+    if (window.location.pathname !== '/' && window.location.pathname !== '/index') {
+      window.location.href = '/#contact';
+    } else {
+      const element = document.getElementById("contact");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
   };
 
   return (
