@@ -44,7 +44,7 @@ const KetraTherapy = () => {
               <img 
                 src={ketraLogo} 
                 alt="KETRA Therapy" 
-                className="h-20 md:h-28 mx-auto mb-6 drop-shadow-lg"
+                className="h-32 md:h-48 lg:h-56 mx-auto mb-8 drop-shadow-lg"
               />
             </div>
             <h2 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
