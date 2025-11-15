@@ -83,10 +83,10 @@ const HowKetamineWorks = () => {
         <Navbar />
         
         {/* Hero Section */}
-        <section className="relative bg-primary text-primary-foreground py-20 md:py-32">
+        <section className="relative bg-primary text-primary-foreground py-12 md:py-16">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className="font-playfair text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
+              <h1 className="font-playfair text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
                 How Ketamine Works
               </h1>
               <p className="font-inter text-xl md:text-2xl text-primary-foreground/90 max-w-3xl mx-auto">
@@ -104,13 +104,13 @@ const HowKetamineWorks = () => {
                 {videos.map((video, index) => (
                   <Card 
                     key={index} 
-                    className="flex flex-col hover:shadow-xl transition-all duration-300 overflow-hidden"
+                    className="flex flex-col hover:shadow-xl transition-all duration-300 overflow-hidden group"
                   >
                     <div className="relative aspect-video w-full overflow-hidden bg-muted">
                       <img 
                         src={video.image} 
                         alt={video.alt}
-                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         loading={index === 0 ? "eager" : "lazy"}
                       />
                     </div>
