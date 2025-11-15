@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { trackCTAClick } from "@/lib/analytics";
-import logo from "@/assets/elevated-health-logo.png";
+import logo from "@/assets/elevated-health-logo-transparent.png";
 
 const HowKetamineWorks = () => {
   useEffect(() => {
@@ -65,7 +65,7 @@ const HowKetamineWorks = () => {
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto text-center">
               <div className="mb-6 animate-fade-in-up flex justify-center">
-                <img src={logo} alt="Elevated Health Augusta" className="h-16 md:h-20 w-auto brightness-0 invert" />
+                <img src={logo} alt="Elevated Health Augusta" className="h-16 md:h-20 w-auto" />
               </div>
               <h1 className="font-playfair text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
                 How Ketamine Works

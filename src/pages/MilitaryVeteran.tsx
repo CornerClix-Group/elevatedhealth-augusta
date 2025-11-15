@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ReferralRequestModal } from "@/components/ReferralRequestModal";
 import { SITE_CONFIG } from "@/lib/siteConfig";
-import logo from "@/assets/elevated-health-logo.png";
+import logo from "@/assets/elevated-health-logo-transparent.png";
 const MilitaryVeteran = () => {
   const {
     toast
