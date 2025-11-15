@@ -20,24 +20,24 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 20%;
 
-    /* Primary - Deep Navy #0A3D62 */
+    /* Primary - Navy #0A3D62 */
     --primary: 200 72% 21%;
     --primary-foreground: 0 0% 100%;
     --primary-light: 200 72% 35%;
     --primary-dark: 200 72% 15%;
 
-    /* Secondary - Warm Gray for backgrounds */
+    /* Secondary - Light Gray #F5F5F5 */
     --secondary: 0 0% 96%;
     --secondary-foreground: 0 0% 20%;
     --secondary-light: 0 0% 98%;
     --secondary-dark: 0 0% 90%;
 
-    /* Accent - Trust Blue #4A90E2 */
-    --accent: 207 70% 58%;
+    /* Accent - Green #27AE60 */
+    --accent: 145 63% 42%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 207 70% 70%;
+    --accent-light: 145 63% 55%;
 
-    /* Hope Green #27AE60 */
+    /* Hope Green (same as accent for consistency) */
     --hope: 145 63% 42%;
     --hope-foreground: 0 0% 100%;
     --hope-light: 145 63% 55%;

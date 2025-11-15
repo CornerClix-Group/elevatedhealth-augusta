@@ -1,68 +1,78 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle2, Award, Heart, GraduationCap, TrendingDown, Activity, Apple } from "lucide-react";
+import { CheckCircle2, Award, Heart, GraduationCap, Zap, Moon, Smile } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import providerImage from "@/assets/provider-portrait.jpg";
 import { Helmet } from "react-helmet";
 
-const WeightLoss = () => {
+const Hormones = () => {
   const scrollToBooking = () => {
     window.open(SITE_CONFIG.bookingUrl, "_blank");
   };
 
-  const programFeatures = [
-    "Semaglutide (GLP-1) medication therapy",
-    "Personalized nutrition guidance",
-    "Lifestyle coaching and support",
-    "Regular progress monitoring",
-    "Lab work and health assessments"
+  const symptoms = [
+    "Persistent fatigue and low energy",
+    "Difficulty sleeping or insomnia",
+    "Mood swings, anxiety, or depression",
+    "Weight gain or difficulty losing weight",
+    "Low libido or sexual dysfunction",
+    "Hot flashes or night sweats",
+    "Brain fog and memory issues",
+    "Muscle loss or weakness"
   ];
 
   const benefits = [
     {
-      icon: TrendingDown,
-      title: "15-20% Weight Loss",
-      description: "Clinical studies show sustained weight loss with GLP-1 therapy"
+      icon: Zap,
+      title: "Increased Energy",
+      description: "Restore vitality and feel like yourself again"
     },
     {
-      icon: Activity,
-      title: "Improved Metabolism",
-      description: "Enhance your body's natural fat-burning capabilities"
+      icon: Moon,
+      title: "Better Sleep",
+      description: "Improve sleep quality and wake refreshed"
     },
     {
-      icon: Apple,
-      title: "Reduced Appetite",
-      description: "Feel fuller longer and reduce cravings naturally"
+      icon: Smile,
+      title: "Enhanced Mood",
+      description: "Balance emotions and reduce anxiety"
     }
+  ];
+
+  const processSteps = [
+    "Comprehensive lab testing to assess hormone levels",
+    "Personalized bioidentical hormone therapy plan",
+    "Regular monitoring and dose adjustments",
+    "Ongoing support and lifestyle guidance"
   ];
 
   const faqs = [
     {
-      q: "How does semaglutide work?",
-      a: "Semaglutide is a GLP-1 receptor agonist that mimics a natural hormone in your body. It helps regulate appetite, slow digestion, and improve blood sugar control, leading to sustainable weight loss."
+      q: "What is bioidentical hormone replacement therapy (BHRT)?",
+      a: "BHRT uses hormones that are molecularly identical to those your body produces naturally. This approach provides more natural results with fewer side effects compared to synthetic hormones."
     },
     {
-      q: "What results can I expect?",
-      a: "Clinical trials show patients lose an average of 15-20% of their body weight over 68 weeks when combined with lifestyle modifications. Individual results vary based on commitment to the program."
+      q: "Who is a good candidate for HRT?",
+      a: "Adults experiencing symptoms of hormone imbalance—such as fatigue, mood changes, weight gain, or low libido—may benefit from HRT. We'll assess your symptoms and lab results during your consultation."
     },
     {
-      q: "Are there side effects?",
-      a: "Common side effects include mild nausea, which typically improves after the first few weeks. We start with a low dose and gradually increase to minimize side effects while maximizing results."
+      q: "How long before I see results?",
+      a: "Many patients notice improvements in energy and mood within 2-4 weeks. Full benefits typically develop over 3-6 months as hormone levels stabilize."
     },
     {
-      q: "Is this program right for me?",
-      a: "Our medical weight loss program is designed for adults with a BMI over 27 with weight-related health issues, or BMI over 30. We'll assess your health history during your free consultation."
+      q: "Is hormone replacement therapy safe?",
+      a: "When properly monitored by a healthcare provider, BHRT is safe and effective. We use the latest research and clinical guidelines (NAMS 2025) to ensure optimal safety and results."
     }
   ];
 
   return (
     <>
       <Helmet>
-        <title>Medical Weight Loss Augusta | Semaglutide $399/mo - Elevated Health</title>
-        <meta name="description" content="Medical weight loss in Augusta, GA with semaglutide (GLP-1) therapy. Achieve 15-20% weight loss with physician-supervised care. $399/month." />
-        <meta name="keywords" content="medical weight loss Augusta, semaglutide Augusta GA, GLP-1 Augusta, weight loss clinic Georgia, physician supervised weight loss" />
+        <title>Hormone Replacement Therapy Augusta | BHRT $299/mo - Elevated Health</title>
+        <meta name="description" content="Bioidentical hormone replacement therapy in Augusta, GA. Restore energy, improve sleep, and balance mood with physician-supervised BHRT. $299/month." />
+        <meta name="keywords" content="hormone replacement Augusta, BHRT Augusta GA, bioidentical hormones Georgia, hormone therapy Augusta, menopause treatment" />
       </Helmet>
 
       <div className="min-h-screen">
@@ -70,84 +80,107 @@ const WeightLoss = () => {
         
         <main>
           {/* Hero Section */}
-          <section className="pt-32 pb-16 md:pb-24 bg-gradient-to-b from-accent/5 to-background">
+          <section className="pt-32 pb-16 md:pb-24 bg-gradient-to-b from-gold/5 to-background">
             <div className="container mx-auto px-4 sm:px-6">
               <div className="max-w-4xl mx-auto text-center">
                 <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 animate-fade-in-up">
-                  Medical Weight Loss in Augusta, GA
+                  Hormone Replacement Therapy in Augusta, GA
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-                  Achieve lasting weight loss with physician-supervised semaglutide (GLP-1) therapy. 
-                  Evidence-based treatment with personalized support every step of the way.
+                  Restore balance and vitality with bioidentical hormone replacement therapy (BHRT). 
+                  Personalized treatment to help you feel like yourself again.
                 </p>
                 <div className="mb-8 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-                  <span className="text-4xl font-bold text-accent">$399</span>
+                  <span className="text-4xl font-bold text-gold">$299</span>
                   <span className="text-xl text-muted-foreground">/month</span>
                 </div>
                 <Button
                   onClick={scrollToBooking}
                   size="lg"
-                  className="bg-accent hover:bg-accent-light text-white text-base md:text-lg px-8 py-6 animate-fade-in-up"
+                  className="bg-gold hover:bg-gold-light text-gold-foreground text-base md:text-lg px-8 py-6 animate-fade-in-up"
                   style={{ animationDelay: "0.3s" }}
                 >
-                  Book Free Consultation
+                  Join Waitlist - Coming Soon
                 </Button>
               </div>
             </div>
           </section>
 
-          {/* How It Works */}
+          {/* Symptoms We Treat */}
           <section className="py-16 md:py-24 bg-background">
             <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-5xl mx-auto">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-center">
-                  How Our Program Works
+              <div className="max-w-4xl mx-auto">
+                <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-center">
+                  Symptoms of Hormone Imbalance
                 </h2>
-                <Card className="p-8 md:p-12">
-                  <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                    Our medical weight loss program uses semaglutide, a proven GLP-1 medication that works with 
-                    your body's natural systems to reduce appetite, improve metabolism, and support sustainable weight loss.
-                  </p>
-                  <div className="grid md:grid-cols-3 gap-8 mb-12">
-                    {benefits.map((benefit, index) => {
-                      const Icon = benefit.icon;
-                      return (
-                        <div key={index} className="text-center">
-                          <Icon className="h-12 w-12 text-accent mx-auto mb-4" />
-                          <h3 className="font-bold text-lg mb-2">{benefit.title}</h3>
-                          <p className="text-sm text-muted-foreground">{benefit.description}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="bg-accent/5 rounded-lg p-6">
-                    <p className="text-center text-muted-foreground">
-                      <strong className="text-foreground">Clinical Results:</strong> Patients lose an average of 15-20% 
-                      of their body weight over 68 weeks (JAMA 2024)
+                <Card>
+                  <CardContent className="p-6 md:p-8">
+                    <p className="text-muted-foreground mb-6">
+                      Hormone imbalances can significantly impact your quality of life. Common symptoms include:
                     </p>
-                  </div>
+                    <ul className="space-y-4">
+                      {symptoms.map((symptom, index) => (
+                        <li key={index} className="flex gap-3 items-start">
+                          <CheckCircle2 className="h-6 w-6 text-gold flex-shrink-0 mt-0.5" />
+                          <span className="text-base leading-relaxed">{symptom}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
                 </Card>
               </div>
             </div>
           </section>
 
-          {/* Program Features */}
+          {/* Benefits */}
           <section className="py-16 md:py-24 bg-muted/30">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="max-w-5xl mx-auto">
+                <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-center">
+                  Benefits of Hormone Replacement Therapy
+                </h2>
+                <div className="grid md:grid-cols-3 gap-8 mb-12">
+                  {benefits.map((benefit, index) => {
+                    const Icon = benefit.icon;
+                    return (
+                      <Card key={index} className="p-8 text-center hover:shadow-lg transition-shadow">
+                        <Icon className="h-12 w-12 text-gold mx-auto mb-4" />
+                        <h3 className="font-bold text-lg mb-2">{benefit.title}</h3>
+                        <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                      </Card>
+                    );
+                  })}
+                </div>
+                <Card className="p-8 md:p-12 bg-gold/5">
+                  <p className="text-lg text-muted-foreground leading-relaxed text-center">
+                    Bioidentical hormones are derived from natural plant sources and are molecularly identical 
+                    to the hormones your body produces, offering a more natural approach to hormone therapy 
+                    with fewer side effects (NAMS 2025 Guidelines).
+                  </p>
+                </Card>
+              </div>
+            </div>
+          </section>
+
+          {/* Our Process */}
+          <section className="py-16 md:py-24 bg-background">
             <div className="container mx-auto px-4 sm:px-6">
               <div className="max-w-4xl mx-auto">
                 <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-center">
-                  What's Included
+                  Our BHRT Process
                 </h2>
                 <Card>
                   <CardContent className="p-6 md:p-8">
                     <p className="text-muted-foreground mb-6">
-                      Our comprehensive program includes everything you need for successful, sustainable weight loss:
+                      We take a comprehensive, personalized approach to hormone replacement therapy:
                     </p>
                     <ul className="space-y-4">
-                      {programFeatures.map((feature, index) => (
+                      {processSteps.map((step, index) => (
                         <li key={index} className="flex gap-3 items-start">
-                          <CheckCircle2 className="h-6 w-6 text-accent flex-shrink-0 mt-0.5" />
-                          <span className="text-base leading-relaxed">{feature}</span>
+                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gold text-white flex items-center justify-center font-bold text-sm">
+                            {index + 1}
+                          </div>
+                          <span className="text-base leading-relaxed pt-1">{step}</span>
                         </li>
                       ))}
                     </ul>
@@ -158,7 +191,7 @@ const WeightLoss = () => {
           </section>
 
           {/* Provider Section */}
-          <section className="py-16 md:py-24 bg-background">
+          <section className="py-16 md:py-24 bg-muted/30">
             <div className="container mx-auto px-4 sm:px-6">
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-center">
@@ -186,17 +219,17 @@ const WeightLoss = () => {
                         
                         <div className="space-y-6">
                           <div className="flex items-start gap-4">
-                            <GraduationCap className="h-6 w-6 text-accent flex-shrink-0 mt-1" />
+                            <GraduationCap className="h-6 w-6 text-gold flex-shrink-0 mt-1" />
                             <div>
                               <div className="font-semibold text-foreground mb-1">Specialized Training</div>
                               <div className="text-muted-foreground">
-                                Advanced certification in medical weight loss, ketamine therapy, and hormone replacement therapy
+                                Advanced certification in hormone replacement therapy, ketamine therapy, and medical weight loss
                               </div>
                             </div>
                           </div>
 
                           <div className="flex items-start gap-4">
-                            <Heart className="h-6 w-6 text-accent flex-shrink-0 mt-1" />
+                            <Heart className="h-6 w-6 text-gold flex-shrink-0 mt-1" />
                             <div>
                               <div className="font-semibold text-foreground mb-1">Patient-Centered Approach</div>
                               <div className="text-muted-foreground">
@@ -206,7 +239,7 @@ const WeightLoss = () => {
                           </div>
 
                           <div className="flex items-start gap-4">
-                            <Award className="h-6 w-6 text-accent flex-shrink-0 mt-1" />
+                            <Award className="h-6 w-6 text-gold flex-shrink-0 mt-1" />
                             <div>
                               <div className="font-semibold text-foreground mb-1">Evidence-Based Care</div>
                               <div className="text-muted-foreground">
@@ -223,24 +256,6 @@ const WeightLoss = () => {
             </div>
           </section>
 
-          {/* Testimonials */}
-          <section className="py-16 md:py-24 bg-muted/30">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-4xl mx-auto">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-center">
-                  Success Stories
-                </h2>
-                <Card className="p-8 bg-gradient-to-br from-accent/10 to-background border-accent/20">
-                  <blockquote className="text-xl md:text-2xl font-light text-foreground mb-6 leading-relaxed italic">
-                    "I've tried every diet out there. This program finally gave me the tools and support I needed 
-                    to succeed. I've lost 45 pounds and feel healthier than I have in years."
-                  </blockquote>
-                  <cite className="text-muted-foreground not-italic">— Real Patient, Martinez GA</cite>
-                </Card>
-              </div>
-            </div>
-          </section>
-
           {/* FAQ */}
           <section className="py-16 md:py-24 bg-background">
             <div className="container mx-auto px-4 sm:px-6">
@@ -251,7 +266,7 @@ const WeightLoss = () => {
                 <div className="space-y-6">
                   {faqs.map((faq, index) => (
                     <Card key={index} className="p-6">
-                      <h3 className="font-bold text-lg mb-3 text-accent">{faq.q}</h3>
+                      <h3 className="font-bold text-lg mb-3 text-gold">{faq.q}</h3>
                       <p className="text-muted-foreground leading-relaxed">{faq.a}</p>
                     </Card>
                   ))}
@@ -261,21 +276,21 @@ const WeightLoss = () => {
           </section>
 
           {/* Final CTA */}
-          <section className="py-16 md:py-24 bg-gradient-to-r from-accent/10 via-primary/10 to-gold/10">
+          <section className="py-16 md:py-24 bg-gradient-to-r from-gold/10 via-primary/10 to-accent/10">
             <div className="container mx-auto px-4 sm:px-6">
               <div className="max-w-2xl mx-auto text-center">
                 <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-                  Start Your Weight Loss Journey Today
+                  Rebalance Your Hormones, Reclaim Your Life
                 </h2>
                 <p className="text-lg text-muted-foreground mb-8">
-                  Schedule a free consultation to learn if our medical weight loss program is right for you
+                  Join the waitlist to be among the first to access our hormone replacement therapy program
                 </p>
                 <Button
                   onClick={scrollToBooking}
                   size="lg"
-                  className="bg-accent hover:bg-accent-light text-white text-base md:text-lg px-8 py-6"
+                  className="bg-gold hover:bg-gold-light text-gold-foreground text-base md:text-lg px-8 py-6"
                 >
-                  Book Your Free Consultation
+                  Join Waitlist
                 </Button>
               </div>
             </div>
@@ -288,4 +303,4 @@ const WeightLoss = () => {
   );
 };
 
-export default WeightLoss;
+export default Hormones;
