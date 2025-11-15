@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        'playfair': ['Playfair Display', 'serif'],
+        'inter': ['Inter', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -49,6 +53,11 @@ export default {
           foreground: "hsl(var(--gold-foreground))",
           light: "hsl(var(--gold-light))",
           dark: "hsl(var(--gold-dark))",
+        },
+        hope: {
+          DEFAULT: "hsl(var(--hope))",
+          foreground: "hsl(var(--hope-foreground))",
+          light: "hsl(var(--hope-light))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
