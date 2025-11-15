@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { Calendar, Phone, ArrowLeft, ArrowRight } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { trackModalOpen, trackQuizComplete, trackCTAClick } from "@/lib/analytics";
 
@@ -23,43 +22,67 @@ interface CompareQuizModalProps {
 const questions = [
   {
     id: 1,
-    question: "Have you been diagnosed with Treatment-Resistant Depression (TRD)?",
+    question: "How long have you felt depressed or anxious?",
     options: [
-      { value: "yes", label: "Yes", weight: { spravato: 2, iv: 1 } },
-      { value: "no", label: "No", weight: { spravato: 0, iv: 1 } },
-      { value: "unsure", label: "Not sure", weight: { spravato: 1, iv: 1 } },
+      { value: "short", label: "Less than 1 month", score: 1 },
+      { value: "medium", label: "1-6 months", score: 2 },
+      { value: "long", label: "6+ months", score: 3 },
+      { value: "years", label: "Years", score: 4 },
     ],
   },
   {
     id: 2,
-    question: "Do you have insurance coverage?",
+    question: "Have traditional antidepressants helped you?",
     options: [
-      { value: "yes", label: "Yes (BCBS, TRICARE, or VA)", weight: { spravato: 2, iv: 1 } },
-      { value: "no", label: "No (self-pay)", weight: { spravato: 0, iv: 2 } },
+      { value: "yes", label: "Yes, they work well", score: 1 },
+      { value: "somewhat", label: "Somewhat helpful", score: 2 },
+      { value: "no", label: "No, not at all", score: 4 },
+      { value: "never", label: "Never tried them", score: 2 },
     ],
   },
   {
     id: 3,
-    question: "How do you prefer to receive treatment?",
+    question: "Do you experience suicidal thoughts?",
     options: [
-      { value: "infusion", label: "IV infusion", weight: { spravato: 0, iv: 3 } },
-      { value: "nasal", label: "Nasal spray", weight: { spravato: 3, iv: 0 } },
-      { value: "either", label: "Either is fine", weight: { spravato: 1, iv: 1 } },
+      { value: "never", label: "Never", score: 0 },
+      { value: "rarely", label: "Rarely", score: 2 },
+      { value: "sometimes", label: "Sometimes", score: 3 },
+      { value: "often", label: "Often", score: 4 },
     ],
   },
   {
     id: 4,
-    question: "Are you currently taking an oral antidepressant?",
+    question: "Rate your daily energy level (1-10):",
     options: [
-      { value: "yes", label: "Yes", weight: { spravato: 2, iv: 1 } },
-      { value: "no", label: "No", weight: { spravato: 0, iv: 2 } },
-      { value: "unsure", label: "Not sure", weight: { spravato: 1, iv: 1 } },
+      { value: "low", label: "1-3 (Very low)", score: 4 },
+      { value: "medium", label: "4-6 (Moderate)", score: 3 },
+      { value: "good", label: "7-8 (Good)", score: 1 },
+      { value: "high", label: "9-10 (High)", score: 0 },
+    ],
+  },
+  {
+    id: 5,
+    question: "Any history of PTSD or trauma?",
+    options: [
+      { value: "none", label: "No", score: 0 },
+      { value: "mild", label: "Yes, mild", score: 2 },
+      { value: "moderate", label: "Yes, moderate", score: 3 },
+      { value: "severe", label: "Yes, severe", score: 4 },
+    ],
+  },
+  {
+    id: 6,
+    question: "Do you have insurance coverage?",
+    options: [
+      { value: "bcbs", label: "Blue Cross Blue Shield", score: 0, insurance: "BCBS" },
+      { value: "tricare", label: "TRICARE", score: 0, insurance: "TRICARE" },
+      { value: "va", label: "VA Benefits", score: 0, insurance: "VA" },
+      { value: "self", label: "Self-pay / No insurance", score: 0, insurance: "None" },
     ],
   },
 ];
 
 export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => {
-  const navigate = useNavigate();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResult, setShowResult] = useState(false);
@@ -80,7 +103,7 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
       setCurrentQuestion(currentQuestion + 1);
     } else {
       const result = calculateResult();
-      trackQuizComplete('treatment_comparison_quiz', result);
+      trackQuizComplete('treatment_comparison_quiz', result.treatment);
       setShowResult(true);
     }
   };
@@ -103,19 +126,36 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
   };
 
   const calculateResult = () => {
-    let spravatoScore = 0;
-    let ivScore = 0;
+    let totalScore = 0;
+    let insuranceType = "None";
 
     Object.entries(answers).forEach(([questionIndex, answerValue]) => {
       const question = questions[parseInt(questionIndex)];
       const selectedOption = question.options.find((opt) => opt.value === answerValue);
       if (selectedOption) {
-        spravatoScore += selectedOption.weight.spravato;
-        ivScore += selectedOption.weight.iv;
+        totalScore += selectedOption.score;
+        if ('insurance' in selectedOption) {
+          insuranceType = selectedOption.insurance as string;
+        }
       }
     });
 
-    return spravatoScore > ivScore ? "spravato" : "iv";
+    // Determine treatment path based on score
+    let treatment: string;
+    let reason: string;
+
+    if (totalScore >= 15) {
+      treatment = "IV Ketamine Infusions";
+      reason = "Treatment-Resistant Depression / PTSD";
+    } else if (totalScore >= 10) {
+      treatment = "Spravato® Nasal Spray";
+      reason = "Moderate Depression / Anxiety";
+    } else {
+      treatment = "Free Consultation";
+      reason = "Explore Your Treatment Options";
+    }
+
+    return { treatment, reason, score: totalScore, insurance: insuranceType };
   };
 
   const currentQ = questions[currentQuestion];
@@ -123,7 +163,26 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
 
   if (showResult) {
     const result = calculateResult();
-    const isSpravato = result === "spravato";
+
+  const handleBooking = () => {
+      const bookingUrl = `${SITE_CONFIG.bookingUrl}&prefill_reason=${encodeURIComponent(result.reason)}&prefill_insurance=${encodeURIComponent(result.insurance)}`;
+      trackCTAClick('quiz_book_now', bookingUrl);
+      
+      // Send quiz result to backend
+      fetch('/functions/v1/send-quiz-result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          treatment: result.treatment,
+          reason: result.reason,
+          score: result.score,
+          insurance: result.insurance,
+          answers: Object.values(answers),
+        }),
+      }).catch(err => console.error('Failed to send quiz result:', err));
+      
+      window.open(bookingUrl, '_blank', 'noopener,noreferrer');
+    };
 
     return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -134,40 +193,49 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
           aria-describedby="quiz-result-description"
         >
           <DialogHeader>
-            <DialogTitle id="quiz-result-title" className="text-2xl">Your Recommendation</DialogTitle>
-            <DialogDescription id="quiz-result-description" className="text-base pt-4">
-              Based on your responses, {isSpravato ? "SPRAVATO®" : "IV Ketamine"} may be a good fit for you.
+            <DialogTitle id="quiz-result-title" className="text-2xl md:text-3xl font-playfair">
+              Your Personalized Path
+            </DialogTitle>
+            <DialogDescription id="quiz-result-description" className="text-base pt-4 space-y-4">
+              <div className="bg-accent/10 border-l-4 border-accent p-4 rounded-r-lg">
+                <p className="text-lg font-semibold text-accent mb-1">Recommended Treatment:</p>
+                <p className="text-xl font-bold text-foreground">{result.treatment}</p>
+              </div>
+              <p className="text-muted-foreground">
+                Based on your responses, this path may provide rapid relief. A comprehensive evaluation 
+                with our physician will determine the best treatment for your specific situation.
+              </p>
+              {result.insurance !== "None" && (
+                <p className="text-sm text-muted-foreground bg-secondary/30 p-3 rounded-lg">
+                  ✓ Your insurance ({result.insurance}) may cover this treatment
+                </p>
+              )}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="py-4" role="status" aria-live="polite">
-            <p className="text-muted-foreground mb-4">
-              This is only a general guide. A comprehensive evaluation with our physician is required 
-              to determine the best treatment for your specific situation.
+          <DialogFooter className="flex-col gap-3">
+            <Button
+              onClick={handleBooking}
+              className="w-full gap-2 text-lg py-6"
+              size="lg"
+            >
+              <Calendar className="h-5 w-5" />
+              Book Free Consultation Now
+            </Button>
+            
+            <p className="text-center text-sm text-muted-foreground">
+              Prefer to talk? <a href="tel:+17067603470" className="text-accent hover:underline font-semibold inline-flex items-center gap-1">
+                <Phone className="h-4 w-4" />
+                Call (706) 760-3470
+              </a>
             </p>
-          </div>
 
-          <DialogFooter className="flex-col sm:flex-row gap-2">
             <Button
               onClick={handleRestart}
               variant="outline"
-              className="w-full sm:w-auto"
-              aria-label="Restart treatment comparison quiz"
+              className="w-full"
             >
               Restart Quiz
-            </Button>
-            <Button
-              onClick={() => {
-                const destination = isSpravato ? SITE_CONFIG.routes.spravato : SITE_CONFIG.routes.ivKetamine;
-                trackCTAClick('quiz_learn_more', destination);
-                navigate(destination);
-                handleClose();
-              }}
-              className="w-full sm:w-auto gap-2"
-              aria-label={`Learn more about ${isSpravato ? "SPRAVATO" : "IV Ketamine"}`}
-            >
-              Learn More
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -230,8 +298,8 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
             className="w-full sm:w-auto gap-2"
             aria-label={currentQuestion < questions.length - 1 ? "Go to next question" : "See quiz results"}
           >
-            {currentQuestion < questions.length - 1 ? "Next" : "See Results"}
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <Calendar className="h-4 w-4" aria-hidden="true" />
+            {currentQuestion < questions.length - 1 ? "Next" : "See My Results"}
           </Button>
         </DialogFooter>
       </DialogContent>
