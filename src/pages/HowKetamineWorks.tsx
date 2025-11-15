@@ -1,20 +1,15 @@
 import { Helmet } from "react-helmet";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import brainPathwayReset from "@/assets/brain-pathway-reset.jpg";
-import researchDataVisualization from "@/assets/research-data-visualization.jpg";
-import providerMonitoredCare from "@/assets/provider-monitored-care.jpg";
-import { trackCTAClick, trackEvent } from "@/lib/analytics";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { trackCTAClick } from "@/lib/analytics";
 
 const HowKetamineWorks = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  
   const handleBooking = () => {
     trackCTAClick('how_ketamine_works_book', 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0XA11WP_5kIZjLuXt6N_cJq5cpLLRdm3T19lrV6w-gjh-VeN5JN0yybyGHXEP1Qo8rjBOpzMyW?gv=true');
     window.open('https://calendar.google.com/calendar/appointments/schedules/AcZssZ0XA11WP_5kIZjLuXt6N_cJq5cpLLRdm3T19lrV6w-gjh-VeN5JN0yybyGHXEP1Qo8rjBOpzMyW?gv=true', '_blank', 'noopener,noreferrer');
@@ -25,26 +20,6 @@ const HowKetamineWorks = () => {
     window.location.href = 'tel:+17067603470';
   };
 
-  const videos = [
-    {
-      image: brainPathwayReset,
-      title: "1. Brain Pathway Reset",
-      description: "Ketamine blocks NMDA receptors, triggering glutamate surge and BDNF release — rebuilding neural connections in hours.",
-      alt: "Medical illustration of brain synapse pathway showing neural connections and BDNF markers"
-    },
-    {
-      image: researchDataVisualization,
-      title: "2. Rapid Mood Lift",
-      description: "Within hours, 70% report relief in early trials (Yale/NIMH).",
-      alt: "Peer-reviewed U.S. medical journal–style graph illustrating rapid symptom improvement"
-    },
-    {
-      image: providerMonitoredCare,
-      title: "3. Safe, Supervised Care",
-      description: "Provider-monitored infusions in private suites with oxygen, anti-nausea support, and continuous vital tracking.",
-      alt: "Private treatment suite with female provider and vital signs monitor"
-    }
-  ];
 
   return (
     <>
@@ -98,62 +73,20 @@ const HowKetamineWorks = () => {
           </div>
         </section>
 
-        {/* Video Grid Section */}
+        {/* Video Section */}
         <section className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 sm:px-6">
-            <div className="max-w-7xl mx-auto">
-              <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
-                {videos.map((video, index) => (
-                  <Card 
-                    key={index} 
-                    className="flex flex-col hover:shadow-xl transition-all duration-300 overflow-hidden group"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setOpenIndex(index);
-                        trackEvent('image_enlarge', { section: 'how_ketamine_works', title: video.title });
-                      }}
-                      className="relative aspect-video w-full overflow-hidden bg-muted cursor-zoom-in"
-                      aria-label={`Expand ${video.title}`}
-                    >
-                      <img 
-                        src={video.image} 
-                        alt={video.alt}
-                        className="w-full h-full object-cover"
-                        loading={index === 0 ? "eager" : "lazy"}
-                      />
-                    </button>
-                    <CardHeader>
-                      <CardTitle className="font-playfair text-2xl text-foreground">
-                        {video.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex-1">
-                      <CardDescription className="font-inter text-base leading-relaxed">
-                        {video.description}
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
-                ))}
+            <div className="max-w-6xl mx-auto">
+              <div className="aspect-video w-full rounded-xl overflow-hidden shadow-2xl">
+                <iframe
+                  src="https://www.youtube.com/embed/nW21-AYY_fs"
+                  title="How Ketamine Works - Elevated Health Augusta"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                  loading="lazy"
+                />
               </div>
-
-              {/* Lightbox Dialog */}
-              {openIndex !== null && (
-                <Dialog open={openIndex !== null} onOpenChange={(o) => !o && setOpenIndex(null)}>
-                  <DialogContent className="max-w-5xl p-0 overflow-hidden bg-card">
-                    <img 
-                      src={videos[openIndex].image} 
-                      alt={`${videos[openIndex].alt} (expanded)`} 
-                      className="w-full h-auto object-contain" 
-                    />
-                    <div className="p-4">
-                      <h3 className="font-playfair text-xl text-foreground">{videos[openIndex].title}</h3>
-                      <p className="font-inter text-sm text-muted-foreground">{videos[openIndex].description}</p>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              )}
 
               {/* Research Citation */}
               <div className="mt-12 p-6 bg-secondary/30 rounded-lg border border-border">
