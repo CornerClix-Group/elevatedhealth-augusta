@@ -91,7 +91,7 @@ const Hero = ({ onOpenBooking }: HeroProps) => {
             <Button 
               size="xl" 
               onClick={onOpenBooking}
-              className="font-semibold uppercase text-base px-12 py-7 bg-hope hover:bg-hope-light text-white shadow-2xl hover:scale-105 transition-all"
+              className="font-semibold uppercase text-base px-12 py-7 bg-accent hover:bg-accent-light text-white shadow-2xl hover:scale-105 transition-all"
             >
               Book Free Consultation
               <ArrowRight className="ml-2 h-5 w-5" />
