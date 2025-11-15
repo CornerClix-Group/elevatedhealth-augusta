@@ -21,7 +21,6 @@ const Index = () => {
         <Hero />
         <PillarGrid />
         <Compare isQuizOpen={isQuizOpen} onQuizClose={() => setIsQuizOpen(false)} />
-        <Testimonials />
         <Contact />
       </main>
       <Footer />
