@@ -14,6 +14,10 @@ export const SITE_CONFIG = {
   routes: {
     whatToExpect: "/what-to-expect",
     militaryVeteran: "/military-veteran",
+    ketamine: "/ketamine",
+    weightloss: "/weightloss",
+    hormones: "/hormones",
+    // Legacy routes for backwards compatibility
     ivKetamine: "/iv-ketamine",
     spravato: "/spravato",
     hormoneReplacement: "/hormone-replacement",
