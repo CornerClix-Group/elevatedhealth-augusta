@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet";
+import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,9 @@ import safeSupervisedCare from "@/assets/safe-supervised-care.jpg";
 import { trackCTAClick } from "@/lib/analytics";
 
 const HowKetamineWorks = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const handleBooking = () => {
     trackCTAClick('how_ketamine_works_book', 'https://calendar.app.google/SgGgATWunSGzz34s6');
     window.open('https://calendar.app.google/SgGgATWunSGzz34s6', '_blank', 'noopener,noreferrer');
