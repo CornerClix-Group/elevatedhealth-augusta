@@ -11,7 +11,7 @@ const MobileBookNow = () => {
       {/* Mobile Floating Button */}
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 w-16 h-16 rounded-full shadow-2xl bg-accent hover:bg-accent-light text-white z-50 lg:hidden animate-pulse hover:animate-none"
+        className="fixed bottom-6 right-6 w-16 h-16 rounded-full shadow-2xl bg-accent hover:bg-accent-light text-white z-50 lg:hidden animate-[pulse_1.5s_ease-out_1] hover:scale-105 transition-transform"
         aria-label="Book consultation"
       >
         <Calendar className="h-7 w-7" />
