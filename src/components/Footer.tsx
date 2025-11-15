@@ -135,6 +135,39 @@ const Footer = () => {
                 >
                   <span className="text-lg font-bold">FB</span>
                 </a>
+                <a 
+                  href="https://linkedin.com/in/troy-akers" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-gold flex items-center justify-center transition-colors"
+                  aria-label="LinkedIn - Dr. Troy Akers"
+                >
+                  <span className="text-lg font-bold">in</span>
+                </a>
+              </div>
+              
+              {/* Newsletter Signup */}
+              <div className="mb-6">
+                <p className="text-white/80 text-sm font-semibold mb-3">Stay Updated</p>
+                <p className="text-white/60 text-xs mb-3">Get health tips & clinic news</p>
+                <form className="flex gap-2" onSubmit={(e) => {
+                  e.preventDefault();
+                  // Newsletter signup would be handled here
+                  alert('Newsletter signup coming soon!');
+                }}>
+                  <input 
+                    type="email" 
+                    placeholder="Your email" 
+                    className="flex-1 px-3 py-2 rounded bg-white/10 border border-white/20 text-white placeholder:text-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-gold"
+                    required
+                  />
+                  <button 
+                    type="submit"
+                    className="px-4 py-2 bg-gold hover:bg-gold-dark text-primary font-semibold rounded text-sm transition-colors"
+                  >
+                    Join
+                  </button>
+                </form>
               </div>
               
               {/* Call Us Link */}

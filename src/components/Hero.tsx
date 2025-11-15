@@ -67,13 +67,18 @@ const Hero = ({ onOpenBooking }: HeroProps) => {
           
           {/* Main Tagline */}
           <div className="mb-6 md:mb-8 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-            <h1 className="font-inter text-2xl sm:text-3xl md:text-4xl font-semibold mb-6 text-gold leading-tight drop-shadow-lg">
+            <div className="inline-block px-4 py-2 bg-gold/90 backdrop-blur-sm rounded-full mb-4">
+              <p className="text-sm font-semibold text-primary uppercase tracking-wide">
+                Augusta's Premier Ketamine Clinic
+              </p>
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light mb-6 text-white leading-tight drop-shadow-2xl">
               Restore Your Mind. Renew Your Body. Rebalance Your Hormones.
             </h1>
           </div>
 
           {/* Services Tagline */}
-          <p className="font-inter text-lg sm:text-xl md:text-2xl text-white font-normal mb-10 animate-fade-in-up drop-shadow-md" style={{
+          <p className="text-lg sm:text-xl md:text-2xl text-white/95 font-light mb-10 animate-fade-in-up drop-shadow-lg leading-relaxed" style={{
             animationDelay: "0.2s"
           }}>
             Ketamine Therapy • Medical Weight Loss • Hormone Replacement
@@ -84,9 +89,9 @@ const Hero = ({ onOpenBooking }: HeroProps) => {
             animationDelay: "0.4s"
           }}>
             <Button 
-              size="lg" 
+              size="xl" 
               onClick={onOpenBooking}
-              className="font-inter font-semibold uppercase text-base px-10 py-7 bg-accent hover:bg-accent-light text-white shadow-2xl hover:scale-105 transition-all"
+              className="font-semibold uppercase text-base px-12 py-7 bg-hope hover:bg-hope-light text-white shadow-2xl hover:scale-105 transition-all"
             >
               Book Free Consultation
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -98,9 +103,9 @@ const Hero = ({ onOpenBooking }: HeroProps) => {
             animationDelay: "0.5s"
           }}>
             <Button
-              size="lg"
+              size="xl"
               asChild
-              className="font-inter font-semibold text-base px-8 py-6 bg-gold hover:bg-gold/90 text-white shadow-xl hover:translate-y-[-4px] transition-all w-full sm:w-auto"
+              className="font-semibold text-base px-10 py-6 bg-white hover:bg-white/90 text-primary shadow-xl hover:translate-y-[-2px] transition-all w-full sm:w-auto border-2 border-white/20"
               onClick={() => trackCTAClick('ai_voice_call', 'tel:+17067603470')}
             >
               <a href="tel:+17067603470">
