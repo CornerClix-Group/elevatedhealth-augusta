@@ -248,18 +248,18 @@ const Contact = () => {
               </form>
 
               {/* Clinic Info */}
-              <div className="mt-8 pt-8 border-t border-border space-y-3 font-inter text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
+              <div className="mt-8 pt-8 border-t border-border space-y-3 font-inter text-sm text-muted-foreground text-center">
+                <div className="flex items-center justify-center gap-2">
                   <MapPin className="h-4 w-4 flex-shrink-0" />
                   <span>7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center gap-2">
                   <Phone className="h-4 w-4 flex-shrink-0" />
                   <a href="tel:7067603470" className="hover:text-accent">
                     (706) 760-3470
                   </a>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center gap-2">
                   <Calendar className="h-4 w-4 flex-shrink-0" />
                   <span>Mon–Fri 9AM–5PM</span>
                 </div>
