@@ -62,8 +62,8 @@ const Hero = () => {
             Restore • Repair • Renew
           </p>
 
-          {/* Primary CTA Buttons */}
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6 animate-fade-in-up" style={{
+          {/* Primary CTA Button */}
+          <div className="flex justify-center mb-6 animate-fade-in-up" style={{
             animationDelay: "0.4s"
           }}>
             <Button 
@@ -78,17 +78,6 @@ const Hero = () => {
               >
                 Book Free Consultation
                 <ArrowRight className="ml-2 h-5 w-5" />
-              </a>
-            </Button>
-            
-            <Button 
-              size="lg"
-              asChild
-              className="font-inter font-semibold uppercase text-base px-10 py-7 bg-white/10 hover:bg-white/20 text-white border-2 border-white backdrop-blur-sm shadow-xl hover:scale-105 transition-all"
-            >
-              <a href={`tel:${SITE_CONFIG.phone.replace(/\D/g, '')}`}>
-                <Phone className="mr-2 h-5 w-5" />
-                Call Now
               </a>
             </Button>
           </div>
