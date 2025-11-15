@@ -102,8 +102,8 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
               variant="outline"
               className={`font-medium px-6 py-2 transition-all duration-300 ${
                 isScrolled 
-                  ? "border-hope bg-hope text-white hover:bg-hope-light" 
-                  : "border-white bg-hope text-white hover:bg-hope-light"
+                  ? "border-accent bg-accent text-white hover:bg-accent-light" 
+                  : "border-white bg-accent text-white hover:bg-accent-light"
               }`}
               size="lg" 
               onClick={() => {
