@@ -101,67 +101,12 @@ const Navbar = () => {
               Hormone Replacement
             </button>
 
-            <button 
-              onClick={() => {
-                if (window.location.pathname === '/what-to-expect') {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                  navigate('/what-to-expect');
-                }
-              }} 
-              className={`text-sm font-medium transition-all duration-300 ${
-                isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-gold"
-              }`}
-            >
-              What to Expect
-            </button>
-
-            <button 
-              onClick={() => scrollToSection("team")} 
-              className={`text-sm font-medium transition-all duration-300 ${
-                isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-gold"
-              }`}
-            >
-              Our Team
-            </button>
-            <button 
-              onClick={() => scrollToSection("veterans")} 
-              className={`text-sm font-medium transition-all duration-300 ${
-                isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-gold"
-              }`}
-            >
-              Veterans
-            </button>
-            <button 
-              onClick={() => scrollToSection("insurance")} 
-              className={`text-sm font-medium transition-all duration-300 ${
-                isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-gold"
-              }`}
-            >
-              Insurance
-            </button>
-            <button 
-              onClick={() => scrollToSection("testimonials")} 
-              className={`text-sm font-medium transition-all duration-300 ${
-                isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-gold"
-              }`}
-            >
-              Testimonials
-            </button>
-            <button 
-              onClick={() => scrollToSection("contact")} 
-              className={`text-sm font-medium transition-all duration-300 ${
-                isScrolled ? "text-foreground hover:text-primary" : "text-white hover:text-gold"
-              }`}
-            >
-              Contact
-            </button>
             <Button 
               variant="outline"
               className={`font-medium px-6 py-2 transition-all duration-300 ${
                 isScrolled 
-                  ? "border-primary text-primary hover:bg-primary hover:text-white" 
-                  : "border-white text-white hover:bg-white hover:text-primary"
+                  ? "border-accent text-accent hover:bg-accent hover:text-white" 
+                  : "border-white text-white hover:bg-accent hover:text-white"
               }`}
               size="lg" 
               asChild
@@ -179,6 +124,23 @@ const Navbar = () => {
                 Book Consultation
               </a>
             </Button>
+          </div>
+
+          {/* Logo - Center on desktop */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 hidden md:block">
+            <button onClick={() => {
+              if (location.pathname === '/') {
+                scrollToSection("hero");
+              } else {
+                navigate('/');
+              }
+            }}>
+              <img 
+                src={logo} 
+                alt="Elevated Health Augusta" 
+                className="h-12 w-auto transition-opacity hover:opacity-80"
+              />
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -228,13 +190,27 @@ const Navbar = () => {
               >
                 Hormone Replacement
               </button>
-
-              <button onClick={() => scrollToSection("testimonials")} className="text-left py-2 text-foreground hover:text-accent transition-colors">
-                Testimonials
-              </button>
-              <button onClick={() => scrollToSection("contact")} className="text-left py-2 text-foreground hover:text-accent transition-colors">
-                Contact
-              </button>
+              
+              <Button 
+                variant="outline"
+                className="w-full border-accent text-accent hover:bg-accent hover:text-white mt-4"
+                size="lg" 
+                asChild
+              >
+                <a
+                  href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0XA11WP_5kIZjLuXt6N_cJq5cpLLRdm3T19lrV6w-gjh-VeN5JN0yybyGHXEP1Qo8rjBOpzMyW?gv=true"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    if (typeof window !== 'undefined' && (window as any).gtag) {
+                      (window as any).gtag('event', 'consult_book', { location: 'mobile_menu' });
+                    }
+                  }}
+                >
+                  Book Consultation
+                </a>
+              </Button>
               <Button 
                 variant="outline"
                 className="border-primary text-primary hover:bg-primary hover:text-white w-full" 
