@@ -12,6 +12,7 @@ export const SITE_CONFIG = {
     primary: "IV Ketamine (infusion), SPRAVATO® (esketamine) nasal spray"
   },
   routes: {
+    whatToExpect: "/what-to-expect",
     militaryVeteran: "/military-veteran",
     ivKetamine: "/iv-ketamine",
     spravato: "/spravato",

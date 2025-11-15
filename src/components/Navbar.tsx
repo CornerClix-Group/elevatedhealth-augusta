@@ -95,7 +95,16 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <button onClick={() => scrollToSection("what-to-expect")} className="text-foreground hover:text-primary transition-colors">
+            <button 
+              onClick={() => {
+                if (window.location.pathname === '/what-to-expect') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                  navigate('/what-to-expect');
+                }
+              }} 
+              className="text-foreground hover:text-primary transition-colors"
+            >
               What to Expect
             </button>
 
@@ -176,7 +185,17 @@ const Navbar = () => {
                 )}
               </div>
 
-              <button onClick={() => scrollToSection("what-to-expect")} className="text-left py-2 text-foreground hover:text-primary transition-colors">
+              <button 
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (window.location.pathname === '/what-to-expect') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  } else {
+                    navigate('/what-to-expect');
+                  }
+                }} 
+                className="text-left py-2 text-foreground hover:text-primary transition-colors"
+              >
                 What to Expect
               </button>
 

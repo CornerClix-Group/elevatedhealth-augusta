@@ -12,7 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Calendar, Phone, ArrowLeft, ArrowRight } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
-import { trackModalOpen, trackQuizComplete, trackCTAClick } from "@/lib/analytics";
+import { trackModalOpen, trackQuizComplete, trackCTAClick, trackEvent } from "@/lib/analytics";
 
 interface CompareQuizModalProps {
   isOpen: boolean;
@@ -223,6 +223,20 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
               Book Free Consultation Now
             </Button>
             
+            <Button
+              onClick={() => {
+                trackEvent('quiz_complete', { 
+                  action: 'view_pricing', 
+                  treatment: result.treatment 
+                });
+                window.location.href = '/what-to-expect#pricing';
+              }}
+              variant="outline"
+              className="w-full"
+            >
+              View Pricing & Protocol Details
+            </Button>
+            
             <p className="text-center text-sm text-muted-foreground">
               Prefer to talk? <a href="tel:+17067603470" className="text-accent hover:underline font-semibold inline-flex items-center gap-1">
                 <Phone className="h-4 w-4" />
@@ -232,7 +246,7 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
 
             <Button
               onClick={handleRestart}
-              variant="outline"
+              variant="ghost"
               className="w-full"
             >
               Restart Quiz

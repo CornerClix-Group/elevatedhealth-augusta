@@ -10,6 +10,7 @@ import HormoneReplacement from "./pages/HormoneReplacement";
 import WeightLoss from "./pages/WeightLoss";
 import MilitaryVeteran from "./pages/MilitaryVeteran";
 import HowKetamineWorks from "./pages/HowKetamineWorks";
+import WhatToExpect from "./pages/WhatToExpect";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import HipaaNotice from "./pages/HipaaNotice";
 import TermsOfService from "./pages/TermsOfService";
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/weight-loss" element={<WeightLoss />} />
           <Route path="/military-veteran" element={<MilitaryVeteran />} />
           <Route path="/how-ketamine-works" element={<HowKetamineWorks />} />
+          <Route path="/what-to-expect" element={<WhatToExpect />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/hipaa-notice" element={<HipaaNotice />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
