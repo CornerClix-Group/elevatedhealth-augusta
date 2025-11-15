@@ -85,10 +85,10 @@ const HowKetamineWorks = () => {
         <Navbar />
         
         {/* Hero Section */}
-        <section className="relative bg-primary text-primary-foreground py-12 md:py-16">
+        <section className="relative bg-primary text-primary-foreground py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className="font-playfair text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
+              <h1 className="font-playfair text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
                 How Ketamine Works
               </h1>
               <p className="font-inter text-xl md:text-2xl text-primary-foreground/90 max-w-3xl mx-auto">
