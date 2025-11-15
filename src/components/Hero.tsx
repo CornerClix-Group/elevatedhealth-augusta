@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-breakthrough.jpg";
+import logo from "@/assets/elevated-health-logo.png";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { trackCTAClick } from "@/lib/analytics";
 const Hero = () => {
@@ -47,6 +48,11 @@ const Hero = () => {
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 relative z-10 pt-32 pb-20">
         <div className="max-w-4xl mx-auto text-center">
+          {/* Logo */}
+          <div className="mb-6 animate-fade-in-up flex justify-center">
+            <img src={logo} alt="Elevated Health Augusta" className="h-16 md:h-20 w-auto drop-shadow-lg" />
+          </div>
+          
           {/* Clinic Name & Tagline */}
           <div className="mb-8 md:mb-10 animate-fade-in-up">
             <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 text-white leading-tight drop-shadow-lg">
