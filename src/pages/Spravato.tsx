@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import logo from "@/assets/elevated-health-logo.png";
+import logo from "@/assets/elevated-health-logo-transparent.png";
 
 const Spravato = () => {
   const scrollToBooking = () => {

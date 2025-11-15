@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-breakthrough.jpg";
-import logo from "@/assets/elevated-health-logo.png";
+import logo from "@/assets/elevated-health-logo-transparent.png";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { trackCTAClick } from "@/lib/analytics";
 const Hero = () => {
@@ -50,7 +50,7 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto text-center">
           {/* Logo */}
           <div className="mb-6 animate-fade-in-up flex justify-center">
-            <img src={logo} alt="Elevated Health Augusta" className="h-16 md:h-20 w-auto drop-shadow-lg" />
+            <img src={logo} alt="Elevated Health Augusta" className="h-16 md:h-20 w-auto" />
           </div>
           
           {/* Clinic Name & Tagline */}
