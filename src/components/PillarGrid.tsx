@@ -39,14 +39,14 @@ const PillarGrid = ({ onOpenBooking }: PillarGridProps) => {
   ];
 
   return (
-    <section id="pillars" className="py-16 md:py-24 bg-background scroll-mt-20">
+    <section id="pillars" className="py-20 md:py-28 bg-gradient-subtle scroll-mt-20">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-6 text-primary">
+          <div className="text-center mb-16 animate-fade-in-up">
+            <h2 className="text-4xl md:text-5xl font-light mb-6 text-primary">
               Your Path to Wellness
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Three comprehensive pillars of care designed to help you restore your mind, renew your body, and rebalance your hormones
             </p>
           </div>
@@ -57,7 +57,8 @@ const PillarGrid = ({ onOpenBooking }: PillarGridProps) => {
               return (
                 <Card 
                   key={index} 
-                  className={`group hover:shadow-xl transition-all duration-300 border-2 hover:border-${pillar.color}/40 cursor-pointer`}
+                  className="group hover:shadow-2xl transition-all duration-500 border-2 hover:border-hope/40 cursor-pointer hover:-translate-y-2 animate-fade-in-up"
+                  style={{ animationDelay: `${index * 0.15}s` }}
                   onClick={() => navigate(pillar.route)}
                 >
                   <CardContent className="p-8">

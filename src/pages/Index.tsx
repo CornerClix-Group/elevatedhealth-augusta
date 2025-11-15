@@ -1,10 +1,13 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import PillarGrid from "@/components/PillarGrid";
+import TreatmentsPricing from "@/components/TreatmentsPricing";
+import InsuranceLogos from "@/components/InsuranceLogos";
 import MediaFeature from "@/components/MediaFeature";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ConsultationModal from "@/components/ConsultationModal";
+import SEOSchema from "@/components/SEOSchema";
 
 import ChatBot from "@/components/ChatBot";
 import { ServedModal } from "@/components/ServedModal";
@@ -16,10 +19,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOSchema />
       <Navbar onOpenBooking={() => setIsBookingOpen(true)} />
       <main>
         <Hero onOpenBooking={() => setIsBookingOpen(true)} />
         <PillarGrid onOpenBooking={() => setIsBookingOpen(true)} />
+        <TreatmentsPricing onOpenBooking={() => setIsBookingOpen(true)} />
+        <InsuranceLogos />
         <MediaFeature />
         <Contact onOpenBooking={() => setIsBookingOpen(true)} />
       </main>

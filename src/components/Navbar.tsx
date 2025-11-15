@@ -54,7 +54,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
         isScrolled 
-          ? "bg-white backdrop-blur-lg shadow-sm border-b border-border/50" 
+          ? "bg-white/95 backdrop-blur-md shadow-md border-b border-border/30" 
           : "bg-transparent"
       }`}
     >
@@ -102,8 +102,8 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
               variant="outline"
               className={`font-medium px-6 py-2 transition-all duration-300 ${
                 isScrolled 
-                  ? "border-accent text-accent hover:bg-accent hover:text-white" 
-                  : "border-white text-white hover:bg-accent hover:text-white"
+                  ? "border-hope bg-hope text-white hover:bg-hope-light" 
+                  : "border-white bg-hope text-white hover:bg-hope-light"
               }`}
               size="lg" 
               onClick={() => {

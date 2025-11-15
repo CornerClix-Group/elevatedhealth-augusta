@@ -37,10 +37,10 @@ All colors MUST be HSL.
     --accent-foreground: 0 0% 100%;
     --accent-light: 177 51% 55%;
 
-    /* Hope - Soft teal/green for healing */
-    --hope: 165 55% 45%;
+    /* Hope/Growth - Green #27AE60 for CTAs */
+    --hope: 145 63% 42%;
     --hope-foreground: 0 0% 100%;
-    --hope-light: 165 55% 60%;
+    --hope-light: 145 63% 55%;
 
     /* Gold #D4AF37 */
     --gold: 43 70% 53%;
@@ -111,5 +111,15 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-playfair;
+    font-weight: 400;
+  }
+
+  p, button, input, textarea {
+    @apply font-inter;
   }
 }
