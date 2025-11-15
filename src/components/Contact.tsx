@@ -266,44 +266,6 @@ const Contact = () => {
               </div>
             </Card>
 
-            {/* Calendly Embed */}
-            <Card className="p-0 overflow-hidden bg-card shadow-xl">
-              <div className="p-6 bg-primary">
-                <h3 className="font-playfair text-2xl font-bold text-white mb-2">
-                  Book Your Free Consultation
-                </h3>
-                <p className="font-inter text-white/90">
-                  Schedule directly with our team
-                </p>
-              </div>
-              <div className="w-full h-[600px] overflow-hidden rounded-lg">
-                <iframe
-                  src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ1uD5LLPzYBCPD3SgYXLJ9xGfZmJ0jxrVS7KFkQEt0mCmjP4zFPnB0cYOJ7E-ZLMXLqPqyxL9Aj?gv=true"
-                  style={{ border: 0, width: '100%', height: '600px' }}
-                  frameBorder="0"
-                  title="Schedule Consultation"
-                  allowFullScreen
-                />
-              </div>
-              
-              {/* AI Voice Agent CTA */}
-              <div className="p-6 border-t border-border">
-                <p className="font-inter text-muted-foreground text-center mb-4">
-                  Prefer to Talk?
-                </p>
-                <Button
-                  size="lg"
-                  asChild
-                  className="w-full font-inter font-semibold text-base px-8 py-6 bg-gold hover:bg-gold/90 text-white shadow-xl hover:translate-y-[-4px] transition-all"
-                  onClick={() => trackCTAClick('ai_voice_call_contact', 'tel:+17067603470')}
-                >
-                  <a href="tel:+17067603470">
-                    <Phone className="mr-2 h-5 w-5" />
-                    Call (706) 760-3470
-                  </a>
-                </Button>
-              </div>
-            </Card>
           </div>
 
           {/* HIPAA Notice */}
