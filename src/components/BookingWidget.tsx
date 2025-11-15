@@ -29,7 +29,7 @@ const BookingWidget = () => {
                   className="gap-2 text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all"
                 >
                   <a
-                    href="https://calendar.google.com/calendar/appointments/AcRdB1234567890"
+                    href="https://calendar.app.google/SgGgATWunSGzz34s6"
                     target="_blank"
                     rel="noopener noreferrer"
                   >

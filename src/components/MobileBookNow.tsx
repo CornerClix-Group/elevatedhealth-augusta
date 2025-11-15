@@ -37,7 +37,7 @@ const MobileBookNow = () => {
           </DialogHeader>
           <div className="h-full overflow-hidden">
             <iframe
-              src="https://calendar.google.com/calendar/appointments/schedules/AcRdB1234567890?embed=true"
+              src="https://calendar.app.google/SgGgATWunSGzz34s6?embed=true"
               width="100%"
               height="100%"
               frameBorder="0"
