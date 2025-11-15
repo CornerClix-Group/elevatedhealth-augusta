@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,12 +7,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import brainPathwayReset from "@/assets/brain-pathway-reset.jpg";
 import rapidMoodLift from "@/assets/rapid-mood-lift.jpg";
 import safeSupervisedCare from "@/assets/safe-supervised-care.jpg";
-import { trackCTAClick } from "@/lib/analytics";
+import { trackCTAClick, trackEvent } from "@/lib/analytics";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const HowKetamineWorks = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const handleBooking = () => {
     trackCTAClick('how_ketamine_works_book', 'https://calendar.app.google/SgGgATWunSGzz34s6');
     window.open('https://calendar.app.google/SgGgATWunSGzz34s6', '_blank', 'noopener,noreferrer');
@@ -106,14 +108,22 @@ const HowKetamineWorks = () => {
                     key={index} 
                     className="flex flex-col hover:shadow-xl transition-all duration-300 overflow-hidden group"
                   >
-                    <div className="relative aspect-video w-full overflow-hidden bg-muted">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpenIndex(index);
+                        trackEvent('image_enlarge', { section: 'how_ketamine_works', title: video.title });
+                      }}
+                      className="relative aspect-video w-full overflow-hidden bg-muted cursor-zoom-in"
+                      aria-label={`Expand ${video.title}`}
+                    >
                       <img 
                         src={video.image} 
                         alt={video.alt}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        className="w-full h-full object-cover"
                         loading={index === 0 ? "eager" : "lazy"}
                       />
-                    </div>
+                    </button>
                     <CardHeader>
                       <CardTitle className="font-playfair text-2xl text-foreground">
                         {video.title}
@@ -127,6 +137,23 @@ const HowKetamineWorks = () => {
                   </Card>
                 ))}
               </div>
+
+              {/* Lightbox Dialog */}
+              {openIndex !== null && (
+                <Dialog open={openIndex !== null} onOpenChange={(o) => !o && setOpenIndex(null)}>
+                  <DialogContent className="max-w-5xl p-0 overflow-hidden bg-card">
+                    <img 
+                      src={videos[openIndex].image} 
+                      alt={`${videos[openIndex].alt} (expanded)`} 
+                      className="w-full h-auto object-contain" 
+                    />
+                    <div className="p-4">
+                      <h3 className="font-playfair text-xl text-foreground">{videos[openIndex].title}</h3>
+                      <p className="font-inter text-sm text-muted-foreground">{videos[openIndex].description}</p>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
 
               {/* Research Citation */}
               <div className="mt-12 p-6 bg-secondary/30 rounded-lg border border-border">
