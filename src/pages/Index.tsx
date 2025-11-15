@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import PillarGrid from "@/components/PillarGrid";
+import MediaFeature from "@/components/MediaFeature";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ConsultationModal from "@/components/ConsultationModal";
@@ -19,6 +20,7 @@ const Index = () => {
       <main>
         <Hero onOpenBooking={() => setIsBookingOpen(true)} />
         <PillarGrid onOpenBooking={() => setIsBookingOpen(true)} />
+        <MediaFeature />
         <Contact onOpenBooking={() => setIsBookingOpen(true)} />
       </main>
       <Footer />
