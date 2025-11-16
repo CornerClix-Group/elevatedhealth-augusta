@@ -55,7 +55,7 @@ const Hero = ({ onOpenBooking }: HeroProps) => {
         <div className="max-w-4xl mx-auto text-center">
           {/* Brand Name */}
           <div className="mb-8 animate-fade-in-up flex justify-center">
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-light text-white tracking-wide">
+            <h2 className="text-5xl md:text-6xl lg:text-7xl font-light text-gold tracking-wider drop-shadow-2xl">
               Elevated Health
             </h2>
           </div>
@@ -86,7 +86,7 @@ const Hero = ({ onOpenBooking }: HeroProps) => {
             <Button 
               size="xl" 
               onClick={onOpenBooking}
-              className="font-semibold uppercase text-base px-12 py-7 bg-accent hover:bg-accent-light text-white shadow-2xl hover:scale-105 transition-all"
+              className="font-semibold uppercase text-base px-12 py-7 bg-primary hover:bg-primary-dark text-white shadow-2xl hover:scale-105 transition-all"
             >
               Book Free Consultation
               <ArrowRight className="ml-2 h-5 w-5" />
