@@ -131,8 +131,8 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border animate-fade-in">
-            <div className="flex flex-col gap-4">
+          <div className="md:hidden absolute left-0 right-0 top-20 bg-white/98 backdrop-blur-md shadow-lg border-t border-border animate-fade-in">
+            <div className="flex flex-col gap-4 px-6 py-6">
               <button onClick={() => scrollToSection("hero")} className="text-left py-2 text-foreground hover:text-accent transition-colors">
                 Home
               </button>
