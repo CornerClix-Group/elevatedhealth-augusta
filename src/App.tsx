@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Ketamine from "./pages/Ketamine";
 import WeightLoss from "./pages/WeightLoss";
 import Hormones from "./pages/Hormones";
+import HormonesWomen from "./pages/HormonesWomen";
+import HormonesMen from "./pages/HormonesMen";
 import IVKetamine from "./pages/IVKetamine";
 import Spravato from "./pages/Spravato";
 import HormoneReplacement from "./pages/HormoneReplacement";
@@ -35,6 +37,8 @@ const App = () => (
           <Route path="/ketamine" element={<Ketamine />} />
           <Route path="/weightloss" element={<WeightLoss />} />
           <Route path="/hormones" element={<Hormones />} />
+          <Route path="/hormones-women" element={<HormonesWomen />} />
+          <Route path="/hormones-men" element={<HormonesMen />} />
           {/* Legacy Routes - Redirect to new pages */}
           <Route path="/iv-ketamine" element={<IVKetamine />} />
           <Route path="/spravato" element={<Spravato />} />

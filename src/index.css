@@ -48,6 +48,12 @@ All colors MUST be HSL.
     --gold-light: 43 70% 68%;
     --gold-dark: 43 70% 43%;
 
+    /* Feminine Pink for Women's HRT - #E91E8C */
+    --feminine: 330 82% 52%;
+    --feminine-foreground: 0 0% 100%;
+    --feminine-light: 330 82% 65%;
+    --feminine-dark: 330 82% 42%;
+
     /* Muted tones */
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 40%;
