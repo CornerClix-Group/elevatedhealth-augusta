@@ -21,6 +21,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import providerPortrait from "@/assets/provider-portrait.jpg";
+import elevatedForHimLogo from "@/assets/elevated-for-him-logo.png";
 import { Helmet } from "react-helmet";
 import {
   Accordion,
@@ -209,11 +210,11 @@ const HormonesMen = () => {
             <div className="container mx-auto px-4 sm:px-6 relative z-10">
               <div className="max-w-5xl mx-auto text-center">
                 <div className="mb-8 animate-fade-in-up">
-                  <div className="inline-flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-full">
-                    <Shield className="h-8 w-8 text-primary" />
-                    <span className="text-2xl font-bold text-primary">Elevated Health</span>
-                  </div>
-                  <div className="text-lg font-semibold text-primary mt-2">Men's Hormone Optimization</div>
+                  <img 
+                    src={elevatedForHimLogo} 
+                    alt="Elevated+ for Him" 
+                    className="h-32 mx-auto"
+                  />
                 </div>
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in-up leading-tight" style={{ animationDelay: "0.1s" }}>
                   Take Your Strength,<br />Drive, and Energy Back
@@ -486,10 +487,11 @@ const HormonesMen = () => {
             <div className="container mx-auto px-4 sm:px-6">
               <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-12">
-                  <div className="inline-flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-full mb-6">
-                    <Shield className="h-8 w-8 text-primary" />
-                    <span className="text-2xl font-bold text-primary">Elevated Health</span>
-                  </div>
+                  <img 
+                    src={elevatedForHimLogo} 
+                    alt="Elevated+ for Him" 
+                    className="h-24 mx-auto mb-6"
+                  />
                   <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
                     Ready to Reclaim Your Edge?
                   </h2>
