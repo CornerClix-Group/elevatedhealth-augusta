@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import elevatedForHerLogo from "@/assets/elevated-for-her-logo.png";
+import elevatedForHimLogo from "@/assets/elevated-for-him-logo.png";
 
 const Hormones = () => {
   return (
@@ -75,11 +76,11 @@ const Hormones = () => {
                   <Card className="h-full hover:shadow-2xl transition-all hover:-translate-y-2 cursor-pointer border-2 border-primary/30 hover:border-primary group">
                     <CardContent className="p-10 text-center">
                       <div className="mb-6">
-                        <div className="inline-flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-full">
-                          <Shield className="h-8 w-8 text-primary" />
-                          <span className="text-xl font-bold text-primary">Elevated Health</span>
-                        </div>
-                        <div className="text-sm font-semibold text-primary mt-2">Men's Hormone Optimization</div>
+                        <img 
+                          src={elevatedForHimLogo} 
+                          alt="Elevated+ for Him" 
+                          className="h-24 mx-auto"
+                        />
                       </div>
                       <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors mb-6">
                         <Shield className="h-10 w-10 text-primary" />
