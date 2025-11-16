@@ -59,6 +59,12 @@ export default {
           foreground: "hsl(var(--hope-foreground))",
           light: "hsl(var(--hope-light))",
         },
+        feminine: {
+          DEFAULT: "hsl(var(--feminine))",
+          foreground: "hsl(var(--feminine-foreground))",
+          light: "hsl(var(--feminine-light))",
+          dark: "hsl(var(--feminine-dark))",
+        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",

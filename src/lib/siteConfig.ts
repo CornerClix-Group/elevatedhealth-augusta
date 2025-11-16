@@ -17,6 +17,8 @@ export const SITE_CONFIG = {
     ketamine: "/ketamine",
     weightloss: "/weightloss",
     hormones: "/hormones",
+    hormonesWomen: "/hormones-women",
+    hormonesMen: "/hormones-men",
     // Legacy routes for backwards compatibility
     ivKetamine: "/iv-ketamine",
     spravato: "/spravato",

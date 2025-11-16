@@ -1,0 +1,544 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { 
+  CheckCircle2, 
+  Heart, 
+  Sparkles, 
+  Activity, 
+  Calendar,
+  Phone,
+  ClipboardList,
+  Users,
+  TestTube,
+  UserCheck,
+  TrendingUp,
+  Shield
+} from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { SITE_CONFIG } from "@/lib/siteConfig";
+import elevatedForHerLogo from "@/assets/elevated-for-her-logo.png";
+import providerPortrait from "@/assets/provider-portrait.jpg";
+import { Helmet } from "react-helmet";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { HRTQuizModal } from "@/components/HRTQuizModal";
+import { Link } from "react-router-dom";
+
+const HormonesWomen = () => {
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+
+  const scrollToBooking = () => {
+    const bookingSection = document.getElementById('booking-section');
+    if (bookingSection) {
+      bookingSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const symptoms = [
+    "Hot flashes and night sweats",
+    "Persistent fatigue and low energy",
+    "Mood swings, anxiety, or depression",
+    "Difficulty sleeping or insomnia",
+    "Unexplained weight gain",
+    "Decreased libido and vaginal dryness",
+    "Brain fog and memory issues",
+    "Hair thinning or loss"
+  ];
+
+  const howItWorks = [
+    {
+      step: 1,
+      icon: ClipboardList,
+      title: "Take Your Assessment",
+      description: "Complete our comprehensive women's hormone questionnaire"
+    },
+    {
+      step: 2,
+      icon: TestTube,
+      title: "Get Your Labs",
+      description: "Comprehensive hormone panel including estrogen, progesterone, testosterone, thyroid"
+    },
+    {
+      step: 3,
+      icon: UserCheck,
+      title: "Consultation",
+      description: "Review results with our nurse practitioner and create your personalized plan"
+    },
+    {
+      step: 4,
+      icon: TrendingUp,
+      title: "Start Treatment & Monitor",
+      description: "Begin your personalized therapy with ongoing support and adjustments"
+    }
+  ];
+
+  const treatmentOptions = [
+    {
+      title: "Bioidentical Estrogen",
+      description: "Molecularly identical to your body's natural estrogen for symptom relief"
+    },
+    {
+      title: "Progesterone Therapy",
+      description: "Balance and protect uterine health while improving sleep and mood"
+    },
+    {
+      title: "Hormone Pellet Therapy",
+      description: "Consistent hormone delivery with pellet insertion every 3-4 months"
+    },
+    {
+      title: "Thyroid Optimization",
+      description: "Support metabolism, energy, and mood with thyroid hormone balance"
+    },
+    {
+      title: "Testosterone (for Women)",
+      description: "Low-dose testosterone to restore energy, libido, and muscle tone"
+    },
+    {
+      title: "Peptide Add-Ons",
+      description: "Advanced therapies for enhanced results and anti-aging benefits"
+    }
+  ];
+
+  const faqs = [
+    {
+      q: "What is bioidentical hormone replacement therapy (BHRT)?",
+      a: "Bioidentical hormones are derived from natural plant sources and are molecularly identical to the hormones your body produces. This means they work more naturally with your body's chemistry, often with fewer side effects than synthetic hormones."
+    },
+    {
+      q: "Am I a good candidate for women's HRT?",
+      a: "If you're experiencing symptoms of perimenopause, menopause, or hormone imbalance such as hot flashes, mood changes, low energy, or decreased libido, you may be a great candidate. We'll review your symptoms and lab work to create a personalized plan."
+    },
+    {
+      q: "How long does it take to feel results?",
+      a: "Many women notice improvements in hot flashes and mood within 2-4 weeks. Energy levels, sleep quality, and other symptoms typically improve over 2-3 months as your hormones reach optimal levels."
+    },
+    {
+      q: "Are hormone pellets better than creams or pills?",
+      a: "Each delivery method has benefits. Pellets provide steady hormone levels 24/7 without daily applications. Creams offer flexibility in dosing. Pills are convenient. We'll discuss which option is best for your lifestyle and goals."
+    },
+    {
+      q: "Is HRT safe for women?",
+      a: "When properly prescribed and monitored, bioidentical HRT is safe and effective for most women. We follow current NAMS (North American Menopause Society) guidelines and customize treatment based on your individual health profile and risk factors."
+    },
+    {
+      q: "Will HRT help with weight loss?",
+      a: "Balanced hormones can support healthy metabolism and make weight management easier. Many women find it easier to maintain a healthy weight when their hormones are optimized, especially when combined with nutrition and exercise."
+    }
+  ];
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalBusiness",
+    "name": "Elevated Health Augusta - Women's Hormone Therapy",
+    "image": "https://elevatedhealthaugusta.com/og-image.jpg",
+    "description": "Women's hormone replacement therapy in Augusta, GA. Bioidentical HRT for menopause, perimenopause, and hormone imbalance. Expert care from board-certified providers.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": SITE_CONFIG.address.line1,
+      "addressLocality": "Evans",
+      "addressRegion": "GA",
+      "postalCode": "30809",
+      "addressCountry": "US"
+    },
+    "telephone": SITE_CONFIG.phone,
+    "priceRange": "$149-$699",
+    "medicalSpecialty": "Endocrinology",
+    "availableService": [
+      {
+        "@type": "MedicalTherapy",
+        "name": "Women's Bioidentical Hormone Replacement Therapy",
+        "description": "Personalized BHRT for menopause and perimenopause"
+      },
+      {
+        "@type": "MedicalTest",
+        "name": "Comprehensive Hormone Testing",
+        "description": "Complete hormone panel for women"
+      }
+    ]
+  };
+
+  return (
+    <>
+      <Helmet>
+        <title>Women's Hormone Therapy Augusta | Menopause Treatment GA - Elevated Health</title>
+        <meta name="description" content="Women's bioidentical hormone replacement therapy in Augusta, GA. Expert treatment for menopause, perimenopause, hot flashes, and hormone imbalance. Board-certified care starting at $149/month." />
+        <meta name="keywords" content="women's hormone therapy Augusta, menopause treatment Augusta, perimenopause treatment GA, estrogen progesterone balance, female hormone testing Augusta, BHRT for women" />
+        <script type="application/ld+json">
+          {JSON.stringify(schema)}
+        </script>
+      </Helmet>
+
+      <div className="min-h-screen bg-gradient-to-b from-feminine/5 to-background">
+        <Navbar />
+        
+        <main>
+          {/* Gender Toggle */}
+          <div className="bg-card border-b sticky top-16 z-40">
+            <div className="container mx-auto px-4 py-3">
+              <div className="flex justify-center gap-4">
+                <Button
+                  variant="default"
+                  className="bg-feminine hover:bg-feminine-light text-feminine-foreground"
+                >
+                  <Heart className="mr-2 h-4 w-4" />
+                  For Women
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="border-2"
+                >
+                  <Link to="/hormones-men">
+                    <Shield className="mr-2 h-4 w-4" />
+                    For Men
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Hero Section */}
+          <section className="relative pt-20 pb-24 md:pt-28 md:pb-32 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-feminine/10 via-background to-feminine/5"></div>
+            <div className="container mx-auto px-4 sm:px-6 relative z-10">
+              <div className="max-w-5xl mx-auto text-center">
+                <img 
+                  src={elevatedForHerLogo} 
+                  alt="Elevated+ for Her" 
+                  className="h-32 mx-auto mb-8 animate-fade-in-up"
+                />
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in-up leading-tight" style={{ animationDelay: "0.1s" }}>
+                  Finally Feel Like<br />Yourself Again
+                </h1>
+                <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground leading-relaxed mb-10 animate-fade-in-up max-w-3xl mx-auto" style={{ animationDelay: "0.2s" }}>
+                  Personalized bioidentical hormone replacement therapy for women in Augusta. Say goodbye to hot flashes, fatigue, and hormonal chaos.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+                  <Button
+                    onClick={() => setIsQuizOpen(true)}
+                    size="lg"
+                    className="bg-feminine hover:bg-feminine-light text-feminine-foreground text-base md:text-lg px-8 py-6 shadow-lg w-full sm:w-auto"
+                  >
+                    <Sparkles className="mr-2 h-5 w-5" />
+                    Start Your Assessment
+                  </Button>
+                  <Button
+                    onClick={scrollToBooking}
+                    variant="outline"
+                    size="lg"
+                    className="text-base md:text-lg px-8 py-6 border-2 border-feminine hover:bg-feminine hover:text-feminine-foreground w-full sm:w-auto"
+                  >
+                    <Calendar className="mr-2 h-5 w-5" />
+                    Book a Consultation
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* What We Treat */}
+          <section className="py-16 md:py-24 bg-background">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="max-w-6xl mx-auto">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                    Symptoms We Treat with Women's HRT
+                  </h2>
+                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    If hormonal changes are affecting your quality of life, you're not alone. We help women reclaim their vitality.
+                  </p>
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-6">
+                  {symptoms.map((symptom, index) => (
+                    <Card key={index} className="hover:shadow-md transition-shadow border-feminine/20">
+                      <CardContent className="p-6">
+                        <div className="flex gap-4 items-center">
+                          <CheckCircle2 className="h-6 w-6 text-feminine flex-shrink-0" />
+                          <span className="text-base leading-relaxed">{symptom}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* How It Works */}
+          <section className="py-16 md:py-24 bg-feminine/5">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="max-w-6xl mx-auto">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                    How Our Women's HRT Works
+                  </h2>
+                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    A simple, supportive process designed to restore your hormonal balance and well-being.
+                  </p>
+                </div>
+                
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {howItWorks.map((item, index) => {
+                    const Icon = item.icon;
+                    return (
+                      <Card key={index} className="text-center hover:shadow-lg transition-all hover:-translate-y-1">
+                        <CardContent className="p-6">
+                          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-feminine/10 mb-4">
+                            <Icon className="h-8 w-8 text-feminine" />
+                          </div>
+                          <div className="text-2xl font-bold text-feminine mb-2">Step {item.step}</div>
+                          <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+                          <p className="text-sm text-muted-foreground">{item.description}</p>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Treatment Options */}
+          <section className="py-16 md:py-24 bg-background">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="max-w-6xl mx-auto">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                    Female-Specific Hormone Options
+                  </h2>
+                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    Personalized treatment plans tailored to your unique hormonal needs.
+                  </p>
+                </div>
+                
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {treatmentOptions.map((option, index) => (
+                    <Card key={index} className="hover:shadow-lg transition-shadow border-feminine/20">
+                      <CardContent className="p-6">
+                        <h3 className="font-bold text-lg mb-3 text-feminine">{option.title}</h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{option.description}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Pricing */}
+          <section className="py-16 md:py-24 bg-feminine/5">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="max-w-5xl mx-auto">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                    Transparent Women's HRT Pricing
+                  </h2>
+                  <p className="text-lg text-muted-foreground">
+                    Affordable, straightforward pricing for quality hormone care.
+                  </p>
+                </div>
+                
+                <div className="grid md:grid-cols-3 gap-6">
+                  <Card className="hover:shadow-xl transition-shadow border-feminine/30">
+                    <CardContent className="p-8 text-center">
+                      <h3 className="text-xl font-bold mb-2">Consultation</h3>
+                      <div className="text-4xl font-bold text-feminine mb-4">Free</div>
+                      <p className="text-sm text-muted-foreground mb-6">Initial assessment and planning</p>
+                      <Button 
+                        onClick={() => setIsQuizOpen(true)}
+                        variant="outline" 
+                        className="w-full border-feminine hover:bg-feminine hover:text-feminine-foreground"
+                      >
+                        Get Started
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-xl transition-shadow border-2 border-feminine shadow-lg relative">
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <span className="bg-feminine text-feminine-foreground px-4 py-1 rounded-full text-sm font-semibold">
+                        Most Popular
+                      </span>
+                    </div>
+                    <CardContent className="p-8 text-center">
+                      <h3 className="text-xl font-bold mb-2">Monthly Program</h3>
+                      <div className="text-4xl font-bold text-feminine mb-4">$149</div>
+                      <p className="text-sm text-muted-foreground mb-6">Ongoing support & monitoring</p>
+                      <Button 
+                        onClick={scrollToBooking}
+                        className="w-full bg-feminine hover:bg-feminine-light text-feminine-foreground"
+                      >
+                        Book Now
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-xl transition-shadow border-feminine/30">
+                    <CardContent className="p-8 text-center">
+                      <h3 className="text-xl font-bold mb-2">Hormone Pellets</h3>
+                      <div className="text-4xl font-bold text-feminine mb-4">$450</div>
+                      <p className="text-sm text-muted-foreground mb-6">Per insertion (3-4 months)</p>
+                      <Button 
+                        onClick={scrollToBooking}
+                        variant="outline" 
+                        className="w-full border-feminine hover:bg-feminine hover:text-feminine-foreground"
+                      >
+                        Learn More
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <p className="text-center text-sm text-muted-foreground mt-8">
+                  * Lab testing billed separately unless included in program. Insurance may cover labs.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Provider Section */}
+          <section className="py-16 md:py-24 bg-background">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="max-w-6xl mx-auto">
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                  <div className="relative h-[500px] rounded-lg overflow-hidden shadow-xl">
+                    <img 
+                      src={providerPortrait} 
+                      alt="Lauren Bursey, NP-C" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl sm:text-4xl font-bold mb-6">
+                      Expert, Compassionate Care for Women
+                    </h2>
+                    <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+                      Our board-certified nurse practitioner, Lauren Bursey, specializes in women's hormone health and understands the unique challenges of hormonal transitions.
+                    </p>
+                    <ul className="space-y-4 mb-8">
+                      <li className="flex gap-3 items-start">
+                        <CheckCircle2 className="h-6 w-6 text-feminine flex-shrink-0 mt-0.5" />
+                        <span>Specialized training in bioidentical hormone therapy</span>
+                      </li>
+                      <li className="flex gap-3 items-start">
+                        <CheckCircle2 className="h-6 w-6 text-feminine flex-shrink-0 mt-0.5" />
+                        <span>Patient-centered, individualized treatment approach</span>
+                      </li>
+                      <li className="flex gap-3 items-start">
+                        <CheckCircle2 className="h-6 w-6 text-feminine flex-shrink-0 mt-0.5" />
+                        <span>Evidence-based protocols following NAMS guidelines</span>
+                      </li>
+                    </ul>
+                    <Button
+                      onClick={scrollToBooking}
+                      size="lg"
+                      className="bg-feminine hover:bg-feminine-light text-feminine-foreground"
+                    >
+                      <Calendar className="mr-2 h-5 w-5" />
+                      Schedule with Lauren
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* FAQs */}
+          <section className="py-16 md:py-24 bg-feminine/5">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="max-w-4xl mx-auto">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                    Women's HRT FAQ
+                  </h2>
+                  <p className="text-lg text-muted-foreground">
+                    Your questions about hormone replacement therapy, answered.
+                  </p>
+                </div>
+                
+                <Accordion type="single" collapsible className="space-y-4">
+                  {faqs.map((faq, index) => (
+                    <AccordionItem key={index} value={`item-${index}`} className="border rounded-lg px-6 bg-card">
+                      <AccordionTrigger className="text-left text-lg font-semibold hover:no-underline py-6 hover:text-feminine">
+                        {faq.q}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-base text-muted-foreground leading-relaxed pb-6">
+                        {faq.a}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            </div>
+          </section>
+
+          {/* Final CTA / Booking */}
+          <section id="booking-section" className="py-16 md:py-24 bg-gradient-to-br from-feminine/10 via-background to-feminine/5">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="max-w-5xl mx-auto">
+                <div className="text-center mb-12">
+                  <img 
+                    src={elevatedForHerLogo} 
+                    alt="Elevated+ for Her" 
+                    className="h-24 mx-auto mb-6"
+                  />
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
+                    Ready to Feel Like Yourself Again?
+                  </h2>
+                  <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+                    Take the first step toward hormonal balance and renewed vitality. Our compassionate team is here to support you.
+                  </p>
+                </div>
+
+                <Card className="shadow-2xl overflow-hidden">
+                  <CardContent className="p-8 md:p-12">
+                    <div className="mb-8">
+                      <h3 className="text-2xl font-bold mb-6 text-center">Schedule Your Free Consultation</h3>
+                      <div className="w-full h-[600px] rounded-lg overflow-hidden">
+                        <iframe 
+                          src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ1hhrEVpqc7nipsCg8QbgW72gW8vbl-SnUXT-LL4z4zFT1w8jTUBr5cfiruiNd47uu28seod93b?gv=true"
+                          className="w-full h-full border-0"
+                          title="Book Women's Hormone Consultation"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="border-t pt-8">
+                      <p className="text-center text-lg mb-6 font-semibold">
+                        Prefer to speak with us directly?
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Button
+                          asChild
+                          size="lg"
+                          className="bg-feminine hover:bg-feminine-light text-feminine-foreground text-lg px-8 py-6 w-full sm:w-auto"
+                        >
+                          <a href={`tel:${SITE_CONFIG.phoneRaw}`}>
+                            <Phone className="mr-2 h-5 w-5" />
+                            Call Now — {SITE_CONFIG.phone}
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <Footer />
+        <HRTQuizModal isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
+      </div>
+    </>
+  );
+};
+
+export default HormonesWomen;
