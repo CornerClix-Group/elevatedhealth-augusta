@@ -53,8 +53,8 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
-        isScrolled 
-          ? "bg-white/95 backdrop-blur-md shadow-md border-b border-border/30" 
+        (isScrolled || isMobileMenuOpen)
+          ? "bg-white shadow-md border-b border-border/30"
           : "bg-transparent"
       }`}
     >
@@ -182,20 +182,6 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                 }}
               >
                 Book Consultation
-              </Button>
-              <Button 
-                variant="outline"
-                className="border-primary text-primary hover:bg-primary hover:text-white w-full" 
-                size="lg" 
-                asChild
-              >
-                <a
-                  href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0XA11WP_5kIZjLuXt6N_cJq5cpLLRdm3T19lrV6w-gjh-VeN5JN0yybyGHXEP1Qo8rjBOpzMyW?gv=true"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Book Consultation
-                </a>
               </Button>
             </div>
           </div>
