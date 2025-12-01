@@ -1,44 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle2, Award, Heart, GraduationCap, Shield, Clock, Users } from "lucide-react";
+import { CheckCircle2, ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Compare from "@/components/Compare";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { Link } from "react-router-dom";
-import providerImage from "@/assets/provider-portrait.jpg";
-import quoteImage from "@/assets/provider-testimonial.jpg";
+import heroImage from "@/assets/ketamine-hero-abstract.jpg";
+import treatmentSuite from "@/assets/treatment-suite-interior.jpg";
 import { Helmet } from "react-helmet";
 import { useState } from "react";
+import ConsultationModal from "@/components/ConsultationModal";
 
 const Ketamine = () => {
-  const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
   
-  const scrollToBooking = () => {
-    window.open(SITE_CONFIG.bookingUrl, "_blank");
+  const scrollToContact = () => {
+    const element = document.getElementById("cta-section");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
-  const conditions = [
-    "Treatment-Resistant Depression",
-    "Major Depressive Disorder (MDD)",
-    "Post-Traumatic Stress Disorder (PTSD)",
-    "Anxiety Disorders",
-    "Suicidal Ideation (with supervision)"
-  ];
-
-  const safetyItems = [
-    "Comprehensive screening including cardiovascular history, current medications, and substance-use assessment",
-    "Continuous vitals monitoring throughout your infusion session",
-    "Integration visits to support your treatment journey and discuss progress",
-    "Coordination with your primary care provider and mental health professionals"
-  ];
-
-  const benefits = [
-    "FDA-approved for treatment-resistant depression (TRD)",
-    "Used with an oral antidepressant for comprehensive treatment",
-    "Self-administered nasal spray under medical supervision",
-    "Minimum 2-hour observation period following each dose",
-    "REMS-certified clinic ensuring highest safety standards"
+  const experienceItems = [
+    "Private, serene treatment suite",
+    "Continuous vitals monitoring",
+    "Board-certified provider oversight",
+    "Comfortable, spa-like environment",
+    "Integration support & follow-up"
   ];
 
   const faqs = [
@@ -68,159 +56,198 @@ const Ketamine = () => {
         <meta name="keywords" content="ketamine therapy Augusta, IV ketamine Augusta GA, SPRAVATO Augusta, treatment-resistant depression Augusta, ketamine infusion Georgia" />
       </Helmet>
 
-      <div className="min-h-screen">
-        <Navbar />
+      <div className="min-h-screen bg-background">
+        <Navbar onOpenBooking={() => setIsBookingOpen(true)} />
         
         <main>
-          {/* Hero Section */}
-          <section className="pt-32 pb-16 md:pb-24 bg-gradient-to-b from-primary/5 to-background">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-4xl mx-auto text-center">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 animate-fade-in-up">
-                  Ketamine Therapy in Augusta, GA
-                </h1>
-                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-                  Evidence-based ketamine therapy delivered with compassion, precision, and respect for your journey. 
-                  Offering both IV ketamine infusions and FDA-approved SPRAVATO® nasal spray.
+          {/* Hero Section - Full Width Abstract Background */}
+          <section className="relative min-h-[70vh] flex items-center justify-center">
+            <img 
+              src={heroImage} 
+              alt="Serene abstract background" 
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/10 to-background" />
+            
+            <div className="relative z-10 container mx-auto px-6 text-center py-32">
+              <p className="text-sm tracking-[0.3em] uppercase text-foreground/70 mb-6 font-lato font-light animate-fade-in">
+                Mental Wellness
+              </p>
+              <h1 className="font-playfair text-foreground mb-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+                Ketamine Therapy
+              </h1>
+              <p className="text-xl text-foreground/80 max-w-2xl mx-auto mb-10 font-lato font-light leading-relaxed animate-fade-in" style={{ animationDelay: "0.2s" }}>
+                A breakthrough treatment for depression, anxiety, and PTSD—delivered with compassion in a sanctuary of healing.
+              </p>
+              <Button
+                onClick={scrollToContact}
+                size="lg"
+                className="animate-fade-in"
+                style={{ animationDelay: "0.3s" }}
+              >
+                Begin Your Journey
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </section>
+
+          {/* The Philosophy / Science Section */}
+          <section className="section-spacing bg-background">
+            <div className="container mx-auto px-6 lg:px-8">
+              <div className="max-w-3xl mx-auto text-center">
+                <p className="text-sm tracking-[0.3em] uppercase text-muted-foreground mb-4 font-lato font-light">
+                  The Science
                 </p>
-                <Button
-                  onClick={scrollToBooking}
-                  size="lg"
-                  className="bg-accent hover:bg-accent-light text-white text-base md:text-lg px-8 py-6 animate-fade-in-up"
-                  style={{ animationDelay: "0.2s" }}
-                >
-                  Book Free Consultation
-                </Button>
-              </div>
-            </div>
-          </section>
-
-          {/* What It Treats */}
-          <section className="py-16 md:py-24 bg-background">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-4xl mx-auto">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-center">
-                  What Ketamine Therapy Treats
+                <h2 className="font-playfair text-foreground mb-8">
+                  Understanding Ketamine
                 </h2>
-                <Card>
-                  <CardContent className="p-6 md:p-8">
-                    <p className="text-muted-foreground mb-6">
-                      Ketamine therapy has shown remarkable results for patients who haven't found relief with traditional treatments:
-                    </p>
-                    <ul className="space-y-4">
-                      {conditions.map((condition, index) => (
-                        <li key={index} className="flex gap-3 items-start">
-                          <CheckCircle2 className="h-6 w-6 text-accent flex-shrink-0 mt-0.5" />
-                          <span className="text-base leading-relaxed">{condition}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </section>
+                <p className="text-lg text-muted-foreground leading-relaxed font-light mb-8">
+                  Ketamine works differently than traditional antidepressants. Rather than modulating serotonin, 
+                  it targets glutamate—the brain's most abundant neurotransmitter—helping to rapidly rebuild 
+                  neural connections damaged by chronic stress, trauma, or depression.
+                </p>
+                <p className="text-lg text-muted-foreground leading-relaxed font-light">
+                  This mechanism enables ketamine to provide relief within hours rather than weeks, 
+                  offering hope to those who haven't responded to conventional treatments.
+                </p>
 
-          {/* How It Works */}
-          <section className="py-16 md:py-24 bg-muted/30">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-5xl mx-auto">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-center">
-                  The Science Behind Ketamine Therapy
-                </h2>
-                <Card className="p-8 md:p-12 border-accent/20 bg-card/60 backdrop-blur-sm">
-                  <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                    Ketamine works differently than traditional antidepressants. Instead of altering serotonin or dopamine, 
-                    it targets <strong className="text-foreground">glutamate</strong>—the brain's most abundant neurotransmitter—helping 
-                    to rapidly rebuild neural connections damaged by chronic stress, trauma, or depression.
-                  </p>
-                  <div className="grid md:grid-cols-3 gap-6 mt-8">
-                    <div className="text-center">
-                      <div className="text-4xl font-bold text-accent mb-2">70%</div>
-                      <p className="text-sm text-muted-foreground">Response rate in treatment-resistant depression</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-4xl font-bold text-accent mb-2">24hrs</div>
-                      <p className="text-sm text-muted-foreground">Many patients notice improvement within 1 day</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-4xl font-bold text-accent mb-2">FDA</div>
-                      <p className="text-sm text-muted-foreground">SPRAVATO® nasal spray FDA-approved for depression</p>
-                    </div>
+                {/* Stats */}
+                <div className="grid grid-cols-3 gap-8 mt-16 pt-16 border-t border-border">
+                  <div>
+                    <div className="text-4xl lg:text-5xl font-playfair text-primary mb-2">70%</div>
+                    <p className="text-sm text-muted-foreground font-light">Response rate in treatment-resistant depression</p>
                   </div>
-                </Card>
-
-                <div className="mt-12 text-center">
-                  <Link 
-                    to="/how-ketamine-works"
-                    className="inline-flex items-center gap-2 font-inter text-lg font-semibold text-accent hover:text-accent-light transition-colors group"
-                  >
-                    <span className="border-b-2 border-accent group-hover:border-accent-light">
-                      Watch: How Ketamine Works
-                    </span>
-                  </Link>
+                  <div>
+                    <div className="text-4xl lg:text-5xl font-playfair text-primary mb-2">24h</div>
+                    <p className="text-sm text-muted-foreground font-light">Many patients notice improvement within one day</p>
+                  </div>
+                  <div>
+                    <div className="text-4xl lg:text-5xl font-playfair text-primary mb-2">FDA</div>
+                    <p className="text-sm text-muted-foreground font-light">SPRAVATO® approved for depression</p>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* IV vs SPRAVATO Comparison */}
-          <section className="py-16 md:py-24 bg-background">
-            <div className="container mx-auto px-4 sm:px-6">
+          {/* The Experience - Two Column Section */}
+          <section className="section-spacing bg-secondary/30">
+            <div className="container mx-auto px-6 lg:px-8">
+              <div className="max-w-6xl mx-auto">
+                <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+                  {/* Left - What to Expect */}
+                  <div>
+                    <p className="text-sm tracking-[0.3em] uppercase text-muted-foreground mb-4 font-lato font-light">
+                      The Experience
+                    </p>
+                    <h2 className="font-playfair text-foreground mb-8">
+                      What to Expect
+                    </h2>
+                    <p className="text-lg text-muted-foreground leading-relaxed font-light mb-10">
+                      Your journey begins in a private, spa-like setting designed for comfort and tranquility. 
+                      Every aspect of your experience is curated to support healing.
+                    </p>
+
+                    <ul className="space-y-5">
+                      {experienceItems.map((item, index) => (
+                        <li key={index} className="flex items-center gap-4">
+                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <CheckCircle2 className="h-4 w-4 text-primary" />
+                          </div>
+                          <span className="text-foreground font-light">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Right - Interior Image */}
+                  <div className="relative">
+                    <img 
+                      src={treatmentSuite} 
+                      alt="Private treatment suite at Elevated Health Augusta" 
+                      className="w-full h-auto rounded-sm"
+                    />
+                    {/* Warm overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/10 rounded-sm" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Treatment Options */}
+          <section className="section-spacing bg-background">
+            <div className="container mx-auto px-6 lg:px-8">
               <div className="max-w-5xl mx-auto">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-center">
-                  Choose Your Treatment Path
-                </h2>
-                <div className="grid md:grid-cols-2 gap-8">
+                <div className="text-center mb-16">
+                  <p className="text-sm tracking-[0.3em] uppercase text-muted-foreground mb-4 font-lato font-light">
+                    Treatment Paths
+                  </p>
+                  <h2 className="font-playfair text-foreground mb-6">
+                    Choose Your Path
+                  </h2>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-10">
                   {/* IV Ketamine */}
-                  <Card className="border-2 border-primary/20 hover:border-primary/40 transition-colors">
-                    <CardContent className="p-8">
-                      <h3 className="text-2xl font-bold mb-4 text-primary">IV Ketamine Infusion</h3>
+                  <Card className="border border-border/50 hover:border-primary/30 transition-all duration-500 bg-card/80">
+                    <CardContent className="p-10">
+                      <h3 className="text-2xl font-playfair mb-4 text-foreground">IV Ketamine Infusion</h3>
                       <div className="mb-6">
-                        <span className="text-3xl font-bold text-foreground">$400</span>
-                        <span className="text-muted-foreground">/session</span>
+                        <span className="text-3xl font-playfair text-primary">$400</span>
+                        <span className="text-muted-foreground font-light ml-2">/session</span>
                       </div>
                       <ul className="space-y-4 mb-8">
-                        <li className="flex gap-3">
-                          <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
-                          <span>Precise dosing via infusion</span>
+                        <li className="flex gap-3 items-center">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          <span className="text-muted-foreground font-light">Precise dosing via infusion</span>
                         </li>
-                        <li className="flex gap-3">
-                          <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
-                          <span>45-60 minute sessions</span>
+                        <li className="flex gap-3 items-center">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          <span className="text-muted-foreground font-light">45-60 minute sessions</span>
                         </li>
-                        <li className="flex gap-3">
-                          <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
-                          <span>6-8 sessions recommended</span>
+                        <li className="flex gap-3 items-center">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          <span className="text-muted-foreground font-light">6-8 sessions recommended</span>
                         </li>
-                        <li className="flex gap-3">
-                          <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
-                          <span>Continuous monitoring</span>
+                        <li className="flex gap-3 items-center">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          <span className="text-muted-foreground font-light">Continuous monitoring</span>
                         </li>
                       </ul>
-                      <Button onClick={scrollToBooking} className="w-full" variant="outline">
-                        Learn More About IV Ketamine
+                      <Button variant="outline" className="w-full" onClick={() => setIsBookingOpen(true)}>
+                        Learn More
                       </Button>
                     </CardContent>
                   </Card>
 
                   {/* SPRAVATO */}
-                  <Card className="border-2 border-accent/20 hover:border-accent/40 transition-colors">
-                    <CardContent className="p-8">
-                      <h3 className="text-2xl font-bold mb-4 text-accent">SPRAVATO® Nasal Spray</h3>
+                  <Card className="border border-border/50 hover:border-primary/30 transition-all duration-500 bg-card/80">
+                    <CardContent className="p-10">
+                      <h3 className="text-2xl font-playfair mb-4 text-foreground">SPRAVATO® Nasal Spray</h3>
                       <div className="mb-6">
-                        <span className="text-muted-foreground">Often covered by insurance</span>
+                        <span className="text-muted-foreground font-light">Often covered by insurance</span>
                       </div>
                       <ul className="space-y-4 mb-8">
-                        {benefits.map((benefit, index) => (
-                          <li key={index} className="flex gap-3">
-                            <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
-                            <span>{benefit}</span>
-                          </li>
-                        ))}
+                        <li className="flex gap-3 items-center">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          <span className="text-muted-foreground font-light">FDA-approved treatment</span>
+                        </li>
+                        <li className="flex gap-3 items-center">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          <span className="text-muted-foreground font-light">Self-administered under supervision</span>
+                        </li>
+                        <li className="flex gap-3 items-center">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          <span className="text-muted-foreground font-light">2-hour observation period</span>
+                        </li>
+                        <li className="flex gap-3 items-center">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          <span className="text-muted-foreground font-light">REMS-certified clinic</span>
+                        </li>
                       </ul>
-                      <Button onClick={scrollToBooking} className="w-full bg-accent hover:bg-accent-light">
-                        Check Insurance Coverage
+                      <Button className="w-full" onClick={() => setIsBookingOpen(true)}>
+                        Check Coverage
                       </Button>
                     </CardContent>
                   </Card>
@@ -229,229 +256,64 @@ const Ketamine = () => {
             </div>
           </section>
 
-          {/* Safety & Monitoring */}
-          <section className="py-16 md:py-24 bg-muted/30">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-4xl mx-auto">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-center">
-                  Safety & Monitoring
-                </h2>
-                <Card>
-                  <CardContent className="p-6 md:p-8">
-                    <p className="text-muted-foreground mb-6">
-                      Your safety is our top priority. Every ketamine session includes:
-                    </p>
-                    <ul className="space-y-4">
-                      {safetyItems.map((item, index) => (
-                        <li key={index} className="flex gap-3 items-start">
-                          <Shield className="h-6 w-6 text-accent flex-shrink-0 mt-0.5" />
-                          <span className="text-base leading-relaxed">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </section>
-
-          {/* Provider Section with Quote */}
-          <section className="py-16 md:py-24 bg-background">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-6xl mx-auto">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-center">
-                  Expert Care Across All Our Services
-                </h2>
-                
-                {/* Provider Card */}
-                <div className="max-w-4xl mx-auto mb-12">
-                  <Card className="overflow-hidden bg-card shadow-xl hover:shadow-2xl transition-all duration-300">
-                    <div className="grid md:grid-cols-2 gap-0">
-                      <div className="relative h-[500px] md:h-auto">
-                        <img 
-                          src={providerImage} 
-                          alt="Lauren Bursey, FNP-C - Board-Certified Family Nurse Practitioner" 
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                          width="800"
-                          height="1000"
-                        />
-                      </div>
-                      <div className="p-8 md:p-10 flex flex-col justify-center bg-gradient-subtle">
-                        <div className="mb-6">
-                          <h3 className="font-playfair text-3xl font-bold text-primary mb-2">Lauren Bursey, FNP-C</h3>
-                          <p className="text-lg text-muted-foreground">Board-Certified Family Nurse Practitioner</p>
-                        </div>
-                        
-                        <div className="space-y-6">
-                          <div className="flex items-start gap-4">
-                            <GraduationCap className="h-6 w-6 text-accent flex-shrink-0 mt-1" />
-                            <div>
-                              <div className="font-semibold text-foreground mb-1">Specialized Training</div>
-                              <div className="text-muted-foreground">
-                                Advanced certification in ketamine therapy, medical weight loss, and hormone replacement therapy
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="flex items-start gap-4">
-                            <Heart className="h-6 w-6 text-accent flex-shrink-0 mt-1" />
-                            <div>
-                              <div className="font-semibold text-foreground mb-1">Patient-Centered Approach</div>
-                              <div className="text-muted-foreground">
-                                Committed to creating a safe, welcoming environment where patients feel heard and supported
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="flex items-start gap-4">
-                            <Award className="h-6 w-6 text-accent flex-shrink-0 mt-1" />
-                            <div>
-                              <div className="font-semibold text-foreground mb-1">Evidence-Based Care</div>
-                              <div className="text-muted-foreground">
-                                Utilizes the latest research and proven protocols to deliver optimal outcomes
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
+          {/* FAQ Section */}
+          <section className="section-spacing-sm bg-secondary/30">
+            <div className="container mx-auto px-6 lg:px-8">
+              <div className="max-w-3xl mx-auto">
+                <div className="text-center mb-16">
+                  <p className="text-sm tracking-[0.3em] uppercase text-muted-foreground mb-4 font-lato font-light">
+                    Common Questions
+                  </p>
+                  <h2 className="font-playfair text-foreground">
+                    Frequently Asked
+                  </h2>
                 </div>
 
-                {/* Quote Graphic */}
-                <div className="max-w-3xl mx-auto">
-                  <Card className="p-0 overflow-hidden border-0 shadow-lg">
-                    <img 
-                      src={quoteImage} 
-                      alt="Patient testimonial about ketamine therapy at Elevated Health Augusta" 
-                      className="w-full h-auto"
-                      loading="lazy"
-                    />
-                  </Card>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Veterans Support */}
-          <section className="py-16 md:py-24 bg-primary text-white">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-4xl mx-auto text-center">
-                <Users className="h-16 w-16 mx-auto mb-6 text-gold" />
-                <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-                  Supporting Our Veterans & First Responders
-                </h2>
-                <p className="text-lg mb-8 opacity-90">
-                  We're honored to serve those who've served us. We accept TRICARE and work with veterans to 
-                  make ketamine therapy accessible for PTSD, depression, and anxiety.
-                </p>
-                <Button 
-                  onClick={scrollToBooking}
-                  size="lg"
-                  variant="outline"
-                  className="bg-white text-primary hover:bg-gold hover:text-white border-white"
-                >
-                  Learn About Veteran Benefits
-                </Button>
-              </div>
-            </div>
-          </section>
-
-          {/* Insurance */}
-          <section className="py-16 md:py-24 bg-background">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-4xl mx-auto text-center">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-                  Insurance & Payment Options
-                </h2>
-                <p className="text-lg text-muted-foreground mb-8">
-                  We accept Blue Cross Blue Shield, TRICARE, and offer flexible payment plans. 
-                  SPRAVATO® is often covered by insurance for treatment-resistant depression.
-                </p>
-                <div className="grid sm:grid-cols-3 gap-6">
-                  <Card className="p-6">
-                    <h3 className="font-bold mb-2">Blue Cross Blue Shield</h3>
-                    <p className="text-sm text-muted-foreground">Full coverage accepted</p>
-                  </Card>
-                  <Card className="p-6">
-                    <h3 className="font-bold mb-2">TRICARE</h3>
-                    <p className="text-sm text-muted-foreground">Veterans & military families</p>
-                  </Card>
-                  <Card className="p-6">
-                    <h3 className="font-bold mb-2">Flexible Plans</h3>
-                    <p className="text-sm text-muted-foreground">Self-pay options available</p>
-                  </Card>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Testimonials */}
-          <section className="py-16 md:py-24 bg-muted/30">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-4xl mx-auto">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-center">
-                  Patient Success Stories
-                </h2>
                 <div className="space-y-8">
-                  <Card className="p-0 overflow-hidden border-0 shadow-2xl max-w-2xl mx-auto">
-                    <img 
-                      src={quoteImage} 
-                      alt="Patient testimonial about ketamine therapy at Elevated Health Augusta" 
-                      className="w-full h-auto"
-                    />
-                  </Card>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* FAQ */}
-          <section className="py-16 md:py-24 bg-background">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-4xl mx-auto">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-center">
-                  Frequently Asked Questions
-                </h2>
-                <div className="space-y-6">
                   {faqs.map((faq, index) => (
-                    <Card key={index} className="p-6">
-                      <h3 className="font-bold text-lg mb-3 text-primary">{faq.q}</h3>
-                      <p className="text-muted-foreground leading-relaxed">{faq.a}</p>
-                    </Card>
+                    <div key={index} className="border-b border-border pb-8">
+                      <h3 className="text-xl font-playfair text-foreground mb-4">{faq.q}</h3>
+                      <p className="text-muted-foreground font-light leading-relaxed">{faq.a}</p>
+                    </div>
                   ))}
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Final CTA */}
-          <section className="py-16 md:py-24 bg-gradient-to-r from-accent/10 via-primary/10 to-gold/10">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-2xl mx-auto text-center">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-                  Ready to Start Your Healing Journey?
-                </h2>
-                <p className="text-lg text-muted-foreground mb-8">
-                  Schedule a free consultation to learn if ketamine therapy is right for you
+          {/* CTA Section - Full Width Banner */}
+          <section id="cta-section" className="section-spacing bg-primary text-primary-foreground">
+            <div className="container mx-auto px-6 lg:px-8">
+              <div className="max-w-3xl mx-auto text-center">
+                <p className="text-sm tracking-[0.3em] uppercase text-primary-foreground/70 mb-4 font-lato font-light">
+                  Begin Today
                 </p>
-                <Button
-                  onClick={scrollToBooking}
+                <h2 className="font-playfair text-primary-foreground mb-6">
+                  Your Journey Awaits
+                </h2>
+                <p className="text-lg text-primary-foreground/90 mb-10 font-light leading-relaxed">
+                  Take the first step toward lasting relief. Schedule a complimentary consultation 
+                  to discuss your path to wellness.
+                </p>
+                <Button 
                   size="lg"
-                  className="bg-accent hover:bg-accent-light text-white text-base md:text-lg px-8 py-6"
+                  variant="outline"
+                  className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 border-primary-foreground"
+                  onClick={() => setIsBookingOpen(true)}
                 >
-                  Book Your Free Consultation
+                  Request Consultation
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
+                <p className="mt-6 text-sm text-primary-foreground/60 font-light">
+                  Request an appointment to receive your secure Osmind portal invitation.
+                </p>
               </div>
             </div>
           </section>
-
-          {/* Compare Section */}
-          <Compare isQuizOpen={isQuizOpen} onQuizClose={() => setIsQuizOpen(false)} />
         </main>
 
         <Footer />
+        <ConsultationModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} />
       </div>
     </>
   );
