@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, Activity, Zap, Heart, Brain, LogOut, Plus } from "lucide-react";
 import TreatmentPlan from "@/components/patient/TreatmentPlan";
+import WelcomeIntake from "@/components/patient/WelcomeIntake";
 
 interface SymptomLog {
   id: string;
@@ -20,6 +21,7 @@ interface Patient {
   id: string;
   full_name: string;
   current_protocol: string | null;
+  intake_completed: boolean;
 }
 
 interface Protocol {

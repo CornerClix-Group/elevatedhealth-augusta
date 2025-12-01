@@ -131,7 +131,11 @@ export type Database = {
           dob: string | null
           full_name: string
           id: string
+          intake_completed: boolean | null
+          invited_at: string | null
+          invited_by: string | null
           medical_history: Json | null
+          onboarding_status: string | null
           risk_status: string | null
           safety_flags: Json | null
           updated_at: string | null
@@ -143,7 +147,11 @@ export type Database = {
           dob?: string | null
           full_name: string
           id?: string
+          intake_completed?: boolean | null
+          invited_at?: string | null
+          invited_by?: string | null
           medical_history?: Json | null
+          onboarding_status?: string | null
           risk_status?: string | null
           safety_flags?: Json | null
           updated_at?: string | null
@@ -155,7 +163,11 @@ export type Database = {
           dob?: string | null
           full_name?: string
           id?: string
+          intake_completed?: boolean | null
+          invited_at?: string | null
+          invited_by?: string | null
           medical_history?: Json | null
+          onboarding_status?: string | null
           risk_status?: string | null
           safety_flags?: Json | null
           updated_at?: string | null

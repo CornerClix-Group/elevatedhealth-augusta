@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "@/components/ScrollToTop";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import Ketamine from "./pages/Ketamine";
 import WeightLoss from "./pages/WeightLoss";
@@ -21,10 +22,12 @@ import HipaaNotice from "./pages/HipaaNotice";
 import TermsOfService from "./pages/TermsOfService";
 import Consult from "./pages/Consult";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import PatientLogin from "./pages/PatientLogin";
 import PatientDashboard from "./pages/PatientDashboard";
+import PatientIntake from "./pages/PatientIntake";
 import SymptomCheckIn from "./pages/SymptomCheckIn";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import SymptomChecker from "./pages/SymptomChecker";
@@ -39,20 +42,20 @@ const App = () => (
       <BrowserRouter>
         <ScrollToTop />
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Index />} />
-          {/* New Pillar Routes */}
+          <Route path="/auth" element={<Auth />} />
           <Route path="/ketamine" element={<Ketamine />} />
           <Route path="/weightloss" element={<WeightLoss />} />
           <Route path="/hormones" element={<Hormones />} />
           <Route path="/hormones-women" element={<HormonesWomen />} />
           <Route path="/hormones-men" element={<HormonesMen />} />
-          {/* Legacy Routes - Redirect to new pages */}
+          {/* Legacy Routes */}
           <Route path="/iv-ketamine" element={<IVKetamine />} />
           <Route path="/spravato" element={<Spravato />} />
           <Route path="/hormone-replacement" element={<HormoneReplacement />} />
           <Route path="/weight-loss" element={<WeightLoss />} />
-          {/* Other Routes */}
-          <Route path="/symptom-checker" element={<SymptomChecker />} />
+          {/* Informational Routes */}
           <Route path="/military-veteran" element={<MilitaryVeteran />} />
           <Route path="/how-ketamine-works" element={<HowKetamineWorks />} />
           <Route path="/what-to-expect" element={<WhatToExpect />} />
@@ -60,15 +63,43 @@ const App = () => (
           <Route path="/hipaa-notice" element={<HipaaNotice />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/consult" element={<Consult />} />
-          {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          {/* Patient Portal Routes */}
+          
+          {/* Protected Patient Routes */}
+          <Route path="/symptom-checker" element={
+            <ProtectedRoute>
+              <SymptomChecker />
+            </ProtectedRoute>
+          } />
           <Route path="/patient/login" element={<PatientLogin />} />
-          <Route path="/patient/dashboard" element={<PatientDashboard />} />
-          <Route path="/patient/check-in" element={<SymptomCheckIn />} />
-          {/* Provider Routes */}
-          <Route path="/provider/dashboard" element={<ProviderDashboard />} />
+          <Route path="/patient/dashboard" element={
+            <ProtectedRoute>
+              <PatientDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/patient/intake" element={
+            <ProtectedRoute>
+              <PatientIntake />
+            </ProtectedRoute>
+          } />
+          <Route path="/patient/check-in" element={
+            <ProtectedRoute>
+              <SymptomCheckIn />
+            </ProtectedRoute>
+          } />
+          
+          {/* Admin/Provider Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={
+            <ProtectedRoute requireAdmin>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/provider/dashboard" element={
+            <ProtectedRoute requireAdmin>
+              <ProviderDashboard />
+            </ProtectedRoute>
+          } />
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
