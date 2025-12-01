@@ -143,16 +143,19 @@ const Footer = () => {
             <p className="text-xs text-background/30 font-lato">
               © 2025 {SITE_CONFIG.clinicName}. All rights reserved.
             </p>
-            <div className="flex gap-6 text-xs text-background/30 font-lato">
-              <a 
-                href="https://portal.elevatedhealthaugusta.com" 
-                target="_blank"
-                rel="noopener noreferrer"
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-background/30 font-lato">
+              <button 
+                onClick={() => navigate("/patient/login")} 
                 className="text-primary hover:text-primary-light transition-colors font-medium"
-                onClick={() => trackCTAClick('patient_portal', 'https://portal.elevatedhealthaugusta.com')}
               >
                 Patient Portal
-              </a>
+              </button>
+              <button 
+                onClick={() => navigate("/admin/login")} 
+                className="hover:text-background/60 transition-colors"
+              >
+                Provider Login
+              </button>
               <button 
                 onClick={() => navigate("/privacy-policy")} 
                 className="hover:text-background/60 transition-colors"

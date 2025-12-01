@@ -96,7 +96,14 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
           </div>
 
           {/* Desktop CTA */}
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-3">
+            <Button 
+              variant="outline"
+              className="font-lato font-normal text-sm tracking-wide px-5 py-2 border-primary/50 text-primary hover:bg-primary/5 hover:text-primary"
+              onClick={() => navigate("/patient/login")}
+            >
+              Patient Portal
+            </Button>
             <Button 
               className="font-lato font-normal text-sm tracking-wide px-6 py-2"
               onClick={() => {
@@ -176,7 +183,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                   </button>
                 </nav>
 
-                <div className="mt-12 pt-8 border-t border-border">
+                <div className="mt-12 pt-8 border-t border-border space-y-3">
                   <Button 
                     className="w-full font-lato text-sm tracking-wide py-6"
                     onClick={() => {
@@ -185,6 +192,17 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                     }}
                   >
                     Book Consultation
+                  </Button>
+                  
+                  <Button 
+                    variant="outline"
+                    className="w-full font-lato text-sm tracking-wide py-6 border-primary/50 text-primary"
+                    onClick={() => {
+                      navigate("/patient/login");
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    Patient Portal
                   </Button>
                   
                   <p className="mt-6 text-sm text-muted-foreground font-lato">
