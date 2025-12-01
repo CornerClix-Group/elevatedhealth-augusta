@@ -165,67 +165,78 @@ const WeightLoss = () => {
   return (
     <>
       <Helmet>
-        <title>Weight Reset Program™ - Medical Weight Loss Augusta | Elevated Health</title>
-        <meta name="description" content="Finally—A Weight Loss Program That Treats the Whole You. GLP-1 therapy + metabolic labs + hormone optimization + mental health support. Augusta's only comprehensive program." />
-        <meta name="keywords" content="medical weight loss Augusta, semaglutide Augusta GA, tirzepatide Augusta, GLP-1 Augusta, weight loss clinic Georgia, hormone optimization Augusta, metabolic labs" />
+        <title>Metabolic Optimization Program - Weight Loss Augusta | Elevated Health</title>
+        <meta name="description" content="Repair your metabolism at the cellular level. GLP-1 therapy + ZRT hormone testing + metabolic analysis. Augusta's only comprehensive metabolic program." />
+        <meta name="keywords" content="metabolic optimization Augusta, semaglutide Augusta GA, tirzepatide Augusta, GLP-1 Augusta, weight loss clinic Georgia, ZRT testing Augusta, metabolic labs" />
       </Helmet>
 
       <div className="min-h-screen">
         <Navbar />
         
         <main>
-          {/* Hero Section */}
-          <section className="pt-32 pb-16 md:pb-24 bg-gradient-to-b from-primary/5 via-accent/5 to-background">
-            <div className="container mx-auto px-4 sm:px-6">
+          {/* Hero Section - Abstract Cellular Design */}
+          <section className="pt-32 pb-16 md:pb-24 relative overflow-hidden">
+            {/* Abstract Cellular Background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-[hsl(200,25%,25%)]">
+              {/* DNA/Cellular Abstract Pattern Overlay */}
+              <svg className="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+                {/* Cellular structures */}
+                <circle cx="150" cy="150" r="80" fill="none" stroke="hsl(var(--gold))" strokeWidth="0.5" />
+                <circle cx="150" cy="150" r="60" fill="none" stroke="hsl(var(--gold))" strokeWidth="0.3" />
+                <circle cx="150" cy="150" r="40" fill="none" stroke="white" strokeWidth="0.5" />
+                <circle cx="650" cy="450" r="100" fill="none" stroke="hsl(var(--gold))" strokeWidth="0.5" />
+                <circle cx="650" cy="450" r="70" fill="none" stroke="white" strokeWidth="0.3" />
+                <circle cx="400" cy="300" r="120" fill="none" stroke="hsl(var(--gold))" strokeWidth="0.3" />
+                {/* DNA helix pattern */}
+                <path d="M50,100 Q200,200 50,300 Q200,400 50,500" fill="none" stroke="white" strokeWidth="0.5" opacity="0.5" />
+                <path d="M150,100 Q0,200 150,300 Q0,400 150,500" fill="none" stroke="hsl(var(--gold))" strokeWidth="0.5" opacity="0.5" />
+                <path d="M700,50 Q550,150 700,250 Q550,350 700,450" fill="none" stroke="white" strokeWidth="0.5" opacity="0.5" />
+                <path d="M600,50 Q750,150 600,250 Q750,350 600,450" fill="none" stroke="hsl(var(--gold))" strokeWidth="0.5" opacity="0.5" />
+                {/* Connecting lines (nucleotides) */}
+                {[100, 150, 200, 250, 300, 350, 400, 450].map((y, i) => (
+                  <line key={i} x1="50" y1={y} x2="150" y2={y} stroke="hsl(var(--gold))" strokeWidth="0.3" opacity="0.3" />
+                ))}
+              </svg>
+              {/* Gradient overlay for depth */}
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/50 via-transparent to-transparent" />
+            </div>
+
+            <div className="container mx-auto px-4 sm:px-6 relative z-10">
               <div className="max-w-5xl mx-auto text-center">
                 <div className="inline-block mb-6 animate-fade-in-up">
-                  <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold">
-                    Introducing the Weight Reset Program™
+                  <span className="px-4 py-2 bg-white/10 text-white/90 border border-gold/30 rounded-full text-sm font-semibold backdrop-blur-sm">
+                    Metabolic Optimization Program
                   </span>
                 </div>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-                  Finally—A Weight Loss Program<br />That Treats the Whole You
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 animate-fade-in-up text-white font-cormorant" style={{ animationDelay: "0.1s" }}>
+                  Repair Your Metabolism<br />at the Cellular Level
                 </h1>
-                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 max-w-3xl mx-auto animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-                  Elevated Health Augusta offers medically supervised weight loss with GLP-1 medications, 
-                  metabolic testing, hormone optimization, and mental-health-supported coaching.
+                <p className="text-lg md:text-xl text-white/80 leading-relaxed mb-10 max-w-3xl mx-auto animate-fade-in-up font-lato" style={{ animationDelay: "0.2s" }}>
+                  Most weight loss fails because it ignores biology. We combine GLP-1 therapy with 
+                  advanced ZRT hormone testing to repair your metabolism at the cellular level.
                 </p>
-                
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-                  <div className="text-center">
-                    <div className="text-xl text-muted-foreground mb-1">Starting at</div>
-                    <div className="text-5xl font-bold text-primary">$349</div>
-                    <div className="text-lg text-muted-foreground">/month</div>
-                  </div>
-                  <div className="hidden sm:block w-px h-20 bg-border"></div>
-                  <div className="text-center">
-                    <div className="text-xl text-muted-foreground mb-1">Premium Package</div>
-                    <div className="text-5xl font-bold text-accent">$799</div>
-                    <div className="text-lg text-muted-foreground">/month</div>
-                  </div>
-                </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-                  <Button onClick={scrollToBooking} size="lg" className="text-lg px-8 py-6">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+                  <Button onClick={scrollToBooking} size="lg" className="text-lg px-8 py-6 bg-gold hover:bg-gold/90 text-primary">
                     Book Free Consultation
                   </Button>
-                  <Button onClick={() => window.open(`tel:${SITE_CONFIG.phone}`, "_self")} size="lg" variant="outline" className="text-lg px-8 py-6">
+                  <Button onClick={() => window.open(`tel:${SITE_CONFIG.phone}`, "_self")} size="lg" variant="outline" className="text-lg px-8 py-6 border-white/30 text-white hover:bg-white/10">
                     Call {SITE_CONFIG.phone}
                   </Button>
                 </div>
 
-                <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-muted-foreground animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
+                <div className="mt-10 flex flex-wrap justify-center gap-6 text-sm text-white/70 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-primary" />
-                    <span>No generic dosing</span>
+                    <CheckCircle2 className="h-5 w-5 text-gold" />
+                    <span>ZRT Metabolic Analysis</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-primary" />
-                    <span>No rushed appointments</span>
+                    <CheckCircle2 className="h-5 w-5 text-gold" />
+                    <span>FDA-Approved GLP-1s</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-primary" />
-                    <span>No feeling lost</span>
+                    <CheckCircle2 className="h-5 w-5 text-gold" />
+                    <span>Hormone Integration</span>
                   </div>
                 </div>
               </div>

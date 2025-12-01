@@ -42,8 +42,8 @@ const treatments = [
   },
   {
     id: "weight-loss",
-    title: "Medical Weight Loss",
-    tagline: "Metabolic Reset & Composition",
+    title: "Metabolic Optimization",
+    tagline: "Cellular-Level Weight Management",
     icon: DNAIcon,
     route: "/weight-loss",
     gradient: "from-[#2d3748] via-[#4a5568] to-[#2d3748]",

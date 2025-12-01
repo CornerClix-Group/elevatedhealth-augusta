@@ -8,9 +8,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Beaker, AlertCircle } from "lucide-react";
+import { Loader2, Beaker, AlertCircle, Activity, Scale } from "lucide-react";
 
 interface NewLabResultModalProps {
   isOpen: boolean;
@@ -31,6 +33,7 @@ interface ProtocolRecommendation {
   protocol: string;
   dose: string;
   reason: string;
+  severity?: "warning" | "critical";
 }
 
 const NewLabResultModal = ({ 
@@ -41,12 +44,23 @@ const NewLabResultModal = ({
   latestSymptomScore,
   onSaved 
 }: NewLabResultModalProps) => {
+  const [activeTab, setActiveTab] = useState("hormone");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [collectionDate, setCollectionDate] = useState(new Date().toISOString().split('T')[0]);
+  
+  // Hormone Labs
   const [estradiol, setEstradiol] = useState("");
   const [progesterone, setProgesterone] = useState("");
   const [testosterone, setTestosterone] = useState("");
   const [cortisol, setCortisol] = useState("");
+  
+  // Metabolic Labs (ZRT Weight Management Profile)
+  const [hba1c, setHba1c] = useState("");
+  const [fastingInsulin, setFastingInsulin] = useState("");
+  const [metabolicCortisol, setMetabolicCortisol] = useState("");
+  const [vitaminD, setVitaminD] = useState("");
+  
+  const [recommendations, setRecommendations] = useState<ProtocolRecommendation[]>([]);
   const [recommendation, setRecommendation] = useState<ProtocolRecommendation | null>(null);
 
   const getProtocolRecommendation = (
@@ -73,6 +87,61 @@ const NewLabResultModal = ({
     }
     
     return null;
+  };
+
+  const getMetabolicRecommendations = (
+    a1c: number | null,
+    insulin: number | null,
+    cort: number | null,
+    vitD: number | null
+  ): ProtocolRecommendation[] => {
+    const recs: ProtocolRecommendation[] = [];
+
+    // HbA1c > 5.7 = Pre-Diabetes
+    if (a1c !== null && a1c > 5.7) {
+      recs.push({
+        title: "Pre-Diabetes Indicated",
+        protocol: "Semaglutide Therapy + Glucose Monitoring",
+        dose: "Start 0.25mg weekly, titrate to 1mg",
+        reason: `HbA1c at ${a1c}% indicates pre-diabetic range (normal: <5.7%)`,
+        severity: a1c > 6.4 ? "critical" : "warning"
+      });
+    }
+
+    // High Fasting Insulin = Severe Insulin Resistance
+    if (insulin !== null && insulin > 15) {
+      recs.push({
+        title: "Severe Insulin Resistance Detected",
+        protocol: "Aggressive GLP-1 + Metformin Consideration",
+        dose: "Tirzepatide preferred for dual mechanism",
+        reason: `Fasting Insulin at ${insulin} μIU/mL is elevated (optimal: <10 μIU/mL)`,
+        severity: "critical"
+      });
+    }
+
+    // High Cortisol = Stress Weight
+    if (cort !== null && cort > 20) {
+      recs.push({
+        title: "Elevated Cortisol - Stress Weight Pattern",
+        protocol: "Add Adrenal Support Protocol",
+        dose: "Adaptogenic support + lifestyle intervention",
+        reason: `Morning Cortisol at ${cort} μg/dL is high. Do NOT rely solely on GLP-1.`,
+        severity: "warning"
+      });
+    }
+
+    // Low Vitamin D = Metabolic Fuel Deficiency
+    if (vitD !== null && vitD < 30) {
+      recs.push({
+        title: "Vitamin D Deficiency",
+        protocol: "Vitamin D3 Supplementation",
+        dose: vitD < 20 ? "5000 IU daily x 8 weeks, then retest" : "2000-4000 IU daily maintenance",
+        reason: `Vitamin D at ${vitD} ng/mL is suboptimal for metabolic function (target: 50-80 ng/mL)`,
+        severity: vitD < 20 ? "critical" : "warning"
+      });
+    }
+
+    return recs;
   };
 
   const getCorrelationAlert = (
@@ -154,19 +223,74 @@ const NewLabResultModal = ({
     }
   };
 
+  const handleMetabolicSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const a1cValue = hba1c ? parseFloat(hba1c) : null;
+      const insulinValue = fastingInsulin ? parseFloat(fastingInsulin) : null;
+      const cortValue = metabolicCortisol ? parseFloat(metabolicCortisol) : null;
+      const vitDValue = vitaminD ? parseFloat(vitaminD) : null;
+
+      // Get metabolic recommendations
+      const recs = getMetabolicRecommendations(a1cValue, insulinValue, cortValue, vitDValue);
+
+      // Store in notes field for now (could be expanded to dedicated metabolic_labs table)
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const metabolicNotes = `ZRT Metabolic Profile: HbA1c=${a1cValue || 'N/A'}%, Fasting Insulin=${insulinValue || 'N/A'} μIU/mL, Cortisol=${cortValue || 'N/A'} μg/dL, Vitamin D=${vitDValue || 'N/A'} ng/mL`;
+
+      const { error } = await supabase.from("lab_results").insert({
+        patient_id: patientId,
+        collection_date: collectionDate,
+        cortisol_morning: cortValue,
+        notes: metabolicNotes,
+        correlation_alert: recs.length > 0 ? recs.map(r => r.title).join("; ") : null,
+        created_by: user?.id
+      });
+
+      if (error) throw error;
+
+      if (recs.length > 0) {
+        setRecommendations(recs);
+        toast.success("Metabolic labs saved!", {
+          description: `${recs.length} recommendation(s) generated.`
+        });
+      } else {
+        toast.success("Metabolic labs saved successfully!");
+        resetAndClose();
+      }
+
+      onSaved();
+    } catch (error: any) {
+      toast.error("Failed to save metabolic labs", {
+        description: error.message
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const resetAndClose = () => {
+    setActiveTab("hormone");
     setCollectionDate(new Date().toISOString().split('T')[0]);
     setEstradiol("");
     setProgesterone("");
     setTestosterone("");
     setCortisol("");
+    setHba1c("");
+    setFastingInsulin("");
+    setMetabolicCortisol("");
+    setVitaminD("");
     setRecommendation(null);
+    setRecommendations([]);
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && resetAndClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-cormorant text-xl">
             <Beaker className="w-5 h-5 text-primary" />
@@ -177,29 +301,63 @@ const NewLabResultModal = ({
           </p>
         </DialogHeader>
 
-        {recommendation ? (
+        {/* Show recommendations if any */}
+        {(recommendation || recommendations.length > 0) ? (
           <div className="space-y-4">
-            {/* Protocol Recommendation Card */}
-            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="font-semibold text-foreground">{recommendation.title}</h4>
-                  <p className="text-sm text-muted-foreground mt-1">{recommendation.reason}</p>
-                  <div className="mt-3 p-3 bg-card rounded border border-border">
-                    <p className="text-sm font-medium text-foreground">{recommendation.protocol}</p>
-                    <p className="text-sm text-primary mt-1">Dose: {recommendation.dose}</p>
+            {/* Hormone Recommendation */}
+            {recommendation && (
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-foreground">{recommendation.title}</h4>
+                    <p className="text-sm text-muted-foreground mt-1">{recommendation.reason}</p>
+                    <div className="mt-3 p-3 bg-card rounded border border-border">
+                      <p className="text-sm font-medium text-foreground">{recommendation.protocol}</p>
+                      <p className="text-sm text-primary mt-1">Dose: {recommendation.dose}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* Metabolic Recommendations */}
+            {recommendations.map((rec, index) => (
+              <div 
+                key={index}
+                className={`border rounded-lg p-4 ${
+                  rec.severity === "critical" 
+                    ? "bg-destructive/5 border-destructive/30" 
+                    : "bg-gold/5 border-gold/30"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <Activity className={`w-5 h-5 shrink-0 mt-0.5 ${
+                    rec.severity === "critical" ? "text-destructive" : "text-gold"
+                  }`} />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold text-foreground">{rec.title}</h4>
+                      {rec.severity === "critical" && (
+                        <Badge variant="destructive" className="text-xs">Critical</Badge>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">{rec.reason}</p>
+                    <div className="mt-3 p-3 bg-card rounded border border-border">
+                      <p className="text-sm font-medium text-foreground">{rec.protocol}</p>
+                      <p className="text-sm text-primary mt-1">Dose: {rec.dose}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
 
             <div className="flex gap-3">
               <Button variant="outline" className="flex-1" onClick={resetAndClose}>
                 Close
               </Button>
               <Button className="flex-1" onClick={() => {
-                toast.success("Recommendation noted for order");
+                toast.success("Recommendations noted for order");
                 resetAndClose();
               }}>
                 Approve & Create Order
@@ -207,108 +365,237 @@ const NewLabResultModal = ({
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="collectionDate">Collection Date</Label>
-              <Input
-                id="collectionDate"
-                type="date"
-                value={collectionDate}
-                onChange={(e) => setCollectionDate(e.target.value)}
-                required
-              />
-            </div>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="hormone" className="flex items-center gap-2">
+                <Beaker className="w-4 h-4" />
+                Hormone Labs
+              </TabsTrigger>
+              <TabsTrigger value="metabolic" className="flex items-center gap-2">
+                <Scale className="w-4 h-4" />
+                Metabolic Labs
+              </TabsTrigger>
+            </TabsList>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="estradiol">Estradiol (E2)</Label>
-                <div className="relative">
+            {/* Hormone Labs Tab */}
+            <TabsContent value="hormone">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="collectionDate">Collection Date</Label>
                   <Input
-                    id="estradiol"
-                    type="number"
-                    step="0.1"
-                    placeholder="0.0"
-                    value={estradiol}
-                    onChange={(e) => setEstradiol(e.target.value)}
+                    id="collectionDate"
+                    type="date"
+                    value={collectionDate}
+                    onChange={(e) => setCollectionDate(e.target.value)}
+                    required
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                    pg/mL
-                  </span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">Optimal: 2-4</p>
-              </div>
 
-              <div>
-                <Label htmlFor="progesterone">Progesterone (Pg)</Label>
-                <div className="relative">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="estradiol">Estradiol (E2)</Label>
+                    <div className="relative">
+                      <Input
+                        id="estradiol"
+                        type="number"
+                        step="0.1"
+                        placeholder="0.0"
+                        value={estradiol}
+                        onChange={(e) => setEstradiol(e.target.value)}
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                        pg/mL
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">Optimal: 2-4</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="progesterone">Progesterone (Pg)</Label>
+                    <div className="relative">
+                      <Input
+                        id="progesterone"
+                        type="number"
+                        step="1"
+                        placeholder="0"
+                        value={progesterone}
+                        onChange={(e) => setProgesterone(e.target.value)}
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                        pg/mL
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">Range: 0-500</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="testosterone">Testosterone (T)</Label>
+                    <div className="relative">
+                      <Input
+                        id="testosterone"
+                        type="number"
+                        step="0.1"
+                        placeholder="0.0"
+                        value={testosterone}
+                        onChange={(e) => setTestosterone(e.target.value)}
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                        ng/dL
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">Optimal: 30-45</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="cortisol">Cortisol (AM)</Label>
+                    <div className="relative">
+                      <Input
+                        id="cortisol"
+                        type="number"
+                        step="0.1"
+                        placeholder="0.0"
+                        value={cortisol}
+                        onChange={(e) => setCortisol(e.target.value)}
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                        μg/dL
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">Morning value</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <Button type="button" variant="outline" className="flex-1" onClick={resetAndClose}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      "Save Hormone Labs"
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </TabsContent>
+
+            {/* Metabolic Labs Tab (ZRT Weight Management) */}
+            <TabsContent value="metabolic">
+              <form onSubmit={handleMetabolicSubmit} className="space-y-4">
+                <div className="bg-gold/5 border border-gold/20 rounded-lg p-3 mb-4">
+                  <p className="text-xs text-muted-foreground">
+                    <span className="font-semibold text-gold">ZRT Weight Management Profile</span> — 
+                    Enter values from saliva + blood spot panel
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="metabolicDate">Collection Date</Label>
                   <Input
-                    id="progesterone"
-                    type="number"
-                    step="1"
-                    placeholder="0"
-                    value={progesterone}
-                    onChange={(e) => setProgesterone(e.target.value)}
+                    id="metabolicDate"
+                    type="date"
+                    value={collectionDate}
+                    onChange={(e) => setCollectionDate(e.target.value)}
+                    required
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                    pg/mL
-                  </span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">Range: 0-500</p>
-              </div>
 
-              <div>
-                <Label htmlFor="testosterone">Testosterone (T)</Label>
-                <div className="relative">
-                  <Input
-                    id="testosterone"
-                    type="number"
-                    step="0.1"
-                    placeholder="0.0"
-                    value={testosterone}
-                    onChange={(e) => setTestosterone(e.target.value)}
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                    ng/dL
-                  </span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="hba1c">HbA1c</Label>
+                    <div className="relative">
+                      <Input
+                        id="hba1c"
+                        type="number"
+                        step="0.1"
+                        placeholder="5.4"
+                        value={hba1c}
+                        onChange={(e) => setHba1c(e.target.value)}
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                        %
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">Normal: &lt;5.7%</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="fastingInsulin">Fasting Insulin</Label>
+                    <div className="relative">
+                      <Input
+                        id="fastingInsulin"
+                        type="number"
+                        step="0.1"
+                        placeholder="8.0"
+                        value={fastingInsulin}
+                        onChange={(e) => setFastingInsulin(e.target.value)}
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                        μIU/mL
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">Optimal: &lt;10</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="metabolicCortisol">Cortisol (AM)</Label>
+                    <div className="relative">
+                      <Input
+                        id="metabolicCortisol"
+                        type="number"
+                        step="0.1"
+                        placeholder="15.0"
+                        value={metabolicCortisol}
+                        onChange={(e) => setMetabolicCortisol(e.target.value)}
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                        μg/dL
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">Normal: 10-20</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="vitaminD">Vitamin D</Label>
+                    <div className="relative">
+                      <Input
+                        id="vitaminD"
+                        type="number"
+                        step="1"
+                        placeholder="45"
+                        value={vitaminD}
+                        onChange={(e) => setVitaminD(e.target.value)}
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                        ng/mL
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">Optimal: 50-80</p>
+                  </div>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">Optimal: 30-45</p>
-              </div>
 
-              <div>
-                <Label htmlFor="cortisol">Cortisol (AM)</Label>
-                <div className="relative">
-                  <Input
-                    id="cortisol"
-                    type="number"
-                    step="0.1"
-                    placeholder="0.0"
-                    value={cortisol}
-                    onChange={(e) => setCortisol(e.target.value)}
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                    μg/dL
-                  </span>
+                <div className="flex gap-3 pt-2">
+                  <Button type="button" variant="outline" className="flex-1" onClick={resetAndClose}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      "Save Metabolic Labs"
+                    )}
+                  </Button>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">Morning value</p>
-              </div>
-            </div>
-
-            <div className="flex gap-3 pt-2">
-              <Button type="button" variant="outline" className="flex-1" onClick={resetAndClose}>
-                Cancel
-              </Button>
-              <Button type="submit" className="flex-1" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  "Save Lab Results"
-                )}
-              </Button>
-            </div>
-          </form>
+              </form>
+            </TabsContent>
+          </Tabs>
         )}
       </DialogContent>
     </Dialog>
