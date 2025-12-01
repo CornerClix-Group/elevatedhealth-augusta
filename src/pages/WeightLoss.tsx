@@ -220,7 +220,7 @@ const WeightLoss = () => {
                   <Button onClick={scrollToBooking} size="lg" className="text-lg px-8 py-6 bg-gold hover:bg-gold/90 text-primary">
                     Book Free Consultation
                   </Button>
-                  <Button onClick={() => window.open(`tel:${SITE_CONFIG.phone}`, "_self")} size="lg" variant="outline" className="text-lg px-8 py-6 border-white/30 text-white hover:bg-white/10">
+                  <Button onClick={() => window.open(`tel:${SITE_CONFIG.phone}`, "_self")} size="lg" variant="outline" className="text-lg px-8 py-6 border-white/50 text-white bg-transparent hover:bg-white/10">
                     Call {SITE_CONFIG.phone}
                   </Button>
                 </div>
