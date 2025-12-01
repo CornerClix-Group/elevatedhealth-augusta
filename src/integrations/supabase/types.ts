@@ -131,6 +131,8 @@ export type Database = {
           dob: string | null
           full_name: string
           id: string
+          medical_history: Json | null
+          risk_status: string | null
           safety_flags: Json | null
           updated_at: string | null
           user_id: string | null
@@ -141,6 +143,8 @@ export type Database = {
           dob?: string | null
           full_name: string
           id?: string
+          medical_history?: Json | null
+          risk_status?: string | null
           safety_flags?: Json | null
           updated_at?: string | null
           user_id?: string | null
@@ -151,6 +155,8 @@ export type Database = {
           dob?: string | null
           full_name?: string
           id?: string
+          medical_history?: Json | null
+          risk_status?: string | null
           safety_flags?: Json | null
           updated_at?: string | null
           user_id?: string | null
