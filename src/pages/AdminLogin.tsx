@@ -144,11 +144,11 @@ const AdminLogin = () => {
             <form onSubmit={handleForgotPassword} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="reset-email">Email</Label>
-                <Input
-                  id="reset-email"
-                  type="email"
-                  placeholder="admin@elevatedhealthaugusta.com"
-                  value={resetEmail}
+                    <Input
+                      id="reset-email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
                   required
                 />
@@ -196,11 +196,11 @@ const AdminLogin = () => {
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="admin@elevatedhealthaugusta.com"
-                    value={email}
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
@@ -249,11 +249,11 @@ const AdminLogin = () => {
               <form onSubmit={handleSignup} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="signup-email">Email</Label>
-                  <Input
-                    id="signup-email"
-                    type="email"
-                    placeholder="admin@elevatedhealthaugusta.com"
-                    value={signupEmail}
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={signupEmail}
                     onChange={(e) => setSignupEmail(e.target.value)}
                     required
                   />
