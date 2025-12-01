@@ -166,7 +166,21 @@ const PatientLogin = () => {
         navigate("/patient/dashboard");
       }
     } catch (error: any) {
-      toast.error(error.message || "Signup failed");
+      // Handle "User already registered" error
+      if (error.message?.includes("already registered") || error.code === "user_already_exists") {
+        toast.error("This email is already registered. Please sign in instead.", {
+          action: {
+            label: "Sign In",
+            onClick: () => {
+              setLoginData({ email: signupData.email, password: "" });
+              setSignupStep("info");
+            }
+          },
+          duration: 8000
+        });
+      } else {
+        toast.error(error.message || "Signup failed");
+      }
     } finally {
       setIsLoading(false);
     }
