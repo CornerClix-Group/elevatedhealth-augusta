@@ -173,8 +173,8 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                     variant="outline"
                     className={`font-lato font-normal text-sm tracking-wide px-4 py-2 gap-2 ${
                       isScrolled 
-                        ? "border-primary/50 text-primary hover:bg-primary/5 hover:text-primary" 
-                        : "border-white/50 text-white hover:bg-white/10 hover:text-white"
+                        ? "border-primary/50 text-primary hover:bg-primary/5 hover:text-primary bg-transparent" 
+                        : "border-white bg-white/10 text-white hover:bg-white/20 hover:text-white"
                     }`}
                   >
                     <User className="w-4 h-4" />
@@ -215,8 +215,8 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                 variant="outline"
                 className={`font-lato font-normal text-sm tracking-wide px-5 py-2 ${
                   isScrolled 
-                    ? "border-primary/50 text-primary hover:bg-primary/5 hover:text-primary" 
-                    : "border-white/50 text-white hover:bg-white/10 hover:text-white"
+                    ? "border-primary/50 text-primary hover:bg-primary/5 hover:text-primary bg-transparent" 
+                    : "border-white bg-white/10 text-white hover:bg-white/20 hover:text-white"
                 }`}
                 onClick={() => navigate("/patient/login")}
               >
