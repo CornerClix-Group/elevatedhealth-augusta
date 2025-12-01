@@ -77,8 +77,8 @@ const OurTreatments = ({ onOpenBooking }: OurTreatmentsProps) => {
           </p>
         </div>
 
-        {/* Textural Cards Grid - Credit Card Style */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-6">
+        {/* Textural Cards Grid - Compact Style */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {treatments.map((treatment, index) => {
             const Icon = treatment.icon;
             return (
@@ -88,29 +88,27 @@ const OurTreatments = ({ onOpenBooking }: OurTreatmentsProps) => {
                 onClick={() => navigate(treatment.route)}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                {/* Card Container - Credit Card Aspect Ratio */}
-                <div className={`relative aspect-[1.6/1] rounded-xl overflow-hidden bg-gradient-to-br ${treatment.gradient} p-8 flex flex-col justify-between transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-2xl`}>
+                {/* Card Container - More compact */}
+                <div className={`relative rounded-xl overflow-hidden bg-gradient-to-br ${treatment.gradient} p-6 flex flex-col gap-4 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-xl`}>
                   {/* Subtle texture overlay */}
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(255,255,255,0.05)_0%,_transparent_50%)]" />
                   
-                  {/* Top Section - Icon */}
-                  <div className="relative z-10">
-                    <Icon className="h-10 w-10 text-white/90" />
-                  </div>
-
-                  {/* Bottom Section - Content */}
-                  <div className="relative z-10 space-y-2">
-                    <h3 className="text-xl lg:text-2xl font-cormorant text-white">
-                      {treatment.title}
-                    </h3>
-                    <p className="text-white/70 font-lato font-light text-sm">
-                      {treatment.tagline}
-                    </p>
+                  {/* Icon + Content Row */}
+                  <div className="relative z-10 flex items-start gap-4">
+                    <Icon className="h-8 w-8 text-white/90 shrink-0" />
+                    <div className="space-y-1">
+                      <h3 className="text-lg font-cormorant text-white">
+                        {treatment.title}
+                      </h3>
+                      <p className="text-white/70 font-lato font-light text-sm">
+                        {treatment.tagline}
+                      </p>
+                    </div>
                   </div>
 
                   {/* Hover Arrow */}
-                  <div className="absolute bottom-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <ArrowRight className="h-5 w-5 text-white/80" />
+                  <div className="relative z-10 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <ArrowRight className="h-4 w-4 text-white/80" />
                   </div>
                 </div>
               </article>
