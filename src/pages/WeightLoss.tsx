@@ -41,7 +41,6 @@ const WeightLoss = () => {
     { icon: Pill, text: "Weekly GLP-1 Medication (Semaglutide)" },
     { icon: Droplet, text: "ZRT Home Hormone Kit (Included)" },
     { icon: Activity, text: "'Blocker' Analysis Review" },
-    { icon: MessageCircle, text: "Direct Provider Messaging" },
     { icon: Apple, text: "Nutrition & Macro Guidance" }
   ];
 
@@ -73,7 +72,6 @@ const WeightLoss = () => {
     "ZRT Saliva Diagnostic Kit (shipped to your door).",
     "Hormone Blocker Analysis (Cortisol, Estrogen, Testosterone check).",
     "Adrenal & Hormone Support Protocols (if indicated by labs).",
-    "Direct Provider Access (Message Lauren anytime).",
     "Priority Shipping from our Compounding Partner."
   ];
 
