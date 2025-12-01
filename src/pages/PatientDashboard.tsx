@@ -114,7 +114,7 @@ const PatientDashboard = () => {
       });
 
       if (error) throw error;
-      toast.success("Review request submitted! Lauren will contact you soon.");
+      toast.success("Review request submitted! A provider will contact you soon.");
       await loadDashboardData();
     } catch (error: any) {
       toast.error(error.message || "Failed to submit review request");
@@ -271,7 +271,7 @@ const PatientDashboard = () => {
                 <div>
                   <h3 className="font-semibold text-foreground">Review in Progress</h3>
                   <p className="text-sm text-muted-foreground">
-                    Lauren is reviewing your protocol based on your results.
+                    A provider is reviewing your protocol based on your results.
                   </p>
                 </div>
               </div>
@@ -296,7 +296,7 @@ const PatientDashboard = () => {
                   Ready to optimize your protocol?
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Request a review with Lauren to discuss your results and get your personalized treatment plan.
+                  Request a review to discuss your results and get your personalized treatment plan.
                 </p>
                 <Button
                   onClick={handleRequestReview}
