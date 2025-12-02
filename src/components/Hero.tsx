@@ -42,7 +42,7 @@ const Hero = ({ onOpenBooking }: HeroProps) => {
           <Button 
             variant="outline"
             size="lg"
-            onClick={handleRequestAccess}
+            onClick={onOpenBooking}
             className="bg-gold border-gold text-white hover:bg-gold-dark hover:border-gold-dark font-lato font-normal tracking-[0.15em] uppercase text-sm px-12 py-6 rounded-none transition-all duration-300"
           >
             Request Access
