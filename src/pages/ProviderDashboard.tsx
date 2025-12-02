@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2, LogOut, AlertTriangle, Check, User, TrendingUp, X, Send, ShieldCheck, ShieldAlert } from "lucide-react";
+import { Loader2, LogOut, AlertTriangle, Check, User, TrendingUp, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import confetti from "canvas-confetti";
 import LabAnalysisCard from "@/components/provider/LabAnalysisCard";
+import LabCorpRequisition from "@/components/provider/LabCorpRequisition";
 
 interface Patient {
   id: string;
@@ -17,6 +18,10 @@ interface Patient {
   current_protocol: string | null;
   risk_status: string | null;
   medical_history: any;
+  gender?: string;
+  treatment_request?: string;
+  lab_path?: string;
+  dob?: string;
 }
 
 interface SymptomLog {
@@ -37,11 +42,18 @@ interface Protocol {
   instructions: string;
 }
 
+interface LabPathInfo {
+  path: "zrt" | "labcorp";
+  panel?: "mens_safety" | "thyroid" | "safety_cmp" | null;
+  reason?: string | null;
+}
+
 interface PatientWithLog {
   patient: Patient;
   latestLog: SymptomLog | null;
   highestCategory: string;
   riskLevel: "green" | "yellow" | "red";
+  labPath?: LabPathInfo;
 }
 
 const ProviderDashboard = () => {
@@ -54,6 +66,7 @@ const ProviderDashboard = () => {
   const [recommendedProtocol, setRecommendedProtocol] = useState<Protocol | null>(null);
   const [isAuthorizing, setIsAuthorizing] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [isEmailingRequisition, setIsEmailingRequisition] = useState(false);
 
   useEffect(() => {
     checkAuthAndLoad();
@@ -166,7 +179,36 @@ const ProviderDashboard = () => {
                   }
         }
 
-        patientsWithLogs.push({ patient, latestLog, highestCategory, riskLevel });
+        // Get lab path info from symptom log
+        let labPath: LabPathInfo = { path: "zrt" };
+        if (latestLog) {
+          const rawAnswers = latestLog.raw_answers as Record<string, any> | null;
+          if (rawAnswers?.labPath) {
+            labPath = rawAnswers.labPath as LabPathInfo;
+          } else {
+            // Determine lab path from patient data if not in log
+            const medHistory = patient.medical_history as Record<string, boolean> | null;
+            if (patient.gender === "male" && (patient.treatment_request === "testosterone" || patient.treatment_request === "hormone_male")) {
+              labPath = { path: "labcorp", panel: "mens_safety", reason: "Male testosterone therapy requires PSA, CBC, CMP" };
+            } else if (medHistory?.thyroidDisorder) {
+              labPath = { path: "labcorp", panel: "thyroid", reason: "Thyroid disorder requires TSH, T3, T4 panel" };
+            } else if (medHistory?.kidneyDisease || medHistory?.liverDisease) {
+              labPath = { path: "labcorp", panel: "safety_cmp", reason: "Organ function requires CMP safety panel" };
+            }
+          }
+        } else if (patient.lab_path === "labcorp") {
+          // Fallback to patient lab_path field
+          const medHistory = patient.medical_history as Record<string, boolean> | null;
+          if (patient.gender === "male") {
+            labPath = { path: "labcorp", panel: "mens_safety", reason: "Male testosterone therapy requires PSA, CBC, CMP" };
+          } else if (medHistory?.thyroidDisorder) {
+            labPath = { path: "labcorp", panel: "thyroid", reason: "Thyroid disorder requires TSH, T3, T4 panel" };
+          } else if (medHistory?.kidneyDisease || medHistory?.liverDisease) {
+            labPath = { path: "labcorp", panel: "safety_cmp", reason: "Organ function requires CMP safety panel" };
+          }
+        }
+
+        patientsWithLogs.push({ patient, latestLog, highestCategory, riskLevel, labPath });
       }
 
       setPendingPatients(patientsWithLogs);
@@ -297,6 +339,32 @@ const ProviderDashboard = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/admin/login");
+  };
+
+  const handleEmailRequisition = async () => {
+    if (!selectedPatient || !selectedPatient.labPath?.panel) return;
+
+    setIsEmailingRequisition(true);
+    try {
+      const { error } = await supabase.functions.invoke("send-labcorp-requisition", {
+        body: {
+          patientName: selectedPatient.patient.full_name,
+          patientDob: selectedPatient.patient.dob,
+          gender: selectedPatient.patient.gender || "unknown",
+          panelType: selectedPatient.labPath.panel,
+          reason: selectedPatient.labPath.reason || "Medical necessity",
+        },
+      });
+
+      if (error) throw error;
+
+      toast.success("LabCorp requisition emailed successfully!");
+    } catch (error: any) {
+      console.error("Error emailing requisition:", error);
+      toast.error("Failed to email requisition: " + error.message);
+    } finally {
+      setIsEmailingRequisition(false);
+    }
   };
 
   const chartData = patientLogs.map(log => ({
@@ -464,6 +532,60 @@ const ProviderDashboard = () => {
                     </div>
                   </CardContent>
                 </Card>
+              )}
+
+              {/* Lab Path Indicator */}
+              {selectedPatient.labPath && (
+                <Card className={`border-2 ${
+                  selectedPatient.labPath.path === "labcorp" 
+                    ? "border-amber-500 bg-amber-50/30 dark:bg-amber-950/10" 
+                    : "border-green-500 bg-green-50/30 dark:bg-green-950/10"
+                }`}>
+                  <CardContent className="pt-4">
+                    <div className="flex items-start gap-3">
+                      {selectedPatient.labPath.path === "labcorp" ? (
+                        <TestTube className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                      ) : (
+                        <Droplet className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      )}
+                      <div>
+                        <p className={`font-semibold ${
+                          selectedPatient.labPath.path === "labcorp" 
+                            ? "text-amber-700 dark:text-amber-400" 
+                            : "text-green-700 dark:text-green-400"
+                        }`}>
+                          {selectedPatient.labPath.path === "labcorp" ? "LabCorp Blood Work Required" : "ZRT Saliva Kit (Standard)"}
+                        </p>
+                        {selectedPatient.labPath.reason && (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {selectedPatient.labPath.reason}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge variant="outline" className="text-xs">
+                            {selectedPatient.patient.gender === "male" ? "Male" : "Female"}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {selectedPatient.patient.treatment_request?.replace(/_/g, " ") || "Not specified"}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* LabCorp Requisition Card */}
+              {selectedPatient.labPath?.path === "labcorp" && selectedPatient.labPath.panel && (
+                <LabCorpRequisition
+                  patientName={selectedPatient.patient.full_name}
+                  patientDob={selectedPatient.patient.dob}
+                  gender={selectedPatient.patient.gender || "unknown"}
+                  panelType={selectedPatient.labPath.panel}
+                  reason={selectedPatient.labPath.reason || "Medical necessity"}
+                  onEmailRequisition={handleEmailRequisition}
+                  isEmailing={isEmailingRequisition}
+                />
               )}
 
               {/* Symptom Trends Chart */}

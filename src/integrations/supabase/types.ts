@@ -180,14 +180,17 @@ export type Database = {
           current_protocol: string | null
           dob: string | null
           full_name: string
+          gender: string | null
           id: string
           intake_completed: boolean | null
           invited_at: string | null
           invited_by: string | null
+          lab_path: string | null
           medical_history: Json | null
           onboarding_status: string | null
           risk_status: string | null
           safety_flags: Json | null
+          treatment_request: string | null
           updated_at: string | null
           user_id: string | null
         }
@@ -196,14 +199,17 @@ export type Database = {
           current_protocol?: string | null
           dob?: string | null
           full_name: string
+          gender?: string | null
           id?: string
           intake_completed?: boolean | null
           invited_at?: string | null
           invited_by?: string | null
+          lab_path?: string | null
           medical_history?: Json | null
           onboarding_status?: string | null
           risk_status?: string | null
           safety_flags?: Json | null
+          treatment_request?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
@@ -212,14 +218,17 @@ export type Database = {
           current_protocol?: string | null
           dob?: string | null
           full_name?: string
+          gender?: string | null
           id?: string
           intake_completed?: boolean | null
           invited_at?: string | null
           invited_by?: string | null
+          lab_path?: string | null
           medical_history?: Json | null
           onboarding_status?: string | null
           risk_status?: string | null
           safety_flags?: Json | null
+          treatment_request?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
