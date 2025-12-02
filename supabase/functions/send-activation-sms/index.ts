@@ -180,7 +180,7 @@ serve(async (req) => {
     // Send SMS via HighLevel if requested and we have phone
     if (send_sms && phone) {
       try {
-        const highlevelWebhookUrl = "https://services.leadconnectorhq.com/hooks/BVEhP40JNHGLuGnXGCNh/webhook-trigger/e2d20f12-bc22-4a47-ab75-7a39ac44f03b";
+        const highlevelWebhookUrl = "https://services.leadconnectorhq.com/hooks/wqGyQyVn4lNUQXzYRwuv/webhook-trigger/e19b62f3-696a-4bd9-9f00-f6554c4d5a17";
         
         const smsMessage = `Hi ${first_name}! Your Elevated Health membership is approved. Activate here: ${paymentLink}`;
         
