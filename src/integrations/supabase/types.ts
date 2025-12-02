@@ -14,6 +14,65 @@ export type Database = {
   }
   public: {
     Tables: {
+      activation_links: {
+        Row: {
+          activated_at: string | null
+          addon_tier: string
+          base_membership: string
+          created_at: string
+          id: string
+          patient_email: string
+          patient_id: string | null
+          patient_name: string
+          patient_phone: string | null
+          sent_at: string
+          status: string
+          stripe_checkout_url: string
+          total_monthly: number
+          updated_at: string
+        }
+        Insert: {
+          activated_at?: string | null
+          addon_tier?: string
+          base_membership?: string
+          created_at?: string
+          id?: string
+          patient_email: string
+          patient_id?: string | null
+          patient_name: string
+          patient_phone?: string | null
+          sent_at?: string
+          status?: string
+          stripe_checkout_url: string
+          total_monthly: number
+          updated_at?: string
+        }
+        Update: {
+          activated_at?: string | null
+          addon_tier?: string
+          base_membership?: string
+          created_at?: string
+          id?: string
+          patient_email?: string
+          patient_id?: string | null
+          patient_name?: string
+          patient_phone?: string | null
+          sent_at?: string
+          status?: string
+          stripe_checkout_url?: string
+          total_monthly?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activation_links_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hormone_mapping_payments: {
         Row: {
           amount_paid: number | null

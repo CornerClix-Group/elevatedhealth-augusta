@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Loader2, AlertTriangle, Check, User, TrendingUp, TrendingDown, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet, Activity, MessageSquare, Pill, Phone, Mail, Save } from "lucide-react";
+import { Loader2, AlertTriangle, Check, User, TrendingUp, TrendingDown, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet, Activity, MessageSquare, Pill, Phone, Mail, Save, Clock, CreditCard } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import confetti from "canvas-confetti";
@@ -71,11 +71,24 @@ interface RecentCheckIn {
   improved: boolean;
 }
 
+interface PendingActivation {
+  id: string;
+  patient_name: string;
+  patient_email: string;
+  patient_phone: string | null;
+  base_membership: string;
+  addon_tier: string;
+  total_monthly: number;
+  sent_at: string;
+  status: string;
+}
+
 const ProviderDashboard = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [pendingPatients, setPendingPatients] = useState<PatientWithLog[]>([]);
   const [recentCheckIns, setRecentCheckIns] = useState<RecentCheckIn[]>([]);
+  const [pendingActivations, setPendingActivations] = useState<PendingActivation[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<PatientWithLog | null>(null);
   const [patientLogs, setPatientLogs] = useState<SymptomLog[]>([]);
   const [protocols, setProtocols] = useState<Protocol[]>([]);
@@ -314,6 +327,15 @@ const ProviderDashboard = () => {
       }
       
       setRecentCheckIns(checkInsData);
+
+      // Load pending activations
+      const { data: activationsData } = await supabase
+        .from("activation_links")
+        .select("*")
+        .eq("status", "pending")
+        .order("sent_at", { ascending: false });
+      
+      setPendingActivations((activationsData || []) as PendingActivation[]);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -595,14 +617,18 @@ const ProviderDashboard = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="triage" className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4" />
               Action Needed ({pendingPatients.length})
             </TabsTrigger>
             <TabsTrigger value="monitoring" className="flex items-center gap-2">
               <Activity className="w-4 h-4" />
-              Patient Monitoring ({recentCheckIns.length})
+              Monitoring ({recentCheckIns.length})
+            </TabsTrigger>
+            <TabsTrigger value="activations" className="flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Pending Activations ({pendingActivations.length})
             </TabsTrigger>
           </TabsList>
 
@@ -780,6 +806,78 @@ const ProviderDashboard = () => {
                                     No Action
                                   </Button>
                                 )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Pending Activations Tab */}
+          <TabsContent value="activations">
+            <Card className="bg-card border-border/50">
+              <CardHeader>
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <CreditCard className="w-4 h-4" />
+                  Awaiting Payment Activation
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {pendingActivations.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Check className="w-12 h-12 mx-auto mb-2 text-green-500" />
+                    <p className="text-muted-foreground">All activation emails have been completed!</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-border/50">
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Patient</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Membership</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Monthly</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Sent</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Days Waiting</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pendingActivations.map((activation) => {
+                          const daysSinceSent = Math.floor((Date.now() - new Date(activation.sent_at).getTime()) / (1000 * 60 * 60 * 24));
+                          const membershipLabel = activation.base_membership === "vitality" ? "Vitality" : "Metabolic";
+                          const addonLabel = activation.addon_tier === "none" ? "" : ` + ${activation.addon_tier.replace("tier", "Tier ")}`;
+                          
+                          return (
+                            <tr key={activation.id} className={`border-b border-border/30 ${daysSinceSent >= 3 ? "bg-yellow-50/50 dark:bg-yellow-950/10" : ""}`}>
+                              <td className="py-4 px-4">
+                                <div>
+                                  <p className="font-medium text-foreground">{activation.patient_name}</p>
+                                  <p className="text-xs text-muted-foreground">{activation.patient_email}</p>
+                                </div>
+                              </td>
+                              <td className="py-4 px-4">
+                                <span className="text-sm text-foreground">{membershipLabel}{addonLabel}</span>
+                              </td>
+                              <td className="py-4 px-4">
+                                <span className="text-sm font-medium text-primary">${activation.total_monthly}/mo</span>
+                              </td>
+                              <td className="py-4 px-4">
+                                <span className="text-sm text-muted-foreground">
+                                  {new Date(activation.sent_at).toLocaleDateString()}
+                                </span>
+                              </td>
+                              <td className="py-4 px-4">
+                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  daysSinceSent >= 3 
+                                    ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400" 
+                                    : "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                                }`}>
+                                  {daysSinceSent === 0 ? "Today" : `${daysSinceSent} day${daysSinceSent !== 1 ? "s" : ""}`}
+                                </span>
                               </td>
                             </tr>
                           );

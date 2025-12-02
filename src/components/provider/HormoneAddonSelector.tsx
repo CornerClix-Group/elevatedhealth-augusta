@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, DollarSign, Pill, RefreshCw, Link2, Copy, Mail, MessageSquare, Check } from "lucide-react";
+import { Loader2, DollarSign, Pill, RefreshCw, Copy, Mail, Check } from "lucide-react";
 
 interface HormoneAddonSelectorProps {
   patientId: string;
@@ -45,10 +45,8 @@ const HormoneAddonSelector = ({
   const [selectedMembership, setSelectedMembership] = useState<"metabolic" | "vitality">(baseMembership || "metabolic");
   const [isUpdating, setIsUpdating] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
-  const [isSendingSms, setIsSendingSms] = useState(false);
   const [generatedLink, setGeneratedLink] = useState("");
   const [emailSent, setEmailSent] = useState(false);
-  const [smsSent, setSmsSent] = useState(false);
 
   const selectedAddon = ADDON_TIERS.find(t => t.value === selectedTier);
   const basePrice = BASE_PRICES[selectedMembership];
@@ -104,8 +102,8 @@ const HormoneAddonSelector = ({
           base_membership: selectedMembership,
           addon_tier: selectedTier,
           patient_email: patientEmail,
+          patient_id: patientId,
           send_email: true,
-          send_sms: false,
         },
       });
 
@@ -127,48 +125,6 @@ const HormoneAddonSelector = ({
       toast.error(err.message || "Failed to send activation email");
     } finally {
       setIsSendingEmail(false);
-    }
-  };
-
-  const handleSendSms = async () => {
-    if (!patientPhone) {
-      toast.error("Patient phone number is required to send SMS");
-      return;
-    }
-
-    setIsSendingSms(true);
-    setSmsSent(false);
-    try {
-      const { data, error } = await supabase.functions.invoke("send-activation-sms", {
-        body: {
-          first_name: firstName,
-          phone: patientPhone,
-          base_membership: selectedMembership,
-          addon_tier: selectedTier,
-          patient_email: patientEmail,
-          send_email: false,
-          send_sms: true,
-        },
-      });
-
-      if (error) throw error;
-
-      if (data?.success) {
-        setGeneratedLink(data.payment_link);
-        if (data.sms_sent) {
-          setSmsSent(true);
-          toast.success(`Activation SMS sent to ${patientPhone}!`);
-        } else {
-          toast.warning("Link generated but SMS could not be sent. Use copy link instead.");
-        }
-      } else {
-        throw new Error(data?.error || "Failed to send activation SMS");
-      }
-    } catch (err: any) {
-      console.error("Send SMS error:", err);
-      toast.error(err.message || "Failed to send activation SMS");
-    } finally {
-      setIsSendingSms(false);
     }
   };
 
@@ -305,27 +261,6 @@ const HormoneAddonSelector = ({
           
           {!patientEmail && (
             <p className="text-xs text-center text-amber-600">No email on file - add patient email to send</p>
-          )}
-
-          <Button
-            onClick={handleSendSms}
-            disabled={isSendingSms || !patientPhone}
-            variant="outline"
-            className="w-full"
-            size="lg"
-          >
-            {isSendingSms ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            ) : smsSent ? (
-              <Check className="w-4 h-4 mr-2" />
-            ) : (
-              <MessageSquare className="w-4 h-4 mr-2" />
-            )}
-            {isSendingSms ? "Sending..." : smsSent ? "SMS Sent!" : "Send Activation SMS"}
-          </Button>
-
-          {!patientPhone && (
-            <p className="text-xs text-center text-muted-foreground">No phone on file - add patient phone to send SMS</p>
           )}
         </div>
 
