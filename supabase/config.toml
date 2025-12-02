@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.send-quiz-result]
 verify_jwt = false
+
+[functions.send-labcorp-requisition]
+verify_jwt = false

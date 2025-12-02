@@ -7,8 +7,9 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight, CheckCircle, ShieldAlert, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, CheckCircle, ShieldAlert, Loader2, User } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 interface Question {
@@ -54,20 +55,32 @@ const HIGH_RISK_CONDITIONS = [
   { id: "pregnantBreastfeeding", label: "Pregnant or Breastfeeding" },
 ];
 
+// LabCorp Trigger Conditions
+const LABCORP_CONDITIONS = [
+  { id: "thyroidDisorder", label: "Thyroid Disorder (Hypo/Hyperthyroidism)" },
+  { id: "kidneyDisease", label: "Kidney Disease or Impaired Function" },
+  { id: "liverDisease", label: "Liver Disease or Impaired Function" },
+];
+
 const severityLabels = ["None", "Mild", "Moderate", "Severe"];
 
 const PatientIntake = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState<"symptoms" | "safety" | "medical">("symptoms");
+  const [step, setStep] = useState<"profile" | "symptoms" | "safety" | "medical">("profile");
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [gender, setGender] = useState<string>("");
+  const [treatmentRequest, setTreatmentRequest] = useState<string>("");
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [safetyAnswers, setSafetyAnswers] = useState<Record<string, boolean>>({});
   const [medicalHistory, setMedicalHistory] = useState<Record<string, boolean>>({});
+  const [labcorpConditions, setLabcorpConditions] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const currentQuestion = symptomQuestions[currentIndex];
-  const progress = step === "symptoms" 
-    ? ((currentIndex + 1) / symptomQuestions.length) * 60 
+  const progress = step === "profile" 
+    ? 10 
+    : step === "symptoms" 
+    ? 10 + ((currentIndex + 1) / symptomQuestions.length) * 50 
     : step === "safety" ? 70 
     : 90;
 
@@ -102,6 +115,27 @@ const PatientIntake = () => {
     return HIGH_RISK_CONDITIONS.some(c => medicalHistory[c.id]);
   };
 
+  // Determine lab path based on triggers
+  const determineLabPath = () => {
+    // Male requesting testosterone -> LabCorp Men's Safety Panel
+    if (gender === "male" && (treatmentRequest === "testosterone" || treatmentRequest === "hormone_male")) {
+      return { path: "labcorp", panel: "mens_safety", reason: "Male testosterone therapy requires PSA, CBC, CMP" };
+    }
+    
+    // Thyroid disorder -> LabCorp Thyroid Panel
+    if (labcorpConditions.thyroidDisorder) {
+      return { path: "labcorp", panel: "thyroid", reason: "Thyroid disorder requires TSH, T3, T4 panel" };
+    }
+    
+    // Kidney or Liver disease -> LabCorp Safety Panel
+    if (labcorpConditions.kidneyDisease || labcorpConditions.liverDisease) {
+      return { path: "labcorp", panel: "safety_cmp", reason: "Organ function requires CMP safety panel" };
+    }
+    
+    // Default: ZRT Saliva Kit for all female hormone/weight loss
+    return { path: "zrt", panel: null, reason: null };
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
@@ -120,6 +154,7 @@ const PatientIntake = () => {
       const scores = calculateScores();
       const highRisk = isHighRisk();
       const androgenExcess = hasAndrogenExcess();
+      const labPathResult = determineLabPath();
 
       // Save symptom log
       const { error: logError } = await supabase.from("symptom_logs").insert([{
@@ -132,6 +167,8 @@ const PatientIntake = () => {
           symptoms: answers,
           safety: safetyAnswers,
           androgenExcess,
+          labcorpConditions,
+          labPath: labPathResult,
         },
       }]);
 
@@ -141,7 +178,10 @@ const PatientIntake = () => {
       const updateData: Record<string, any> = {
         intake_completed: true,
         onboarding_status: "intake_complete",
-        medical_history: medicalHistory,
+        medical_history: { ...medicalHistory, ...labcorpConditions },
+        gender,
+        treatment_request: treatmentRequest,
+        lab_path: labPathResult.path,
       };
 
       if (highRisk) {
@@ -156,7 +196,7 @@ const PatientIntake = () => {
         .update(updateData)
         .eq("id", patient.id);
 
-      toast.success("Intake complete! Lauren will review your results.");
+      toast.success("Intake complete! A provider will review your results.");
       navigate("/patient/dashboard");
     } catch (error: any) {
       toast.error(error.message || "Failed to submit intake");
@@ -164,6 +204,8 @@ const PatientIntake = () => {
       setIsSubmitting(false);
     }
   };
+
+  const canProceedFromProfile = gender && treatmentRequest;
 
   return (
     <div className="min-h-screen bg-background">
@@ -175,11 +217,105 @@ const PatientIntake = () => {
           <div className="mb-8">
             <Progress value={progress} className="h-1" />
             <p className="text-xs text-muted-foreground mt-2 text-center">
+              {step === "profile" && "Patient Profile"}
               {step === "symptoms" && `Question ${currentIndex + 1} of ${symptomQuestions.length}`}
               {step === "safety" && "Safety Screening"}
               {step === "medical" && "Medical History"}
             </p>
           </div>
+
+          {/* Profile Step */}
+          {step === "profile" && (
+            <>
+              <Card className="border-border/50 mb-8">
+                <CardContent className="pt-8 pb-8">
+                  <div className="flex items-center gap-2 mb-6">
+                    <User className="w-5 h-5 text-primary" />
+                    <h2 className="font-cormorant text-xl text-foreground">
+                      Tell Us About Yourself
+                    </h2>
+                  </div>
+
+                  {/* Gender Selection */}
+                  <div className="mb-8">
+                    <Label className="text-sm font-medium mb-3 block">I identify as:</Label>
+                    <RadioGroup value={gender} onValueChange={setGender} className="space-y-3">
+                      <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
+                        <RadioGroupItem value="female" id="female" />
+                        <Label htmlFor="female" className="cursor-pointer flex-1">Female</Label>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
+                        <RadioGroupItem value="male" id="male" />
+                        <Label htmlFor="male" className="cursor-pointer flex-1">Male</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  {/* Treatment Request */}
+                  <div>
+                    <Label className="text-sm font-medium mb-3 block">I'm interested in:</Label>
+                    <RadioGroup value={treatmentRequest} onValueChange={setTreatmentRequest} className="space-y-3">
+                      {gender === "female" && (
+                        <>
+                          <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
+                            <RadioGroupItem value="hormone_female" id="hormone_female" />
+                            <Label htmlFor="hormone_female" className="cursor-pointer flex-1">
+                              <span className="font-medium">Hormone Replacement Therapy</span>
+                              <p className="text-xs text-muted-foreground">Menopause, perimenopause, hormone balance</p>
+                            </Label>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
+                            <RadioGroupItem value="weight_loss" id="weight_loss_f" />
+                            <Label htmlFor="weight_loss_f" className="cursor-pointer flex-1">
+                              <span className="font-medium">Weight Loss Program</span>
+                              <p className="text-xs text-muted-foreground">GLP-1 therapy with hormonal support</p>
+                            </Label>
+                          </div>
+                        </>
+                      )}
+                      {gender === "male" && (
+                        <>
+                          <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
+                            <RadioGroupItem value="testosterone" id="testosterone" />
+                            <Label htmlFor="testosterone" className="cursor-pointer flex-1">
+                              <span className="font-medium">Testosterone Therapy (TRT)</span>
+                              <p className="text-xs text-muted-foreground">Low-T, energy, strength optimization</p>
+                            </Label>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
+                            <RadioGroupItem value="hormone_male" id="hormone_male" />
+                            <Label htmlFor="hormone_male" className="cursor-pointer flex-1">
+                              <span className="font-medium">Full Hormone Optimization</span>
+                              <p className="text-xs text-muted-foreground">Comprehensive male hormone panel</p>
+                            </Label>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
+                            <RadioGroupItem value="weight_loss" id="weight_loss_m" />
+                            <Label htmlFor="weight_loss_m" className="cursor-pointer flex-1">
+                              <span className="font-medium">Weight Loss Program</span>
+                              <p className="text-xs text-muted-foreground">GLP-1 therapy with metabolic support</p>
+                            </Label>
+                          </div>
+                        </>
+                      )}
+                      {!gender && (
+                        <p className="text-sm text-muted-foreground italic">Please select your gender first</p>
+                      )}
+                    </RadioGroup>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Button 
+                onClick={() => setStep("symptoms")} 
+                className="w-full"
+                disabled={!canProceedFromProfile}
+              >
+                Continue
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            </>
+          )}
 
           {/* Symptoms Step */}
           {step === "symptoms" && (
@@ -215,7 +351,17 @@ const PatientIntake = () => {
               </Card>
 
               <div className="flex gap-4">
-                <Button variant="outline" onClick={handlePrev} disabled={currentIndex === 0} className="flex-1">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    if (currentIndex === 0) {
+                      setStep("profile");
+                    } else {
+                      handlePrev();
+                    }
+                  }} 
+                  className="flex-1"
+                >
                   <ChevronLeft className="w-4 h-4 mr-2" />
                   Back
                 </Button>
@@ -294,7 +440,9 @@ const PatientIntake = () => {
                     Please answer honestly. This ensures your safety.
                   </p>
 
-                  <div className="space-y-4">
+                  {/* High Risk Conditions */}
+                  <div className="space-y-4 mb-8">
+                    <p className="text-sm font-medium text-foreground">Critical Conditions:</p>
                     {HIGH_RISK_CONDITIONS.map((c) => (
                       <div 
                         key={c.id} 
@@ -314,9 +462,31 @@ const PatientIntake = () => {
                     ))}
                   </div>
 
+                  {/* LabCorp Trigger Conditions */}
+                  <div className="space-y-4">
+                    <p className="text-sm font-medium text-foreground">Other Conditions (may affect lab requirements):</p>
+                    {LABCORP_CONDITIONS.map((c) => (
+                      <div 
+                        key={c.id} 
+                        className={`flex items-center gap-3 p-3 rounded-lg border ${
+                          labcorpConditions[c.id] ? "border-amber-300 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/20" : "border-border"
+                        }`}
+                      >
+                        <Checkbox
+                          id={c.id}
+                          checked={labcorpConditions[c.id] || false}
+                          onCheckedChange={(checked) => setLabcorpConditions({ ...labcorpConditions, [c.id]: checked === true })}
+                        />
+                        <Label htmlFor={c.id} className="cursor-pointer font-medium">
+                          {c.label}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+
                   {isHighRisk() && (
                     <div className="mt-4 p-3 bg-red-50 dark:bg-red-950/30 rounded-lg text-sm text-red-700 dark:text-red-300">
-                      Your intake will be flagged for priority manual review by Lauren.
+                      Your intake will be flagged for priority manual review by a provider.
                     </div>
                   )}
                 </CardContent>
