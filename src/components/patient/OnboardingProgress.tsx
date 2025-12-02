@@ -97,7 +97,7 @@ export const OnboardingProgress = ({
                 {isCompleted ? (
                   <Check className="w-4 h-4" />
                 ) : isCurrent ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-sm font-bold">{stepNumber}</span>
                 ) : (
                   <Circle className="w-4 h-4" />
                 )}
