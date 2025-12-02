@@ -14,6 +14,8 @@ interface LabCorpRequisitionRequest {
   gender: string;
   panelType: "mens_safety" | "thyroid" | "safety_cmp";
   reason: string;
+  providerName?: string;
+  providerCredentials?: string;
 }
 
 const PANEL_DETAILS: Record<string, {
@@ -61,9 +63,12 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { patientName, patientDob, gender, panelType, reason }: LabCorpRequisitionRequest = await req.json();
+    const { patientName, patientDob, gender, panelType, reason, providerName, providerCredentials }: LabCorpRequisitionRequest = await req.json();
     
-    console.log(`Processing requisition for patient: ${patientName}, panel: ${panelType}`);
+    const displayProviderName = providerName || "Provider";
+    const displayProviderCredentials = providerCredentials || "NP-C";
+    
+    console.log(`Processing requisition for patient: ${patientName}, panel: ${panelType}, provider: ${displayProviderName}`);
 
     const panel = PANEL_DETAILS[panelType];
     if (!panel) {
@@ -148,9 +153,14 @@ const handler = async (req: Request): Promise<Response> => {
         </div>
 
         <div class="signature-area">
-          <p style="margin: 0 0 20px 0; font-weight: bold;">Provider Signature Required</p>
+          <p style="margin: 0 0 20px 0; font-weight: bold;">Provider Authorization</p>
           <p style="border-bottom: 1px solid #000; width: 300px; height: 30px;"></p>
           <p style="font-size: 12px; color: #666;">Provider Signature / Date</p>
+          <p style="margin-top: 15px; font-size: 13px;">
+            <strong>Ordering Provider:</strong> ${displayProviderName}, ${displayProviderCredentials}<br/>
+            <strong>NPI:</strong> _______________<br/>
+            <strong>License:</strong> Georgia NP License
+          </p>
         </div>
 
         <p style="margin-top: 30px; font-size: 11px; color: #666; text-align: center;">

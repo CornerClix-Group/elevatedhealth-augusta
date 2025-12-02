@@ -82,6 +82,20 @@ const ProviderDashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState("triage");
   const [renewingPatientId, setRenewingPatientId] = useState<string | null>(null);
+  const [providerInfo, setProviderInfo] = useState<{ name: string; credentials: string }>({
+    name: "Provider",
+    credentials: "NP-C"
+  });
+
+  // Provider lookup based on email - expand this as you add more providers
+  const getProviderInfo = (email: string) => {
+    const providers: Record<string, { name: string; credentials: string }> = {
+      "admin@elevatedhealthaugusta.com": { name: "Lauren Bursey", credentials: "NP-C" },
+      "lauren@elevatedhealthaugusta.com": { name: "Lauren Bursey", credentials: "NP-C" },
+      // Add more providers here as needed
+    };
+    return providers[email.toLowerCase()] || { name: email.split("@")[0], credentials: "Provider" };
+  };
 
   useEffect(() => {
     checkAuthAndLoad();
@@ -93,6 +107,11 @@ const ProviderDashboard = () => {
       if (!user) {
         navigate("/admin/login");
         return;
+      }
+
+      // Set provider info based on logged-in user
+      if (user.email) {
+        setProviderInfo(getProviderInfo(user.email));
       }
 
       const { data: roles } = await supabase
@@ -473,6 +492,8 @@ const ProviderDashboard = () => {
           gender: selectedPatient.patient.gender || "unknown",
           panelType: selectedPatient.labPath.panel,
           reason: selectedPatient.labPath.reason || "Medical necessity",
+          providerName: providerInfo.name,
+          providerCredentials: providerInfo.credentials,
         },
       });
 
@@ -833,6 +854,8 @@ const ProviderDashboard = () => {
                   reason={selectedPatient.labPath.reason || "Medical necessity"}
                   onEmailRequisition={handleEmailRequisition}
                   isEmailing={isEmailingRequisition}
+                  providerName={providerInfo.name}
+                  providerCredentials={providerInfo.credentials}
                 />
               )}
 

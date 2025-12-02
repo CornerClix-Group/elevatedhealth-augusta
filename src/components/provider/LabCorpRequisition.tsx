@@ -11,6 +11,8 @@ interface LabCorpRequisitionProps {
   reason: string;
   onEmailRequisition: () => void;
   isEmailing?: boolean;
+  providerName?: string;
+  providerCredentials?: string;
 }
 
 const PANEL_DETAILS = {
@@ -53,6 +55,8 @@ const LabCorpRequisition = ({
   reason,
   onEmailRequisition,
   isEmailing,
+  providerName = "Provider",
+  providerCredentials = "NP-C",
 }: LabCorpRequisitionProps) => {
   const panel = PANEL_DETAILS[panelType];
   const today = new Date().toLocaleDateString("en-US", {
@@ -146,7 +150,7 @@ const LabCorpRequisition = ({
           <div class="signature-line"></div>
           <div class="signature-label">Provider Signature / Date</div>
           <p style="margin-top: 20px; font-size: 12px;">
-            <strong>Ordering Provider:</strong> Lauren Bursey, NP-C<br/>
+            <strong>Ordering Provider:</strong> ${providerName}, ${providerCredentials}<br/>
             <strong>NPI:</strong> _______________<br/>
             <strong>License:</strong> Georgia NP License
           </p>
