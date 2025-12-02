@@ -233,6 +233,7 @@ export type Database = {
           created_at: string | null
           current_protocol: string | null
           dob: string | null
+          email: string | null
           full_name: string
           gender: string | null
           id: string
@@ -242,6 +243,7 @@ export type Database = {
           lab_path: string | null
           medical_history: Json | null
           onboarding_status: string | null
+          phone: string | null
           risk_status: string | null
           safety_flags: Json | null
           treatment_request: string | null
@@ -253,6 +255,7 @@ export type Database = {
           created_at?: string | null
           current_protocol?: string | null
           dob?: string | null
+          email?: string | null
           full_name: string
           gender?: string | null
           id?: string
@@ -262,6 +265,7 @@ export type Database = {
           lab_path?: string | null
           medical_history?: Json | null
           onboarding_status?: string | null
+          phone?: string | null
           risk_status?: string | null
           safety_flags?: Json | null
           treatment_request?: string | null
@@ -273,6 +277,7 @@ export type Database = {
           created_at?: string | null
           current_protocol?: string | null
           dob?: string | null
+          email?: string | null
           full_name?: string
           gender?: string | null
           id?: string
@@ -282,6 +287,7 @@ export type Database = {
           lab_path?: string | null
           medical_history?: Json | null
           onboarding_status?: string | null
+          phone?: string | null
           risk_status?: string | null
           safety_flags?: Json | null
           treatment_request?: string | null
