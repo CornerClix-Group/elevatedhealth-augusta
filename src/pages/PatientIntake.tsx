@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -6,53 +6,64 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight, CheckCircle, ShieldAlert, Loader2, User } from "lucide-react";
+import { ChevronLeft, ChevronRight, CheckCircle, ShieldAlert, Loader2, User, Check } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { cn } from "@/lib/utils";
 
 interface Question {
   id: string;
   label: string;
   description: string;
   category: "estrogen" | "progesterone" | "androgen" | "cortisol" | "safety";
+  gender?: "female" | "male" | "all"; // Which gender this applies to
 }
 
 const symptomQuestions: Question[] = [
-  // Estrogen
-  { id: "hot_flashes", label: "Hot Flashes", description: "Sudden feelings of warmth", category: "estrogen" },
-  { id: "night_sweats", label: "Night Sweats", description: "Excessive sweating during sleep", category: "estrogen" },
-  { id: "vaginal_dryness", label: "Vaginal Dryness", description: "Discomfort or dryness", category: "estrogen" },
-  { id: "foggy_thinking", label: "Foggy Thinking", description: "Difficulty concentrating", category: "estrogen" },
-  { id: "heart_palpitations", label: "Heart Palpitations", description: "Awareness of heartbeat", category: "estrogen" },
-  // Progesterone
-  { id: "insomnia", label: "Sleep Disturbances", description: "Difficulty sleeping", category: "progesterone" },
-  { id: "anxiety", label: "Anxiety", description: "Feeling worried or on edge", category: "progesterone" },
-  { id: "painful_breasts", label: "Breast Tenderness", description: "Painful breast tissue", category: "progesterone" },
-  // Androgen
-  { id: "low_libido", label: "Low Libido", description: "Decreased interest in intimacy", category: "androgen" },
-  { id: "muscle_loss", label: "Muscle Loss", description: "Loss of muscle tone", category: "androgen" },
-  { id: "thinning_skin", label: "Thinning Skin", description: "Skin becoming fragile", category: "androgen" },
-  { id: "fatigue", label: "Fatigue", description: "Persistent tiredness", category: "androgen" },
-  { id: "loss_of_zest", label: "Loss of Zest", description: "Decreased motivation", category: "androgen" },
-  // Cortisol
-  { id: "stress", label: "Chronic Stress", description: "Ongoing stress", category: "cortisol" },
-  { id: "sugar_cravings", label: "Sugar Cravings", description: "Strong cravings", category: "cortisol" },
-  { id: "morning_fatigue", label: "Morning Fatigue", description: "Tired upon waking", category: "cortisol" },
+  // Estrogen - Female only
+  { id: "hot_flashes", label: "Hot Flashes", description: "Sudden feelings of warmth", category: "estrogen", gender: "female" },
+  { id: "night_sweats", label: "Night Sweats", description: "Excessive sweating during sleep", category: "estrogen", gender: "female" },
+  { id: "vaginal_dryness", label: "Vaginal Dryness", description: "Discomfort or dryness", category: "estrogen", gender: "female" },
+  { id: "foggy_thinking", label: "Foggy Thinking", description: "Difficulty concentrating", category: "estrogen", gender: "all" },
+  { id: "heart_palpitations", label: "Heart Palpitations", description: "Awareness of heartbeat", category: "estrogen", gender: "all" },
+  // Progesterone - Female only
+  { id: "insomnia", label: "Sleep Disturbances", description: "Difficulty sleeping", category: "progesterone", gender: "all" },
+  { id: "anxiety", label: "Anxiety", description: "Feeling worried or on edge", category: "progesterone", gender: "all" },
+  { id: "painful_breasts", label: "Breast Tenderness", description: "Painful breast tissue", category: "progesterone", gender: "female" },
+  // Androgen - All genders
+  { id: "low_libido", label: "Low Libido", description: "Decreased interest in intimacy", category: "androgen", gender: "all" },
+  { id: "muscle_loss", label: "Muscle Loss", description: "Loss of muscle tone", category: "androgen", gender: "all" },
+  { id: "thinning_skin", label: "Thinning Skin", description: "Skin becoming fragile", category: "androgen", gender: "all" },
+  { id: "fatigue", label: "Fatigue", description: "Persistent tiredness", category: "androgen", gender: "all" },
+  { id: "loss_of_zest", label: "Loss of Zest", description: "Decreased motivation", category: "androgen", gender: "all" },
+  // Male-specific androgen symptoms
+  { id: "erectile_dysfunction", label: "Erectile Dysfunction", description: "Difficulty achieving or maintaining erection", category: "androgen", gender: "male" },
+  { id: "decreased_strength", label: "Decreased Strength", description: "Noticeable loss of physical strength", category: "androgen", gender: "male" },
+  // Cortisol - All genders
+  { id: "stress", label: "Chronic Stress", description: "Ongoing stress", category: "cortisol", gender: "all" },
+  { id: "sugar_cravings", label: "Sugar Cravings", description: "Strong cravings", category: "cortisol", gender: "all" },
+  { id: "morning_fatigue", label: "Morning Fatigue", description: "Tired upon waking", category: "cortisol", gender: "all" },
+  { id: "belly_fat", label: "Stubborn Belly Fat", description: "Weight accumulation around midsection", category: "cortisol", gender: "all" },
 ];
 
 const safetyQuestions = [
-  { id: "acne", label: "Acne", description: "Persistent breakouts" },
-  { id: "facial_hair", label: "Excessive Facial Hair", description: "Unwanted hair growth" },
-  { id: "oily_skin", label: "Oily Skin", description: "Excessively oily" },
+  { id: "acne", label: "Acne", description: "Persistent breakouts", gender: "all" as const },
+  { id: "facial_hair", label: "Excessive Facial Hair", description: "Unwanted hair growth", gender: "female" as const },
+  { id: "oily_skin", label: "Oily Skin", description: "Excessively oily", gender: "all" as const },
 ];
 
-const HIGH_RISK_CONDITIONS = [
+const HIGH_RISK_CONDITIONS_FEMALE = [
   { id: "breastCancer", label: "Breast Cancer (Personal History)" },
   { id: "uterineCancer", label: "Uterine/Endometrial Cancer" },
   { id: "bloodClot", label: "Active Blood Clot (DVT/PE)" },
   { id: "pregnantBreastfeeding", label: "Pregnant or Breastfeeding" },
+];
+
+const HIGH_RISK_CONDITIONS_MALE = [
+  { id: "prostateCancer", label: "Prostate Cancer (Personal History)" },
+  { id: "bloodClot", label: "Active Blood Clot (DVT/PE)" },
+  { id: "polycythemia", label: "Polycythemia (High Red Blood Cell Count)" },
 ];
 
 // LabCorp Trigger Conditions
@@ -62,30 +73,75 @@ const LABCORP_CONDITIONS = [
   { id: "liverDisease", label: "Liver Disease or Impaired Function" },
 ];
 
+const TREATMENT_OPTIONS_FEMALE = [
+  { id: "hormone_female", label: "Hormone Replacement Therapy", description: "Menopause, perimenopause, hormone balance" },
+  { id: "weight_loss", label: "Weight Loss Program", description: "GLP-1 therapy with hormonal support" },
+];
+
+const TREATMENT_OPTIONS_MALE = [
+  { id: "testosterone", label: "Testosterone Therapy (TRT)", description: "Low-T, energy, strength optimization" },
+  { id: "hormone_male", label: "Full Hormone Optimization", description: "Comprehensive male hormone panel" },
+  { id: "weight_loss", label: "Weight Loss Program", description: "GLP-1 therapy with metabolic support" },
+];
+
 const severityLabels = ["None", "Mild", "Moderate", "Severe"];
+
+const STEPS = [
+  { id: "profile", label: "Profile" },
+  { id: "symptoms", label: "Symptoms" },
+  { id: "safety", label: "Safety" },
+  { id: "medical", label: "History" },
+];
 
 const PatientIntake = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState<"profile" | "symptoms" | "safety" | "medical">("profile");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [gender, setGender] = useState<string>("");
-  const [treatmentRequest, setTreatmentRequest] = useState<string>("");
+  const [treatmentRequests, setTreatmentRequests] = useState<string[]>([]);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [safetyAnswers, setSafetyAnswers] = useState<Record<string, boolean>>({});
   const [medicalHistory, setMedicalHistory] = useState<Record<string, boolean>>({});
   const [labcorpConditions, setLabcorpConditions] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const currentQuestion = symptomQuestions[currentIndex];
-  const progress = step === "profile" 
-    ? 10 
-    : step === "symptoms" 
-    ? 10 + ((currentIndex + 1) / symptomQuestions.length) * 50 
-    : step === "safety" ? 70 
-    : 90;
+  // Filter questions based on gender
+  const filteredSymptomQuestions = useMemo(() => {
+    if (!gender) return [];
+    return symptomQuestions.filter(q => q.gender === "all" || q.gender === gender);
+  }, [gender]);
+
+  const filteredSafetyQuestions = useMemo(() => {
+    if (!gender) return safetyQuestions;
+    return safetyQuestions.filter(q => q.gender === "all" || q.gender === gender);
+  }, [gender]);
+
+  const highRiskConditions = gender === "male" ? HIGH_RISK_CONDITIONS_MALE : HIGH_RISK_CONDITIONS_FEMALE;
+  const treatmentOptions = gender === "male" ? TREATMENT_OPTIONS_MALE : TREATMENT_OPTIONS_FEMALE;
+
+  const currentQuestion = filteredSymptomQuestions[currentIndex];
+
+  // Calculate which step index we're on (0-3)
+  const getStepIndex = () => {
+    switch (step) {
+      case "profile": return 0;
+      case "symptoms": return 1;
+      case "safety": return 2;
+      case "medical": return 3;
+      default: return 0;
+    }
+  };
+
+  const handleTreatmentToggle = (treatmentId: string) => {
+    setTreatmentRequests(prev => 
+      prev.includes(treatmentId) 
+        ? prev.filter(id => id !== treatmentId)
+        : [...prev, treatmentId]
+    );
+  };
 
   const handleNext = () => {
-    if (currentIndex < symptomQuestions.length - 1) {
+    if (currentIndex < filteredSymptomQuestions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
       setStep("safety");
@@ -100,25 +156,25 @@ const PatientIntake = () => {
 
   const calculateScores = () => {
     const scores = { estrogen: 0, progesterone: 0, androgen: 0, cortisol: 0 };
-    symptomQuestions.forEach((q) => {
+    filteredSymptomQuestions.forEach((q) => {
       scores[q.category] += answers[q.id] || 0;
     });
     return scores;
   };
 
   const hasAndrogenExcess = () => {
-    const count = safetyQuestions.filter(q => safetyAnswers[q.id]).length;
+    const count = filteredSafetyQuestions.filter(q => safetyAnswers[q.id]).length;
     return count > 1;
   };
 
   const isHighRisk = () => {
-    return HIGH_RISK_CONDITIONS.some(c => medicalHistory[c.id]);
+    return highRiskConditions.some(c => medicalHistory[c.id]);
   };
 
   // Determine lab path based on triggers
   const determineLabPath = () => {
     // Male requesting testosterone -> LabCorp Men's Safety Panel
-    if (gender === "male" && (treatmentRequest === "testosterone" || treatmentRequest === "hormone_male")) {
+    if (gender === "male" && (treatmentRequests.includes("testosterone") || treatmentRequests.includes("hormone_male"))) {
       return { path: "labcorp", panel: "mens_safety", reason: "Male testosterone therapy requires PSA, CBC, CMP" };
     }
     
@@ -174,19 +230,19 @@ const PatientIntake = () => {
 
       if (logError) throw logError;
 
-      // Update patient record
+      // Update patient record - store treatments as comma-separated string
       const updateData: Record<string, any> = {
         intake_completed: true,
         onboarding_status: "intake_complete",
         medical_history: { ...medicalHistory, ...labcorpConditions },
         gender,
-        treatment_request: treatmentRequest,
+        treatment_request: treatmentRequests.join(","),
         lab_path: labPathResult.path,
       };
 
       if (highRisk) {
         updateData.risk_status = "high_risk_review";
-        updateData.safety_flags = HIGH_RISK_CONDITIONS
+        updateData.safety_flags = highRiskConditions
           .filter(c => medicalHistory[c.id])
           .map(c => c.label);
       }
@@ -205,7 +261,7 @@ const PatientIntake = () => {
     }
   };
 
-  const canProceedFromProfile = gender && treatmentRequest;
+  const canProceedFromProfile = gender && treatmentRequests.length > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -213,14 +269,51 @@ const PatientIntake = () => {
       
       <main className="pt-24 pb-8">
         <div className="container mx-auto px-4 max-w-xl">
-          {/* Progress */}
+          {/* Step Indicators */}
           <div className="mb-8">
-            <Progress value={progress} className="h-1" />
-            <p className="text-xs text-muted-foreground mt-2 text-center">
-              {step === "profile" && "Patient Profile"}
-              {step === "symptoms" && `Question ${currentIndex + 1} of ${symptomQuestions.length}`}
-              {step === "safety" && "Safety Screening"}
-              {step === "medical" && "Medical History"}
+            <div className="flex items-center justify-between mb-4">
+              {STEPS.map((s, index) => {
+                const currentStepIndex = getStepIndex();
+                const isCompleted = index < currentStepIndex;
+                const isCurrent = index === currentStepIndex;
+                
+                return (
+                  <div key={s.id} className="flex items-center">
+                    <div className="flex flex-col items-center">
+                      <div className={cn(
+                        "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all",
+                        isCompleted && "bg-green-500 text-white",
+                        isCurrent && "bg-primary text-primary-foreground",
+                        !isCompleted && !isCurrent && "bg-secondary text-muted-foreground"
+                      )}>
+                        {isCompleted ? (
+                          <Check className="w-4 h-4" />
+                        ) : (
+                          index + 1
+                        )}
+                      </div>
+                      <span className={cn(
+                        "text-xs mt-1",
+                        isCurrent ? "text-primary font-medium" : "text-muted-foreground"
+                      )}>
+                        {s.label}
+                      </span>
+                    </div>
+                    {index < STEPS.length - 1 && (
+                      <div className={cn(
+                        "h-0.5 w-8 sm:w-12 mx-1",
+                        index < currentStepIndex ? "bg-green-500" : "bg-secondary"
+                      )} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground text-center">
+              {step === "profile" && "Tell us about yourself"}
+              {step === "symptoms" && `Question ${currentIndex + 1} of ${filteredSymptomQuestions.length}`}
+              {step === "safety" && "Safety screening"}
+              {step === "medical" && "Medical history review"}
             </p>
           </div>
 
@@ -239,7 +332,15 @@ const PatientIntake = () => {
                   {/* Gender Selection */}
                   <div className="mb-8">
                     <Label className="text-sm font-medium mb-3 block">I identify as:</Label>
-                    <RadioGroup value={gender} onValueChange={setGender} className="space-y-3">
+                    <RadioGroup 
+                      value={gender} 
+                      onValueChange={(value) => {
+                        setGender(value);
+                        setTreatmentRequests([]); // Reset treatments when gender changes
+                        setCurrentIndex(0); // Reset symptom index
+                      }} 
+                      className="space-y-3"
+                    >
                       <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
                         <RadioGroupItem value="female" id="female" />
                         <Label htmlFor="female" className="cursor-pointer flex-1">Female</Label>
@@ -251,57 +352,39 @@ const PatientIntake = () => {
                     </RadioGroup>
                   </div>
 
-                  {/* Treatment Request */}
+                  {/* Treatment Request - Multi-select */}
                   <div>
-                    <Label className="text-sm font-medium mb-3 block">I'm interested in:</Label>
-                    <RadioGroup value={treatmentRequest} onValueChange={setTreatmentRequest} className="space-y-3">
-                      {gender === "female" && (
-                        <>
-                          <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
-                            <RadioGroupItem value="hormone_female" id="hormone_female" />
-                            <Label htmlFor="hormone_female" className="cursor-pointer flex-1">
-                              <span className="font-medium">Hormone Replacement Therapy</span>
-                              <p className="text-xs text-muted-foreground">Menopause, perimenopause, hormone balance</p>
+                    <Label className="text-sm font-medium mb-3 block">
+                      I'm interested in: <span className="text-muted-foreground font-normal">(select all that apply)</span>
+                    </Label>
+                    {gender ? (
+                      <div className="space-y-3">
+                        {treatmentOptions.map((option) => (
+                          <div 
+                            key={option.id}
+                            className={cn(
+                              "flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer",
+                              treatmentRequests.includes(option.id) 
+                                ? "border-primary bg-primary/5" 
+                                : "border-border hover:border-primary/50"
+                            )}
+                            onClick={() => handleTreatmentToggle(option.id)}
+                          >
+                            <Checkbox
+                              id={option.id}
+                              checked={treatmentRequests.includes(option.id)}
+                              onCheckedChange={() => handleTreatmentToggle(option.id)}
+                            />
+                            <Label htmlFor={option.id} className="cursor-pointer flex-1">
+                              <span className="font-medium">{option.label}</span>
+                              <p className="text-xs text-muted-foreground">{option.description}</p>
                             </Label>
                           </div>
-                          <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
-                            <RadioGroupItem value="weight_loss" id="weight_loss_f" />
-                            <Label htmlFor="weight_loss_f" className="cursor-pointer flex-1">
-                              <span className="font-medium">Weight Loss Program</span>
-                              <p className="text-xs text-muted-foreground">GLP-1 therapy with hormonal support</p>
-                            </Label>
-                          </div>
-                        </>
-                      )}
-                      {gender === "male" && (
-                        <>
-                          <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
-                            <RadioGroupItem value="testosterone" id="testosterone" />
-                            <Label htmlFor="testosterone" className="cursor-pointer flex-1">
-                              <span className="font-medium">Testosterone Therapy (TRT)</span>
-                              <p className="text-xs text-muted-foreground">Low-T, energy, strength optimization</p>
-                            </Label>
-                          </div>
-                          <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
-                            <RadioGroupItem value="hormone_male" id="hormone_male" />
-                            <Label htmlFor="hormone_male" className="cursor-pointer flex-1">
-                              <span className="font-medium">Full Hormone Optimization</span>
-                              <p className="text-xs text-muted-foreground">Comprehensive male hormone panel</p>
-                            </Label>
-                          </div>
-                          <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
-                            <RadioGroupItem value="weight_loss" id="weight_loss_m" />
-                            <Label htmlFor="weight_loss_m" className="cursor-pointer flex-1">
-                              <span className="font-medium">Weight Loss Program</span>
-                              <p className="text-xs text-muted-foreground">GLP-1 therapy with metabolic support</p>
-                            </Label>
-                          </div>
-                        </>
-                      )}
-                      {!gender && (
-                        <p className="text-sm text-muted-foreground italic">Please select your gender first</p>
-                      )}
-                    </RadioGroup>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground italic">Please select your gender first</p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -318,7 +401,7 @@ const PatientIntake = () => {
           )}
 
           {/* Symptoms Step */}
-          {step === "symptoms" && (
+          {step === "symptoms" && currentQuestion && (
             <>
               <Card className="border-border/50 mb-8">
                 <CardContent className="pt-8 pb-8">
@@ -366,7 +449,7 @@ const PatientIntake = () => {
                   Back
                 </Button>
                 <Button onClick={handleNext} className="flex-1">
-                  {currentIndex === symptomQuestions.length - 1 ? "Continue" : "Next"}
+                  {currentIndex === filteredSymptomQuestions.length - 1 ? "Continue" : "Next"}
                   <ChevronRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>
@@ -381,7 +464,7 @@ const PatientIntake = () => {
                   <div className="flex items-center gap-2 mb-4">
                     <ShieldAlert className="w-5 h-5 text-amber-500" />
                     <h2 className="font-cormorant text-xl text-foreground">
-                      Androgen Safety Check
+                      {gender === "male" ? "Androgen Safety Check" : "Hormone Safety Check"}
                     </h2>
                   </div>
                   <p className="text-muted-foreground text-sm mb-6">
@@ -389,7 +472,7 @@ const PatientIntake = () => {
                   </p>
 
                   <div className="space-y-4">
-                    {safetyQuestions.map((q) => (
+                    {filteredSafetyQuestions.map((q) => (
                       <div key={q.id} className="flex items-start gap-3 p-3 rounded-lg border border-border">
                         <Checkbox
                           id={q.id}
@@ -406,14 +489,14 @@ const PatientIntake = () => {
 
                   {hasAndrogenExcess() && (
                     <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg text-sm text-amber-700 dark:text-amber-300">
-                      Multiple symptoms detected. Testosterone therapy may require additional evaluation.
+                      Multiple symptoms detected. {gender === "male" ? "Your testosterone therapy" : "Testosterone therapy"} may require additional evaluation.
                     </div>
                   )}
                 </CardContent>
               </Card>
 
               <div className="flex gap-4">
-                <Button variant="outline" onClick={() => { setStep("symptoms"); setCurrentIndex(symptomQuestions.length - 1); }} className="flex-1">
+                <Button variant="outline" onClick={() => { setStep("symptoms"); setCurrentIndex(filteredSymptomQuestions.length - 1); }} className="flex-1">
                   <ChevronLeft className="w-4 h-4 mr-2" />
                   Back
                 </Button>
@@ -443,7 +526,7 @@ const PatientIntake = () => {
                   {/* High Risk Conditions */}
                   <div className="space-y-4 mb-8">
                     <p className="text-sm font-medium text-foreground">Critical Conditions:</p>
-                    {HIGH_RISK_CONDITIONS.map((c) => (
+                    {highRiskConditions.map((c) => (
                       <div 
                         key={c.id} 
                         className={`flex items-center gap-3 p-3 rounded-lg border ${
