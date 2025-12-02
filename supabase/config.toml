@@ -32,3 +32,6 @@ verify_jwt = false
 
 [functions.update-subscription-addon]
 verify_jwt = false
+
+[functions.send-activation-sms]
+verify_jwt = false

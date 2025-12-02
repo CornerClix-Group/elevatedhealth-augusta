@@ -25,6 +25,8 @@ interface Patient {
   treatment_request?: string;
   lab_path?: string;
   dob?: string;
+  phone?: string;
+  email?: string;
 }
 
 interface SymptomLog {
@@ -906,7 +908,8 @@ const ProviderDashboard = () => {
               <HormoneAddonSelector
                 patientId={selectedPatient.patient.id}
                 patientName={selectedPatient.patient.full_name}
-                patientEmail={undefined} // TODO: Add email lookup from patient/user relation
+                patientEmail={selectedPatient.patient.email}
+                patientPhone={selectedPatient.patient.phone}
                 currentTier={(selectedPatient.patient.medical_history as Record<string, any>)?.hormone_addon_tier || "none"}
                 baseMembership="metabolic"
               />
