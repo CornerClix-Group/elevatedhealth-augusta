@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2, LogOut, AlertTriangle, Check, User, TrendingUp, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet } from "lucide-react";
+import { Loader2, LogOut, AlertTriangle, Check, User, TrendingUp, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet, RefreshCw } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import confetti from "canvas-confetti";
 import LabAnalysisCard from "@/components/provider/LabAnalysisCard";
@@ -67,6 +67,7 @@ const ProviderDashboard = () => {
   const [isAuthorizing, setIsAuthorizing] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isEmailingRequisition, setIsEmailingRequisition] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     checkAuthAndLoad();
@@ -402,9 +403,23 @@ const ProviderDashboard = () => {
             <p className="text-xs uppercase tracking-widest text-gold">Lauren's Command Center</p>
             <h1 className="font-cormorant text-2xl text-foreground">Triage Dashboard</h1>
           </div>
-          <Button variant="ghost" size="icon" onClick={handleLogout}>
-            <LogOut className="w-5 h-5" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={async () => {
+                setIsRefreshing(true);
+                await loadData();
+                setIsRefreshing(false);
+              }}
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleLogout}>
+              <LogOut className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </header>
 
