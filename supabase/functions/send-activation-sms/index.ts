@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { Resend } from "https://esm.sh/resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -50,6 +51,11 @@ serve(async (req) => {
     const resendKey = Deno.env.get("RESEND_API_KEY");
     logStep("Resend key check", { hasKey: !!resendKey });
 
+    // Initialize Supabase client for tracking
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
+
     const body = await req.json();
     const { 
       first_name, 
@@ -57,11 +63,11 @@ serve(async (req) => {
       base_membership = "metabolic", 
       addon_tier = "none",
       patient_email,
+      patient_id,
       send_email = false,
-      send_sms = false,
     } = body;
 
-    logStep("Request body received", { first_name, phone, base_membership, addon_tier, patient_email, send_email, send_sms });
+    logStep("Request body received", { first_name, phone, base_membership, addon_tier, patient_email, send_email });
 
     if (!first_name) {
       throw new Error("Missing required field: first_name is required");
@@ -115,7 +121,6 @@ serve(async (req) => {
 
     const paymentLink = session.url;
     let emailSent = false;
-    let smsSent = false;
 
     // Send email if requested and we have the email
     if (send_email && patient_email && resendKey) {
@@ -177,32 +182,30 @@ serve(async (req) => {
       }
     }
 
-    // Send SMS via HighLevel if requested and we have phone
-    if (send_sms && phone) {
+    // Track the activation link in the database
+    if (patient_email && paymentLink) {
       try {
-        const highlevelWebhookUrl = "https://services.leadconnectorhq.com/hooks/wqGyQyVn4lNUQXzYRwuv/webhook-trigger/e19b62f3-696a-4bd9-9f00-f6554c4d5a17";
-        
-        const smsMessage = `Hi ${first_name}! Your Elevated Health membership is approved. Activate here: ${paymentLink}`;
-        
-        const smsResponse = await fetch(highlevelWebhookUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            phone: phone,
-            message: smsMessage,
-            first_name: first_name,
-            payment_link: paymentLink,
+        const { error: trackingError } = await supabase
+          .from("activation_links")
+          .insert({
+            patient_id: patient_id || null,
+            patient_name: first_name,
+            patient_email: patient_email,
+            patient_phone: phone || null,
+            base_membership: base_membership,
+            addon_tier: addon_tier,
             total_monthly: totalMonthly,
-          }),
-        });
+            stripe_checkout_url: paymentLink,
+            status: "pending",
+          });
 
-        logStep("HighLevel webhook response", { status: smsResponse.status });
-        smsSent = smsResponse.ok;
-      } catch (smsError) {
-        logStep("SMS send error", { error: String(smsError) });
-        // Don't throw - we still want to return the link
+        if (trackingError) {
+          logStep("Failed to track activation link", { error: trackingError.message });
+        } else {
+          logStep("Activation link tracked in database");
+        }
+      } catch (trackError) {
+        logStep("Error tracking activation", { error: String(trackError) });
       }
     }
 
@@ -210,7 +213,6 @@ serve(async (req) => {
       success: true, 
       payment_link: paymentLink,
       email_sent: emailSent,
-      sms_sent: smsSent,
       message: "Activation link generated successfully."
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
