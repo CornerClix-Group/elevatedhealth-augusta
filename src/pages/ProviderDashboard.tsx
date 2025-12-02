@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Loader2, AlertTriangle, Check, User, TrendingUp, TrendingDown, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet, Activity, MessageSquare, Pill } from "lucide-react";
+import { Loader2, AlertTriangle, Check, User, TrendingUp, TrendingDown, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet, Activity, MessageSquare, Pill, Phone, Mail, Save } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import confetti from "canvas-confetti";
 import LabAnalysisCard from "@/components/provider/LabAnalysisCard";
@@ -89,6 +90,10 @@ const ProviderDashboard = () => {
     name: "Provider",
     credentials: "NP-C"
   });
+  // Contact info editing state
+  const [editPhone, setEditPhone] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [isSavingContact, setIsSavingContact] = useState(false);
 
   // Provider lookup based on email - expand this as you add more providers
   const getProviderInfo = (email: string) => {
@@ -319,6 +324,10 @@ const ProviderDashboard = () => {
   const selectPatient = async (patientWithLog: PatientWithLog) => {
     setSelectedPatient(patientWithLog);
     setIsPanelOpen(true);
+    
+    // Initialize contact info editing state
+    setEditPhone(patientWithLog.patient.phone || "");
+    setEditEmail(patientWithLog.patient.email || "");
 
     // Load all symptom logs for chart
     const { data: logs } = await supabase
@@ -358,6 +367,40 @@ const ProviderDashboard = () => {
       }
 
       setRecommendedProtocol(recommended || null);
+    }
+  };
+
+  const handleSaveContactInfo = async () => {
+    if (!selectedPatient) return;
+    
+    setIsSavingContact(true);
+    try {
+      const { error } = await supabase
+        .from("patients")
+        .update({ 
+          phone: editPhone || null, 
+          email: editEmail || null 
+        })
+        .eq("id", selectedPatient.patient.id);
+
+      if (error) throw error;
+
+      // Update local state
+      setSelectedPatient({
+        ...selectedPatient,
+        patient: {
+          ...selectedPatient.patient,
+          phone: editPhone || undefined,
+          email: editEmail || undefined,
+        }
+      });
+
+      toast.success("Contact info saved!");
+    } catch (err: any) {
+      console.error("Save error:", err);
+      toast.error(err.message || "Failed to save contact info");
+    } finally {
+      setIsSavingContact(false);
     }
   };
 
@@ -770,6 +813,57 @@ const ProviderDashboard = () => {
             </div>
 
             <div className="p-6 space-y-6">
+              {/* Contact Info Card */}
+              <Card className="border-border/50">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Contact Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="space-y-1.5">
+                    <label className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Phone className="w-3 h-3" />
+                      Phone Number
+                    </label>
+                    <Input
+                      type="tel"
+                      placeholder="(555) 123-4567"
+                      value={editPhone}
+                      onChange={(e) => setEditPhone(e.target.value)}
+                      className="bg-background"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Mail className="w-3 h-3" />
+                      Email Address
+                    </label>
+                    <Input
+                      type="email"
+                      placeholder="patient@email.com"
+                      value={editEmail}
+                      onChange={(e) => setEditEmail(e.target.value)}
+                      className="bg-background"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleSaveContactInfo}
+                    disabled={isSavingContact}
+                    size="sm"
+                    className="w-full mt-2"
+                  >
+                    {isSavingContact ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Save className="w-4 h-4 mr-2" />
+                    )}
+                    {isSavingContact ? "Saving..." : "Save Contact Info"}
+                  </Button>
+                </CardContent>
+              </Card>
+
               {/* Safety Flags */}
               {(selectedPatient.patient.safety_flags?.length > 0 || selectedPatient.patient.risk_status === "high_risk_review") && (
                 <Card className="border-red-500 border-2 bg-red-50/50 dark:bg-red-950/20">
