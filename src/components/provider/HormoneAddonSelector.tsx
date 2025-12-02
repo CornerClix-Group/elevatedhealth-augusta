@@ -135,11 +135,11 @@ const HormoneAddonSelector = ({
     }
   };
 
-  const handleDraftEmail = () => {
+  // Build mailto URL for native anchor tag
+  const buildMailtoUrl = () => {
     const subject = encodeURIComponent("Elevated Health: Activation & Pharmacy Order");
     const emailBody = `Hi ${firstName},\n\nLauren has approved your hormone protocol. Please click the secure link below to activate your membership and finalize your pharmacy order:\n\n${generatedLink}\n\nBest,\nElevated Health Team`;
-    const mailtoLink = "mailto:" + (patientEmail || "") + "?subject=" + subject + "&body=" + encodeURIComponent(emailBody);
-    window.location.href = mailtoLink;
+    return "mailto:" + (patientEmail || "") + "?subject=" + subject + "&body=" + encodeURIComponent(emailBody);
   };
 
   return (
@@ -310,20 +310,28 @@ const HormoneAddonSelector = ({
               </p>
             </div>
 
-            <Button
-              onClick={handleDraftEmail}
-              disabled={!patientEmail}
-              className="w-full"
-              size="lg"
-            >
-              <Mail className="w-4 h-4 mr-2" />
-              Draft Email to Patient
-            </Button>
-
-            {!patientEmail && (
-              <p className="text-xs text-center text-amber-600">
-                No patient email on file. Copy the link and send manually.
-              </p>
+            {patientEmail ? (
+              <a
+                href={buildMailtoUrl()}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary-dark rounded-full h-12 px-10 w-full"
+              >
+                <Mail className="w-4 h-4" />
+                Draft Email to Patient
+              </a>
+            ) : (
+              <>
+                <Button
+                  disabled
+                  className="w-full"
+                  size="lg"
+                >
+                  <Mail className="w-4 h-4 mr-2" />
+                  Draft Email to Patient
+                </Button>
+                <p className="text-xs text-center text-amber-600">
+                  No patient email on file. Copy the link and send manually.
+                </p>
+              </>
             )}
           </div>
         </DialogContent>
