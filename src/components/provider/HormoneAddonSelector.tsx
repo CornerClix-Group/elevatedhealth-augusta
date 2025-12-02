@@ -15,9 +15,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, DollarSign, Pill, RefreshCw, Link2, Copy, Mail, Check } from "lucide-react";
+import { Loader2, DollarSign, Pill, RefreshCw, Link2, Copy, Check, ClipboardList } from "lucide-react";
 
 interface HormoneAddonSelectorProps {
   patientId: string;
@@ -135,11 +136,38 @@ const HormoneAddonSelector = ({
     }
   };
 
-  // Build mailto URL for native anchor tag
-  const buildMailtoUrl = () => {
-    const subject = encodeURIComponent("Elevated Health: Activation & Pharmacy Order");
-    const emailBody = `Hi ${firstName},\n\nLauren has approved your hormone protocol. Please click the secure link below to activate your membership and finalize your pharmacy order:\n\n${generatedLink}\n\nBest,\nElevated Health Team`;
-    return "mailto:" + (patientEmail || "") + "?subject=" + subject + "&body=" + encodeURIComponent(emailBody);
+  const emailSubject = "Elevated Health: Activation & Pharmacy Order";
+  const emailBody = `Hi ${firstName},
+
+Lauren has approved your hormone protocol. Please click the secure link below to activate your membership and finalize your pharmacy order:
+
+${generatedLink}
+
+Best,
+Elevated Health Team`;
+
+  const handleCopyField = async (field: "subject" | "body" | "link" | "all") => {
+    try {
+      let textToCopy = "";
+      switch (field) {
+        case "subject":
+          textToCopy = emailSubject;
+          break;
+        case "body":
+          textToCopy = emailBody;
+          break;
+        case "link":
+          textToCopy = generatedLink;
+          break;
+        case "all":
+          textToCopy = `Subject: ${emailSubject}\n\n${emailBody}`;
+          break;
+      }
+      await navigator.clipboard.writeText(textToCopy);
+      toast.success(field === "all" ? "Full email copied to clipboard!" : "Copied to clipboard!");
+    } catch (err) {
+      toast.error("Failed to copy");
+    }
   };
 
   return (
@@ -263,39 +291,15 @@ const HormoneAddonSelector = ({
       </Card>
 
       <Dialog open={showLinkModal} onOpenChange={setShowLinkModal}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-green-600" />
-              Link Ready
+              <ClipboardList className="w-5 h-5 text-primary" />
+              Email Copy Tool
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div>
-              <label className="text-sm text-muted-foreground block mb-2">
-                Stripe Payment Link
-              </label>
-              <div className="flex gap-2">
-                <Input
-                  value={generatedLink}
-                  readOnly
-                  className="font-mono text-xs"
-                />
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={handleCopyToClipboard}
-                  className="shrink-0"
-                >
-                  {copied ? (
-                    <Check className="w-4 h-4 text-green-600" />
-                  ) : (
-                    <Copy className="w-4 h-4" />
-                  )}
-                </Button>
-              </div>
-            </div>
-
+            {/* Patient Info */}
             <div className="bg-secondary/30 rounded-lg p-3 text-sm">
               <p className="text-muted-foreground">
                 <strong>Patient:</strong> {patientName}
@@ -310,29 +314,85 @@ const HormoneAddonSelector = ({
               </p>
             </div>
 
-            {patientEmail ? (
-              <a
-                href={buildMailtoUrl()}
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary-dark rounded-full h-12 px-10 w-full"
-              >
-                <Mail className="w-4 h-4" />
-                Draft Email to Patient
-              </a>
-            ) : (
-              <>
+            {/* Subject Line */}
+            <div>
+              <label className="text-sm font-medium block mb-2">
+                Subject Line
+              </label>
+              <div className="flex gap-2">
+                <Input
+                  value={emailSubject}
+                  readOnly
+                  className="text-sm"
+                />
                 <Button
-                  disabled
-                  className="w-full"
-                  size="lg"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleCopyField("subject")}
+                  className="shrink-0"
                 >
-                  <Mail className="w-4 h-4 mr-2" />
-                  Draft Email to Patient
+                  <Copy className="w-4 h-4" />
                 </Button>
-                <p className="text-xs text-center text-amber-600">
-                  No patient email on file. Copy the link and send manually.
-                </p>
-              </>
-            )}
+              </div>
+            </div>
+
+            {/* Message Body */}
+            <div>
+              <label className="text-sm font-medium block mb-2">
+                Message Body
+              </label>
+              <div className="flex gap-2">
+                <Textarea
+                  value={emailBody}
+                  readOnly
+                  className="text-sm min-h-[140px] resize-none"
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleCopyField("body")}
+                  className="shrink-0 self-start"
+                >
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Link Only */}
+            <div>
+              <label className="text-sm font-medium block mb-2">
+                Payment Link Only
+              </label>
+              <div className="flex gap-2">
+                <Input
+                  value={generatedLink}
+                  readOnly
+                  className="font-mono text-xs"
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleCopyField("link")}
+                  className="shrink-0"
+                >
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Copy All Button */}
+            <Button
+              onClick={() => handleCopyField("all")}
+              className="w-full"
+              size="lg"
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              Copy Full Email to Clipboard
+            </Button>
+
+            <p className="text-xs text-center text-muted-foreground">
+              Open your email client, paste the content, and send to the patient.
+            </p>
           </div>
         </DialogContent>
       </Dialog>
