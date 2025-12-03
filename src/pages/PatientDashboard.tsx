@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
-import { Loader2, Activity, Zap, Heart, Brain, LogOut, Plus, Clock, Settings, CreditCard, Lock } from "lucide-react";
+import { Loader2, Activity, Zap, Heart, Brain, LogOut, Plus, Clock, Settings, CreditCard, Lock, FileText } from "lucide-react";
 import CircularGauge from "@/components/ui/CircularGauge";
 import MyRegimenCard from "@/components/patient/MyRegimenCard";
 import WelcomeIntake from "@/components/patient/WelcomeIntake";
@@ -315,6 +315,32 @@ const PatientDashboard = () => {
               />
             </div>
           </div>
+        )}
+
+        {/* Health Report Card - Show when labs have been reviewed */}
+        {canPurchaseMembership && (
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20 border-blue-200 dark:border-blue-800">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-blue-500/20 rounded-full">
+                  <FileText className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-foreground">Your Health Report is Ready</h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    See how your symptoms correlate with your lab results. Understand the science behind your treatment.
+                  </p>
+                  <Button 
+                    onClick={() => navigate("/patient/health-report")}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    <FileText className="w-4 h-4 mr-2" />
+                    View Health Report
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         )}
 
         {/* Status Cards */}

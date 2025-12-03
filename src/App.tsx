@@ -34,6 +34,7 @@ import SymptomChecker from "./pages/SymptomChecker";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import ScheduleConsult from "./pages/ScheduleConsult";
 import CreateAccount from "./pages/CreateAccount";
+import HealthReport from "./pages/HealthReport";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +92,11 @@ const App = () => (
           <Route path="/patient/checkin" element={
             <ProtectedRoute>
               <SymptomCheckIn />
+            </ProtectedRoute>
+          } />
+          <Route path="/patient/health-report" element={
+            <ProtectedRoute>
+              <HealthReport />
             </ProtectedRoute>
           } />
           
