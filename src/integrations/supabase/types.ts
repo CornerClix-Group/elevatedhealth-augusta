@@ -506,6 +506,7 @@ export type Database = {
           intake_completed: boolean | null
           invited_at: string | null
           invited_by: string | null
+          is_archived: boolean | null
           lab_path: string | null
           medical_history: Json | null
           onboarding_status: string | null
@@ -533,6 +534,7 @@ export type Database = {
           intake_completed?: boolean | null
           invited_at?: string | null
           invited_by?: string | null
+          is_archived?: boolean | null
           lab_path?: string | null
           medical_history?: Json | null
           onboarding_status?: string | null
@@ -560,6 +562,7 @@ export type Database = {
           intake_completed?: boolean | null
           invited_at?: string | null
           invited_by?: string | null
+          is_archived?: boolean | null
           lab_path?: string | null
           medical_history?: Json | null
           onboarding_status?: string | null
