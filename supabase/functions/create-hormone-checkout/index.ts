@@ -12,6 +12,20 @@ const logStep = (step: string, details?: any) => {
   console.log(`[CREATE-HORMONE-CHECKOUT] ${step}${detailsStr}`);
 };
 
+// Two diagnostic tiers based on ZRT costs
+const MAPPING_TIERS = {
+  hormone: {
+    priceId: "price_1SZiRMEOtKRY99pua6QMu12h", // Hormone Mapping $299
+    name: "Hormone Mapping",
+    zrtPanel: "saliva_iii",
+  },
+  metabolic: {
+    priceId: "price_1Sa4bNEOtKRY99pulS73hT1V", // Metabolic Mapping $399
+    name: "Metabolic Mapping",
+    zrtPanel: "weight_management",
+  },
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -28,6 +42,13 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
+
+    // Parse request body for mapping type
+    const body = await req.json().catch(() => ({}));
+    const mappingType = body.mappingType || "hormone"; // Default to hormone mapping
+    
+    const tier = MAPPING_TIERS[mappingType as keyof typeof MAPPING_TIERS] || MAPPING_TIERS.hormone;
+    logStep("Mapping tier selected", { mappingType, tier: tier.name, priceId: tier.priceId });
 
     // Check for authenticated user (optional - supports guest checkout)
     const authHeader = req.headers.get("Authorization");
@@ -58,13 +79,13 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://elevatedhealthaugusta.com";
 
-    // Create checkout session for Hormone Mapping Package with shipping address
+    // Create checkout session for selected mapping tier with shipping address
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
       line_items: [
         {
-          price: "price_1SZiRMEOtKRY99pua6QMu12h", // Hormone Mapping Package $299
+          price: tier.priceId,
           quantity: 1,
         },
       ],
@@ -76,11 +97,12 @@ serve(async (req) => {
       cancel_url: `${origin}/hormones-women`,
       metadata: {
         user_id: userId || "",
-        product: "hormone_mapping_package",
+        product: mappingType === "metabolic" ? "metabolic_mapping_package" : "hormone_mapping_package",
+        zrt_panel: tier.zrtPanel,
       },
     });
 
-    logStep("Checkout session created", { sessionId: session.id, url: session.url });
+    logStep("Checkout session created", { sessionId: session.id, url: session.url, tier: tier.name });
 
     return new Response(JSON.stringify({ url: session.url, sessionId: session.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

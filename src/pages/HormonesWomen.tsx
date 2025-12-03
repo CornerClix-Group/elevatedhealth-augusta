@@ -39,6 +39,7 @@ import { toast } from "sonner";
 const HormonesWomen = () => {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [isMetabolicCheckoutLoading, setIsMetabolicCheckoutLoading] = useState(false);
   const [isMembershipLoading, setIsMembershipLoading] = useState(false);
   const [isVitalityLoading, setIsVitalityLoading] = useState(false);
 
@@ -49,10 +50,16 @@ const HormonesWomen = () => {
     }
   };
 
-  const handleCheckout = async () => {
-    setIsCheckoutLoading(true);
+  const handleCheckout = async (mappingType: "hormone" | "metabolic" = "hormone") => {
+    if (mappingType === "metabolic") {
+      setIsMetabolicCheckoutLoading(true);
+    } else {
+      setIsCheckoutLoading(true);
+    }
     try {
-      const { data, error } = await supabase.functions.invoke("create-hormone-checkout");
+      const { data, error } = await supabase.functions.invoke("create-hormone-checkout", {
+        body: { mappingType }
+      });
       
       if (error) throw error;
       
@@ -66,6 +73,7 @@ const HormonesWomen = () => {
       toast.error("Failed to start checkout. Please try again or call us.");
     } finally {
       setIsCheckoutLoading(false);
+      setIsMetabolicCheckoutLoading(false);
     }
   };
 
@@ -440,7 +448,7 @@ const HormonesWomen = () => {
                     </CardContent>
                   </Card>
 
-                  {/* Step 2 */}
+                  {/* Step 2 - Diagnostic Options */}
                   <Card className="hover:shadow-xl transition-shadow border-2 border-feminine shadow-lg relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-feminine"></div>
                     <div className="absolute -top-4 right-4 top-3">
@@ -450,40 +458,86 @@ const HormonesWomen = () => {
                     </div>
                     <CardContent className="p-8">
                       <div className="text-5xl font-bold text-feminine/20 mb-4">02</div>
-                      <h3 className="text-xl font-bold mb-2">The Hormone Mapping Experience</h3>
-                      <div className="text-3xl font-bold text-feminine mb-4">$299</div>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        This comprehensive diagnostic phase includes:
-                      </p>
-                      <ul className="text-sm text-muted-foreground space-y-2 mb-6">
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="h-4 w-4 text-feminine flex-shrink-0 mt-0.5" />
-                          Your At-Home ZRT Saliva Test Kit (shipped to your door)
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="h-4 w-4 text-feminine flex-shrink-0 mt-0.5" />
-                          45-Minute Deep-Dive Clinical Review with Lauren Bursey, NP
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="h-4 w-4 text-feminine flex-shrink-0 mt-0.5" />
-                          Customized Protocol Design
-                        </li>
-                      </ul>
-                      <p className="text-xs text-muted-foreground italic mb-4">
+                      <h3 className="text-xl font-bold mb-4">Choose Your Diagnostic Path</h3>
+                      
+                      {/* Hormone Mapping Option */}
+                      <div className="border border-border rounded-lg p-4 mb-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h4 className="font-bold text-base">Hormone Mapping</h4>
+                            <p className="text-xs text-muted-foreground">For HRT / Menopause patients</p>
+                          </div>
+                          <div className="text-2xl font-bold text-feminine">$299</div>
+                        </div>
+                        <ul className="text-xs text-muted-foreground space-y-1 mb-3">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-feminine flex-shrink-0 mt-0.5" />
+                            ZRT Saliva Profile III (E2, Pg, T, DHEAS, Cortisol x4)
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-feminine flex-shrink-0 mt-0.5" />
+                            45-Min Clinical Review with Lauren Bursey, NP
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-feminine flex-shrink-0 mt-0.5" />
+                            Customized Protocol Design
+                          </li>
+                        </ul>
+                        <Button 
+                          onClick={() => handleCheckout("hormone")}
+                          disabled={isCheckoutLoading}
+                          variant="outline"
+                          className="w-full border-feminine hover:bg-feminine hover:text-feminine-foreground"
+                        >
+                          {isCheckoutLoading ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <CreditCard className="mr-2 h-4 w-4" />
+                          )}
+                          {isCheckoutLoading ? "Processing..." : "Get Started - $299"}
+                        </Button>
+                      </div>
+                      
+                      {/* Metabolic Mapping Option */}
+                      <div className="border-2 border-feminine rounded-lg p-4 bg-feminine/5">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h4 className="font-bold text-base">Metabolic Mapping</h4>
+                            <p className="text-xs text-muted-foreground">For Weight Loss patients</p>
+                          </div>
+                          <div className="text-2xl font-bold text-feminine">$399</div>
+                        </div>
+                        <ul className="text-xs text-muted-foreground space-y-1 mb-3">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-600 flex-shrink-0 mt-0.5" />
+                            Everything in Hormone Mapping, PLUS:
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-600 flex-shrink-0 mt-0.5" />
+                            Weight Management Profile (includes HbA1c & Insulin)
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-600 flex-shrink-0 mt-0.5" />
+                            GLP-1 Candidacy Assessment
+                          </li>
+                        </ul>
+                        <Button 
+                          onClick={() => handleCheckout("metabolic")}
+                          disabled={isMetabolicCheckoutLoading}
+                          className="w-full bg-feminine hover:bg-feminine-light text-feminine-foreground"
+                        >
+                          {isMetabolicCheckoutLoading ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <CreditCard className="mr-2 h-4 w-4" />
+                          )}
+                          {isMetabolicCheckoutLoading ? "Processing..." : "Get Started - $399"}
+                        </Button>
+                      </div>
+                      
+                      <p className="text-xs text-muted-foreground italic mt-4 text-center">
                         This fee covers your diagnostics and provider time. There is no obligation to proceed with treatment.
                       </p>
-                      <Button 
-                        onClick={handleCheckout}
-                        disabled={isCheckoutLoading}
-                        className="w-full bg-feminine hover:bg-feminine-light text-feminine-foreground"
-                      >
-                        {isCheckoutLoading ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                          <CreditCard className="mr-2 h-4 w-4" />
-                        )}
-                        {isCheckoutLoading ? "Processing..." : "Get Started - $299"}
-                      </Button>
                     </CardContent>
                   </Card>
 
