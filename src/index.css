@@ -30,10 +30,10 @@
     --secondary-light: 210 10% 98%;
     --secondary-dark: 210 10% 90%;
 
-    /* Accent - Muted Silver/Blue #7F8C8D */
-    --accent: 184 6% 53%;
+    /* Accent - Muted Silver/Blue (darkened for 4.5:1 contrast) */
+    --accent: 184 8% 42%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 184 6% 63%;
+    --accent-light: 184 6% 53%;
 
     /* Gold accent for luxury highlights */
     --gold: 43 74% 49%;
@@ -41,20 +41,20 @@
     --gold-light: 43 74% 59%;
     --gold-dark: 43 74% 39%;
 
-    /* Hope - Soft blue-grey */
-    --hope: 200 15% 50%;
+    /* Hope - Soft blue-grey (darkened for 4.5:1 contrast) */
+    --hope: 200 18% 40%;
     --hope-foreground: 0 0% 100%;
-    --hope-light: 200 15% 60%;
+    --hope-light: 200 15% 50%;
 
-    /* Feminine - Soft rose (keeping for women's health focus) */
-    --feminine: 350 25% 70%;
+    /* Feminine - Soft rose (darkened for accessibility) */
+    --feminine: 350 30% 55%;
     --feminine-foreground: 0 0% 100%;
-    --feminine-light: 350 30% 80%;
-    --feminine-dark: 350 20% 60%;
+    --feminine-light: 350 25% 70%;
+    --feminine-dark: 350 25% 45%;
 
-    /* Muted tones */
+    /* Muted tones (darkened for 4.5:1 contrast) */
     --muted: 210 10% 96%;
-    --muted-foreground: 210 10% 45%;
+    --muted-foreground: 210 12% 38%;
 
     /* Destructive */
     --destructive: 0 55% 50%;
@@ -98,7 +98,7 @@
     --accent: 184 6% 60%;
     --accent-foreground: 210 29% 10%;
     --muted: 210 15% 18%;
-    --muted-foreground: 210 10% 60%;
+    --muted-foreground: 210 10% 70%;
     --destructive: 0 55% 45%;
     --destructive-foreground: 0 0% 100%;
     --border: 210 15% 20%;

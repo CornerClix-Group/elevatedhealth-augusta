@@ -141,17 +141,17 @@ const Footer = () => {
 
           {/* Disclaimer */}
           <div className="mb-12">
-            <p className="text-background/40 text-xs font-lato font-light leading-relaxed max-w-4xl">
-              <strong className="text-background/50">Disclaimer:</strong> Coverage and eligibility vary by plan, diagnosis, prior treatments, and medical-necessity review. IV ketamine for depression/anxiety is an off-label use. SPRAVATO® is FDA-approved for specific indications and administered only in-clinic under REMS with monitoring.
+            <p className="text-background/60 text-xs font-lato font-light leading-relaxed max-w-4xl">
+              <strong className="text-background/70">Disclaimer:</strong> Coverage and eligibility vary by plan, diagnosis, prior treatments, and medical-necessity review. IV ketamine for depression/anxiety is an off-label use. SPRAVATO® is FDA-approved for specific indications and administered only in-clinic under REMS with monitoring.
             </p>
           </div>
 
           {/* Bottom Bar */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-background/30 font-lato">
+            <p className="text-xs text-background/60 font-lato">
               © 2025 {SITE_CONFIG.clinicName}. All rights reserved.
             </p>
-            <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-background/30 font-lato">
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-background/60 font-lato">
               <button 
                 onClick={() => navigate("/patient/login")} 
                 className="text-primary hover:text-primary-light transition-colors font-medium"
