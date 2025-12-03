@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Loader2, AlertTriangle, Check, User, TrendingUp, TrendingDown, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet, Activity, MessageSquare, Pill, Phone, Mail, Save, Clock, CreditCard, RotateCcw, CheckSquare, Square, UserPlus, FileText } from "lucide-react";
+import { Loader2, AlertTriangle, Check, User, TrendingUp, TrendingDown, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet, Activity, MessageSquare, Pill, Phone, Mail, Save, Clock, CreditCard, RotateCcw, CheckSquare, Square, UserPlus, FileText, MessageCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import confetti from "canvas-confetti";
@@ -20,6 +20,7 @@ import EditPatientProfileModal from "@/components/provider/EditPatientProfileMod
 import InvitePatientCard from "@/components/provider/InvitePatientCard";
 import SuperbillGenerator from "@/components/provider/SuperbillGenerator";
 import AdminNavbar from "@/components/admin/AdminNavbar";
+import ProviderInbox from "@/components/chat/ProviderInbox";
 
 interface Patient {
   id: string;
@@ -782,7 +783,7 @@ const ProviderDashboard = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="triage" className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4" />
               Action Needed ({pendingPatients.length})
@@ -798,6 +799,10 @@ const ProviderDashboard = () => {
             <TabsTrigger value="activations" className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
               Activations ({pendingActivations.length})
+            </TabsTrigger>
+            <TabsTrigger value="messages" className="flex items-center gap-2">
+              <MessageCircle className="w-4 h-4" />
+              Messages
             </TabsTrigger>
           </TabsList>
 
@@ -1215,6 +1220,11 @@ const ProviderDashboard = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Messages Tab */}
+          <TabsContent value="messages">
+            <ProviderInbox />
           </TabsContent>
         </Tabs>
       </main>

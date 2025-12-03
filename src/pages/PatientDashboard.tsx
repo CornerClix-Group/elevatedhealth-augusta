@@ -11,6 +11,7 @@ import MyRegimenCard from "@/components/patient/MyRegimenCard";
 import WelcomeIntake from "@/components/patient/WelcomeIntake";
 import OnboardingProgress from "@/components/patient/OnboardingProgress";
 import EditProfileModal from "@/components/patient/EditProfileModal";
+import PatientChatWidget from "@/components/chat/PatientChatWidget";
 
 interface SymptomLog {
   id: string;
@@ -488,6 +489,11 @@ const PatientDashboard = () => {
           currentAvatarUrl={patient.avatar_url}
           onUpdate={(newName, newAvatarUrl) => setPatient({ ...patient, full_name: newName, avatar_url: newAvatarUrl })}
         />
+      )}
+
+      {/* Secure Chat Widget */}
+      {patient && patient.intake_completed && (
+        <PatientChatWidget patientId={patient.id} />
       )}
     </div>
   );
