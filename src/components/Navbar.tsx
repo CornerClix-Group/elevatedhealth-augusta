@@ -272,8 +272,10 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
               onClick={() => setIsMobileMenuOpen(false)}
             />
             
-            <div className="md:hidden fixed right-0 top-20 bottom-0 w-80 max-w-full bg-white dark:bg-[hsl(222,47%,11%)] shadow-lg border-l border-border animate-slide-in-right z-50">
-              <div className="flex flex-col p-8">
+            <div className="md:hidden fixed right-0 top-20 bottom-0 w-80 max-w-full bg-white dark:bg-[hsl(222,47%,11%)] shadow-2xl border-l border-border animate-slide-in-right z-50">
+              {/* Top gradient overlay for depth */}
+              <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-black/5 to-transparent pointer-events-none" />
+              <div className="flex flex-col p-8 pt-10">
                 <nav className="flex flex-col gap-6">
                   <button 
                     onClick={() => scrollToSection("hero")} 
