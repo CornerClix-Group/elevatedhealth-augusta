@@ -15,6 +15,7 @@ import LabCorpRequisition from "@/components/provider/LabCorpRequisition";
 import HormoneAddonSelector from "@/components/provider/HormoneAddonSelector";
 import PeptideAddonSelector from "@/components/provider/PeptideAddonSelector";
 import PharmacyOrderCard from "@/components/provider/PharmacyOrderCard";
+import EditPatientProfileModal from "@/components/provider/EditPatientProfileModal";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 
 interface Patient {
@@ -30,6 +31,11 @@ interface Patient {
   dob?: string;
   phone?: string;
   email?: string;
+  street_address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip_code?: string | null;
+  allergies?: string | null;
 }
 
 interface SymptomLog {
@@ -98,6 +104,7 @@ const ProviderDashboard = () => {
   const [isAuthorizing, setIsAuthorizing] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isEmailingRequisition, setIsEmailingRequisition] = useState(false);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState("triage");
   const [renewingPatientId, setRenewingPatientId] = useState<string | null>(null);
@@ -1249,9 +1256,40 @@ const ProviderDashboard = () => {
                   dob: selectedPatient.patient.dob,
                   email: selectedPatient.patient.email,
                   phone: selectedPatient.patient.phone,
+                  street_address: selectedPatient.patient.street_address,
+                  city: selectedPatient.patient.city,
+                  state: selectedPatient.patient.state,
+                  zip_code: selectedPatient.patient.zip_code,
+                  allergies: selectedPatient.patient.allergies,
                   medical_history: selectedPatient.patient.medical_history as Record<string, any> | null,
                 }}
                 onOrderCreated={() => loadData()}
+              />
+              
+              {/* Edit Patient Profile Button */}
+              <Button
+                variant="outline"
+                onClick={() => setIsEditProfileOpen(true)}
+                className="w-full border-foreground/20 hover:bg-secondary"
+              >
+                <User className="w-4 h-4 mr-2" />
+                Edit Patient Profile
+              </Button>
+
+              {/* Edit Patient Profile Modal */}
+              <EditPatientProfileModal
+                isOpen={isEditProfileOpen}
+                onClose={() => setIsEditProfileOpen(false)}
+                patient={{
+                  id: selectedPatient.patient.id,
+                  full_name: selectedPatient.patient.full_name,
+                  street_address: selectedPatient.patient.street_address,
+                  city: selectedPatient.patient.city,
+                  state: selectedPatient.patient.state,
+                  zip_code: selectedPatient.patient.zip_code,
+                  allergies: selectedPatient.patient.allergies,
+                }}
+                onUpdated={() => loadData()}
               />
 
               {/* Protocol Suggestion */}
