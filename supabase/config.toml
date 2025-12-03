@@ -50,3 +50,12 @@ verify_jwt = false
 
 [functions.send-superbill-email]
 verify_jwt = false
+
+[functions.create-ketamine-checkout]
+verify_jwt = false
+
+[functions.verify-ketamine-payment]
+verify_jwt = false
+
+[functions.create-rebooking-checkout]
+verify_jwt = false
