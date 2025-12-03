@@ -15,7 +15,7 @@ const Hero = ({ onOpenBooking }: HeroProps) => {
   };
 
   return (
-    <section id="hero" className="relative min-h-[70vh] flex items-center justify-center pt-24 pb-16">
+    <section id="hero" className="relative min-h-[70vh] flex items-center justify-center pt-24 pb-10">
       {/* Soft Gradient Background - Dark Slate to Lighter Slate Blue */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/95 to-[hsl(200,25%,35%)]" />
 
