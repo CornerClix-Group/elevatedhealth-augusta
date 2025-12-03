@@ -33,6 +33,7 @@ import ProviderDashboard from "./pages/ProviderDashboard";
 import ClinicSettings from "./pages/ClinicSettings";
 import SymptomChecker from "./pages/SymptomChecker";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import KetaminePaymentSuccess from "./pages/KetaminePaymentSuccess";
 import ScheduleConsult from "./pages/ScheduleConsult";
 import CreateAccount from "./pages/CreateAccount";
 import HealthReport from "./pages/HealthReport";
@@ -70,6 +71,7 @@ const App = () => (
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/consult" element={<Consult />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/ketamine-payment-success" element={<KetaminePaymentSuccess />} />
           <Route path="/schedule-consult" element={<ScheduleConsult />} />
           <Route path="/patient/create-account" element={<CreateAccount />} />
           
