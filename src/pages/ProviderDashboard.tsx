@@ -21,6 +21,7 @@ import InvitePatientCard from "@/components/provider/InvitePatientCard";
 import SuperbillGenerator from "@/components/provider/SuperbillGenerator";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 import ProviderInbox from "@/components/chat/ProviderInbox";
+import KitStatusAdmin from "@/components/provider/KitStatusAdmin";
 
 interface Patient {
   id: string;
@@ -136,6 +137,13 @@ const ProviderDashboard = () => {
   const [editEmail, setEditEmail] = useState("");
   const [isSavingContact, setIsSavingContact] = useState(false);
   const [isMarkingLabsReviewed, setIsMarkingLabsReviewed] = useState(false);
+  // Kit tracking state
+  const [selectedPatientKit, setSelectedPatientKit] = useState<{
+    id: string;
+    zrt_kit_status: string;
+    tracking_number: string | null;
+    customer_email: string;
+  } | null>(null);
 
   // Provider lookup based on email - expand this as you add more providers
   const getProviderInfo = (email: string) => {
@@ -388,6 +396,18 @@ const ProviderDashboard = () => {
     // Initialize contact info editing state
     setEditPhone(patientWithLog.patient.phone || "");
     setEditEmail(patientWithLog.patient.email || "");
+
+    // Fetch kit tracking info
+    const { data: kitData } = await supabase
+      .from("hormone_mapping_payments")
+      .select("id, zrt_kit_status, tracking_number, customer_email")
+      .eq("patient_id", patientWithLog.patient.id)
+      .eq("payment_status", "paid")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    setSelectedPatientKit(kitData);
 
     // Load all symptom logs for chart
     const { data: logs } = await supabase
@@ -1317,6 +1337,17 @@ const ProviderDashboard = () => {
                     </div>
                   </CardContent>
                 </Card>
+              )}
+
+              {/* Kit Tracking Admin - Show if patient has paid for hormone mapping */}
+              {selectedPatientKit && (
+                <KitStatusAdmin
+                  paymentId={selectedPatientKit.id}
+                  currentStatus={selectedPatientKit.zrt_kit_status}
+                  currentTrackingNumber={selectedPatientKit.tracking_number}
+                  patientEmail={selectedPatientKit.customer_email}
+                  onUpdate={() => selectPatient(selectedPatient)}
+                />
               )}
 
               {/* Androgen Excess Warning */}

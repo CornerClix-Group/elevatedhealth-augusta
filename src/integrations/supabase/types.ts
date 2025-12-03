@@ -175,8 +175,12 @@ export type Database = {
           lab_review_scheduled_at: string | null
           patient_id: string | null
           payment_status: string
+          results_ready_at: string | null
+          sample_received_at: string | null
+          shipped_at: string | null
           stripe_payment_intent_id: string | null
           stripe_session_id: string | null
+          tracking_number: string | null
           updated_at: string
           zrt_kit_status: string
         }
@@ -189,8 +193,12 @@ export type Database = {
           lab_review_scheduled_at?: string | null
           patient_id?: string | null
           payment_status?: string
+          results_ready_at?: string | null
+          sample_received_at?: string | null
+          shipped_at?: string | null
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
+          tracking_number?: string | null
           updated_at?: string
           zrt_kit_status?: string
         }
@@ -203,8 +211,12 @@ export type Database = {
           lab_review_scheduled_at?: string | null
           patient_id?: string | null
           payment_status?: string
+          results_ready_at?: string | null
+          sample_received_at?: string | null
+          shipped_at?: string | null
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
+          tracking_number?: string | null
           updated_at?: string
           zrt_kit_status?: string
         }
