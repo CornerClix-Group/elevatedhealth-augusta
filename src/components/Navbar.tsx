@@ -272,14 +272,14 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
               onClick={() => setIsMobileMenuOpen(false)}
             />
             
-            <div className="md:hidden fixed right-0 top-20 bottom-0 w-80 max-w-full bg-white dark:bg-[hsl(222,47%,11%)] shadow-2xl border-l border-border animate-slide-in-right z-50">
+            <div className="md:hidden fixed right-0 top-20 bottom-0 w-80 max-w-full bg-white shadow-2xl border-l border-slate-200 animate-slide-in-right z-50">
               {/* Top gradient overlay for depth */}
-              <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-black/5 to-transparent pointer-events-none" />
+              <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-slate-100 to-transparent pointer-events-none" />
               <div className="flex flex-col p-8 pt-10">
                 <nav className="flex flex-col gap-6">
                   <button 
                     onClick={() => scrollToSection("hero")} 
-                    className="text-left font-playfair text-2xl text-foreground hover:text-primary transition-colors"
+                    className="text-left font-playfair text-2xl text-slate-800 hover:text-primary transition-colors"
                   >
                     Home
                   </button>
@@ -289,7 +289,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                       navigate(SITE_CONFIG.routes.ketamine);
                       setIsMobileMenuOpen(false);
                     }}
-                    className="text-left font-playfair text-2xl text-foreground hover:text-primary transition-colors"
+                    className="text-left font-playfair text-2xl text-slate-800 hover:text-primary transition-colors"
                   >
                     Ketamine Therapy
                   </button>
@@ -299,7 +299,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                       navigate(SITE_CONFIG.routes.weightloss);
                       setIsMobileMenuOpen(false);
                     }}
-                    className="text-left font-playfair text-2xl text-foreground hover:text-primary transition-colors"
+                    className="text-left font-playfair text-2xl text-slate-800 hover:text-primary transition-colors"
                   >
                     Weight Loss
                   </button>
@@ -309,7 +309,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                       navigate(SITE_CONFIG.routes.hormones);
                       setIsMobileMenuOpen(false);
                     }}
-                    className="text-left font-playfair text-2xl text-foreground hover:text-primary transition-colors"
+                    className="text-left font-playfair text-2xl text-slate-800 hover:text-primary transition-colors"
                   >
                     Hormones
                   </button>
@@ -319,13 +319,13 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                       scrollToSection("contact");
                       setIsMobileMenuOpen(false);
                     }}
-                    className="text-left font-playfair text-2xl text-foreground hover:text-primary transition-colors"
+                    className="text-left font-playfair text-2xl text-slate-800 hover:text-primary transition-colors"
                   >
                     Contact
                   </button>
                 </nav>
 
-                <div className="mt-12 pt-8 border-t border-border space-y-3">
+                <div className="mt-12 pt-8 border-t border-slate-200 space-y-3">
                   <Button 
                     className="w-full font-lato text-sm tracking-wide py-6"
                     onClick={() => {
@@ -340,7 +340,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                     <>
                       <Button 
                         variant="outline"
-                        className="w-full font-lato text-sm tracking-wide py-6 border-primary/50 text-primary gap-2"
+                        className="w-full font-lato text-sm tracking-wide py-6 border-primary/50 text-primary gap-2 bg-white"
                         onClick={() => {
                           navigate("/patient/dashboard");
                           setIsMobileMenuOpen(false);
@@ -351,7 +351,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                       </Button>
                       <Button 
                         variant="outline"
-                        className="w-full font-lato text-sm tracking-wide py-6 border-border text-muted-foreground gap-2"
+                        className="w-full font-lato text-sm tracking-wide py-6 border-slate-300 text-slate-600 gap-2 bg-white"
                         onClick={() => {
                           navigate("/patient/intake");
                           setIsMobileMenuOpen(false);
@@ -375,7 +375,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                   ) : (
                     <Button 
                       variant="outline"
-                      className="w-full font-lato text-sm tracking-wide py-6 border-primary/50 text-primary"
+                      className="w-full font-lato text-sm tracking-wide py-6 border-primary/50 text-primary bg-white"
                       onClick={() => {
                         navigate("/patient/login");
                         setIsMobileMenuOpen(false);
@@ -385,7 +385,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                     </Button>
                   )}
                   
-                  <p className="mt-6 text-sm text-muted-foreground font-lato">
+                  <p className="mt-6 text-sm text-slate-500 font-lato">
                     {SITE_CONFIG.phone}
                   </p>
                 </div>
