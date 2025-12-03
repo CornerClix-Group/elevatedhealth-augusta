@@ -5,8 +5,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Loader2, UserPlus, Mail, Phone, User, RefreshCw } from "lucide-react";
+import { 
+  Loader2, UserPlus, Mail, Phone, User, RefreshCw, 
+  Trash2, Archive, ArchiveRestore, MoreVertical 
+} from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Patient {
   id: string;
@@ -15,6 +36,7 @@ interface Patient {
   risk_status: string;
   created_at: string;
   user_id: string | null;
+  is_archived: boolean;
 }
 
 const PatientManagement = () => {
@@ -22,6 +44,9 @@ const PatientManagement = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isInviting, setIsInviting] = useState(false);
   const [showInviteForm, setShowInviteForm] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [patientToDelete, setPatientToDelete] = useState<Patient | null>(null);
   const [inviteData, setInviteData] = useState({
     name: "",
     email: "",
@@ -40,8 +65,6 @@ const PatientManagement = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      
-      // For now, we'll use the patient data as is
       setPatients(data || []);
     } catch (error: any) {
       toast.error(error.message || "Failed to load patients");
@@ -57,7 +80,6 @@ const PatientManagement = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      // Create patient record first
       const { data: patient, error: patientError } = await supabase
         .from("patients")
         .insert([{
@@ -66,13 +88,13 @@ const PatientManagement = () => {
           risk_status: "standard",
           invited_at: new Date().toISOString(),
           invited_by: user?.id,
+          is_archived: false,
         }])
         .select()
         .single();
 
       if (patientError) throw patientError;
 
-      // Send magic link invite via edge function
       const { error: inviteError } = await supabase.functions.invoke("send-patient-invite", {
         body: {
           email: inviteData.email,
@@ -91,6 +113,51 @@ const PatientManagement = () => {
       toast.error(error.message || "Failed to send invite");
     } finally {
       setIsInviting(false);
+    }
+  };
+
+  const handleDeletePatient = async () => {
+    if (!patientToDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from("patients")
+        .delete()
+        .eq("id", patientToDelete.id);
+
+      if (error) throw error;
+
+      toast.success(`${patientToDelete.full_name} has been permanently deleted`);
+      setPatients(patients.filter(p => p.id !== patientToDelete.id));
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete patient");
+    } finally {
+      setDeleteDialogOpen(false);
+      setPatientToDelete(null);
+    }
+  };
+
+  const handleArchivePatient = async (patient: Patient) => {
+    try {
+      const newArchiveStatus = !patient.is_archived;
+      const { error } = await supabase
+        .from("patients")
+        .update({ is_archived: newArchiveStatus })
+        .eq("id", patient.id);
+
+      if (error) throw error;
+
+      toast.success(
+        newArchiveStatus 
+          ? `${patient.full_name} has been archived` 
+          : `${patient.full_name} has been reactivated`
+      );
+      
+      setPatients(patients.map(p => 
+        p.id === patient.id ? { ...p, is_archived: newArchiveStatus } : p
+      ));
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update patient");
     }
   };
 
@@ -116,6 +183,13 @@ const PatientManagement = () => {
     return null;
   };
 
+  const filteredPatients = showArchived 
+    ? patients 
+    : patients.filter(p => !p.is_archived);
+
+  const activeCount = patients.filter(p => !p.is_archived).length;
+  const archivedCount = patients.filter(p => p.is_archived).length;
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -127,9 +201,24 @@ const PatientManagement = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="font-cormorant text-2xl text-foreground">Patient Management</h2>
-        <div className="flex gap-2">
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h2 className="font-cormorant text-2xl text-foreground">Patient Management</h2>
+          <p className="text-sm text-muted-foreground">
+            {activeCount} active · {archivedCount} archived
+          </p>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Switch
+              id="show-archived"
+              checked={showArchived}
+              onCheckedChange={setShowArchived}
+            />
+            <Label htmlFor="show-archived" className="text-sm cursor-pointer">
+              Show Archived
+            </Label>
+          </div>
           <Button variant="outline" size="sm" onClick={loadPatients}>
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
@@ -215,24 +304,37 @@ const PatientManagement = () => {
       {/* Patient List */}
       <Card className="border-border/50">
         <CardContent className="pt-6">
-          {patients.length === 0 ? (
+          {filteredPatients.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <User className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>No patients yet. Invite your first patient to get started.</p>
+              <p>
+                {showArchived 
+                  ? "No patients found." 
+                  : "No active patients. Invite your first patient to get started."}
+              </p>
             </div>
           ) : (
             <div className="space-y-3">
-              {patients.map((patient) => (
+              {filteredPatients.map((patient) => (
                 <div
                   key={patient.id}
-                  className="flex items-center justify-between p-4 rounded-lg border border-border/50 bg-card hover:bg-secondary/30 transition-colors"
+                  className={`flex items-center justify-between p-4 rounded-lg border border-border/50 bg-card hover:bg-secondary/30 transition-colors ${
+                    patient.is_archived ? "opacity-60" : ""
+                  }`}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <User className="w-5 h-5 text-primary" />
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      patient.is_archived ? "bg-muted" : "bg-primary/10"
+                    }`}>
+                      <User className={`w-5 h-5 ${patient.is_archived ? "text-muted-foreground" : "text-primary"}`} />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">{patient.full_name}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-foreground">{patient.full_name}</p>
+                        {patient.is_archived && (
+                          <Badge variant="secondary" className="text-xs">Archived</Badge>
+                        )}
+                      </div>
                       <p className="text-sm text-muted-foreground">
                         Joined {new Date(patient.created_at).toLocaleDateString()}
                       </p>
@@ -241,6 +343,40 @@ const PatientManagement = () => {
                   <div className="flex items-center gap-2">
                     {getRiskBadge(patient.risk_status)}
                     {getStatusBadge(patient.onboarding_status)}
+                    
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleArchivePatient(patient)}>
+                          {patient.is_archived ? (
+                            <>
+                              <ArchiveRestore className="mr-2 h-4 w-4" />
+                              Reactivate
+                            </>
+                          ) : (
+                            <>
+                              <Archive className="mr-2 h-4 w-4" />
+                              Archive
+                            </>
+                          )}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => {
+                            setPatientToDelete(patient);
+                            setDeleteDialogOpen(true);
+                          }}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete Permanently
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
               ))}
@@ -248,6 +384,28 @@ const PatientManagement = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Patient Permanently?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete <strong>{patientToDelete?.full_name}</strong> and all their 
+              associated data (symptom logs, lab results, orders, etc.). This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeletePatient}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete Permanently
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
