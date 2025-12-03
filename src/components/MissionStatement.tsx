@@ -6,7 +6,7 @@ interface MissionStatementProps {
 
 const MissionStatement = ({ onOpenBooking }: MissionStatementProps) => {
   return (
-    <section className="py-16 md:py-20 bg-secondary/30">
+    <section className="py-10 md:py-12 bg-secondary/30">
       <div className="container mx-auto px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
