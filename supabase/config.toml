@@ -65,3 +65,6 @@ verify_jwt = false
 
 [functions.verify-neurotransmitter-payment]
 verify_jwt = false
+
+[functions.create-iv-ketamine-checkout]
+verify_jwt = false
