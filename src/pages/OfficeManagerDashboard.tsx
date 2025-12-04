@@ -9,9 +9,10 @@ import { toast } from "sonner";
 import { 
   Loader2, User, Users, Clock, Package, Phone, Mail, 
   Calendar, CheckCircle, AlertCircle, RefreshCw, Search,
-  FileText, CreditCard
+  FileText, CreditCard, MessageSquare, Mic, Filter
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 
 interface Patient {
@@ -46,6 +47,18 @@ interface KitTracking {
   created_at: string;
 }
 
+interface ChatLead {
+  id: string;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  interest: string | null;
+  source: string | null;
+  chat_summary: string | null;
+  status: string | null;
+  created_at: string;
+}
+
 const OfficeManagerDashboard = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
@@ -53,8 +66,12 @@ const OfficeManagerDashboard = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [pendingActivations, setPendingActivations] = useState<PendingActivation[]>([]);
   const [kitTrackings, setKitTrackings] = useState<KitTracking[]>([]);
+  const [leads, setLeads] = useState<ChatLead[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("patients");
+  const [leadStatusFilter, setLeadStatusFilter] = useState<string>("all");
+  const [leadSourceFilter, setLeadSourceFilter] = useState<string>("all");
+  const [leadSearchTerm, setLeadSearchTerm] = useState("");
 
   useEffect(() => {
     checkAuthAndLoad();
@@ -119,6 +136,16 @@ const OfficeManagerDashboard = () => {
       if (kitError) throw kitError;
       setKitTrackings(kitData || []);
 
+      // Load chat leads
+      const { data: leadsData, error: leadsError } = await supabase
+        .from("chat_leads")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100);
+
+      if (leadsError) throw leadsError;
+      setLeads(leadsData || []);
+
     } catch (error: any) {
       console.error("Load error:", error);
       toast.error("Failed to load data");
@@ -178,6 +205,35 @@ const OfficeManagerDashboard = () => {
     p.phone?.includes(searchTerm)
   );
 
+  const filteredLeads = leads.filter(lead => {
+    const matchesSearch = leadSearchTerm === "" || 
+      lead.name?.toLowerCase().includes(leadSearchTerm.toLowerCase()) ||
+      lead.email?.toLowerCase().includes(leadSearchTerm.toLowerCase()) ||
+      lead.phone?.includes(leadSearchTerm);
+    const matchesStatus = leadStatusFilter === "all" || lead.status === leadStatusFilter;
+    const matchesSource = leadSourceFilter === "all" || lead.source === leadSourceFilter;
+    return matchesSearch && matchesStatus && matchesSource;
+  });
+
+  const getLeadStatusBadge = (status: string | null) => {
+    const statusConfig: Record<string, { label: string; color: string }> = {
+      new: { label: "New", color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
+      contacted: { label: "Contacted", color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400" },
+      qualified: { label: "Qualified", color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" },
+      converted: { label: "Converted", color: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400" },
+      closed: { label: "Closed", color: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400" },
+    };
+    const config = statusConfig[status || "new"] || statusConfig.new;
+    return <Badge className={config.color}>{config.label}</Badge>;
+  };
+
+  const getSourceBadge = (source: string | null) => {
+    if (source === "voice") {
+      return <Badge variant="outline" className="gap-1"><Mic className="w-3 h-3" /> Voice</Badge>;
+    }
+    return <Badge variant="outline" className="gap-1"><MessageSquare className="w-3 h-3" /> Chat</Badge>;
+  };
+
   const stats = {
     total: patients.filter(p => !p.is_archived).length,
     active: patients.filter(p => p.onboarding_status === "treatment_active" && !p.is_archived).length,
@@ -185,6 +241,8 @@ const OfficeManagerDashboard = () => {
       ["pending_review", "intake_pending", "pending_pharmacy_order"].includes(p.onboarding_status || "") && !p.is_archived
     ).length,
     pendingActivations: pendingActivations.length,
+    totalLeads: leads.length,
+    newLeads: leads.filter(l => l.status === "new").length,
   };
 
   if (isLoading) {
@@ -206,7 +264,7 @@ const OfficeManagerDashboard = () => {
 
       <main className="container mx-auto px-4 py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <Card className="bg-card border-border/50">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
@@ -262,21 +320,43 @@ const OfficeManagerDashboard = () => {
               </div>
             </CardContent>
           </Card>
+
+          <Card className="bg-card border-border/50">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5 text-purple-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{stats.newLeads}</p>
+                  <p className="text-xs text-muted-foreground">New Leads</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="patients" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
-              All Patients
+              <span className="hidden sm:inline">All Patients</span>
+              <span className="sm:hidden">Patients</span>
+            </TabsTrigger>
+            <TabsTrigger value="leads" className="flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              <span className="hidden sm:inline">Leads ({leads.length})</span>
+              <span className="sm:hidden">Leads</span>
             </TabsTrigger>
             <TabsTrigger value="activations" className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
-              Pending Activations ({pendingActivations.length})
+              <span className="hidden sm:inline">Pending ({pendingActivations.length})</span>
+              <span className="sm:hidden">Pending</span>
             </TabsTrigger>
             <TabsTrigger value="kits" className="flex items-center gap-2">
               <Package className="w-4 h-4" />
-              Kit Tracking
+              <span className="hidden sm:inline">Kit Tracking</span>
+              <span className="sm:hidden">Kits</span>
             </TabsTrigger>
           </TabsList>
 
@@ -466,6 +546,157 @@ const OfficeManagerDashboard = () => {
                             </tr>
                           );
                         })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Leads Tab */}
+          <TabsContent value="leads">
+            <Card className="bg-card border-border/50">
+              <CardHeader>
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <MessageSquare className="w-5 h-5" />
+                        Chat & Voice Leads
+                      </CardTitle>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Captured leads from website chat and voice assistant
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search by name, email, or phone..."
+                        value={leadSearchTerm}
+                        onChange={(e) => setLeadSearchTerm(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
+                    <Select value={leadStatusFilter} onValueChange={setLeadStatusFilter}>
+                      <SelectTrigger className="w-full sm:w-40">
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Statuses</SelectItem>
+                        <SelectItem value="new">New</SelectItem>
+                        <SelectItem value="contacted">Contacted</SelectItem>
+                        <SelectItem value="qualified">Qualified</SelectItem>
+                        <SelectItem value="converted">Converted</SelectItem>
+                        <SelectItem value="closed">Closed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={leadSourceFilter} onValueChange={setLeadSourceFilter}>
+                      <SelectTrigger className="w-full sm:w-40">
+                        <SelectValue placeholder="Source" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Sources</SelectItem>
+                        <SelectItem value="chatbot">Chat</SelectItem>
+                        <SelectItem value="voice">Voice</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {filteredLeads.length === 0 ? (
+                  <div className="text-center py-8">
+                    <MessageSquare className="w-12 h-12 mx-auto mb-2 text-muted-foreground" />
+                    <p className="text-muted-foreground">
+                      {leads.length === 0 ? "No leads captured yet" : "No leads match your filters"}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-border/50">
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Lead</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Contact</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Interest</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Source</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Status</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Captured</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredLeads.map((lead) => (
+                          <tr 
+                            key={lead.id} 
+                            className={`border-b border-border/30 hover:bg-muted/30 ${lead.status === "new" ? "bg-blue-50/30 dark:bg-blue-950/10" : ""}`}
+                          >
+                            <td className="py-4 px-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                  {lead.source === "voice" ? (
+                                    <Mic className="w-5 h-5 text-purple-600" />
+                                  ) : (
+                                    <MessageSquare className="w-5 h-5 text-purple-600" />
+                                  )}
+                                </div>
+                                <div>
+                                  <p className="font-medium text-foreground">{lead.name || "Unknown"}</p>
+                                  {lead.chat_summary && (
+                                    <p className="text-xs text-muted-foreground line-clamp-1 max-w-[200px]">
+                                      {lead.chat_summary}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="py-4 px-4">
+                              <div className="space-y-1">
+                                {lead.email && (
+                                  <a 
+                                    href={`mailto:${lead.email}`}
+                                    className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
+                                  >
+                                    <Mail className="w-3 h-3" />
+                                    {lead.email}
+                                  </a>
+                                )}
+                                {lead.phone && (
+                                  <a 
+                                    href={`tel:${lead.phone}`}
+                                    className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
+                                  >
+                                    <Phone className="w-3 h-3" />
+                                    {lead.phone}
+                                  </a>
+                                )}
+                                {!lead.email && !lead.phone && (
+                                  <span className="text-sm text-muted-foreground">No contact info</span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="py-4 px-4">
+                              {lead.interest ? (
+                                <Badge variant="secondary" className="capitalize">
+                                  {lead.interest}
+                                </Badge>
+                              ) : (
+                                <span className="text-sm text-muted-foreground">-</span>
+                              )}
+                            </td>
+                            <td className="py-4 px-4">
+                              {getSourceBadge(lead.source)}
+                            </td>
+                            <td className="py-4 px-4">
+                              {getLeadStatusBadge(lead.status)}
+                            </td>
+                            <td className="py-4 px-4 text-sm text-muted-foreground">
+                              {new Date(lead.created_at).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
