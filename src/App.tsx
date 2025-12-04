@@ -32,6 +32,7 @@ import PatientDashboard from "./pages/PatientDashboard";
 import PatientIntake from "./pages/PatientIntake";
 import SymptomCheckIn from "./pages/SymptomCheckIn";
 import ProviderDashboard from "./pages/ProviderDashboard";
+import OfficeManagerDashboard from "./pages/OfficeManagerDashboard";
 import ClinicSettings from "./pages/ClinicSettings";
 import SymptomChecker from "./pages/SymptomChecker";
 import PaymentSuccess from "./pages/PaymentSuccess";
@@ -122,6 +123,11 @@ const App = () => (
           <Route path="/admin/settings" element={
             <ProtectedRoute requireAdmin>
               <ClinicSettings />
+            </ProtectedRoute>
+          } />
+          <Route path="/office/dashboard" element={
+            <ProtectedRoute requireAdmin>
+              <OfficeManagerDashboard />
             </ProtectedRoute>
           } />
           
