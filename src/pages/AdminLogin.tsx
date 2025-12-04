@@ -53,8 +53,13 @@ const AdminLogin = () => {
         }
 
         toast.success("Logged in successfully");
+        
+        // Determine redirect based on email (office manager vs provider)
+        const officeManagerEmails = ["kcovington@pmrehab.net"];
+        const isOfficeManager = officeManagerEmails.includes(data.user.email?.toLowerCase() || "");
+        
         // Small delay to ensure session is propagated
-        setTimeout(() => navigate("/provider/dashboard"), 100);
+        setTimeout(() => navigate(isOfficeManager ? "/office/dashboard" : "/provider/dashboard"), 100);
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to login");
