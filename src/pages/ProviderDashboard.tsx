@@ -23,6 +23,7 @@ import AdminNavbar from "@/components/admin/AdminNavbar";
 import ProviderInbox from "@/components/chat/ProviderInbox";
 import KitStatusAdmin from "@/components/provider/KitStatusAdmin";
 import ResourceManager from "@/components/provider/ResourceManager";
+import IVKetamineBilling from "@/components/provider/IVKetamineBilling";
 
 interface Patient {
   id: string;
@@ -1567,6 +1568,14 @@ const ProviderDashboard = () => {
                 patientId={selectedPatient.patient.id}
                 patientName={selectedPatient.patient.full_name}
                 currentPeptides={(selectedPatient.patient.medical_history as Record<string, any>)?.peptide_protocols || []}
+              />
+
+              {/* IV Ketamine Billing - Show for ketamine patients or always visible */}
+              <IVKetamineBilling
+                patientId={selectedPatient.patient.id}
+                patientName={selectedPatient.patient.full_name}
+                patientEmail={selectedPatient.patient.email || ""}
+                patientPhone={selectedPatient.patient.phone || ""}
               />
 
               {/* Pharmacy Order Card */}
