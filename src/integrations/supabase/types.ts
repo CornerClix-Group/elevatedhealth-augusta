@@ -370,42 +370,60 @@ export type Database = {
       }
       lab_results: {
         Row: {
+          a1c: number | null
+          alt: number | null
+          ast: number | null
           collection_date: string
           correlation_alert: string | null
           cortisol_morning: number | null
           created_at: string
           created_by: string | null
           estradiol_e2: number | null
+          hematocrit: number | null
           id: string
+          lab_source: string | null
           notes: string | null
           patient_id: string
           progesterone_pg: number | null
+          psa: number | null
           testosterone_t: number | null
         }
         Insert: {
+          a1c?: number | null
+          alt?: number | null
+          ast?: number | null
           collection_date: string
           correlation_alert?: string | null
           cortisol_morning?: number | null
           created_at?: string
           created_by?: string | null
           estradiol_e2?: number | null
+          hematocrit?: number | null
           id?: string
+          lab_source?: string | null
           notes?: string | null
           patient_id: string
           progesterone_pg?: number | null
+          psa?: number | null
           testosterone_t?: number | null
         }
         Update: {
+          a1c?: number | null
+          alt?: number | null
+          ast?: number | null
           collection_date?: string
           correlation_alert?: string | null
           cortisol_morning?: number | null
           created_at?: string
           created_by?: string | null
           estradiol_e2?: number | null
+          hematocrit?: number | null
           id?: string
+          lab_source?: string | null
           notes?: string | null
           patient_id?: string
           progesterone_pg?: number | null
+          psa?: number | null
           testosterone_t?: number | null
         }
         Relationships: [
