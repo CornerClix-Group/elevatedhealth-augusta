@@ -37,6 +37,7 @@ import ResourceManager from "@/components/provider/ResourceManager";
 import IVKetamineBilling from "@/components/provider/IVKetamineBilling";
 import { InviteProviderModal } from "@/components/provider/InviteProviderModal";
 import LabcorpOrderModal from "@/components/provider/LabcorpOrderModal";
+import BloodWorkHistory from "@/components/provider/BloodWorkHistory";
 
 interface Patient {
   id: string;
@@ -1590,6 +1591,14 @@ const ProviderDashboard = () => {
                   membershipType={selectedPatient.patient.treatment_request?.includes("weight") ? "weight_management" : "hormone"}
                   providerName={providerInfo.name}
                   providerCredentials={providerInfo.credentials}
+                />
+              )}
+
+              {/* Blood Work History (for Labcorp patients) */}
+              {selectedPatient.labPath?.path === "labcorp" && (
+                <BloodWorkHistory 
+                  patientId={selectedPatient.patient.id}
+                  patientName={selectedPatient.patient.full_name}
                 />
               )}
 
