@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { Resend } from "https://esm.sh/resend@2.0.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,6 +11,39 @@ const corsHeaders = {
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
   console.log(`[VERIFY-HORMONE-PAYMENT] ${step}${detailsStr}`);
+};
+
+const sendAdminNotification = async (resend: Resend, customerEmail: string, mappingType: string, amount: number) => {
+  try {
+    const formattedAmount = (amount / 100).toFixed(2);
+    const mappingLabel = mappingType === 'metabolic' ? 'Metabolic Mapping' : 'Hormone Mapping';
+    
+    await resend.emails.send({
+      from: "Elevated Health <noreply@stripe.elevatedhealthaugusta.com>",
+      to: ["booking@elevatedhealthaugusta.com"],
+      subject: `💰 New ${mappingLabel} Payment Received - $${formattedAmount}`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #2C3E50; margin-bottom: 20px;">New ${mappingLabel} Payment</h2>
+          
+          <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+            <p style="margin: 0 0 10px 0;"><strong>Customer Email:</strong> ${customerEmail}</p>
+            <p style="margin: 0 0 10px 0;"><strong>Package:</strong> ${mappingLabel}</p>
+            <p style="margin: 0;"><strong>Amount Paid:</strong> $${formattedAmount}</p>
+          </div>
+          
+          <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+            <p style="margin: 0; color: #856404;"><strong>⚡ Action Required:</strong> Ship the ZRT kit to this patient.</p>
+          </div>
+          
+          <p style="color: #6c757d; font-size: 14px;">This is an automated notification from the Elevated Health payment system.</p>
+        </div>
+      `,
+    });
+    logStep("Admin notification email sent", { customerEmail });
+  } catch (error) {
+    logStep("Failed to send admin notification", { error: error instanceof Error ? error.message : String(error) });
+  }
 };
 
 serve(async (req) => {
@@ -28,6 +62,9 @@ serve(async (req) => {
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
+
+    const resendKey = Deno.env.get("RESEND_API_KEY");
+    const resend = resendKey ? new Resend(resendKey) : null;
 
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -60,6 +97,7 @@ serve(async (req) => {
     const paymentIntentId = typeof session.payment_intent === 'string' 
       ? session.payment_intent 
       : session.payment_intent?.id;
+    const mappingType = session.metadata?.mapping_type || 'hormone';
 
     // Check if payment record already exists
     const { data: existingPayment } = await supabaseClient
@@ -117,6 +155,11 @@ serve(async (req) => {
     }
 
     logStep("Payment record created", { id: paymentRecord.id });
+
+    // Send admin notification email (Leak 3 fix)
+    if (resend && customerEmail) {
+      await sendAdminNotification(resend, customerEmail, mappingType, session.amount_total || 0);
+    }
 
     return new Response(JSON.stringify({ 
       success: true, 
