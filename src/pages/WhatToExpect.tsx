@@ -37,8 +37,8 @@ const WhatToExpectPage = () => {
     {
       icon: Calendar,
       title: "1. Book Your Free Consultation",
-      description: "Schedule a 30-minute virtual or in-person consultation to discuss your goals and answer any questions.",
-      duration: "30 minutes",
+      description: "Schedule a 15-minute virtual or in-person consultation to discuss your goals and answer any questions.",
+      duration: "15 minutes",
       color: "text-accent"
     },
     {
@@ -419,7 +419,7 @@ const WhatToExpectPage = () => {
                 Ready to Start Your Healing Journey?
               </h2>
               <p className="font-inter text-xl mb-8 text-primary-foreground/90">
-                Book your free 30-minute consultation today. No obligation, completely confidential.
+                Book your free 15-minute consultation today. No obligation, completely confidential.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

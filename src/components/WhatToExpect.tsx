@@ -9,8 +9,8 @@ const WhatToExpect = () => {
     {
       icon: Calendar,
       title: "1. Book Your Free Consultation",
-      description: "Schedule a 30-minute virtual consultation to discuss your goals and answer any questions.",
-      duration: "30 minutes",
+      description: "Schedule a 15-minute virtual consultation to discuss your goals and answer any questions.",
+      duration: "15 minutes",
       color: "text-accent"
     },
     {
