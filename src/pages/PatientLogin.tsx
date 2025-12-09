@@ -617,7 +617,7 @@ const PatientLogin = () => {
                         </h3>
                         <p className="text-muted-foreground text-sm mb-6">
                           Based on your responses, ketamine therapy may not be the safest option for you at this time. 
-                          However, we'd love to meet with you to discuss alternative treatment options that may help.
+                          However, we'd love to have a quick call with you to discuss alternative treatment options that may help.
                         </p>
                         <Button 
                           asChild
@@ -625,7 +625,7 @@ const PatientLogin = () => {
                         >
                           <a href={KETAMINE_CONSULT_URL} target="_blank" rel="noopener noreferrer">
                             <Calendar className="w-4 h-4 mr-2" />
-                            Schedule a Free 15-Minute Consultation
+                            Schedule a Free 15-Minute Call
                           </a>
                         </Button>
                         <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
