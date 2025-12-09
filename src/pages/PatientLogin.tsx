@@ -217,6 +217,23 @@ const PatientLogin = () => {
 
       if (patientError) throw patientError;
 
+      // Send notification to providers about new patient signup
+      try {
+        await supabase.functions.invoke("send-patient-signup-notification", {
+          body: {
+            patientName: signupData.fullName,
+            patientEmail: signupData.email,
+            primaryProgram,
+            isHighRisk: highRisk,
+            safetyFlags: highRisk ? safetyFlags : [],
+          },
+        });
+        console.log("[PatientLogin] Provider notification sent");
+      } catch (notifyError) {
+        // Don't block signup if notification fails
+        console.error("[PatientLogin] Failed to send provider notification:", notifyError);
+      }
+
       setSignupSuccess(true);
       
       if (highRisk) {
