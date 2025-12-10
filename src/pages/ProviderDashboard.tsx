@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Loader2, AlertTriangle, Check, User, TrendingUp, TrendingDown, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet, Activity, MessageSquare, Pill, Phone, Mail, Save, Clock, CreditCard, RotateCcw, CheckSquare, Square, UserPlus, FileText, MessageCircle, Ban, Archive, Trash2, ArchiveRestore } from "lucide-react";
+import { Loader2, AlertTriangle, Check, User, TrendingUp, TrendingDown, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet, Activity, MessageSquare, Pill, Phone, Mail, Save, Clock, CreditCard, RotateCcw, CheckSquare, Square, UserPlus, FileText, MessageCircle, Ban, Archive, Trash2, ArchiveRestore, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import confetti from "canvas-confetti";
@@ -38,6 +38,7 @@ import IVKetamineBilling from "@/components/provider/IVKetamineBilling";
 import { InviteProviderModal } from "@/components/provider/InviteProviderModal";
 import LabcorpOrderModal from "@/components/provider/LabcorpOrderModal";
 import BloodWorkHistory from "@/components/provider/BloodWorkHistory";
+import TeamManagement from "@/components/provider/TeamManagement";
 
 interface Patient {
   id: string;
@@ -896,7 +897,7 @@ const ProviderDashboard = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 mb-8">
+          <TabsList className="grid w-full grid-cols-7 mb-8">
             <TabsTrigger value="triage" className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4" />
               <span className="hidden sm:inline">Action Needed</span> ({pendingPatients.filter(p => !showArchivedPatients ? !p.patient.is_archived : true).length})
@@ -921,32 +922,17 @@ const ProviderDashboard = () => {
               <FileText className="w-4 h-4" />
               <span className="hidden sm:inline">Resources</span>
             </TabsTrigger>
+            <TabsTrigger value="team" className="flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              <span className="hidden sm:inline">Team</span>
+            </TabsTrigger>
           </TabsList>
 
           {/* Triage Tab */}
           <TabsContent value="triage">
-            {/* Invite Cards - Patient + Provider (Admin only) */}
-            <div className="mb-6 flex flex-col sm:flex-row gap-4">
-              <div className="flex-1">
-                <InvitePatientCard onInviteSent={() => loadData()} />
-              </div>
-              {providerInfo.role === "provider" && (
-                <Card className="sm:w-72 bg-card border-border/50">
-                  <CardContent className="pt-6">
-                    <Button 
-                      onClick={() => setIsInviteProviderOpen(true)}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      <UserPlus className="w-4 h-4 mr-2" />
-                      Invite Provider / Staff
-                    </Button>
-                    <p className="text-xs text-muted-foreground mt-2 text-center">
-                      Send setup email to new team members
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+            {/* Invite Patient Card */}
+            <div className="mb-6">
+              <InvitePatientCard onInviteSent={() => loadData()} />
             </div>
             
             {/* Archive Toggle */}
@@ -1390,6 +1376,11 @@ const ProviderDashboard = () => {
           {/* Resources Tab */}
           <TabsContent value="resources">
             <ResourceManager />
+          </TabsContent>
+
+          {/* Team Management Tab */}
+          <TabsContent value="team">
+            <TeamManagement />
           </TabsContent>
         </Tabs>
       </main>
