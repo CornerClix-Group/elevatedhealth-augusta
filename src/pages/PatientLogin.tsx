@@ -100,12 +100,13 @@ const PatientLogin = () => {
       if (data.user) {
         const { data: patient } = await supabase
           .from("patients")
-          .select("risk_status, full_name")
+          .select("risk_status, full_name, primary_program")
           .eq("user_id", data.user.id)
           .maybeSingle();
 
         if (patient?.risk_status === "high_risk_review") {
           setCreatedPatientName(patient.full_name);
+          setPrimaryProgram(patient.primary_program as PrimaryProgram || "hormone");
           setShowSafetyGate(true);
           return;
         }
@@ -310,6 +311,7 @@ const PatientLogin = () => {
     return (
       <SafetyGate 
         patientName={createdPatientName}
+        treatmentType={primaryProgram || "hormone"}
         onContinue={() => navigate("/patient/dashboard")}
       />
     );

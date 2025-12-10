@@ -12,10 +12,11 @@ interface SafetyGateProps {
   patientEmail?: string;
   patientPhone?: string;
   safetyFlags?: string[];
+  treatmentType?: "hormone" | "ketamine";
   onContinue?: () => void;
 }
 
-const SafetyGate = ({ patientName, patientEmail, patientPhone, safetyFlags, onContinue }: SafetyGateProps) => {
+const SafetyGate = ({ patientName, patientEmail, patientPhone, safetyFlags, treatmentType = "hormone", onContinue }: SafetyGateProps) => {
   const [isRequestingCallback, setIsRequestingCallback] = useState(false);
   const [callbackRequested, setCallbackRequested] = useState(false);
   const [phone, setPhone] = useState(patientPhone || "");
@@ -76,7 +77,7 @@ const SafetyGate = ({ patientName, patientEmail, patientPhone, safetyFlags, onCo
             
             <p className="text-foreground leading-relaxed">
               Based on your medical history, <span className="font-semibold">a provider</span> needs 
-              to review your file manually to ensure your safety before we can proceed with hormone therapy recommendations.
+              to review your file manually to ensure your safety before we can proceed with {treatmentType === "ketamine" ? "ketamine therapy" : "hormone therapy recommendations"}.
             </p>
 
             <div className="bg-white dark:bg-gray-900 rounded-lg p-4 space-y-3">
@@ -102,9 +103,9 @@ const SafetyGate = ({ patientName, patientEmail, patientPhone, safetyFlags, onCo
 
             <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
               <p className="text-sm text-blue-700 dark:text-blue-300">
-                <strong>Why the extra care?</strong> Certain medical conditions require careful consideration 
-                before starting hormone therapy. This review ensures we create a treatment plan that is 
-                both effective and safe for your unique situation.
+                <strong>Why the extra care?</strong> {treatmentType === "ketamine" 
+                  ? "Certain medical conditions require careful consideration before starting ketamine therapy. This review ensures we create a treatment plan that is both effective and safe for your mental wellness journey."
+                  : "Certain medical conditions require careful consideration before starting hormone therapy. This review ensures we create a treatment plan that is both effective and safe for your unique situation."}
               </p>
             </div>
 
