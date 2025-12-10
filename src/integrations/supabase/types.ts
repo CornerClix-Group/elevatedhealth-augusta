@@ -368,6 +368,81 @@ export type Database = {
         }
         Relationships: []
       }
+      iv_addons: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          price: number
+          stripe_price_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          price?: number
+          stripe_price_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          price?: number
+          stripe_price_id?: string | null
+        }
+        Relationships: []
+      }
+      iv_therapies: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          feelings: string[] | null
+          icon_name: string | null
+          id: string
+          ingredients: string[] | null
+          is_active: boolean | null
+          name: string
+          price: number
+          sort_order: number | null
+          stripe_price_id: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          feelings?: string[] | null
+          icon_name?: string | null
+          id?: string
+          ingredients?: string[] | null
+          is_active?: boolean | null
+          name: string
+          price: number
+          sort_order?: number | null
+          stripe_price_id?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          feelings?: string[] | null
+          icon_name?: string | null
+          id?: string
+          ingredients?: string[] | null
+          is_active?: boolean | null
+          name?: string
+          price?: number
+          sort_order?: number | null
+          stripe_price_id?: string | null
+        }
+        Relationships: []
+      }
       lab_results: {
         Row: {
           a1c: number | null
