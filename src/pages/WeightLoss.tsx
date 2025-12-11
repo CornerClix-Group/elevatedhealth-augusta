@@ -12,12 +12,16 @@ import { Helmet } from "react-helmet";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { trackEvent } from "@/lib/analytics";
 import AssistantHub from "@/components/AssistantHub";
+import { CreditCodeInput } from "@/components/CreditCodeInput";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const WeightLoss = () => {
   const [isConsultationLoading, setIsConsultationLoading] = useState(false);
+  const [isMappingLoading, setIsMappingLoading] = useState(false);
+  const [creditCode, setCreditCode] = useState("");
+  const [creditApplied, setCreditApplied] = useState(false);
 
   const scrollToBooking = () => {
     trackEvent("cta_click", { cta_name: "weight_loss_booking", destination: SITE_CONFIG.bookingUrl });
@@ -47,6 +51,43 @@ const WeightLoss = () => {
     }
   };
 
+  const handleMappingCheckout = async () => {
+    setIsMappingLoading(true);
+    trackEvent("cta_click", { cta_name: "metabolic_mapping", destination: "checkout" });
+    try {
+      const { data, error } = await supabase.functions.invoke("create-hormone-checkout", {
+        body: { 
+          mappingType: "metabolic",
+          creditCode: creditCode || undefined
+        }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      } else {
+        throw new Error("No checkout URL returned");
+      }
+    } catch (err) {
+      console.error("Mapping checkout error:", err);
+      toast.error("Failed to start checkout. Please try again or call us.");
+    } finally {
+      setIsMappingLoading(false);
+    }
+  };
+
+  const handleApplyCreditCode = () => {
+    if (creditCode && creditCode.length >= 5) {
+      setCreditApplied(true);
+      toast.success("Credit code applied! You'll save $99 at checkout.");
+    }
+  };
+
+  const handleClearCreditCode = () => {
+    setCreditCode("");
+    setCreditApplied(false);
+  };
   // 3-Step Concierge Workflow
   const processSteps = [
     {
@@ -449,16 +490,37 @@ const WeightLoss = () => {
                       <h3 className="font-cormorant text-xl text-primary font-bold mb-2">
                         Metabolic Mapping
                       </h3>
-                      <p className="text-3xl font-cormorant text-primary mb-2">$299</p>
+                      <p className="text-3xl font-cormorant text-primary mb-2">
+                        {creditApplied ? "$200" : "$299"}
+                      </p>
+                      {creditApplied && (
+                        <p className="text-xs text-green-600 font-medium mb-2">
+                          $99 credit applied!
+                        </p>
+                      )}
                       <p className="text-sm text-muted-foreground mb-4 font-lato">
                         Complete ZRT hormone panel + provider review to identify your unique metabolic blockers.
                       </p>
+                      <CreditCodeInput
+                        value={creditCode}
+                        onChange={setCreditCode}
+                        isApplied={creditApplied}
+                        onApply={handleApplyCreditCode}
+                        onClear={handleClearCreditCode}
+                        className="mb-3"
+                      />
                       <Button 
                         variant="outline" 
-                        onClick={scrollToBooking}
+                        onClick={handleMappingCheckout}
+                        disabled={isMappingLoading}
                         className="w-full border-gold/30 hover:bg-gold/5"
                       >
-                        Get Your Labs
+                        {isMappingLoading ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <CreditCard className="mr-2 h-4 w-4" />
+                        )}
+                        {isMappingLoading ? "..." : "Get Your Labs"}
                       </Button>
                     </CardContent>
                   </Card>
