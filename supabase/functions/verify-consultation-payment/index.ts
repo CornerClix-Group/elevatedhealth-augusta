@@ -107,8 +107,67 @@ serve(async (req) => {
 
     logStep("Consultation booking recorded", { bookingId: booking.id, creditCode });
 
-    // Send admin notification
+    // Send emails
     if (resend) {
+      const serviceLabel = serviceType === 'weight-loss' ? 'Metabolic Mapping' : 'Hormone Mapping';
+      
+      // Send patient confirmation email with credit code
+      try {
+        await resend.emails.send({
+          from: "Elevated Health <noreply@stripe.elevatedhealthaugusta.com>",
+          to: [customerEmail],
+          subject: `Your $99 Credit Code - Elevated Health`,
+          html: `
+            <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+              <h1 style="color: #2C3E50; font-size: 28px; margin-bottom: 24px;">Thank You for Booking!</h1>
+              
+              <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
+                Dear ${session.customer_details?.name || "Valued Patient"},
+              </p>
+              
+              <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
+                Your $99 Discovery Consultation has been confirmed. We're excited to help you on your wellness journey!
+              </p>
+              
+              <div style="background: linear-gradient(135deg, #F9F9F7 0%, #f0ebe3 100%); border: 2px solid #D4A017; border-radius: 12px; padding: 24px; margin: 32px 0; text-align: center;">
+                <p style="color: #2C3E50; font-size: 14px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Your Credit Code</p>
+                <p style="color: #D4A017; font-size: 32px; font-weight: bold; margin: 0; letter-spacing: 2px;">${creditCode}</p>
+                <p style="color: #718096; font-size: 14px; margin-top: 12px;">Worth $99 toward your ${serviceLabel}</p>
+              </div>
+              
+              <h2 style="color: #2C3E50; font-size: 20px; margin-top: 32px;">How to Use Your Credit</h2>
+              
+              <ol style="color: #4a5568; font-size: 16px; line-height: 1.8; padding-left: 20px;">
+                <li><strong>Complete your consultation</strong> with our provider</li>
+                <li><strong>When you're ready</strong> to proceed with ${serviceLabel} ($299)</li>
+                <li><strong>Enter your credit code</strong> at checkout to receive $99 off</li>
+                <li><strong>Pay only $200</strong> for your comprehensive diagnostic panel</li>
+              </ol>
+              
+              <div style="background: #f7fafc; border-left: 4px solid #D4A017; padding: 16px; margin: 24px 0;">
+                <p style="color: #2C3E50; font-size: 14px; margin: 0;">
+                  <strong>💡 Pro Tip:</strong> Save this email! Your credit code never expires and can be applied when you're ready to move forward with treatment.
+                </p>
+              </div>
+              
+              <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin-top: 32px;">
+                If you have any questions before your consultation, don't hesitate to reach out.
+              </p>
+              
+              <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
+                Warmly,<br/>
+                <strong>The Elevated Health Team</strong><br/>
+                <span style="color: #718096;">706-922-7958 | Augusta, GA</span>
+              </p>
+            </div>
+          `,
+        });
+        logStep("Patient credit code email sent");
+      } catch (emailError) {
+        logStep("Patient email failed", { error: emailError });
+      }
+
+      // Send admin notification
       try {
         await resend.emails.send({
           from: "Elevated Health <noreply@stripe.elevatedhealthaugusta.com>",
@@ -123,12 +182,12 @@ serve(async (req) => {
             <p><strong>Amount:</strong> $${(session.amount_total || 0) / 100}</p>
             <hr/>
             <p>The patient has been instructed to book their consultation via Google Calendar.</p>
-            <p>Their credit code <strong>${creditCode}</strong> can be used for $99 off Hormone Mapping ($299 → $200).</p>
+            <p>Their credit code <strong>${creditCode}</strong> can be used for $99 off ${serviceLabel} ($299 → $200).</p>
           `,
         });
         logStep("Admin notification sent");
       } catch (emailError) {
-        logStep("Email notification failed", { error: emailError });
+        logStep("Admin email failed", { error: emailError });
       }
     }
 
