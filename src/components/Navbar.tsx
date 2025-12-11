@@ -182,6 +182,14 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
             </button>
 
             <button 
+              onClick={() => navigate(SITE_CONFIG.routes.ivLounge)}
+              className="text-sm font-lato font-normal tracking-wide transition-colors elegant-underline hover:opacity-70"
+              style={{ color: '#2C3E50' }}
+            >
+              IV Lounge
+            </button>
+
+            <button 
               onClick={() => scrollToSection("contact")}
               className="text-sm font-lato font-normal tracking-wide transition-colors elegant-underline hover:opacity-70"
               style={{ color: '#2C3E50' }}
@@ -321,6 +329,16 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                 className="mobile-menu-link"
               >
                 Hormones
+              </button>
+
+              <button 
+                onClick={() => {
+                  navigate(SITE_CONFIG.routes.ivLounge);
+                  setIsMobileMenuOpen(false);
+                }}
+                className="mobile-menu-link"
+              >
+                IV Lounge
               </button>
 
               <button 
