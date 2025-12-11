@@ -64,6 +64,164 @@ const Pricing = () => {
           content="ketamine therapy pricing Augusta, weight loss program cost, hormone therapy pricing, IV therapy prices, medical spa pricing Georgia"
         />
         <link rel="canonical" href="https://elevatedhealthaugusta.com/pricing" />
+        
+        {/* FAQ Schema for Rich Snippets */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Can I switch between programs?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Absolutely! Your health journey may evolve, and we're here to adapt with you. You can upgrade, downgrade, or switch programs at any time. Just message your provider and we'll adjust your plan—no penalties or waiting periods."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What if I need to pause my membership?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Life happens. You can pause your membership for up to 3 months without losing your rate or benefits. When you're ready to resume, everything picks up right where you left off."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do you offer payment plans?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes! We offer flexible financing options through CareCredit and Cherry, with plans ranging from 6-24 months. Many patients qualify for 0% APR. We also accept HSA/FSA cards for most services."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is any of this covered by insurance?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "SPRAVATO® (esketamine) is typically covered by most major insurance plans including BCBS and TRICARE. We verify your benefits before treatment. For other services, we provide detailed superbills for potential out-of-network reimbursement. Many HSA/FSA plans cover our treatments."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What's included in the membership vs. paying per visit?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Memberships include medication, quarterly lab testing, unlimited provider messaging, weekly check-ins, and priority scheduling. Per-visit pricing covers just that single service. Most patients save 30-40% annually with membership compared to à la carte pricing."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How much does ketamine therapy cost in Augusta, GA?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "At Elevated Health Augusta, IV ketamine therapy is $400 per session, or $2,200 for a 6-session series (saving $200). SPRAVATO® (esketamine) is often covered by insurance with $0-50 copays. We also offer an optional Neurotransmitter Analysis for $399 to optimize your treatment."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What is the cheapest way to get started at Elevated Health?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The most affordable entry point is our free 15-minute Discovery Call to discuss your goals. For committed patients, our $99 Discovery Consultation provides a comprehensive assessment. If you're interested in weight loss or hormone therapy, the $299 Metabolic or Hormone Mapping provides the best diagnostic value."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I use my HSA or FSA for treatment?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes! Most of our services qualify for HSA (Health Savings Account) and FSA (Flexible Spending Account) payment. This includes ketamine therapy, hormone optimization, medical weight loss, and peptide therapy. We provide all necessary documentation for your records."
+                }
+              }
+            ]
+          })}
+        </script>
+
+        {/* Service Schema for Pricing Rich Snippets */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "MedicalBusiness",
+            "name": "Elevated Health Augusta",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "105 Davis Rd, Building 2, Suites 1-2",
+              "addressLocality": "Augusta",
+              "addressRegion": "GA",
+              "postalCode": "30907"
+            },
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Healthcare Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "MedicalProcedure",
+                    "name": "IV Ketamine Therapy Session",
+                    "procedureType": "Therapeutic"
+                  },
+                  "price": "400",
+                  "priceCurrency": "USD",
+                  "priceValidUntil": "2025-12-31"
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "MedicalProcedure",
+                    "name": "6-Session Ketamine Series",
+                    "procedureType": "Therapeutic"
+                  },
+                  "price": "2200",
+                  "priceCurrency": "USD",
+                  "priceValidUntil": "2025-12-31"
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Metabolic Reset Program (Monthly)",
+                    "description": "Medical weight loss with GLP-1 medication and provider support"
+                  },
+                  "price": "399",
+                  "priceCurrency": "USD"
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Hormone Concierge Membership (Monthly)",
+                    "description": "Complete hormone optimization with testing and medication"
+                  },
+                  "price": "399",
+                  "priceCurrency": "USD"
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Vitality Membership (Monthly)",
+                    "description": "Hormone optimization without GLP-1 medication"
+                  },
+                  "price": "199",
+                  "priceCurrency": "USD"
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Hormone Mapping Experience",
+                    "description": "Comprehensive hormone testing and protocol design"
+                  },
+                  "price": "299",
+                  "priceCurrency": "USD"
+                }
+              ]
+            }
+          })}
+        </script>
       </Helmet>
 
       <Navbar />
