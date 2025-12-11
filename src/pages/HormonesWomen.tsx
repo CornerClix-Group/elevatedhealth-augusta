@@ -36,6 +36,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import AssistantHub from "@/components/AssistantHub";
+import { CreditCodeInput } from "@/components/CreditCodeInput";
 
 const HormonesWomen = () => {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
@@ -44,6 +45,10 @@ const HormonesWomen = () => {
   const [isMembershipLoading, setIsMembershipLoading] = useState(false);
   const [isVitalityLoading, setIsVitalityLoading] = useState(false);
   const [isConsultationLoading, setIsConsultationLoading] = useState(false);
+  const [hormoneCreditCode, setHormoneCreditCode] = useState("");
+  const [metabolicCreditCode, setMetabolicCreditCode] = useState("");
+  const [hormoneCreditApplied, setHormoneCreditApplied] = useState(false);
+  const [metabolicCreditApplied, setMetabolicCreditApplied] = useState(false);
 
   const scrollToBooking = () => {
     const bookingSection = document.getElementById('booking-section');
@@ -81,8 +86,12 @@ const HormonesWomen = () => {
       setIsCheckoutLoading(true);
     }
     try {
+      const creditCode = mappingType === "metabolic" ? metabolicCreditCode : hormoneCreditCode;
       const { data, error } = await supabase.functions.invoke("create-hormone-checkout", {
-        body: { mappingType }
+        body: { 
+          mappingType,
+          creditCode: creditCode || undefined
+        }
       });
       
       if (error) throw error;
@@ -98,6 +107,29 @@ const HormonesWomen = () => {
     } finally {
       setIsCheckoutLoading(false);
       setIsMetabolicCheckoutLoading(false);
+    }
+  };
+
+  const handleApplyCreditCode = (type: "hormone" | "metabolic") => {
+    const code = type === "hormone" ? hormoneCreditCode : metabolicCreditCode;
+    if (code && code.length >= 5) {
+      if (type === "hormone") {
+        setHormoneCreditApplied(true);
+        toast.success("Credit code applied! You'll save $99 at checkout.");
+      } else {
+        setMetabolicCreditApplied(true);
+        toast.success("Credit code applied! You'll save $99 at checkout.");
+      }
+    }
+  };
+
+  const handleClearCreditCode = (type: "hormone" | "metabolic") => {
+    if (type === "hormone") {
+      setHormoneCreditCode("");
+      setHormoneCreditApplied(false);
+    } else {
+      setMetabolicCreditCode("");
+      setMetabolicCreditApplied(false);
     }
   };
 
@@ -531,6 +563,14 @@ const HormonesWomen = () => {
                             Customized Protocol Design
                           </li>
                         </ul>
+                        <CreditCodeInput
+                          value={hormoneCreditCode}
+                          onChange={setHormoneCreditCode}
+                          isApplied={hormoneCreditApplied}
+                          onApply={() => handleApplyCreditCode("hormone")}
+                          onClear={() => handleClearCreditCode("hormone")}
+                          className="mb-3"
+                        />
                         <Button 
                           onClick={() => handleCheckout("hormone")}
                           disabled={isCheckoutLoading}
@@ -542,7 +582,7 @@ const HormonesWomen = () => {
                           ) : (
                             <CreditCard className="mr-2 h-4 w-4" />
                           )}
-                          {isCheckoutLoading ? "Processing..." : "Get Started - $299"}
+                          {isCheckoutLoading ? "Processing..." : hormoneCreditApplied ? "Get Started - $200" : "Get Started - $299"}
                         </Button>
                       </div>
                       
@@ -569,6 +609,14 @@ const HormonesWomen = () => {
                             GLP-1 Candidacy Assessment
                           </li>
                         </ul>
+                        <CreditCodeInput
+                          value={metabolicCreditCode}
+                          onChange={setMetabolicCreditCode}
+                          isApplied={metabolicCreditApplied}
+                          onApply={() => handleApplyCreditCode("metabolic")}
+                          onClear={() => handleClearCreditCode("metabolic")}
+                          className="mb-3"
+                        />
                         <Button 
                           onClick={() => handleCheckout("metabolic")}
                           disabled={isMetabolicCheckoutLoading}
@@ -579,7 +627,7 @@ const HormonesWomen = () => {
                           ) : (
                             <CreditCard className="mr-2 h-4 w-4" />
                           )}
-                          {isMetabolicCheckoutLoading ? "Processing..." : "Get Started - $399"}
+                          {isMetabolicCheckoutLoading ? "Processing..." : metabolicCreditApplied ? "Get Started - $300" : "Get Started - $399"}
                         </Button>
                       </div>
                       

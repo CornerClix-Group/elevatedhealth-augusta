@@ -36,12 +36,15 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import AssistantHub from "@/components/AssistantHub";
+import { CreditCodeInput } from "@/components/CreditCodeInput";
 
 const HormonesMen = () => {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [isMembershipLoading, setIsMembershipLoading] = useState(false);
   const [isConsultationLoading, setIsConsultationLoading] = useState(false);
+  const [creditCode, setCreditCode] = useState("");
+  const [creditApplied, setCreditApplied] = useState(false);
 
   const scrollToBooking = () => {
     const bookingSection = document.getElementById('booking-section');
@@ -75,7 +78,12 @@ const HormonesMen = () => {
   const handleCheckout = async () => {
     setIsCheckoutLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-hormone-checkout");
+      const { data, error } = await supabase.functions.invoke("create-hormone-checkout", {
+        body: { 
+          mappingType: "hormone",
+          creditCode: creditCode || undefined
+        }
+      });
       
       if (error) throw error;
       
@@ -90,6 +98,18 @@ const HormonesMen = () => {
     } finally {
       setIsCheckoutLoading(false);
     }
+  };
+
+  const handleApplyCreditCode = () => {
+    if (creditCode && creditCode.length >= 5) {
+      setCreditApplied(true);
+      toast.success("Credit code applied! You'll save $99 at checkout.");
+    }
+  };
+
+  const handleClearCreditCode = () => {
+    setCreditCode("");
+    setCreditApplied(false);
   };
 
   const handleMembershipCheckout = async () => {
@@ -496,6 +516,14 @@ const HormonesMen = () => {
                       <p className="text-xs text-muted-foreground italic mb-4">
                         This fee covers your diagnostics and provider time. There is no obligation to proceed with treatment.
                       </p>
+                      <CreditCodeInput
+                        value={creditCode}
+                        onChange={setCreditCode}
+                        isApplied={creditApplied}
+                        onApply={handleApplyCreditCode}
+                        onClear={handleClearCreditCode}
+                        className="mb-3"
+                      />
                       <Button 
                         onClick={handleCheckout}
                         disabled={isCheckoutLoading}
@@ -506,7 +534,7 @@ const HormonesMen = () => {
                         ) : (
                           <CreditCard className="mr-2 h-4 w-4" />
                         )}
-                        {isCheckoutLoading ? "Processing..." : "Get Started - $299"}
+                        {isCheckoutLoading ? "Processing..." : creditApplied ? "Get Started - $200" : "Get Started - $299"}
                       </Button>
                     </CardContent>
                   </Card>
