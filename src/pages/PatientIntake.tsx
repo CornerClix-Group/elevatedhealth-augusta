@@ -442,7 +442,30 @@ const PatientIntake = () => {
         .update(updateData)
         .eq("id", patient.id);
 
-      toast.success("Intake complete! A provider will review your results.");
+      // Send notification to provider that intake is complete
+      try {
+        await supabase.functions.invoke("send-intake-completion-notification", {
+          body: {
+            patientName: fullName.trim(),
+            patientEmail: user.email,
+            patientId: patient.id,
+            primaryProgram: primaryProgram,
+            treatmentInterests: treatmentRequests,
+            symptomScores: hasHormoneInterests ? scores : undefined,
+            mentalWellnessScores: hasKetamineInterest ? { phq9: phq9Score, gad7: gad7Score } : undefined,
+            isHighRisk: highRisk,
+            safetyFlags: highRisk ? highRiskConditions.filter(c => medicalHistory[c.id]).map(c => c.label) : undefined,
+            labPath: labPathResult.path,
+            gender,
+          }
+        });
+        console.log("[PatientIntake] Provider notification sent");
+      } catch (notifyError) {
+        console.error("[PatientIntake] Failed to send provider notification:", notifyError);
+        // Don't block the flow if notification fails
+      }
+
+      toast.success("Intake complete! A provider will review your results within 24-48 hours.");
       navigate("/patient/dashboard");
     } catch (error: any) {
       toast.error(error.message || "Failed to submit intake");

@@ -83,3 +83,15 @@ verify_jwt = false
 
 [functions.remove-team-member]
 verify_jwt = false
+
+[functions.send-patient-signup-notification]
+verify_jwt = false
+
+[functions.send-intake-completion-notification]
+verify_jwt = false
+
+[functions.send-labcorp-requisition-notification]
+verify_jwt = false
+
+[functions.get-business-metrics]
+verify_jwt = false

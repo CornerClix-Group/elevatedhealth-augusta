@@ -3,9 +3,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
-import { Loader2, Activity, Zap, Heart, Brain, LogOut, Plus, Clock, Settings, CreditCard, Lock, FileText } from "lucide-react";
+import { Loader2, Activity, Zap, Heart, Brain, Plus, Clock, CreditCard, Lock, FileText, Sparkles, ArrowRight } from "lucide-react";
 import CircularGauge from "@/components/ui/CircularGauge";
 import MyRegimenCard from "@/components/patient/MyRegimenCard";
 import WelcomeIntake from "@/components/patient/WelcomeIntake";
@@ -15,6 +14,7 @@ import PatientChatWidget from "@/components/chat/PatientChatWidget";
 import KitTracker from "@/components/patient/KitTracker";
 import MindCareCard from "@/components/patient/MindCareCard";
 import NeurotransmitterCard from "@/components/patient/NeurotransmitterCard";
+import PatientNavbar from "@/components/patient/PatientNavbar";
 
 interface SymptomLog {
   id: string;
@@ -72,14 +72,6 @@ const PatientDashboard = () => {
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   useEffect(() => {
     loadDashboardData();
@@ -216,23 +208,6 @@ const PatientDashboard = () => {
     }
   };
 
-  const handleLogout = async () => {
-    console.log("[PatientDashboard] Logout initiated");
-    try {
-      const { error } = await supabase.auth.signOut();
-      console.log("[PatientDashboard] signOut result:", { error });
-      if (error) {
-        console.error("[PatientDashboard] Logout error:", error);
-        toast.error("Failed to logout");
-        return;
-      }
-      toast.success("Logged out successfully");
-      navigate("/patient/login");
-    } catch (error: any) {
-      console.error("[PatientDashboard] Logout exception:", error);
-      toast.error("Failed to logout");
-    }
-  };
 
   // Build regimen items from protocol
   const getRegimenItems = () => {
@@ -327,38 +302,12 @@ const PatientDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border/50 bg-card">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Avatar className="w-12 h-12 border border-border">
-              <AvatarImage src={patient?.avatar_url || undefined} alt={patient?.full_name} />
-              <AvatarFallback className="bg-primary/10 text-primary">
-                {patient?.full_name ? getInitials(patient.full_name) : "P"}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-xs uppercase tracking-widest text-gold">Welcome back</p>
-              <h1 className="font-cormorant text-2xl text-foreground">
-                {patient?.full_name || "Patient"}
-              </h1>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => setIsEditProfileOpen(true)}>
-              <Settings className="w-5 h-5" />
-            </Button>
-            <Button 
-              variant="outline" 
-              className="text-destructive border-destructive/30 hover:bg-destructive/10"
-              onClick={handleLogout}
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
-          </div>
-        </div>
-      </header>
+      {/* Patient Navigation */}
+      <PatientNavbar 
+        patientName={patient?.full_name || "Patient"}
+        avatarUrl={patient?.avatar_url}
+        onEditProfile={() => setIsEditProfileOpen(true)}
+      />
 
       <main className="container mx-auto px-4 py-8 space-y-8">
         {/* KETAMINE PATIENT DASHBOARD */}
@@ -387,6 +336,31 @@ const PatientDashboard = () => {
                     Your ketamine therapy is coordinated through Osmind, our HIPAA-compliant mental health platform. 
                     Check your email for your secure portal invitation.
                   </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Explore More Services Card for Ketamine Patients */}
+            <Card className="bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-accent/20 rounded-full">
+                    <Sparkles className="w-6 h-6 text-accent" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-foreground">Explore More Services</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Discover our full range of treatments including hormone optimization, weight loss, peptide therapy, and more.
+                    </p>
+                    <Button 
+                      variant="outline"
+                      onClick={() => navigate("/patient/services")}
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Browse Services
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -478,15 +452,21 @@ const PatientDashboard = () => {
             {isPendingReview && (
               <Card className="bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/20 border-amber-200 dark:border-amber-800">
                 <CardContent className="pt-6">
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-start gap-4">
                     <div className="p-3 bg-amber-500/20 rounded-full">
                       <Clock className="w-6 h-6 text-amber-600" />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">Review in Progress</h3>
-                      <p className="text-sm text-muted-foreground">
-                        A provider is reviewing your protocol based on your results.
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-foreground">Provider Review in Progress</h3>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        A provider is reviewing your results and designing your personalized treatment plan.
                       </p>
+                      <div className="bg-amber-100/50 dark:bg-amber-900/30 rounded-lg p-3 text-sm">
+                        <p className="font-medium text-amber-800 dark:text-amber-200">⏱️ Estimated review time: 24-48 hours</p>
+                        <p className="text-amber-700 dark:text-amber-300 mt-1">
+                          We'll notify you by email when your treatment plan is ready.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -582,6 +562,31 @@ const PatientDashboard = () => {
                 </CardContent>
               </Card>
             )}
+
+            {/* Explore More Services Card */}
+            <Card className="bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-accent/20 rounded-full">
+                    <Sparkles className="w-6 h-6 text-accent" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-foreground">Explore More Services</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Discover our full range of treatments including weight loss, peptide therapy, IV hydration, and more.
+                    </p>
+                    <Button 
+                      variant="outline"
+                      onClick={() => navigate("/patient/services")}
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Browse Services
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Quick Actions - Conditional based on intake status */}
             <div className="pb-8">

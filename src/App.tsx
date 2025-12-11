@@ -44,6 +44,7 @@ import PatientResources from "./pages/PatientResources";
 import ScheduleConsult from "./pages/ScheduleConsult";
 import CreateAccount from "./pages/CreateAccount";
 import HealthReport from "./pages/HealthReport";
+import PatientServices from "./pages/PatientServices";
 
 const queryClient = new QueryClient();
 
@@ -115,6 +116,11 @@ const App = () => (
           <Route path="/patient/health-report" element={
             <ProtectedRoute>
               <HealthReport />
+            </ProtectedRoute>
+          } />
+          <Route path="/patient/services" element={
+            <ProtectedRoute>
+              <PatientServices />
             </ProtectedRoute>
           } />
           
