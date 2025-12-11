@@ -198,6 +198,14 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
             </button>
 
             <button 
+              onClick={() => navigate("/pricing")}
+              className="text-sm font-lato font-normal tracking-wide transition-colors elegant-underline hover:opacity-70"
+              style={{ color: '#2C3E50' }}
+            >
+              Pricing
+            </button>
+
+            <button 
               onClick={() => scrollToSection("contact")}
               className="text-sm font-lato font-normal tracking-wide transition-colors elegant-underline hover:opacity-70"
               style={{ color: '#2C3E50' }}
@@ -357,6 +365,16 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                 className="mobile-menu-link"
               >
                 Peptides
+              </button>
+
+              <button 
+                onClick={() => {
+                  navigate("/pricing");
+                  setIsMobileMenuOpen(false);
+                }}
+                className="mobile-menu-link"
+              >
+                Pricing
               </button>
 
               <button 
