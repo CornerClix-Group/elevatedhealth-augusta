@@ -1,6 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
 
 const CONSENT_KEY = "cookie_consent";
 const CONSENT_EXPIRY_DAYS = 365;
@@ -48,68 +46,33 @@ const CookieConsent = () => {
     setTimeout(() => setShowBanner(false), 300);
   }, []);
 
-  // Complete removal from DOM when not showing
   if (!showBanner) return null;
 
   return (
     <div 
-      className={`fixed bottom-0 left-0 right-0 z-50 p-4 transition-all duration-300 pointer-events-none ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      className={`fixed bottom-4 left-4 z-50 transition-all duration-300 ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
       }`}
       aria-hidden={!isVisible}
     >
-      <div className="max-w-4xl mx-auto bg-foreground text-background rounded-lg shadow-2xl border border-background/10 pointer-events-auto">
-        <div className="p-4 sm:p-6">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-              <h3 className="font-cormorant text-lg font-medium mb-2">
-                We Value Your Privacy
-              </h3>
-              <p className="text-sm text-background/70 font-lato leading-relaxed">
-                We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. 
-                By clicking "Accept All," you consent to our use of cookies. You can manage your preferences or 
-                decline non-essential cookies.{" "}
-                <a 
-                  href="/privacy-policy" 
-                  className="text-primary-light hover:underline"
-                >
-                  Learn more
-                </a>
-              </p>
-            </div>
-            <button
-              onClick={handleDismiss}
-              className="text-background/50 hover:text-background transition-colors p-1"
-              aria-label="Close cookie banner"
-              type="button"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-3 mt-4">
-            <Button
-              type="button"
-              onClick={() => handleConsent("accepted")}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-lato"
-            >
-              Accept All
-            </Button>
-            <Button
-              type="button"
-              onClick={() => handleConsent("declined")}
-              variant="ghost"
-              className="border border-white/40 text-white bg-transparent hover:bg-white/10 font-lato"
-            >
-              Decline Non-Essential
-            </Button>
-            <a
-              href="/privacy-policy#cookies"
-              className="inline-flex items-center justify-center text-sm text-background/60 hover:text-background transition-colors font-lato underline-offset-4 hover:underline px-4 py-2"
-            >
-              Cookie Settings
-            </a>
-          </div>
+      <div className="flex items-center gap-3 px-4 py-2.5 rounded-full bg-foreground/80 backdrop-blur-md border border-border/20 shadow-lg">
+        <span className="text-sm text-background/90 font-lato">
+          We use cookies
+        </span>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => handleConsent("accepted")}
+            className="px-3 py-1 text-xs font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            Accept
+          </button>
+          <a
+            href="/privacy-policy#cookies"
+            className="text-xs text-background/50 hover:text-background/80 transition-colors"
+          >
+            Manage
+          </a>
         </div>
       </div>
     </div>
