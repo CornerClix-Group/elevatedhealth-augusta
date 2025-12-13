@@ -14,6 +14,7 @@ import PatientChatWidget from "@/components/chat/PatientChatWidget";
 import KitTracker from "@/components/patient/KitTracker";
 import MindCareCard from "@/components/patient/MindCareCard";
 import NeurotransmitterCard from "@/components/patient/NeurotransmitterCard";
+import { MetabolicArchitectureCard } from "@/components/patient/MetabolicArchitectureCard";
 import PatientNavbar from "@/components/patient/PatientNavbar";
 import SafetyGate from "@/components/patient/SafetyGate";
 
@@ -64,6 +65,16 @@ interface NeurotransmitterPayment {
   results_ready_at: string | null;
 }
 
+interface MetabolicPayment {
+  id: string;
+  kit_status: string;
+}
+  tracking_number: string | null;
+  shipped_at: string | null;
+  sample_received_at: string | null;
+  results_ready_at: string | null;
+}
+
 const PatientDashboard = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -73,6 +84,7 @@ const PatientDashboard = () => {
   const [latestOrder, setLatestOrder] = useState<Order | null>(null);
   const [kitTracking, setKitTracking] = useState<KitTracking | null>(null);
   const [neuroPayment, setNeuroPayment] = useState<NeurotransmitterPayment | null>(null);
+  const [metabolicPayment, setMetabolicPayment] = useState<MetabolicPayment | null>(null);
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
@@ -84,6 +96,10 @@ const PatientDashboard = () => {
     const sessionId = searchParams.get("session_id");
     if (searchParams.get("neurotransmitter") === "success" && sessionId) {
       verifyNeurotransmitterPayment(sessionId);
+    }
+    // Check for metabolic payment success
+    if (searchParams.get("metabolic") === "success" && sessionId) {
+      verifyMetabolicPayment(sessionId);
     }
   }, []);
 
@@ -98,6 +114,22 @@ const PatientDashboard = () => {
       if (data?.verified) {
         toast.success("Neurotransmitter Analysis purchased! Your kit will ship within 3-5 business days.");
         // Reload data to show updated status
+        loadDashboardData();
+      }
+    } catch (err) {
+      console.error('Payment verification error:', err);
+      toast.success("Payment received! Your kit will ship soon.");
+    }
+  };
+
+  const verifyMetabolicPayment = async (sessionId: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('verify-metabolic-payment', {
+        body: { sessionId }
+      });
+      if (error) throw error;
+      if (data?.verified) {
+        toast.success("Metabolic Architecture Kit purchased! Your kit will ship within 3-5 business days.");
         loadDashboardData();
       }
     } catch (err) {
@@ -175,6 +207,19 @@ const PatientDashboard = () => {
           .maybeSingle();
 
         setKitTracking(kitData);
+
+        // Check for metabolic kit payment (weight loss patients)
+        if (patientData.primary_program === 'weight_loss' || patientData.treatment_request?.includes('weight')) {
+          const { data: metabolicData } = await supabase
+            .from('metabolic_payments')
+            .select('id, kit_status')
+            .eq('patient_id', patientData.id)
+            .eq('payment_status', 'paid')
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          setMetabolicPayment(metabolicData);
+        }
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to load dashboard");
@@ -400,6 +445,15 @@ const PatientDashboard = () => {
               />
             )}
 
+            {/* Metabolic Architecture Card - Premium upsell for weight loss patients */}
+            {(patient?.primary_program === 'weight_loss' || patient?.treatment_request?.includes('weight')) && (
+              <MetabolicArchitectureCard
+                patientId={patient.id}
+                patientEmail={patient.email || ''}
+                patientName={patient.full_name}
+                kitStatus={metabolicPayment?.kit_status}
+              />
+            )}
             {/* Kit Tracker - Show if patient has paid for hormone mapping */}
             {kitTracking && kitTracking.zrt_kit_status !== "not_ordered" && (
               <KitTracker

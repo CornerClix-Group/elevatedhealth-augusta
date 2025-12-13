@@ -6,8 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Brain, Beaker, AlertTriangle, CheckCircle, Copy, Sparkles, Activity } from 'lucide-react';
-import { analyzeLabResults, LabValues, ClinicalImpression, REFERENCE_RANGES } from '@/lib/holgateLogic';
+import { Brain, Beaker, AlertTriangle, CheckCircle, Copy, Sparkles, Activity, Flame, Heart } from 'lucide-react';
+import { analyzeLabResults, LabValues, ClinicalImpression, REFERENCE_RANGES, KitType } from '@/lib/holgateLogic';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -16,8 +16,6 @@ interface LabInterpretationEngineProps {
   patientName: string;
   patientGender?: string;
 }
-
-type KitType = 'hormone_mapping' | 'neuro_reset';
 
 export function LabInterpretationEngine({ patientId, patientName, patientGender = 'female' }: LabInterpretationEngineProps) {
   const [kitType, setKitType] = useState<KitType>('hormone_mapping');
@@ -44,6 +42,18 @@ export function LabInterpretationEngine({ patientId, patientName, patientGender 
   const [glutamate, setGlutamate] = useState('');
   const [norepinephrine, setNorepinephrine] = useState('');
   const [epinephrine, setEpinephrine] = useState('');
+  
+  // Metabolic/Thyroid values
+  const [tsh, setTsh] = useState('');
+  const [freeT3, setFreeT3] = useState('');
+  const [freeT4, setFreeT4] = useState('');
+  const [tpoAntibodies, setTpoAntibodies] = useState('');
+  const [fastingInsulin, setFastingInsulin] = useState('');
+  const [a1c, setA1c] = useState('');
+  const [vitaminD, setVitaminD] = useState('');
+  const [triglycerides, setTriglycerides] = useState('');
+  const [hdl, setHdl] = useState('');
+  const [ldl, setLdl] = useState('');
 
   const parseValue = (val: string): number | null => {
     const num = parseFloat(val);
@@ -68,6 +78,17 @@ export function LabInterpretationEngine({ patientId, patientName, patientGender 
       glutamate: parseValue(glutamate),
       norepinephrine: parseValue(norepinephrine),
       epinephrine: parseValue(epinephrine),
+      // Metabolic/Thyroid
+      tsh: parseValue(tsh),
+      free_t3: parseValue(freeT3),
+      free_t4: parseValue(freeT4),
+      tpo_antibodies: parseValue(tpoAntibodies),
+      fasting_insulin: parseValue(fastingInsulin),
+      a1c: parseValue(a1c),
+      vitamin_d: parseValue(vitaminD),
+      triglycerides: parseValue(triglycerides),
+      hdl: parseValue(hdl),
+      ldl: parseValue(ldl),
     };
     
     // Simulate brief processing for UX
@@ -101,6 +122,15 @@ export function LabInterpretationEngine({ patientId, patientName, patientGender 
         glutamate: parseValue(glutamate),
         norepinephrine: parseValue(norepinephrine),
         epinephrine: parseValue(epinephrine),
+        tsh: parseValue(tsh),
+        free_t3: parseValue(freeT3),
+        free_t4: parseValue(freeT4),
+        tpo_antibodies: parseValue(tpoAntibodies),
+        fasting_insulin: parseValue(fastingInsulin),
+        vitamin_d: parseValue(vitaminD),
+        triglycerides: parseValue(triglycerides),
+        hdl: parseValue(hdl),
+        ldl: parseValue(ldl),
         clinical_story: impression.story,
         treatment_plan: impression.protocols as any,
       } as any);
@@ -118,8 +148,14 @@ export function LabInterpretationEngine({ patientId, patientName, patientGender 
   const copyToClipboard = () => {
     if (!impression) return;
     
+    const kitLabels: Record<KitType, string> = {
+      hormone_mapping: 'Hormone Mapping (Saliva Profile III)',
+      neuro_reset: 'Neuro-Reset (Neuro + Saliva)',
+      metabolic_thyroid: 'Metabolic Architecture (Weight Management + Thyroid + Cardio)',
+    };
+    
     let text = `CLINICAL IMPRESSION - ${patientName}\n`;
-    text += `Kit Type: ${kitType === 'hormone_mapping' ? 'Hormone Mapping (Saliva Profile III)' : 'Neuro-Reset (Neuro + Saliva)'}\n\n`;
+    text += `Kit Type: ${kitLabels[kitType]}\n\n`;
     text += `THE STORY:\n${impression.story}\n\n`;
     text += `FINDINGS:\n`;
     impression.findings.forEach(f => {
@@ -188,6 +224,12 @@ export function LabInterpretationEngine({ patientId, patientName, patientGender 
                     <div className="flex items-center gap-2">
                       <Brain className="h-4 w-4 text-purple-500" />
                       Neuro-Reset (Neuro + Saliva)
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="metabolic_thyroid">
+                    <div className="flex items-center gap-2">
+                      <Flame className="h-4 w-4 text-amber-500" />
+                      Metabolic Architecture ($599 Kit)
                     </div>
                   </SelectItem>
                 </SelectContent>
@@ -320,6 +362,47 @@ export function LabInterpretationEngine({ patientId, patientName, patientGender 
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Metabolic + Thyroid Panel - Only show for metabolic_thyroid */}
+      {kitType === 'metabolic_thyroid' && (
+        <>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Flame className="h-4 w-4 text-amber-500" />
+                Thyroid Panel
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <InputWithHint label="TSH" value={tsh} onChange={setTsh} hint="Optimal: 1.0-2.5 mIU/L" />
+                <InputWithHint label="Free T3" value={freeT3} onChange={setFreeT3} hint="Optimal: 2.5-4.2 pg/mL" />
+                <InputWithHint label="Free T4" value={freeT4} onChange={setFreeT4} hint="Optimal: 1.0-1.5 ng/dL" />
+                <InputWithHint label="TPO Antibodies" value={tpoAntibodies} onChange={setTpoAntibodies} hint="Negative: <35 IU/mL" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Heart className="h-4 w-4 text-red-500" />
+                Metabolic & Lipid Panel
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <InputWithHint label="Fasting Insulin" value={fastingInsulin} onChange={setFastingInsulin} hint="Optimal: 2-8 uIU/mL" />
+                <InputWithHint label="HbA1c (%)" value={a1c} onChange={setA1c} hint="Normal: <5.7%" />
+                <InputWithHint label="Vitamin D" value={vitaminD} onChange={setVitaminD} hint="Optimal: 50-80 ng/mL" />
+                <InputWithHint label="Triglycerides" value={triglycerides} onChange={setTriglycerides} hint="Optimal: <150 mg/dL" />
+                <InputWithHint label="HDL" value={hdl} onChange={setHdl} hint={`Optimal: >${patientGender === 'male' ? '40' : '50'} mg/dL`} />
+                <InputWithHint label="LDL" value={ldl} onChange={setLdl} hint="Optimal: <100 mg/dL" />
+              </div>
+            </CardContent>
+          </Card>
+        </>
       )}
 
       {/* Analyze Button */}
