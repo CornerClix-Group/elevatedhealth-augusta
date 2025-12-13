@@ -22,6 +22,8 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import BoosterInfoCard from "@/components/BoosterInfoCard";
+import BoosterModal from "@/components/BoosterModal";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface IVTherapy {
   id: string;
@@ -81,6 +83,9 @@ const IVLounge = () => {
   const [selectedAddons, setSelectedAddons] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(true);
   const [bookingTherapyId, setBookingTherapyId] = useState<string | null>(null);
+  const [mobileModalAddon, setMobileModalAddon] = useState<{ addon: IVAddon; therapyId: string } | null>(null);
+  const [mobileModalAddonStandalone, setMobileModalAddonStandalone] = useState<IVAddon | null>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -275,11 +280,33 @@ const IVLounge = () => {
                     {addons.length > 0 && (
                       <div className="mb-4 pt-4 border-t border-border/30">
                         <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider">
-                          Add Boosters <span className="text-primary/60">(hover for details)</span>
+                          Add Boosters <span className="text-primary/60 hidden md:inline">(hover for details)</span>
+                          <span className="text-primary/60 md:hidden">(tap for details)</span>
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {addons.slice(0, 5).map((addon) => {
                             const isSelected = getTherapyAddons(therapy.id).includes(addon.id);
+                            
+                            // Mobile: tap to open modal
+                            if (isMobile) {
+                              return (
+                                <button
+                                  key={addon.id}
+                                  onClick={() => setMobileModalAddon({ addon, therapyId: therapy.id })}
+                                  className={`group/btn flex items-center gap-1 px-2 py-1 text-xs rounded-full border transition-all duration-200 ${
+                                    isSelected
+                                      ? "bg-primary text-primary-foreground border-primary"
+                                      : "border-border hover:border-primary/50 hover:bg-secondary/50"
+                                  }`}
+                                >
+                                  {isSelected && <Check className="w-3 h-3" />}
+                                  {addon.name} +${addon.price}
+                                  <Info className={`w-3 h-3 ${isSelected ? 'text-primary-foreground' : 'text-primary'}`} />
+                                </button>
+                              );
+                            }
+                            
+                            // Desktop: hover card
                             return (
                               <HoverCard key={addon.id} openDelay={100} closeDelay={100}>
                                 <HoverCardTrigger asChild>
@@ -364,52 +391,70 @@ const IVLounge = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-6xl mx-auto">
-              {addons.map((addon) => (
-                <HoverCard key={addon.id} openDelay={100} closeDelay={100}>
-                  <HoverCardTrigger asChild>
-                    <Card className="p-5 border border-primary/20 bg-card hover:shadow-lg hover:border-primary/40 transition-all duration-300 cursor-pointer group">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="p-1.5 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors">
-                          {addon.icon_name === 'zap' && <Sparkles className="w-4 h-4 text-primary" />}
-                          {addon.icon_name === 'sparkles' && <Sparkles className="w-4 h-4 text-primary" />}
-                          {addon.icon_name === 'shield' && <Shield className="w-4 h-4 text-primary" />}
-                          {(!addon.icon_name || !['zap', 'sparkles', 'shield'].includes(addon.icon_name)) && <Sparkles className="w-4 h-4 text-primary" />}
-                        </div>
-                        <span className="px-2 py-0.5 bg-primary text-primary-foreground text-xs font-medium rounded-full">
-                          +${addon.price}
-                        </span>
+              {addons.map((addon) => {
+                const cardContent = (
+                  <Card className="p-5 border border-primary/20 bg-card hover:shadow-lg hover:border-primary/40 transition-all duration-300 cursor-pointer group">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="p-1.5 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors">
+                        {addon.icon_name === 'zap' && <Sparkles className="w-4 h-4 text-primary" />}
+                        {addon.icon_name === 'sparkles' && <Sparkles className="w-4 h-4 text-primary" />}
+                        {addon.icon_name === 'shield' && <Shield className="w-4 h-4 text-primary" />}
+                        {(!addon.icon_name || !['zap', 'sparkles', 'shield'].includes(addon.icon_name)) && <Sparkles className="w-4 h-4 text-primary" />}
                       </div>
-                      <h4 className="font-cormorant text-lg font-medium text-foreground mb-1">
-                        {addon.name}
-                      </h4>
-                      <p className="text-xs text-muted-foreground line-clamp-2">
-                        {addon.description}
-                      </p>
-                      <p className="text-xs text-primary/70 mt-2 flex items-center gap-1">
-                        <Info className="w-3 h-3" /> Hover for details
-                      </p>
-                    </Card>
-                  </HoverCardTrigger>
-                  <HoverCardContent 
-                    side="top" 
-                    align="center" 
-                    className="p-0 w-auto border-0 bg-transparent shadow-none"
-                    sideOffset={8}
-                  >
-                    <BoosterInfoCard
-                      name={addon.name}
-                      price={addon.price}
-                      description={addon.description}
-                      detailedDescription={addon.detailed_description}
-                      benefits={addon.benefits || []}
-                      bestFor={addon.best_for || []}
-                      iconName={addon.icon_name}
-                      isSelected={false}
-                      onToggle={() => {}}
-                    />
-                  </HoverCardContent>
-                </HoverCard>
-              ))}
+                      <span className="px-2 py-0.5 bg-primary text-primary-foreground text-xs font-medium rounded-full">
+                        +${addon.price}
+                      </span>
+                    </div>
+                    <h4 className="font-cormorant text-lg font-medium text-foreground mb-1">
+                      {addon.name}
+                    </h4>
+                    <p className="text-xs text-muted-foreground line-clamp-2">
+                      {addon.description}
+                    </p>
+                    <p className="text-xs text-primary/70 mt-2 flex items-center gap-1">
+                      <Info className="w-3 h-3" /> 
+                      <span className="hidden md:inline">Hover for details</span>
+                      <span className="md:hidden">Tap for details</span>
+                    </p>
+                  </Card>
+                );
+
+                // Mobile: tap to open modal
+                if (isMobile) {
+                  return (
+                    <div key={addon.id} onClick={() => setMobileModalAddonStandalone(addon)}>
+                      {cardContent}
+                    </div>
+                  );
+                }
+
+                // Desktop: hover card
+                return (
+                  <HoverCard key={addon.id} openDelay={100} closeDelay={100}>
+                    <HoverCardTrigger asChild>
+                      {cardContent}
+                    </HoverCardTrigger>
+                    <HoverCardContent 
+                      side="top" 
+                      align="center" 
+                      className="p-0 w-auto border-0 bg-transparent shadow-none"
+                      sideOffset={8}
+                    >
+                      <BoosterInfoCard
+                        name={addon.name}
+                        price={addon.price}
+                        description={addon.description}
+                        detailedDescription={addon.detailed_description}
+                        benefits={addon.benefits || []}
+                        bestFor={addon.best_for || []}
+                        iconName={addon.icon_name}
+                        isSelected={false}
+                        onToggle={() => {}}
+                      />
+                    </HoverCardContent>
+                  </HoverCard>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -440,6 +485,40 @@ const IVLounge = () => {
       </main>
 
       <Footer />
+
+      {/* Mobile Modal for Boosters in Therapy Cards */}
+      {mobileModalAddon && (
+        <BoosterModal
+          open={!!mobileModalAddon}
+          onOpenChange={(open) => !open && setMobileModalAddon(null)}
+          name={mobileModalAddon.addon.name}
+          price={mobileModalAddon.addon.price}
+          description={mobileModalAddon.addon.description}
+          detailedDescription={mobileModalAddon.addon.detailed_description}
+          benefits={mobileModalAddon.addon.benefits || []}
+          bestFor={mobileModalAddon.addon.best_for || []}
+          iconName={mobileModalAddon.addon.icon_name}
+          isSelected={getTherapyAddons(mobileModalAddon.therapyId).includes(mobileModalAddon.addon.id)}
+          onToggle={() => toggleAddon(mobileModalAddon.therapyId, mobileModalAddon.addon.id)}
+        />
+      )}
+
+      {/* Mobile Modal for Standalone Booster Cards */}
+      {mobileModalAddonStandalone && (
+        <BoosterModal
+          open={!!mobileModalAddonStandalone}
+          onOpenChange={(open) => !open && setMobileModalAddonStandalone(null)}
+          name={mobileModalAddonStandalone.name}
+          price={mobileModalAddonStandalone.price}
+          description={mobileModalAddonStandalone.description}
+          detailedDescription={mobileModalAddonStandalone.detailed_description}
+          benefits={mobileModalAddonStandalone.benefits || []}
+          bestFor={mobileModalAddonStandalone.best_for || []}
+          iconName={mobileModalAddonStandalone.icon_name}
+          isSelected={false}
+          onToggle={() => {}}
+        />
+      )}
     </>
   );
 };
