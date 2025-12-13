@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import FinancingBanner from "@/components/FinancingBanner";
 import OurTreatments from "@/components/OurTreatments";
 import MissionStatement from "@/components/MissionStatement";
 import WhyUsCompare from "@/components/WhyUsCompare";
@@ -23,6 +24,7 @@ const Index = () => {
       <Navbar onOpenBooking={() => setIsBookingOpen(true)} />
       <main>
         <Hero onOpenBooking={() => setIsBookingOpen(true)} />
+        <FinancingBanner />
         <MissionStatement onOpenBooking={() => setIsBookingOpen(true)} />
         <OurTreatments onOpenBooking={() => setIsBookingOpen(true)} />
         <WhyUsCompare onOpenBooking={() => setIsBookingOpen(true)} />
