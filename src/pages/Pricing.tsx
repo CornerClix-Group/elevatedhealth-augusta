@@ -227,19 +227,6 @@ const Pricing = () => {
       <Navbar />
 
       <main id="main-content" className="min-h-screen bg-background">
-        {/* Financing Banner */}
-        <section className="bg-gradient-to-r from-[#FFB3C7]/10 via-[#0FA0EA]/10 to-[#FFB3C7]/10 py-4 border-b border-gold/10">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
-              <span className="text-sm font-lato text-foreground font-medium">
-                💳 Flexible Payment Plans Available
-              </span>
-              <span className="text-sm text-muted-foreground font-lato">
-                Pay in 4 interest-free payments with Klarna or Affirm • Approved in seconds at checkout
-              </span>
-            </div>
-          </div>
-        </section>
 
         {/* Hero Section */}
         <section className="relative py-20 lg:py-28 bg-gradient-to-b from-secondary to-background">
@@ -325,10 +312,13 @@ const Pricing = () => {
                     </p>
                   </CardHeader>
                   <CardContent>
-                    <div className="mb-4">
+                    <div className="mb-2">
                       <span className="text-4xl font-cormorant text-foreground">$400</span>
                       <span className="text-muted-foreground font-lato">/session</span>
                     </div>
+                    <p className="text-xs text-gold font-lato mb-4">
+                      or 4 payments of $100 with Klarna
+                    </p>
                     <ul className="space-y-2 mb-6">
                       <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
                         <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
@@ -366,10 +356,13 @@ const Pricing = () => {
                     </p>
                   </CardHeader>
                   <CardContent>
-                    <div className="mb-4">
+                    <div className="mb-2">
                       <span className="text-4xl font-cormorant text-foreground">$2,200</span>
                       <span className="text-muted-foreground font-lato ml-2 line-through text-sm">$2,400</span>
                     </div>
+                    <p className="text-xs text-gold font-lato mb-4">
+                      or ~$183/mo for 12 months with Affirm
+                    </p>
                     <ul className="space-y-2 mb-6">
                       <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
                         <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
@@ -558,11 +551,11 @@ const Pricing = () => {
                       </p>
                     </CardHeader>
                     <CardContent>
-                      <div className="mb-6">
+                      <div className="mb-4">
                         <span className="text-4xl font-cormorant text-foreground">$399</span>
                         <span className="text-muted-foreground font-lato">/month</span>
                         <p className="text-xs text-gold font-lato mt-1">
-                          Save over $150/month vs à la carte
+                          or 4 payments of $100 with Klarna • Save over $150/month vs à la carte
                         </p>
                       </div>
                       <ul className="space-y-3 mb-8">
@@ -961,6 +954,106 @@ const Pricing = () => {
             </div>
           </section>
         )}
+
+        {/* Dedicated Financing Section */}
+        <section className="py-16 lg:py-20 bg-gradient-to-b from-[#F5E6D3]/30 to-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-10">
+                <Badge variant="outline" className="mb-4 px-4 py-1.5 border-gold/30 text-gold font-lato">
+                  Flexible Financing
+                </Badge>
+                <h2 className="text-3xl md:text-4xl font-cormorant text-foreground mb-4">
+                  Don't Let Cost Be a Barrier
+                </h2>
+                <p className="text-lg text-muted-foreground font-lato max-w-2xl mx-auto">
+                  We've partnered with trusted financing providers to make your wellness journey accessible.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6 mb-10">
+                {/* Klarna Card */}
+                <Card className="border-2 border-[#FFB3C7]/30 bg-gradient-to-br from-[#FFB3C7]/5 to-transparent">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="px-4 py-2 bg-[#FFB3C7]/20 rounded-lg">
+                        <span className="font-bold text-lg text-[#E91E8A]">Klarna</span>
+                      </div>
+                      <Badge variant="outline" className="text-xs">Interest-Free</Badge>
+                    </div>
+                    <h3 className="font-cormorant text-xl text-foreground mb-2">Pay in 4</h3>
+                    <p className="text-muted-foreground font-lato text-sm mb-4">
+                      Split your purchase into 4 interest-free payments, paid every 2 weeks. No impact on credit score.
+                    </p>
+                    <ul className="space-y-2">
+                      <li className="flex items-center gap-2 text-sm font-lato text-foreground">
+                        <Check className="w-4 h-4 text-gold" />
+                        Approved in seconds at checkout
+                      </li>
+                      <li className="flex items-center gap-2 text-sm font-lato text-foreground">
+                        <Check className="w-4 h-4 text-gold" />
+                        0% interest, no fees if paid on time
+                      </li>
+                      <li className="flex items-center gap-2 text-sm font-lato text-foreground">
+                        <Check className="w-4 h-4 text-gold" />
+                        Soft credit check only
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                {/* Affirm Card */}
+                <Card className="border-2 border-[#0FA0EA]/30 bg-gradient-to-br from-[#0FA0EA]/5 to-transparent">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="px-4 py-2 bg-[#0FA0EA]/10 rounded-lg">
+                        <span className="font-bold text-lg text-[#0FA0EA]">affirm</span>
+                      </div>
+                      <Badge variant="outline" className="text-xs">Monthly Plans</Badge>
+                    </div>
+                    <h3 className="font-cormorant text-xl text-foreground mb-2">Pay Over Time</h3>
+                    <p className="text-muted-foreground font-lato text-sm mb-4">
+                      Choose monthly payments from 3-36 months. Know your rate upfront—no hidden fees, ever.
+                    </p>
+                    <ul className="space-y-2">
+                      <li className="flex items-center gap-2 text-sm font-lato text-foreground">
+                        <Check className="w-4 h-4 text-gold" />
+                        Plans from 3 to 36 months
+                      </li>
+                      <li className="flex items-center gap-2 text-sm font-lato text-foreground">
+                        <Check className="w-4 h-4 text-gold" />
+                        Rates as low as 0% APR
+                      </li>
+                      <li className="flex items-center gap-2 text-sm font-lato text-foreground">
+                        <Check className="w-4 h-4 text-gold" />
+                        No prepayment penalties
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="bg-secondary/50 rounded-xl p-6 border border-border">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center">
+                      <BadgeCheck className="w-6 h-6 text-gold" />
+                    </div>
+                    <div>
+                      <h4 className="font-cormorant text-lg text-foreground">HSA/FSA Accepted</h4>
+                      <p className="text-sm text-muted-foreground font-lato">
+                        Use your pre-tax health savings for most of our services
+                      </p>
+                    </div>
+                  </div>
+                  <Link to="/affordability" className="text-gold hover:text-gold-dark font-lato text-sm flex items-center gap-1">
+                    View all payment options <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* CTA Section */}
         <section className="py-20 lg:py-28 bg-gradient-to-b from-secondary to-background">
