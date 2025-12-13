@@ -125,3 +125,9 @@ verify_jwt = false
 
 [functions.update-team-roles]
 verify_jwt = false
+
+[functions.create-metabolic-checkout]
+verify_jwt = false
+
+[functions.verify-metabolic-payment]
+verify_jwt = false
