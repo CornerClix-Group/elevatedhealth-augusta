@@ -518,12 +518,17 @@ export type Database = {
           dopamine: number | null
           epinephrine: number | null
           estradiol_e2: number | null
+          fasting_insulin: number | null
+          free_t3: number | null
+          free_t4: number | null
           gaba: number | null
           glutamate: number | null
+          hdl: number | null
           hematocrit: number | null
           id: string
           kit_type: string | null
           lab_source: string | null
+          ldl: number | null
           norepinephrine: number | null
           notes: string | null
           patient_id: string
@@ -531,7 +536,11 @@ export type Database = {
           psa: number | null
           serotonin: number | null
           testosterone_t: number | null
+          tpo_antibodies: number | null
           treatment_plan: Json | null
+          triglycerides: number | null
+          tsh: number | null
+          vitamin_d: number | null
         }
         Insert: {
           a1c?: number | null
@@ -550,12 +559,17 @@ export type Database = {
           dopamine?: number | null
           epinephrine?: number | null
           estradiol_e2?: number | null
+          fasting_insulin?: number | null
+          free_t3?: number | null
+          free_t4?: number | null
           gaba?: number | null
           glutamate?: number | null
+          hdl?: number | null
           hematocrit?: number | null
           id?: string
           kit_type?: string | null
           lab_source?: string | null
+          ldl?: number | null
           norepinephrine?: number | null
           notes?: string | null
           patient_id: string
@@ -563,7 +577,11 @@ export type Database = {
           psa?: number | null
           serotonin?: number | null
           testosterone_t?: number | null
+          tpo_antibodies?: number | null
           treatment_plan?: Json | null
+          triglycerides?: number | null
+          tsh?: number | null
+          vitamin_d?: number | null
         }
         Update: {
           a1c?: number | null
@@ -582,12 +600,17 @@ export type Database = {
           dopamine?: number | null
           epinephrine?: number | null
           estradiol_e2?: number | null
+          fasting_insulin?: number | null
+          free_t3?: number | null
+          free_t4?: number | null
           gaba?: number | null
           glutamate?: number | null
+          hdl?: number | null
           hematocrit?: number | null
           id?: string
           kit_type?: string | null
           lab_source?: string | null
+          ldl?: number | null
           norepinephrine?: number | null
           notes?: string | null
           patient_id?: string
@@ -595,7 +618,11 @@ export type Database = {
           psa?: number | null
           serotonin?: number | null
           testosterone_t?: number | null
+          tpo_antibodies?: number | null
           treatment_plan?: Json | null
+          triglycerides?: number | null
+          tsh?: number | null
+          vitamin_d?: number | null
         }
         Relationships: [
           {
@@ -641,6 +668,68 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      metabolic_payments: {
+        Row: {
+          amount_paid: number | null
+          created_at: string
+          customer_email: string
+          customer_name: string | null
+          id: string
+          kit_status: string
+          patient_id: string | null
+          payment_status: string
+          results_ready_at: string | null
+          sample_received_at: string | null
+          shipped_at: string | null
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          tracking_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_paid?: number | null
+          created_at?: string
+          customer_email: string
+          customer_name?: string | null
+          id?: string
+          kit_status?: string
+          patient_id?: string | null
+          payment_status?: string
+          results_ready_at?: string | null
+          sample_received_at?: string | null
+          shipped_at?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          tracking_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_paid?: number | null
+          created_at?: string
+          customer_email?: string
+          customer_name?: string | null
+          id?: string
+          kit_status?: string
+          patient_id?: string | null
+          payment_status?: string
+          results_ready_at?: string | null
+          sample_received_at?: string | null
+          shipped_at?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          tracking_number?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metabolic_payments_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
             referencedColumns: ["id"]
           },
         ]

@@ -1,5 +1,5 @@
 // Holgate Logic - Clinical Decision Rules for Lab Interpretation
-// Based on Dr. Holgate's methodology for hormone and neurotransmitter analysis
+// Based on Dr. Holgate's methodology for hormone, neurotransmitter, and metabolic analysis
 
 export interface LabValues {
   // Hormones (Saliva Profile III)
@@ -18,13 +18,24 @@ export interface LabValues {
   glutamate?: number | null;
   norepinephrine?: number | null;
   epinephrine?: number | null;
+  // Metabolic/Thyroid (Metabolic Architecture Kit)
+  tsh?: number | null;
+  free_t3?: number | null;
+  free_t4?: number | null;
+  tpo_antibodies?: number | null;
+  fasting_insulin?: number | null;
+  a1c?: number | null;
+  vitamin_d?: number | null;
+  triglycerides?: number | null;
+  hdl?: number | null;
+  ldl?: number | null;
 }
 
 export interface Finding {
   pattern: string;
   description: string;
   priority: 'high' | 'medium' | 'low';
-  category: 'hormone' | 'neurotransmitter' | 'adrenal';
+  category: 'hormone' | 'neurotransmitter' | 'adrenal' | 'metabolic' | 'thyroid' | 'lipid';
 }
 
 export interface Protocol {
@@ -70,6 +81,25 @@ const REFERENCE_RANGES = {
   glutamate_high: 60,
   norepinephrine_low: 30,
   epinephrine_low: 5,
+  
+  // Thyroid ranges
+  tsh_high: 4.5,
+  tsh_optimal_high: 2.5,
+  free_t3_low: 2.5,
+  free_t4_low: 1.0,
+  free_t4_high: 1.2,
+  tpo_antibodies_positive: 35,
+  
+  // Metabolic ranges
+  fasting_insulin_high: 10,
+  a1c_prediabetic: 5.7,
+  vitamin_d_low: 30,
+  
+  // Lipid ranges
+  triglycerides_high: 150,
+  hdl_low_male: 40,
+  hdl_low_female: 50,
+  ldl_high: 100,
 };
 
 function analyzeHormones(values: LabValues, gender: string): Finding[] {
@@ -263,6 +293,109 @@ function analyzeNeurotransmitters(values: LabValues): Finding[] {
   return findings;
 }
 
+function analyzeMetabolic(values: LabValues, gender: string): Finding[] {
+  const findings: Finding[] = [];
+  
+  // Insulin Resistance (Weight Loss Barrier #1)
+  if (values.fasting_insulin && values.fasting_insulin > REFERENCE_RANGES.fasting_insulin_high) {
+    findings.push({
+      pattern: 'Insulin Resistance Detected',
+      description: "Body is in 'Storage Mode.' GLP-1 Therapy (Semaglutide) is medically necessary to unlock fat loss.",
+      priority: 'high',
+      category: 'metabolic',
+    });
+  }
+  
+  // Pre-Diabetes (Weight Loss Barrier)
+  if (values.a1c && values.a1c > REFERENCE_RANGES.a1c_prediabetic) {
+    findings.push({
+      pattern: 'Pre-Diabetic Range',
+      description: 'HbA1c above 5.7% indicates urgent need for metabolic intervention. Blood sugar dysregulation is blocking fat loss.',
+      priority: 'high',
+      category: 'metabolic',
+    });
+  }
+  
+  // Vitamin D Deficiency (Metabolic Stall Factor)
+  if (values.vitamin_d && values.vitamin_d < REFERENCE_RANGES.vitamin_d_low) {
+    findings.push({
+      pattern: 'Metabolic Stall Factor',
+      description: 'Low Vitamin D mimics leptin resistance. Rx: Vitamin D3 5,000 IU daily.',
+      priority: 'high',
+      category: 'metabolic',
+    });
+  }
+  
+  // Hashimoto's / TPO Antibodies (Thyroid Barrier)
+  if (values.tpo_antibodies && values.tpo_antibodies > REFERENCE_RANGES.tpo_antibodies_positive) {
+    findings.push({
+      pattern: "Hashimoto's Autoimmune Flag",
+      description: 'Thyroid is under attack. Avoid gluten/dairy to reduce inflammation. Selenium support recommended.',
+      priority: 'high',
+      category: 'thyroid',
+    });
+  }
+  
+  // Poor T4→T3 Conversion
+  if (
+    values.free_t3 && values.free_t3 < REFERENCE_RANGES.free_t3_low &&
+    values.free_t4 && values.free_t4 > REFERENCE_RANGES.free_t4_high
+  ) {
+    findings.push({
+      pattern: 'Poor T4→T3 Conversion',
+      description: 'Thyroid is producing hormone but not converting to active form. Selenium + Zinc needed to activate thyroid hormones.',
+      priority: 'high',
+      category: 'thyroid',
+    });
+  }
+  
+  // Subclinical Hypothyroid
+  if (
+    values.tsh && values.tsh > REFERENCE_RANGES.tsh_optimal_high &&
+    ((values.free_t3 && values.free_t3 < 2.8) || (values.free_t4 && values.free_t4 < REFERENCE_RANGES.free_t4_low))
+  ) {
+    findings.push({
+      pattern: 'Subclinical Hypothyroid',
+      description: 'TSH elevated with low thyroid hormones. Low-dose thyroid support may dramatically improve metabolism.',
+      priority: 'medium',
+      category: 'thyroid',
+    });
+  }
+  
+  // High Triglycerides
+  if (values.triglycerides && values.triglycerides > REFERENCE_RANGES.triglycerides_high) {
+    findings.push({
+      pattern: 'Elevated Triglycerides',
+      description: 'Indicates excess carbohydrate/sugar intake. Reduce refined carbs, consider Omega-3 supplementation.',
+      priority: 'medium',
+      category: 'lipid',
+    });
+  }
+  
+  // Low HDL
+  const hdlThreshold = gender === 'male' ? REFERENCE_RANGES.hdl_low_male : REFERENCE_RANGES.hdl_low_female;
+  if (values.hdl && values.hdl < hdlThreshold) {
+    findings.push({
+      pattern: 'Low HDL Cholesterol',
+      description: 'Low protective cholesterol. Increase healthy fats, exercise, and consider Niacin support.',
+      priority: 'medium',
+      category: 'lipid',
+    });
+  }
+  
+  // High LDL
+  if (values.ldl && values.ldl > REFERENCE_RANGES.ldl_high) {
+    findings.push({
+      pattern: 'Elevated LDL Cholesterol',
+      description: 'Cardiovascular risk factor. Address with diet, exercise, and inflammation reduction.',
+      priority: 'medium',
+      category: 'lipid',
+    });
+  }
+  
+  return findings;
+}
+
 function generateProtocols(findings: Finding[]): Protocol[] {
   const protocols: Protocol[] = [];
   let priority = 1;
@@ -387,10 +520,71 @@ function generateProtocols(findings: Finding[]): Protocol[] {
     });
   }
   
+  // Metabolic protocols
+  if (patterns.includes('Insulin Resistance Detected')) {
+    protocols.push({
+      name: 'GLP-1 Therapy (Semaglutide)',
+      dosage: 'Start 0.25mg weekly, titrate to 1mg',
+      timing: 'Weekly injection',
+      priority: priority++,
+      rationale: 'Medically necessary to overcome insulin resistance and unlock fat loss',
+    });
+  }
+  
+  if (patterns.includes('Metabolic Stall Factor')) {
+    protocols.push({
+      name: 'Vitamin D3',
+      dosage: '5,000 IU daily',
+      timing: 'With fatty meal',
+      priority: priority++,
+      rationale: 'Correct vitamin D deficiency to restore leptin sensitivity',
+    });
+  }
+  
+  if (patterns.includes("Hashimoto's Autoimmune Flag")) {
+    protocols.push({
+      name: 'Selenium + Anti-Inflammatory Diet',
+      dosage: 'Selenium 200mcg daily + Gluten/Dairy elimination',
+      timing: 'With meals',
+      priority: priority++,
+      rationale: 'Reduce thyroid autoimmune attack and inflammation',
+    });
+  }
+  
+  if (patterns.includes('Poor T4→T3 Conversion')) {
+    protocols.push({
+      name: 'Selenium + Zinc',
+      dosage: 'Selenium 200mcg + Zinc 30mg daily',
+      timing: 'With meals',
+      priority: priority++,
+      rationale: 'Support T4 to T3 conversion for active thyroid hormone',
+    });
+  }
+  
+  if (patterns.includes('Pre-Diabetic Range')) {
+    protocols.push({
+      name: 'Berberine + Metabolic Protocol',
+      dosage: 'Berberine 500mg 2-3x daily',
+      timing: 'Before meals',
+      priority: priority++,
+      rationale: 'Natural insulin sensitizer to address pre-diabetic state',
+    });
+  }
+  
+  if (patterns.includes('Elevated Triglycerides')) {
+    protocols.push({
+      name: 'Omega-3 Fish Oil',
+      dosage: '2-4g EPA/DHA daily',
+      timing: 'With meals',
+      priority: priority++,
+      rationale: 'Reduce triglycerides and cardiovascular risk',
+    });
+  }
+  
   return protocols;
 }
 
-function generateStory(findings: Finding[], values: LabValues): string {
+function generateStory(findings: Finding[], values: LabValues, kitType: string): string {
   if (findings.length === 0) {
     return "Your labs appear within normal ranges. Continue current wellness protocols and retest in 3-6 months.";
   }
@@ -398,12 +592,44 @@ function generateStory(findings: Finding[], values: LabValues): string {
   const hasAdrenalIssue = findings.some(f => f.category === 'adrenal');
   const hasHormoneIssue = findings.some(f => f.category === 'hormone');
   const hasNeuroIssue = findings.some(f => f.category === 'neurotransmitter');
+  const hasMetabolicIssue = findings.some(f => f.category === 'metabolic');
+  const hasThyroidIssue = findings.some(f => f.category === 'thyroid');
+  const hasLipidIssue = findings.some(f => f.category === 'lipid');
   
   const highPriorityFindings = findings.filter(f => f.priority === 'high');
   
   let story = "";
   
-  // Build the narrative based on findings
+  // METABOLIC OPTIMIZATION SUMMARY for metabolic_thyroid kit
+  if (kitType === 'metabolic_thyroid' && (hasMetabolicIssue || hasThyroidIssue)) {
+    story = "Your metabolism isn't broken, but it is blocked. ";
+    
+    const barriers: string[] = [];
+    if (findings.some(f => f.pattern === 'Insulin Resistance Detected')) {
+      barriers.push("insulin resistance keeping your body in storage mode");
+    }
+    if (findings.some(f => f.pattern === "Hashimoto's Autoimmune Flag")) {
+      barriers.push("autoimmune thyroid inflammation");
+    }
+    if (findings.some(f => f.pattern === 'Poor T4→T3 Conversion')) {
+      barriers.push("poor thyroid hormone conversion");
+    }
+    if (findings.some(f => f.pattern === 'Metabolic Stall Factor')) {
+      barriers.push("vitamin D deficiency blocking leptin sensitivity");
+    }
+    if (findings.some(f => f.pattern === 'Pre-Diabetic Range')) {
+      barriers.push("pre-diabetic blood sugar levels");
+    }
+    
+    if (barriers.length > 0) {
+      story += `Your labs show ${barriers.join(', ')}. `;
+    }
+    
+    story += "Our plan is to lower your Insulin load while supporting your Thyroid conversion, which will allow the medication to work 2x faster.";
+    return story;
+  }
+  
+  // Build the narrative based on findings (existing logic)
   if (hasAdrenalIssue && hasNeuroIssue) {
     story = "Your labs show that your adrenal system is exhausted from chronic stress, which is affecting your brain chemistry. ";
     if (findings.some(f => f.pattern === 'Serotonin Deficiency')) {
@@ -448,7 +674,9 @@ function generateStory(findings: Finding[], values: LabValues): string {
   return story;
 }
 
-export function analyzeLabResults(values: LabValues, gender: string = 'female', kitType: 'hormone_mapping' | 'neuro_reset' = 'hormone_mapping'): ClinicalImpression {
+export type KitType = 'hormone_mapping' | 'neuro_reset' | 'metabolic_thyroid';
+
+export function analyzeLabResults(values: LabValues, gender: string = 'female', kitType: KitType = 'hormone_mapping'): ClinicalImpression {
   let findings: Finding[] = [];
   
   // Always analyze hormones and adrenals
@@ -458,6 +686,11 @@ export function analyzeLabResults(values: LabValues, gender: string = 'female', 
   // Add neurotransmitter analysis for Neuro-Reset kit
   if (kitType === 'neuro_reset') {
     findings = [...findings, ...analyzeNeurotransmitters(values)];
+  }
+  
+  // Add metabolic/thyroid analysis for Metabolic Architecture kit
+  if (kitType === 'metabolic_thyroid') {
+    findings = [...findings, ...analyzeMetabolic(values, gender)];
   }
   
   // Sort by priority
@@ -470,7 +703,7 @@ export function analyzeLabResults(values: LabValues, gender: string = 'female', 
   const protocols = generateProtocols(findings);
   
   // Generate patient-facing story
-  const story = generateStory(findings, values);
+  const story = generateStory(findings, values, kitType);
   
   return {
     story,
