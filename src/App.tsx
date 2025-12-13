@@ -49,6 +49,7 @@ import ConsultationConfirmed from "./pages/ConsultationConfirmed";
 import MentalWellnessPage from "./pages/MentalWellnessPage";
 import HormoneJourneyPage from "./pages/HormoneJourneyPage";
 import IVPaymentSuccess from "./pages/IVPaymentSuccess";
+import Affordability from "./pages/Affordability";
 
 const queryClient = new QueryClient();
 
@@ -83,6 +84,7 @@ const App = () => (
           <Route path="/peptides" element={<PeptideTherapy />} />
           <Route path="/iv-lounge" element={<IVLounge />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/affordability" element={<Affordability />} />
           <Route path="/what-to-expect" element={<WhatToExpect />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/hipaa-notice" element={<HipaaNotice />} />
