@@ -155,16 +155,41 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
             Elevated Health
           </button>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8 flex-shrink-0">
-            {/* Services Dropdown */}
+          {/* Desktop Navigation - Hero Services Visible */}
+          <div className="hidden lg:flex items-center gap-6 flex-shrink-0">
+            {/* Primary Services - Direct Links */}
+            <button 
+              onClick={() => navigate(SITE_CONFIG.routes.ketamine)}
+              className="text-sm font-lato font-normal tracking-wide transition-colors hover:opacity-70"
+              style={{ color: '#2C3E50' }}
+            >
+              Ketamine
+            </button>
+
+            <button 
+              onClick={() => navigate(SITE_CONFIG.routes.weightloss)}
+              className="text-sm font-lato font-normal tracking-wide transition-colors hover:opacity-70"
+              style={{ color: '#2C3E50' }}
+            >
+              Weight Loss
+            </button>
+
+            <button 
+              onClick={() => navigate(SITE_CONFIG.routes.hormones)}
+              className="text-sm font-lato font-normal tracking-wide transition-colors hover:opacity-70"
+              style={{ color: '#2C3E50' }}
+            >
+              Hormones
+            </button>
+
+            {/* Secondary Services - More Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button 
                   className="text-sm font-lato font-normal tracking-wide transition-colors hover:opacity-70 flex items-center gap-1"
                   style={{ color: '#2C3E50' }}
                 >
-                  Services
+                  More
                   <ChevronDown className="w-3 h-3" />
                 </button>
               </DropdownMenuTrigger>
@@ -172,27 +197,6 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                 align="start" 
                 className="w-48 bg-white border border-border shadow-lg z-[100]"
               >
-                <DropdownMenuItem 
-                  onClick={() => navigate(SITE_CONFIG.routes.ketamine)}
-                  className="cursor-pointer"
-                  style={{ color: '#2C3E50' }}
-                >
-                  Ketamine Therapy
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => navigate(SITE_CONFIG.routes.weightloss)}
-                  className="cursor-pointer"
-                  style={{ color: '#2C3E50' }}
-                >
-                  Weight Loss
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => navigate(SITE_CONFIG.routes.hormones)}
-                  className="cursor-pointer"
-                  style={{ color: '#2C3E50' }}
-                >
-                  Hormones
-                </DropdownMenuItem>
                 <DropdownMenuItem 
                   onClick={() => navigate(SITE_CONFIG.routes.ivLounge)}
                   className="cursor-pointer"
@@ -212,7 +216,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
 
             <button 
               onClick={() => navigate("/pricing")}
-              className="text-sm font-lato font-normal tracking-wide transition-colors elegant-underline hover:opacity-70"
+              className="text-sm font-lato font-normal tracking-wide transition-colors hover:opacity-70"
               style={{ color: '#2C3E50' }}
             >
               Pricing
@@ -220,7 +224,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
 
             <button 
               onClick={() => scrollToSection("contact")}
-              className="text-sm font-lato font-normal tracking-wide transition-colors elegant-underline hover:opacity-70"
+              className="text-sm font-lato font-normal tracking-wide transition-colors hover:opacity-70"
               style={{ color: '#2C3E50' }}
             >
               Contact
