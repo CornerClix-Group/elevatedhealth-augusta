@@ -13,12 +13,11 @@ const CookieConsent = () => {
   useEffect(() => {
     const consent = localStorage.getItem(CONSENT_KEY);
     if (!consent) {
-      // Small delay for better UX
+      // Longer delay - let users see the page first
       const timer = setTimeout(() => {
         setShowBanner(true);
-        // Trigger animation after mount
         requestAnimationFrame(() => setIsVisible(true));
-      }, 1500);
+      }, 2500);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -32,57 +31,53 @@ const CookieConsent = () => {
       expiry: expiryDate.toISOString()
     }));
 
-    // If accepted, you could initialize analytics here
     if (status === "accepted") {
       console.log("Cookie consent accepted - analytics enabled");
     }
 
-    // Animate out then remove from DOM
     setIsVisible(false);
-    setTimeout(() => setShowBanner(false), 300);
+    setTimeout(() => setShowBanner(false), 200);
   }, []);
 
   const handleDismiss = useCallback(() => {
     setIsVisible(false);
-    setTimeout(() => setShowBanner(false), 300);
+    setTimeout(() => setShowBanner(false), 200);
   }, []);
 
   if (!showBanner) return null;
 
   return (
     <div 
-      className={`fixed bottom-4 left-4 z-50 transition-all duration-300 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+      className={`fixed bottom-3 left-3 z-50 transition-all duration-200 ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'
       }`}
       aria-hidden={!isVisible}
     >
-      <div className="flex items-center gap-3 px-4 py-2.5 rounded-full bg-foreground/80 backdrop-blur-md border border-border/20 shadow-lg">
-        <span className="text-sm text-background/90 font-lato">
-          We use cookies
+      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-foreground/70 backdrop-blur-sm shadow-md">
+        <span className="text-xs text-background/80 font-lato">
+          Cookies
         </span>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => handleConsent("accepted")}
-            className="px-3 py-1 text-xs font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            Accept
-          </button>
-          <a
-            href="/privacy-policy#cookies"
-            className="text-xs text-background/50 hover:text-background/80 transition-colors"
-          >
-            Manage
-          </a>
-          <button
-            type="button"
-            onClick={handleDismiss}
-            className="p-0.5 text-background/40 hover:text-background/70 transition-colors"
-            aria-label="Close cookie banner"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => handleConsent("accepted")}
+          className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+        >
+          OK
+        </button>
+        <a
+          href="/privacy-policy#cookies"
+          className="text-[10px] text-background/40 hover:text-background/60 transition-colors"
+        >
+          Info
+        </a>
+        <button
+          type="button"
+          onClick={handleDismiss}
+          className="p-0.5 text-background/30 hover:text-background/50 transition-colors"
+          aria-label="Close cookie banner"
+        >
+          <X className="h-3 w-3" />
+        </button>
       </div>
     </div>
   );
