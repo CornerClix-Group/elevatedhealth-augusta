@@ -314,7 +314,7 @@ const Hormones = () => {
                   </p>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
                   {/* Discovery Consultation */}
                   <Card className="border border-border/50 hover:border-primary/30 transition-all bg-card/80">
                     <CardContent className="p-6 text-center">
@@ -402,28 +402,6 @@ const Hormones = () => {
                     </CardContent>
                   </Card>
 
-                  {/* Full Panel */}
-                  <Card className="border border-border/50 hover:border-primary/30 transition-all bg-card/80">
-                    <CardContent className="p-6 text-center">
-                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
-                        <Shield className="h-6 w-6 text-primary" />
-                      </div>
-                      <h3 className="font-cormorant text-xl text-foreground mb-2">
-                        Comprehensive Panel
-                      </h3>
-                      <p className="text-3xl font-cormorant text-foreground mb-2">$399</p>
-                      <p className="text-sm text-muted-foreground mb-4 font-light">
-                        Saliva + blood spot testing with thyroid, adrenal, and sex hormone markers.
-                      </p>
-                      <Button 
-                        variant="outline" 
-                        onClick={() => setIsBookingOpen(true)}
-                        className="w-full border-primary/30 hover:bg-primary/5"
-                      >
-                        Get Full Panel
-                      </Button>
-                    </CardContent>
-                  </Card>
                 </div>
 
                 <p className="text-center text-sm text-muted-foreground mt-8 font-light">
