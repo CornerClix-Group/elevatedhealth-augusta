@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle2, ArrowRight, Brain, TestTube, Heart } from "lucide-react";
+import { CheckCircle2, ArrowRight, Brain, TestTube, Heart, Shield } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { SITE_CONFIG } from "@/lib/siteConfig";
@@ -221,81 +221,161 @@ const Ketamine = () => {
           </div>
         </section>
 
-          {/* Treatment Options */}
+          {/* Your Path to Healing - Vertical Stepper */}
           <section className="section-spacing bg-secondary/30">
             <div className="container mx-auto px-6 lg:px-8">
-              <div className="max-w-5xl mx-auto">
-                <div className="text-center mb-16">
+              <div className="max-w-3xl mx-auto">
+                <div className="text-center mb-12">
                   <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
-                    Treatment Paths
+                    Your Path to Healing
                   </p>
                   <h2 className="font-cormorant text-foreground mb-6">
-                    Choose Your Protocol
+                    Three Steps to Neural Restoration
                   </h2>
+                  <p className="text-lg text-muted-foreground font-light">
+                    A clear pathway from assessment to transformation.
+                  </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-10">
-                  {/* IV Ketamine */}
-                  <Card className="border border-border/50 hover:border-primary/30 transition-all duration-500 bg-card/80">
-                    <CardContent className="p-10">
-                      <h3 className="text-2xl font-cormorant mb-4 text-foreground">IV Ketamine Infusion</h3>
-                      <p className="text-muted-foreground font-light mb-6">
-                        Precision-dosed neural restoration
-                      </p>
-                      <ul className="space-y-4 mb-8">
-                        <li className="flex gap-3 items-center">
-                          <div className="h-1.5 w-1.5 rounded-full bg-gold" />
-                          <span className="text-muted-foreground font-light">Precise dosing via infusion</span>
-                        </li>
-                        <li className="flex gap-3 items-center">
-                          <div className="h-1.5 w-1.5 rounded-full bg-gold" />
-                          <span className="text-muted-foreground font-light">45-60 minute sessions</span>
-                        </li>
-                        <li className="flex gap-3 items-center">
-                          <div className="h-1.5 w-1.5 rounded-full bg-gold" />
-                          <span className="text-muted-foreground font-light">6-8 sessions recommended</span>
-                        </li>
-                        <li className="flex gap-3 items-center">
-                          <div className="h-1.5 w-1.5 rounded-full bg-gold" />
-                          <span className="text-muted-foreground font-light">Continuous monitoring</span>
-                        </li>
-                      </ul>
-                      <Button variant="outline" className="w-full" onClick={() => setIsBookingOpen(true)}>
-                        Request Consultation
-                      </Button>
-                    </CardContent>
+                {/* Vertical Stepper */}
+                <div className="relative">
+                  {/* STEP 1 - Clinical Eligibility Review */}
+                  <Card className="relative bg-card rounded-2xl border border-border/50 p-8 shadow-sm hover:shadow-md transition-all">
+                    <div className="flex items-start gap-6">
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-cormorant text-lg">
+                          1
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="inline-block mb-3 px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-lato">
+                          Step 1: Mental Health Screening
+                        </div>
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                          <div>
+                            <h3 className="text-xl font-cormorant text-foreground mb-1">
+                              Clinical Eligibility Review
+                            </h3>
+                            <p className="text-sm text-muted-foreground font-light leading-relaxed">
+                              Meet with our provider to review your mental health history, discuss treatment goals, and determine if ketamine therapy is right for you. The $99 fee is credited toward treatment.
+                            </p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className="text-3xl font-cormorant text-foreground">$99</span>
+                            <p className="text-xs text-muted-foreground">one-time</p>
+                          </div>
+                        </div>
+                        <div className="mt-6">
+                          <Button 
+                            onClick={() => setIsBookingOpen(true)}
+                            className="bg-gold hover:bg-gold-dark text-white rounded-full px-6"
+                          >
+                            Book Eligibility Review
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
                   </Card>
 
-                  {/* SPRAVATO */}
-                  <Card className="border border-border/50 hover:border-primary/30 transition-all duration-500 bg-card/80">
-                    <CardContent className="p-10">
-                      <h3 className="text-2xl font-cormorant mb-4 text-foreground">SPRAVATO® Protocol</h3>
-                      <p className="text-muted-foreground font-light mb-6">
-                        FDA-approved, often insurance covered
-                      </p>
-                      <ul className="space-y-4 mb-8">
-                        <li className="flex gap-3 items-center">
-                          <div className="h-1.5 w-1.5 rounded-full bg-gold" />
-                          <span className="text-muted-foreground font-light">FDA-approved treatment</span>
-                        </li>
-                        <li className="flex gap-3 items-center">
-                          <div className="h-1.5 w-1.5 rounded-full bg-gold" />
-                          <span className="text-muted-foreground font-light">Self-administered under supervision</span>
-                        </li>
-                        <li className="flex gap-3 items-center">
-                          <div className="h-1.5 w-1.5 rounded-full bg-gold" />
-                          <span className="text-muted-foreground font-light">2-hour observation period</span>
-                        </li>
-                        <li className="flex gap-3 items-center">
-                          <div className="h-1.5 w-1.5 rounded-full bg-gold" />
-                          <span className="text-muted-foreground font-light">REMS-certified clinic</span>
-                        </li>
-                      </ul>
-                      <Button className="w-full" onClick={() => setIsBookingOpen(true)}>
-                        Check Coverage
-                      </Button>
-                    </CardContent>
+                  {/* Connecting Line */}
+                  <div className="flex justify-start ml-[1.4rem]">
+                    <div className="w-0.5 h-8 bg-gradient-to-b from-gold to-border" />
+                  </div>
+
+                  {/* STEP 2 - Neurotransmitter Analysis (Optional) */}
+                  <Card className="relative bg-card rounded-2xl border border-border/50 p-8 shadow-sm opacity-90">
+                    <div className="flex items-start gap-6">
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 rounded-full bg-muted text-muted-foreground flex items-center justify-center font-cormorant text-lg">
+                          2
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="inline-block mb-3 px-3 py-1 bg-muted text-muted-foreground rounded-full text-xs font-lato">
+                          Step 2: Brain Chemistry Mapping (Optional)
+                        </div>
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                          <div>
+                            <h3 className="text-xl font-cormorant text-foreground mb-1">
+                              Neurotransmitter Analysis
+                            </h3>
+                            <p className="text-sm text-muted-foreground font-light leading-relaxed">
+                              Optional ZRT urine panel measuring Serotonin, Dopamine, and GABA levels to help fine-tune your ketamine protocol for optimal results.
+                            </p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className="text-3xl font-cormorant text-foreground">$399</span>
+                            <p className="text-xs text-muted-foreground">one-time</p>
+                          </div>
+                        </div>
+                        <div className="mt-4 flex items-center gap-2 text-muted-foreground">
+                          <TestTube className="w-5 h-5" />
+                          <span className="text-xs font-lato">Unlocked after Step 1 — Enhances protocol precision</span>
+                        </div>
+                      </div>
+                    </div>
                   </Card>
+
+                  {/* Connecting Line */}
+                  <div className="flex justify-start ml-[1.4rem]">
+                    <div className="w-0.5 h-8 bg-gradient-to-b from-border to-gold" />
+                  </div>
+
+                  {/* STEP 3 - Treatment Protocol */}
+                  <Card className="relative bg-card rounded-2xl border-2 border-gold/50 p-8 shadow-lg">
+                    <div className="flex items-start gap-6">
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 rounded-full bg-gold text-white flex items-center justify-center font-cormorant text-lg">
+                          3
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="inline-block mb-3 px-3 py-1 bg-gold/10 text-gold rounded-full text-xs font-lato">
+                          Step 3: Treatment
+                        </div>
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                          <div>
+                            <h3 className="text-xl font-cormorant text-foreground mb-1">
+                              Neural Restoration Protocol
+                            </h3>
+                            <p className="text-sm text-muted-foreground font-light leading-relaxed">
+                              Provider determines your optimal treatment: IV Ketamine ($400/session) or SPRAVATO® (often $0-50 copay with insurance). Both delivered in our private, spa-like suite.
+                            </p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className="text-3xl font-cormorant text-foreground">$400</span>
+                            <p className="text-xs text-muted-foreground">/session (IV)</p>
+                            <p className="text-xs text-gold mt-1">SPRAVATO® often $0-50</p>
+                          </div>
+                        </div>
+                        <div className="mt-4 flex items-center gap-2">
+                          <Brain className="w-5 h-5 text-gold" />
+                          <span className="text-xs text-muted-foreground font-lato">
+                            Requires Medical Clearance — Provider determines treatment type
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+
+                {/* 6-Session Series Note */}
+                <div className="mt-8 p-6 bg-card rounded-2xl border border-border/50">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                      <span className="inline-block mb-2 px-3 py-1 bg-gold/10 text-gold rounded-full text-xs font-lato">
+                        Best Value
+                      </span>
+                      <h4 className="font-cormorant text-lg text-foreground">6-Session IV Ketamine Series</h4>
+                      <p className="text-sm text-muted-foreground font-light">
+                        Save $200 with our recommended treatment series
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-cormorant text-foreground">$2,200</span>
+                      <span className="text-muted-foreground font-lato text-sm ml-1">(reg $2,400)</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

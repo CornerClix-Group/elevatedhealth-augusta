@@ -679,7 +679,7 @@ const Pricing = () => {
           </section>
         )}
 
-        {/* Hormone Optimization Section - Reduced padding */}
+        {/* Hormone Optimization Section - Vertical Stepper */}
         {shouldShow("hormones") && (
           <section className="py-12 lg:py-16 bg-background">
             <div className="container mx-auto px-4">
@@ -692,154 +692,160 @@ const Pricing = () => {
                     Hormone Optimization
                   </h2>
                   <p className="text-muted-foreground font-lato text-sm">
-                    Bio-identical hormone therapy for men & women
+                    Your path to hormonal balance
                   </p>
                 </div>
               </div>
 
-              <div className="grid lg:grid-cols-2 gap-8">
-                {/* À La Carte */}
-                <div>
-                  <h3 className="text-lg font-cormorant text-foreground mb-4 flex items-center gap-2">
-                    <span className="w-8 h-[1px] bg-border"></span>
-                    Explore First
-                    <span className="w-8 h-[1px] bg-border"></span>
-                  </h3>
-                  <div className="space-y-4">
-                    <Card className="border border-border hover:border-gold/30 transition-all cursor-pointer" onClick={() => handleBookCall("hormones")}>
-                      <CardContent className="p-5 flex justify-between items-center">
-                        <div>
-                          <h4 className="font-cormorant text-lg text-foreground">Hormone Consultation</h4>
-                          <p className="text-sm text-muted-foreground font-lato">
-                            Symptom review & treatment options discussion
-                          </p>
+              {/* Vertical Stepper - Linear Journey */}
+              <div className="max-w-2xl mx-auto">
+                <div className="relative">
+                  {/* STEP 1 - Provider Strategy Session */}
+                  <Card className="relative bg-white rounded-2xl border border-slate-200 p-8 shadow-sm hover:shadow-md transition-all">
+                    <div className="flex items-start gap-6">
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-cormorant text-lg">
+                          1
                         </div>
-                        <div className="text-right">
-                          <span className="text-2xl font-cormorant text-foreground">$99</span>
-                          <span className="block text-xs text-muted-foreground">one-time</span>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card className="border-2 border-gold/30 relative hover:border-gold/50 transition-all cursor-pointer" onClick={() => handleBookCall("hormones")}>
-                      <div className="absolute -top-2 right-3">
-                        <Badge variant="outline" className="text-xs border-gold/50 text-gold">Most Popular</Badge>
                       </div>
-                      <CardContent className="p-5 flex justify-between items-center">
-                        <div>
-                          <h4 className="font-cormorant text-lg text-foreground">Hormone Mapping</h4>
-                          <p className="text-sm text-muted-foreground font-lato">
-                            At-home ZRT test + 45-min clinical review + protocol design
-                          </p>
-                          <p className="text-xs text-gold font-lato mt-1">
-                            or 4 payments of $75 with Klarna
-                          </p>
+                      <div className="flex-1">
+                        <Badge className="mb-3 bg-slate-100 text-slate-700 hover:bg-slate-100 font-lato text-xs">
+                          Step 1: Clinical Intake
+                        </Badge>
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                          <div>
+                            <h3 className="text-xl font-cormorant text-slate-900 mb-1">
+                              Provider Strategy Session
+                            </h3>
+                            <p className="text-sm text-slate-600 font-lato leading-relaxed">
+                              Meet with Lauren Bursey, NP to review your symptoms, medical history, and treatment goals. The $99 fee is fully credited toward your Hormone Mapping.
+                            </p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className="text-3xl font-cormorant text-slate-900">$99</span>
+                            <p className="text-xs text-slate-500 font-lato">one-time</p>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <span className="text-2xl font-cormorant text-foreground">$299</span>
-                          <span className="block text-xs text-muted-foreground">one-time</span>
+                        <div className="mt-6 flex items-center gap-3">
+                          <Stethoscope className="w-5 h-5 text-amber-600 stroke-[1.5]" />
+                          <Button 
+                            className="bg-amber-600 hover:bg-amber-700 text-white font-lato rounded-full px-6"
+                            onClick={() => handleBookCall("hormones")}
+                          >
+                            Book Strategy Session
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                          </Button>
                         </div>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
+                  </Card>
 
+                  {/* Connecting Line */}
+                  <div className="flex justify-start ml-[1.4rem]">
+                    <div className="w-0.5 h-8 bg-gradient-to-b from-amber-500 to-slate-300" />
                   </div>
+
+                  {/* STEP 2 - Hormone Mapping */}
+                  <Card className="relative bg-white rounded-2xl border border-slate-200 p-8 shadow-sm opacity-90">
+                    <div className="flex items-start gap-6">
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-cormorant text-lg">
+                          2
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <Badge variant="outline" className="mb-3 border-slate-300 text-slate-500 font-lato text-xs">
+                          Step 2: Diagnostics
+                        </Badge>
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                          <div>
+                            <h3 className="text-xl font-cormorant text-slate-900 mb-1">
+                              Hormone Mapping Panel
+                            </h3>
+                            <p className="text-sm text-slate-600 font-lato leading-relaxed">
+                              A comprehensive at-home Saliva & Blood Spot kit. We test Estrogen, Testosterone, Progesterone, Cortisol, and Thyroid to engineer your custom protocol.
+                            </p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className="text-3xl font-cormorant text-slate-900">$299</span>
+                            <p className="text-xs text-slate-500 font-lato">one-time</p>
+                          </div>
+                        </div>
+                        <div className="mt-4 flex items-center gap-2 text-slate-500">
+                          <Activity className="w-5 h-5 stroke-[1.5]" />
+                          <span className="text-xs font-lato">Unlocked after Step 1 — $99 credit applied</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+
+                  {/* Connecting Line */}
+                  <div className="flex justify-start ml-[1.4rem]">
+                    <div className="w-0.5 h-8 bg-gradient-to-b from-slate-300 to-amber-500" />
+                  </div>
+
+                  {/* STEP 3 - Membership */}
+                  <Card className="relative bg-white rounded-2xl border-2 border-amber-500 p-8 shadow-lg">
+                    <div className="flex items-start gap-6">
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 rounded-full bg-amber-600 text-white flex items-center justify-center font-cormorant text-lg">
+                          3
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <Badge className="mb-3 bg-amber-100 text-amber-800 hover:bg-amber-100 font-lato text-xs">
+                          Step 3: Treatment
+                        </Badge>
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                          <div>
+                            <h3 className="text-xl font-cormorant text-slate-900 mb-1">
+                              Vitality Membership
+                            </h3>
+                            <p className="text-sm text-slate-600 font-lato leading-relaxed">
+                              Once medically cleared, unlock ongoing hormone optimization. Includes quarterly ZRT testing, $50/month medication credit, and unlimited provider messaging.
+                            </p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className="text-3xl font-cormorant text-slate-900">$199</span>
+                            <p className="text-xs text-slate-500 font-lato">/month</p>
+                          </div>
+                        </div>
+                        <div className="mt-4 flex items-center gap-2">
+                          <Sparkles className="w-5 h-5 text-amber-600 stroke-[1.5]" />
+                          <div className="flex items-center gap-2">
+                            <ShieldAlert className="w-4 h-4 text-amber-600" />
+                            <span className="text-xs text-slate-600 font-lato">
+                              Requires Medical Clearance — Complete Steps 1 & 2 first
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
                 </div>
 
-                {/* Memberships */}
-                <div>
-                  <h3 className="text-lg font-cormorant text-foreground mb-4 flex items-center gap-2">
-                    <span className="w-8 h-[1px] bg-gold/50"></span>
-                    <Star className="w-4 h-4 text-gold" />
-                    Membership Plans
-                    <span className="w-8 h-[1px] bg-gold/50"></span>
-                  </h3>
-                  <div className="space-y-4">
-                    <Card className="border border-border hover:border-gold/30 transition-all">
-                      <CardContent className="p-5">
-                        <div className="flex justify-between items-start mb-1">
-                          <div>
-                            <h4 className="font-cormorant text-xl text-foreground">Vitality Membership</h4>
-                            <p className="text-sm text-muted-foreground font-lato">
-                              Hormone optimization only (no weight loss)
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <span className="text-3xl font-cormorant text-foreground">$199</span>
-                            <span className="text-muted-foreground font-lato">/mo</span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-gold font-lato mb-3">
-                          or 4 payments of $50 with Klarna
-                        </p>
-                        <ul className="space-y-2 mb-4">
-                          <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                            <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                            Quarterly ZRT hormone testing
-                          </li>
-                          <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                            <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                            $50/month medication credit
-                          </li>
-                          <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                            <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                            Unlimited provider messaging
-                          </li>
-                        </ul>
-                        <Button variant="outline" className="w-full" onClick={() => handleBookCall("hormones")}>
-                          Learn More
-                        </Button>
-                      </CardContent>
-                    </Card>
-
-                    <Card className="border-2 border-gold/50 relative">
-                      <div className="absolute -top-3 right-4">
-                        <Badge className="bg-gold text-gold-foreground">Best Value</Badge>
-                      </div>
-                      <CardContent className="p-5">
-                        <div className="flex justify-between items-start mb-1">
-                          <div>
-                            <h4 className="font-cormorant text-xl text-foreground">Concierge Membership</h4>
-                            <p className="text-sm text-muted-foreground font-lato">
-                              Complete hormone + metabolic optimization
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <span className="text-3xl font-cormorant text-foreground">$399</span>
-                            <span className="text-muted-foreground font-lato">/mo</span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-gold font-lato mb-3">
-                          or 4 payments of $100 with Klarna
-                        </p>
-                        <ul className="space-y-2 mb-4">
-                          <li className="flex items-start gap-2 text-sm font-lato text-foreground">
-                            <Check className="w-5 h-5 text-gold mt-0.5 flex-shrink-0" />
-                            <strong>Everything in Vitality, plus:</strong>
-                          </li>
-                          <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                            <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                            GLP-1 medication included
-                          </li>
-                          <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                            <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                            Adrenal support protocols
-                          </li>
-                          <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                            <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                            Priority scheduling
-                          </li>
-                        </ul>
-                        <Button className="w-full bg-gold hover:bg-gold-dark text-gold-foreground" onClick={() => handleBookCall("hormones")}>
-                          Get Started <ArrowRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      </CardContent>
-                    </Card>
+                {/* Concierge Upgrade */}
+                <div className="mt-8 p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                      <Badge variant="outline" className="mb-2 border-amber-400 text-amber-700 font-lato text-xs">
+                        All-Inclusive Option
+                      </Badge>
+                      <h4 className="font-cormorant text-lg text-slate-900">Concierge Membership</h4>
+                      <p className="text-sm text-slate-600 font-lato">
+                        Everything in Vitality + GLP-1 medication + adrenal support
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-cormorant text-slate-900">$399</span>
+                      <span className="text-slate-500 font-lato">/month</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Gender-Specific Pages */}
-              <div className="mt-8 grid md:grid-cols-2 gap-4">
+              <div className="mt-12 max-w-2xl mx-auto grid md:grid-cols-2 gap-4">
                 <Card className="border border-feminine/30 bg-feminine/5 hover:border-feminine/50 transition-all cursor-pointer" onClick={() => navigate("/hormones/women")}>
                   <CardContent className="p-5 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-feminine/10 flex items-center justify-center">

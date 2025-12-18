@@ -183,16 +183,67 @@ const PeptideTherapy = () => {
             </div>
           </section>
 
-          {/* Three Pillars of Peptides */}
-          <section className="py-20 md:py-28 bg-background">
+          {/* Getting Started - Entry Point */}
+          <section className="py-16 md:py-20 bg-background">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="max-w-3xl mx-auto">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl sm:text-4xl font-cormorant mb-4 text-foreground">
+                    Your Entry Point
+                  </h2>
+                  <p className="text-lg font-cormorant text-muted-foreground">
+                    Start with a personalized strategy session to determine which protocols align with your goals.
+                  </p>
+                </div>
+
+                {/* Single Entry Card */}
+                <Card className="bg-card border-2 border-gold/50 rounded-2xl shadow-lg p-8">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
+                        <DNAHelixIcon className="w-7 h-7 text-gold" />
+                      </div>
+                      <div>
+                        <span className="inline-block mb-2 px-3 py-1 bg-gold/10 text-gold rounded-full text-xs font-lato">
+                          Step 1: Consultation
+                        </span>
+                        <h3 className="text-xl font-cormorant text-foreground mb-1">
+                          Peptide Strategy Session
+                        </h3>
+                        <p className="text-sm text-muted-foreground font-lato">
+                          Meet with our provider to review your health goals and determine which peptide protocols are right for you. The $99 fee is credited toward your treatment.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-center md:text-right shrink-0">
+                      <span className="text-3xl font-cormorant text-foreground">$99</span>
+                      <p className="text-xs text-muted-foreground">one-time</p>
+                      <Button
+                        onClick={() => setIsConsultOpen(true)}
+                        className="mt-4 bg-gold hover:bg-gold-dark text-white rounded-full px-6"
+                      >
+                        Book Strategy Session
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            </div>
+          </section>
+
+          {/* Three Pillars of Peptides - Educational */}
+          <section className="py-16 md:py-20 bg-secondary/30">
             <div className="container mx-auto px-4 sm:px-6">
               <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-16">
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-cormorant mb-4 text-foreground">
+                <div className="text-center mb-12">
+                  <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
+                    Available Protocols
+                  </p>
+                  <h2 className="text-3xl sm:text-4xl font-cormorant mb-4 text-foreground">
                     The Three Pillars of Peptides
                   </h2>
                   <p className="text-lg font-cormorant text-muted-foreground max-w-2xl mx-auto">
-                    Targeted protocols for every dimension of your vitality.
+                    Targeted protocols unlocked after your strategy session.
                   </p>
                 </div>
 
@@ -202,7 +253,7 @@ const PeptideTherapy = () => {
                     return (
                       <Card 
                         key={index} 
-                        className="bg-card border border-gold/30 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                        className="bg-card border border-border/50 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                       >
                         <CardContent className="p-8 text-center">
                           <div className="text-xs font-lato uppercase tracking-widest text-gold mb-4">

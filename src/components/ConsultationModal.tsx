@@ -142,92 +142,92 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto bg-white border border-gold/50 rounded-2xl shadow-2xl">
-        <DialogHeader className="pb-2">
-          <DialogTitle className="text-3xl font-cormorant font-medium text-center text-[#2C3E50] tracking-wide">
-            Book Your Consultation
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-white border border-gold/50 rounded-2xl shadow-2xl">
+        <DialogHeader className="pb-4">
+          <DialogTitle className="text-3xl font-cormorant font-medium text-center text-foreground tracking-wide">
+            What brings you in today?
           </DialogTitle>
-          <DialogDescription className="text-center text-[#2C3E50]/70 font-lato text-base mt-1">
-            Select the service you're interested in
+          <DialogDescription className="text-center text-muted-foreground font-lato text-base mt-1">
+            Select your primary concern and we'll guide you to the right service.
           </DialogDescription>
         </DialogHeader>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mt-6">
+        {/* Guided Selection - Vertical List */}
+        <div className="space-y-3 mt-4">
           {consultationOptions.map((option, index) => {
             const Icon = option.icon;
             const isLoading = loadingService === option.serviceType;
             return (
               <div 
                 key={index}
-                className="group flex flex-col items-center text-center p-6 rounded-xl border border-border/50 hover:border-gold/40 transition-all duration-300 bg-white hover:shadow-lg"
+                className="group flex items-center gap-4 p-4 rounded-xl border border-border/50 hover:border-gold/40 transition-all duration-300 bg-white hover:shadow-md cursor-pointer"
+                onClick={() => !isLoading && handlePaidConsultation(option.serviceType)}
               >
                 {/* Icon */}
-                <div className="mb-4 p-3">
-                  <Icon className="h-12 w-12 text-gold group-hover:scale-110 transition-transform duration-300" />
+                <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
+                  <Icon className="h-6 w-6 text-gold group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 
-                {/* Title */}
-                <h3 className="text-xl font-cormorant font-medium text-[#2C3E50] mb-2">
-                  {option.title}
-                </h3>
-                
-                {/* Description */}
-                <p className="text-sm text-[#2C3E50]/70 font-lato leading-relaxed mb-4 flex-grow">
-                  {option.description}
-                </p>
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-cormorant font-medium text-foreground mb-0.5">
+                    {option.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground font-lato leading-snug">
+                    {option.description}
+                  </p>
+                </div>
 
-                {/* Price Badge */}
-                <div className="mb-3">
-                  <span className="text-2xl font-cormorant font-semibold text-[#2C3E50]">$99</span>
-                  <p className="text-xs text-green-600 font-medium mt-1">
+                {/* Price & CTA */}
+                <div className="text-right shrink-0">
+                  <span className="text-xl font-cormorant font-semibold text-foreground">$99</span>
+                  <p className="text-[10px] text-green-600 font-medium">
                     Credit toward treatment
                   </p>
                 </div>
 
-                {/* Primary CTA - Paid Consultation */}
-                <Button 
-                  className="w-full bg-gold hover:bg-gold-dark text-white font-lato tracking-wide transition-all duration-300 mb-2"
-                  onClick={() => handlePaidConsultation(option.serviceType)}
-                  disabled={isLoading}
-                >
+                {/* Arrow/Loading */}
+                <div className="shrink-0">
                   {isLoading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="h-5 w-5 animate-spin text-gold" />
                   ) : (
-                    <CreditCard className="mr-2 h-4 w-4" />
+                    <div className="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold transition-colors">
+                      <CreditCard className="h-4 w-4 text-gold group-hover:text-white transition-colors" />
+                    </div>
                   )}
-                  {isLoading ? "Processing..." : "Book Consultation"}
-                </Button>
-
-                {/* Secondary - Free Application Call */}
-                <button
-                  onClick={() => handleFreeCall(option.freeCallUrl)}
-                  className="text-xs text-muted-foreground hover:text-[#2C3E50] transition-colors flex items-center gap-1"
-                >
-                  <Phone className="h-3 w-3" />
-                  <span className="text-green-600 font-medium">FREE</span> Apply for Care
-                </button>
+                </div>
               </div>
             );
           })}
         </div>
 
-        {/* Payment flexibility messaging - Enhanced */}
-        <div className="mt-6 p-4 bg-gradient-to-r from-[#FFB3C7]/10 via-[#0FA0EA]/5 to-[#FFB3C7]/10 rounded-xl border border-gold/10">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <div className="flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-gold" />
-              <span className="text-sm text-foreground font-lato font-medium">Pay over time</span>
+        {/* Not Sure Option */}
+        <div className="mt-6 p-4 bg-secondary/50 rounded-xl border border-border/30 text-center">
+          <p className="text-sm text-muted-foreground font-lato mb-3">
+            Not sure which service is right for you?
+          </p>
+          <button
+            onClick={() => handleFreeCall(consultationOptions[0].freeCallUrl)}
+            className="inline-flex items-center gap-2 text-gold hover:text-gold-dark font-lato font-medium transition-colors"
+          >
+            <Phone className="h-4 w-4" />
+            <span>Schedule a FREE 15-min Discovery Call</span>
+          </button>
+        </div>
+
+        {/* Payment flexibility messaging */}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <CreditCard className="w-3.5 h-3.5 text-gold" />
+            <span>Pay over time with</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="px-2 py-0.5 bg-[#FFB3C7]/20 rounded">
+              <span className="font-bold text-[10px] text-[#E91E8A]">Klarna</span>
             </div>
-            <div className="hidden sm:block w-px h-4 bg-border" />
-            <div className="flex items-center gap-3">
-              <div className="px-2 py-1 bg-[#FFB3C7]/20 rounded">
-                <span className="font-bold text-xs text-[#E91E8A]">Klarna</span>
-              </div>
-              <div className="px-2 py-1 bg-[#0FA0EA]/10 rounded">
-                <span className="font-bold text-xs text-[#0FA0EA]">affirm</span>
-              </div>
+            <div className="px-2 py-0.5 bg-[#0FA0EA]/10 rounded">
+              <span className="font-bold text-[10px] text-[#0FA0EA]">affirm</span>
             </div>
-            <span className="text-xs text-muted-foreground">4 interest-free payments • Approved in seconds</span>
           </div>
         </div>
 
