@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Helmet } from "react-helmet";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -70,30 +71,182 @@ const DNAHelixIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const pillars = [
+const HeartPulseIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1">
+    <path d="M24 42 C10 30 4 22 4 14 C4 8 9 4 15 4 C19 4 22 6 24 9 C26 6 29 4 33 4 C39 4 44 8 44 14 C44 22 38 30 24 42Z" />
+    <path d="M8 24 L16 24 L20 16 L24 32 L28 20 L32 24 L40 24" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const MetabolicIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1">
+    <circle cx="24" cy="24" r="18" />
+    <path d="M24 8 L24 12" />
+    <path d="M24 36 L24 40" />
+    <path d="M8 24 L12 24" />
+    <path d="M36 24 L40 24" />
+    <path d="M16 24 Q20 16 24 24 Q28 32 32 24" strokeLinecap="round" />
+    <circle cx="24" cy="24" r="4" fill="currentColor" fillOpacity="0.2" />
+  </svg>
+);
+
+const RegenerationIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1">
+    <path d="M24 4 L24 16 M24 32 L24 44" />
+    <path d="M4 24 L16 24 M32 24 L44 24" />
+    <circle cx="24" cy="24" r="8" />
+    <circle cx="24" cy="24" r="16" strokeDasharray="4 4" />
+    <circle cx="24" cy="4" r="2" fill="currentColor" />
+    <circle cx="24" cy="44" r="2" fill="currentColor" />
+    <circle cx="4" cy="24" r="2" fill="currentColor" />
+    <circle cx="44" cy="24" r="2" fill="currentColor" />
+  </svg>
+);
+
+const peptideCategories = [
   {
+    category: "Growth & Recovery",
     icon: NeuralGrowthIcon,
-    title: "Growth Hormone Support",
-    subtitle: "Sermorelin / Tesamorelin",
-    benefit: "Stimulates natural HGH production to improve sleep quality, burn visceral fat, and enhance skin elasticity.",
-    category: "Metabolic & Growth",
-    price: "From $149/mo",
+    description: "Stimulate natural HGH production for better sleep, fat loss, and healing.",
+    products: [
+      {
+        name: "Sermorelin",
+        subtitle: "Growth Hormone Secretagogue",
+        benefit: "Stimulates your pituitary to release natural HGH. Improves sleep quality, reduces visceral fat, and enhances skin elasticity.",
+        price: "$149/mo",
+        type: "recurring",
+      },
+      {
+        name: "Tesamorelin",
+        subtitle: "Advanced GH Releasing Hormone",
+        benefit: "FDA-approved for visceral fat reduction. More potent than Sermorelin for stubborn abdominal fat.",
+        price: "$399/mo",
+        type: "recurring",
+        badge: "Premium",
+      },
+      {
+        name: "Pentadeca Arginate",
+        subtitle: "BPC-157 Alternative",
+        benefit: "Accelerates tissue repair, reduces inflammation, and supports gut healing without the regulatory concerns of BPC-157.",
+        price: "$149",
+        type: "one_time",
+        badge: "New",
+      },
+    ],
   },
   {
+    category: "Cellular Energy",
     icon: CellEnergyIcon,
-    title: "NAD+ Brain Restoration",
-    subtitle: "NAD+ Therapy",
-    benefit: "Replenishes cellular energy to banish brain fog, improve focus, and support DNA repair.",
-    category: "Cognitive & Cellular Energy",
-    price: "Troches from $99/mo | Injections from $199/mo",
+    description: "Restore mitochondrial function and banish brain fog.",
+    products: [
+      {
+        name: "NAD+ Troches",
+        subtitle: "Sublingual NAD+ Precursor",
+        benefit: "Daily sublingual tablets to replenish NAD+ levels. Improves mental clarity, energy, and cellular repair.",
+        price: "$99/mo",
+        type: "recurring",
+      },
+      {
+        name: "NAD+ Injection",
+        subtitle: "Direct NAD+ Delivery",
+        benefit: "Higher bioavailability for maximum cellular energy restoration. Ideal for brain fog, fatigue, and anti-aging.",
+        price: "$199/mo",
+        type: "recurring",
+      },
+      {
+        name: "NAD+ Nasal Spray",
+        subtitle: "Fast-Acting NAD+",
+        benefit: "Rapid absorption through nasal mucosa. Convenient daily boost for cognitive performance.",
+        price: "$99",
+        type: "one_time",
+        badge: "New",
+      },
+    ],
   },
   {
-    icon: VitalitySunIcon,
-    title: "Desire & Intimacy",
-    subtitle: "PT-141 Protocol",
-    benefit: "Neurologically activates desire and arousal in both men and women, restoring the spark that stress often steals.",
-    category: "Libido & Vitality",
-    price: "$225 per 10-Dose Kit",
+    category: "Intimacy & Mood",
+    icon: HeartPulseIcon,
+    description: "Restore desire, connection, and emotional well-being.",
+    products: [
+      {
+        name: "PT-141",
+        subtitle: "Desire & Arousal",
+        benefit: "Neurologically activates desire in both men and women. Works through brain pathways, not hormones.",
+        price: "$225/kit",
+        type: "one_time",
+        note: "10-dose kit",
+      },
+      {
+        name: "Oxytocin Nasal Spray",
+        subtitle: "The Connection Molecule",
+        benefit: "Enhances emotional bonding, reduces anxiety, and improves intimacy. Synergizes with PT-141 for comprehensive support.",
+        price: "$89",
+        type: "one_time",
+        badge: "New",
+      },
+      {
+        name: "Oxytocin Troches",
+        subtitle: "Sublingual Oxytocin",
+        benefit: "Daily sublingual for sustained mood support. Helps with anxiety, PTSD symptoms, and relationship wellness.",
+        price: "$79",
+        type: "one_time",
+        badge: "New",
+      },
+    ],
+  },
+  {
+    category: "Metabolic Optimization",
+    icon: MetabolicIcon,
+    description: "Boost metabolism and accelerate fat burning.",
+    products: [
+      {
+        name: "5-Amino-1MQ",
+        subtitle: "Metabolic Enhancer",
+        benefit: "Blocks NNMT enzyme to increase NAD+ and boost metabolic rate. Supports weight loss and mitochondrial function.",
+        price: "$279/mo",
+        type: "recurring",
+        badge: "New",
+      },
+      {
+        name: "AOD-9604",
+        subtitle: "Fat Breakdown Peptide",
+        benefit: "Stimulates lipolysis without affecting blood sugar or insulin. Targets stubborn fat deposits.",
+        price: "$149",
+        type: "one_time",
+        badge: "New",
+      },
+      {
+        name: "Tesofensine",
+        subtitle: "Appetite & Energy",
+        benefit: "Reduces appetite and increases energy expenditure. Supports mood while promoting weight loss.",
+        price: "$249/mo",
+        type: "recurring",
+        badge: "Advanced",
+      },
+    ],
+  },
+  {
+    category: "Regeneration & Repair",
+    icon: RegenerationIcon,
+    description: "Heal tissue, restore skin, and stimulate hair growth.",
+    products: [
+      {
+        name: "GHK-Cu Sublingual",
+        subtitle: "Copper Peptide Complex",
+        benefit: "Powerful regenerative peptide for tissue repair, skin rejuvenation, and hair growth stimulation.",
+        price: "$99",
+        type: "one_time",
+        badge: "New",
+      },
+      {
+        name: "GHK-Cu Topical",
+        subtitle: "Targeted Skin Therapy",
+        benefit: "Apply directly to skin for collagen synthesis, wound healing, and anti-aging benefits.",
+        price: "$149",
+        type: "one_time",
+        badge: "New",
+      },
+    ],
   },
 ];
 
@@ -105,7 +258,7 @@ const PeptideTherapy = () => {
     "@type": "MedicalBusiness",
     "name": "Elevated Health Augusta - Peptide Therapy",
     "image": "https://elevatedhealthaugusta.com/og-image.jpg",
-    "description": "Advanced peptide therapy protocols in Augusta, GA. Sermorelin, NAD+, and PT-141 treatments for cellular optimization and longevity.",
+    "description": "Advanced peptide therapy protocols in Augusta, GA. Sermorelin, NAD+, PT-141, Oxytocin, GHK-Cu, and more for cellular optimization and longevity.",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": SITE_CONFIG.address.line1,
@@ -119,16 +272,19 @@ const PeptideTherapy = () => {
     "availableService": [
       { "@type": "MedicalTherapy", "name": "Sermorelin Therapy" },
       { "@type": "MedicalTherapy", "name": "NAD+ Therapy" },
-      { "@type": "MedicalTherapy", "name": "PT-141 Therapy" }
+      { "@type": "MedicalTherapy", "name": "PT-141 Therapy" },
+      { "@type": "MedicalTherapy", "name": "Oxytocin Therapy" },
+      { "@type": "MedicalTherapy", "name": "GHK-Cu Therapy" },
+      { "@type": "MedicalTherapy", "name": "5-Amino-1MQ Therapy" }
     ]
   };
 
   return (
     <>
       <Helmet>
-        <title>Peptide Therapy Augusta | Sermorelin, NAD+, PT-141 - Elevated Health</title>
-        <meta name="description" content="Advanced peptide therapy protocols in Augusta, GA. FDA-compliant Sermorelin, NAD+, and PT-141 treatments for cellular optimization, longevity, and vitality." />
-        <meta name="keywords" content="peptide therapy Augusta, Sermorelin Augusta GA, NAD+ therapy Augusta, PT-141 Augusta, HGH therapy Georgia, anti-aging peptides" />
+        <title>Peptide Therapy Augusta | Sermorelin, NAD+, PT-141, Oxytocin, GHK-Cu - Elevated Health</title>
+        <meta name="description" content="Advanced peptide therapy protocols in Augusta, GA. FDA-compliant Sermorelin, NAD+, PT-141, Oxytocin, GHK-Cu, and metabolic peptides for cellular optimization and longevity." />
+        <meta name="keywords" content="peptide therapy Augusta, Sermorelin Augusta GA, NAD+ therapy Augusta, PT-141 Augusta, Oxytocin therapy, GHK-Cu peptide, 5-Amino-1MQ, anti-aging peptides Georgia" />
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>
 
@@ -138,7 +294,6 @@ const PeptideTherapy = () => {
         <main>
           {/* Hero Section */}
           <section className="relative pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden">
-            {/* Abstract DNA/Cell background */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-gold/5" />
             <div className="absolute inset-0 opacity-10">
               <DNAHelixIcon className="absolute top-20 right-10 w-48 h-48 text-gold" />
@@ -147,6 +302,9 @@ const PeptideTherapy = () => {
             
             <div className="container mx-auto px-4 sm:px-6 relative z-10">
               <div className="max-w-4xl mx-auto text-center">
+                <Badge variant="outline" className="mb-4 px-4 py-1.5 border-gold/30 text-gold font-lato">
+                  5 Categories • 15+ Protocols
+                </Badge>
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-cormorant mb-6 animate-fade-in-up text-foreground">
                   Cellular Optimization<br />& Longevity
                 </h1>
@@ -196,7 +354,6 @@ const PeptideTherapy = () => {
                   </p>
                 </div>
 
-                {/* Single Entry Card */}
                 <Card className="bg-card border-2 border-gold/50 rounded-2xl shadow-lg p-8">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                     <div className="flex items-start gap-4">
@@ -231,57 +388,90 @@ const PeptideTherapy = () => {
             </div>
           </section>
 
-          {/* Three Pillars of Peptides - Educational */}
-          <section className="py-16 md:py-20 bg-secondary/30">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-12">
-                  <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
-                    Available Protocols
-                  </p>
-                  <h2 className="text-3xl sm:text-4xl font-cormorant mb-4 text-foreground">
-                    The Three Pillars of Peptides
-                  </h2>
-                  <p className="text-lg font-cormorant text-muted-foreground max-w-2xl mx-auto">
-                    Targeted protocols unlocked after your strategy session.
-                  </p>
-                </div>
+          {/* Five Categories of Peptides */}
+          {peptideCategories.map((category, catIndex) => {
+            const Icon = category.icon;
+            return (
+              <section 
+                key={category.category} 
+                className={`py-16 md:py-20 ${catIndex % 2 === 0 ? 'bg-secondary/30' : 'bg-background'}`}
+              >
+                <div className="container mx-auto px-4 sm:px-6">
+                  <div className="max-w-6xl mx-auto">
+                    {/* Category Header */}
+                    <div className="flex items-center gap-4 mb-8">
+                      <div className="w-14 h-14 rounded-full bg-gold/10 flex items-center justify-center">
+                        <Icon className="w-8 h-8 text-gold" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl sm:text-3xl font-cormorant text-foreground">
+                          {category.category}
+                        </h2>
+                        <p className="text-muted-foreground font-lato">
+                          {category.description}
+                        </p>
+                      </div>
+                    </div>
 
-                <div className="grid md:grid-cols-3 gap-8">
-                  {pillars.map((pillar, index) => {
-                    const Icon = pillar.icon;
-                    return (
-                      <Card 
-                        key={index} 
-                        className="bg-card border border-border/50 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-                      >
-                        <CardContent className="p-8 text-center">
-                          <div className="text-xs font-lato uppercase tracking-widest text-gold mb-4">
-                            {pillar.category}
-                          </div>
-                          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gold/10 mb-6">
-                            <Icon className="w-12 h-12 text-gold" />
-                          </div>
-                          <h3 className="text-xl md:text-2xl font-cormorant mb-2 text-foreground">
-                            {pillar.title}
-                          </h3>
-                          <p className="text-sm font-lato text-gold mb-4">
-                            {pillar.subtitle}
-                          </p>
-                          <p className="text-base font-cormorant text-muted-foreground leading-relaxed mb-4">
-                            {pillar.benefit}
-                          </p>
-                          <p className="text-sm font-lato font-semibold text-gold">
-                            {pillar.price}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
+                    {/* Products Grid */}
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {category.products.map((product, prodIndex) => (
+                        <Card 
+                          key={product.name}
+                          className="bg-card border border-border/50 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-gold/30"
+                        >
+                          <CardContent className="p-6">
+                            <div className="flex items-start justify-between mb-3">
+                              <div>
+                                {product.badge && (
+                                  <Badge 
+                                    className={`mb-2 text-xs ${
+                                      product.badge === 'New' 
+                                        ? 'bg-green-500/10 text-green-600 border-green-500/30' 
+                                        : product.badge === 'Premium'
+                                        ? 'bg-gold/10 text-gold border-gold/30'
+                                        : 'bg-purple-500/10 text-purple-600 border-purple-500/30'
+                                    }`}
+                                    variant="outline"
+                                  >
+                                    {product.badge}
+                                  </Badge>
+                                )}
+                                <h3 className="text-xl font-cormorant text-foreground">
+                                  {product.name}
+                                </h3>
+                                <p className="text-sm text-gold font-lato">
+                                  {product.subtitle}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            <p className="text-sm text-muted-foreground font-lato leading-relaxed mb-4">
+                              {product.benefit}
+                            </p>
+                            
+                            <div className="flex items-end justify-between pt-4 border-t border-border/50">
+                              <div>
+                                <span className="text-2xl font-cormorant text-foreground">
+                                  {product.price}
+                                </span>
+                                {product.note && (
+                                  <p className="text-xs text-muted-foreground">{product.note}</p>
+                                )}
+                              </div>
+                              <Badge variant="outline" className="text-xs text-muted-foreground">
+                                {product.type === 'recurring' ? 'Monthly' : 'One-Time'}
+                              </Badge>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </section>
+              </section>
+            );
+          })}
 
           {/* CTA Section */}
           <section className="py-20 md:py-28 bg-gradient-to-b from-secondary/30 to-background">

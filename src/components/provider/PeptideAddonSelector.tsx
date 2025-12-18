@@ -3,9 +3,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, Plus, Package } from "lucide-react";
+import { Loader2, Plus, Package, ChevronDown, ChevronUp, Info } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 interface PeptideAddonSelectorProps {
   patientId: string;
@@ -15,39 +26,164 @@ interface PeptideAddonSelectorProps {
   onUpdate?: (peptides: string[]) => void;
 }
 
-// Stripe price IDs for peptide products
-const PEPTIDE_PRODUCTS = {
-  sermorelin: {
-    label: "Sermorelin Injection",
-    price: "$149/mo",
-    priceId: "price_1Sa3oyEOtKRY99puGS2t9EZv",
-    type: "recurring" as const,
-    description: "Growth Hormone Support",
+// Stripe price IDs for peptide products - organized by category with healthy margins
+const PEPTIDE_CATEGORIES = {
+  growth_recovery: {
+    label: "Growth & Recovery",
+    color: "bg-blue-500",
+    products: {
+      sermorelin: {
+        label: "Sermorelin Injection",
+        price: "$149/mo",
+        priceId: "price_1Sa3oyEOtKRY99puGS2t9EZv",
+        type: "recurring" as const,
+        description: "Growth Hormone Support",
+        clinical: "Best for: Sleep issues, visceral fat, slow recovery",
+      },
+      tesamorelin: {
+        label: "Tesamorelin",
+        price: "$399/mo",
+        priceId: "", // TODO: Create in Stripe
+        type: "recurring" as const,
+        description: "Advanced GH Releasing Hormone",
+        clinical: "Best for: Stubborn abdominal fat, lipodystrophy",
+        badge: "Premium",
+      },
+      pentadeca: {
+        label: "Pentadeca Arginate",
+        price: "$149",
+        priceId: "", // TODO: Create in Stripe
+        type: "one_time" as const,
+        description: "BPC-157 Alternative",
+        clinical: "Best for: Tissue repair, gut healing, inflammation",
+        badge: "New",
+      },
+    },
   },
-  nad_injection: {
-    label: "NAD+ Injection",
-    price: "$199/mo",
-    priceId: "price_1Sa3waEOtKRY99puCB267VpA",
-    type: "recurring" as const,
-    description: "Cellular Energy Protocol",
+  cellular_energy: {
+    label: "Cellular Energy",
+    color: "bg-amber-500",
+    products: {
+      nad_troche: {
+        label: "NAD+ Troches",
+        price: "$99/mo",
+        priceId: "price_1Sa3x1EOtKRY99pufL3wEyIN",
+        type: "recurring" as const,
+        description: "Sublingual NAD+",
+        clinical: "Best for: Brain fog, fatigue, daily maintenance",
+      },
+      nad_injection: {
+        label: "NAD+ Injection",
+        price: "$199/mo",
+        priceId: "price_1Sa3waEOtKRY99puCB267VpA",
+        type: "recurring" as const,
+        description: "Direct NAD+ Delivery",
+        clinical: "Best for: Severe fatigue, anti-aging, maximum effect",
+      },
+      nad_nasal: {
+        label: "NAD+ Nasal Spray",
+        price: "$99",
+        priceId: "", // TODO: Create in Stripe
+        type: "one_time" as const,
+        description: "Fast-Acting NAD+",
+        clinical: "Best for: Quick cognitive boost, convenience",
+        badge: "New",
+      },
+    },
   },
-  nad_troche: {
-    label: "NAD+ Troches",
-    price: "$99/mo",
-    priceId: "price_1Sa3x1EOtKRY99pufL3wEyIN",
-    type: "recurring" as const,
-    description: "Brain Restoration",
+  intimacy_mood: {
+    label: "Intimacy & Mood",
+    color: "bg-pink-500",
+    products: {
+      pt141: {
+        label: "PT-141 Kit (10-dose)",
+        price: "$225",
+        priceId: "price_1Sa3xIEOtKRY99puIXSB3L31",
+        type: "one_time" as const,
+        description: "Desire & Arousal",
+        clinical: "Best for: Low libido, both men & women",
+      },
+      oxytocin_nasal: {
+        label: "Oxytocin Nasal Spray",
+        price: "$89",
+        priceId: "", // TODO: Create in Stripe
+        type: "one_time" as const,
+        description: "Connection Molecule",
+        clinical: "Best for: Anxiety, bonding, intimacy enhancement",
+        badge: "New",
+      },
+      oxytocin_troche: {
+        label: "Oxytocin Troches",
+        price: "$79",
+        priceId: "", // TODO: Create in Stripe
+        type: "one_time" as const,
+        description: "Sublingual Oxytocin",
+        clinical: "Best for: Daily mood support, PTSD, anxiety",
+        badge: "New",
+      },
+    },
   },
-  pt141: {
-    label: "PT-141 Performance Kit",
-    price: "$225",
-    priceId: "price_1Sa3xIEOtKRY99puIXSB3L31",
-    type: "one_time" as const,
-    description: "10-Dose Kit for Libido",
+  metabolic: {
+    label: "Metabolic Optimization",
+    color: "bg-green-500",
+    products: {
+      amino_1mq: {
+        label: "5-Amino-1MQ",
+        price: "$279/mo",
+        priceId: "", // TODO: Create in Stripe
+        type: "recurring" as const,
+        description: "Metabolic Enhancer",
+        clinical: "Best for: Weight loss plateau, low energy, NAD+ boost",
+        badge: "New",
+      },
+      aod_9604: {
+        label: "AOD-9604",
+        price: "$149",
+        priceId: "", // TODO: Create in Stripe
+        type: "one_time" as const,
+        description: "Fat Breakdown Peptide",
+        clinical: "Best for: Stubborn fat, no insulin impact",
+        badge: "New",
+      },
+      tesofensine: {
+        label: "Tesofensine",
+        price: "$249/mo",
+        priceId: "", // TODO: Create in Stripe
+        type: "recurring" as const,
+        description: "Appetite & Energy",
+        clinical: "Best for: Appetite control, energy, mood support",
+        badge: "Advanced",
+      },
+    },
+  },
+  regeneration: {
+    label: "Regeneration & Repair",
+    color: "bg-purple-500",
+    products: {
+      ghk_cu_sublingual: {
+        label: "GHK-Cu Sublingual",
+        price: "$99",
+        priceId: "", // TODO: Create in Stripe
+        type: "one_time" as const,
+        description: "Copper Peptide Complex",
+        clinical: "Best for: Tissue repair, hair growth, anti-aging",
+        badge: "New",
+      },
+      ghk_cu_topical: {
+        label: "GHK-Cu Topical",
+        price: "$149",
+        priceId: "", // TODO: Create in Stripe
+        type: "one_time" as const,
+        description: "Targeted Skin Therapy",
+        clinical: "Best for: Skin rejuvenation, wound healing",
+        badge: "New",
+      },
+    },
   },
 };
 
-type PeptideKey = keyof typeof PEPTIDE_PRODUCTS;
+type CategoryKey = keyof typeof PEPTIDE_CATEGORIES;
+type ProductKey = string;
 
 const PeptideAddonSelector = ({
   patientId,
@@ -56,12 +192,25 @@ const PeptideAddonSelector = ({
   currentPeptides = [],
   onUpdate,
 }: PeptideAddonSelectorProps) => {
-  const [selectedPeptides, setSelectedPeptides] = useState<Set<PeptideKey>>(
-    new Set(currentPeptides as PeptideKey[])
+  const [selectedPeptides, setSelectedPeptides] = useState<Set<string>>(
+    new Set(currentPeptides)
   );
   const [isProcessing, setIsProcessing] = useState<string | null>(null);
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set(["growth_recovery", "cellular_energy", "intimacy_mood"])
+  );
 
-  const handleToggle = (key: PeptideKey) => {
+  const toggleCategory = (category: string) => {
+    const updated = new Set(expandedCategories);
+    if (updated.has(category)) {
+      updated.delete(category);
+    } else {
+      updated.add(category);
+    }
+    setExpandedCategories(updated);
+  };
+
+  const handleToggle = (key: string) => {
     const updated = new Set(selectedPeptides);
     if (updated.has(key)) {
       updated.delete(key);
@@ -71,13 +220,17 @@ const PeptideAddonSelector = ({
     setSelectedPeptides(updated);
   };
 
-  const handleAddToSubscription = async (key: PeptideKey) => {
+  const handleAddToSubscription = async (key: string, product: any) => {
     if (!patientEmail) {
       toast.error("Patient email is required to add subscription items");
       return;
     }
 
-    const product = PEPTIDE_PRODUCTS[key];
+    if (!product.priceId) {
+      toast.info(`${product.label} coming soon - Stripe price not yet configured`);
+      return;
+    }
+
     setIsProcessing(key);
 
     try {
@@ -93,11 +246,9 @@ const PeptideAddonSelector = ({
       if (error) throw error;
 
       if (data?.url) {
-        // One-time payment - open checkout
         window.open(data.url, "_blank");
         toast.success(`Payment link opened for ${product.label}`);
       } else if (data?.success) {
-        // Added to subscription
         toast.success(`${product.label} added to ${patientName}'s subscription`);
         const updated = new Set(selectedPeptides);
         updated.add(key);
@@ -112,13 +263,6 @@ const PeptideAddonSelector = ({
     }
   };
 
-  const recurringProducts = Object.entries(PEPTIDE_PRODUCTS).filter(
-    ([_, p]) => p.type === "recurring"
-  );
-  const oneTimeProducts = Object.entries(PEPTIDE_PRODUCTS).filter(
-    ([_, p]) => p.type === "one_time"
-  );
-
   return (
     <Card className="border-gold/30">
       <CardHeader className="pb-3">
@@ -127,117 +271,134 @@ const PeptideAddonSelector = ({
           Peptide Add-Ons
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Standalone boosters - compatible with all memberships
+          5 categories • 15+ protocols • Compatible with all memberships
         </p>
       </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Recurring Peptides */}
-        <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-green-500" />
-            Monthly Subscriptions
-          </h4>
-          {recurringProducts.map(([key, product]) => {
-            const peptideKey = key as PeptideKey;
-            const isActive = selectedPeptides.has(peptideKey);
-            const isLoading = isProcessing === key;
-
-            return (
-              <div
-                key={key}
-                className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
-                  isActive
-                    ? "bg-gold/5 border-gold/40"
-                    : "bg-secondary/30 border-border/50 hover:border-gold/30"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Checkbox
-                    checked={isActive}
-                    onCheckedChange={() => handleToggle(peptideKey)}
-                  />
-                  <div>
-                    <p className="font-medium text-foreground text-sm">{product.label}</p>
-                    <p className="text-xs text-muted-foreground">{product.description}</p>
+      <CardContent className="space-y-4">
+        <TooltipProvider>
+          {Object.entries(PEPTIDE_CATEGORIES).map(([categoryKey, category]) => (
+            <Collapsible
+              key={categoryKey}
+              open={expandedCategories.has(categoryKey)}
+              onOpenChange={() => toggleCategory(categoryKey)}
+            >
+              <CollapsibleTrigger className="w-full">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <span className={`w-2 h-2 rounded-full ${category.color}`} />
+                    <span className="font-medium text-foreground text-sm">
+                      {category.label}
+                    </span>
+                    <Badge variant="outline" className="text-xs text-muted-foreground">
+                      {Object.keys(category.products).length} options
+                    </Badge>
                   </div>
+                  {expandedCategories.has(categoryKey) ? (
+                    <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  )}
                 </div>
-                <div className="flex items-center gap-3">
-                  <Badge variant="outline" className="text-gold border-gold/30">
-                    {product.price}
-                  </Badge>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleAddToSubscription(peptideKey)}
-                    disabled={isLoading || !patientEmail}
-                    className="border-gold/30 hover:bg-gold/10 text-xs"
-                  >
-                    {isLoading ? (
-                      <Loader2 className="w-3 h-3 animate-spin" />
-                    ) : (
-                      <>
-                        <Plus className="w-3 h-3 mr-1" />
-                        Add
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-2 space-y-2">
+                {Object.entries(category.products).map(([productKey, product]) => {
+                  const fullKey = `${categoryKey}_${productKey}`;
+                  const isActive = selectedPeptides.has(fullKey);
+                  const isLoading = isProcessing === fullKey;
+                  const hasPrice = !!product.priceId;
 
-        {/* One-Time Peptides */}
-        <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-blue-500" />
-            One-Time Purchase
-          </h4>
-          {oneTimeProducts.map(([key, product]) => {
-            const peptideKey = key as PeptideKey;
-            const isLoading = isProcessing === key;
-
-            return (
-              <div
-                key={key}
-                className="flex items-center justify-between p-3 rounded-lg border bg-secondary/30 border-border/50 hover:border-gold/30 transition-colors"
-              >
-                <div>
-                  <p className="font-medium text-foreground text-sm">{product.label}</p>
-                  <p className="text-xs text-muted-foreground">{product.description}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Badge variant="outline" className="text-gold border-gold/30">
-                    {product.price}
-                  </Badge>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleAddToSubscription(peptideKey)}
-                    disabled={isLoading || !patientEmail}
-                    className="border-gold/30 hover:bg-gold/10 text-xs"
-                  >
-                    {isLoading ? (
-                      <Loader2 className="w-3 h-3 animate-spin" />
-                    ) : (
-                      <>
-                        <Plus className="w-3 h-3 mr-1" />
-                        Charge
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                  return (
+                    <div
+                      key={productKey}
+                      className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
+                        isActive
+                          ? "bg-gold/5 border-gold/40"
+                          : "bg-card border-border/50 hover:border-gold/30"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <Checkbox
+                          checked={isActive}
+                          onCheckedChange={() => handleToggle(fullKey)}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-medium text-foreground text-sm truncate">
+                              {product.label}
+                            </p>
+                            {product.badge && (
+                              <Badge
+                                className={`text-[10px] px-1.5 py-0 ${
+                                  product.badge === "New"
+                                    ? "bg-green-500/10 text-green-600 border-green-500/30"
+                                    : product.badge === "Premium"
+                                    ? "bg-gold/10 text-gold border-gold/30"
+                                    : "bg-purple-500/10 text-purple-600 border-purple-500/30"
+                                }`}
+                                variant="outline"
+                              >
+                                {product.badge}
+                              </Badge>
+                            )}
+                            {!hasPrice && (
+                              <Badge
+                                className="text-[10px] px-1.5 py-0 bg-amber-500/10 text-amber-600 border-amber-500/30"
+                                variant="outline"
+                              >
+                                Coming Soon
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {product.description}
+                          </p>
+                        </div>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                              <Info className="w-3 h-3 text-muted-foreground" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="left" className="max-w-xs">
+                            <p className="text-xs">{product.clinical}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                      <div className="flex items-center gap-2 ml-2">
+                        <Badge variant="outline" className="text-gold border-gold/30 whitespace-nowrap">
+                          {product.price}
+                        </Badge>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleAddToSubscription(fullKey, product)}
+                          disabled={isLoading || !patientEmail || !hasPrice}
+                          className="border-gold/30 hover:bg-gold/10 text-xs whitespace-nowrap"
+                        >
+                          {isLoading ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                            <>
+                              <Plus className="w-3 h-3 mr-1" />
+                              {product.type === "recurring" ? "Add" : "Charge"}
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </CollapsibleContent>
+            </Collapsible>
+          ))}
+        </TooltipProvider>
 
         {/* Info Note */}
         <div className="bg-secondary/50 rounded-lg p-3 text-sm text-muted-foreground">
           <p>
-            All peptide protocols include supplies and shipping. Recurring items are
-            added to the patient's existing subscription. One-time items open a
-            payment link.
+            <strong>Margins:</strong> All peptide pricing includes healthy profit margins.
+            Recurring items are added to subscriptions. One-time items open payment links.
+            Items marked "Coming Soon" need Stripe price IDs configured.
           </p>
         </div>
       </CardContent>

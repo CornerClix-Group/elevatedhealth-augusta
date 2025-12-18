@@ -880,7 +880,7 @@ const Pricing = () => {
           </section>
         )}
 
-        {/* Peptides Section - Reduced padding */}
+        {/* Peptides Section - Expanded 5 Categories */}
         {shouldShow("peptides") && (
           <section className="py-12 lg:py-16 bg-secondary/30">
             <div className="container mx-auto px-4">
@@ -893,18 +893,31 @@ const Pricing = () => {
                     Peptide Therapy
                   </h2>
                   <p className="text-muted-foreground font-lato text-sm">
-                    Cellular optimization & longevity protocols
+                    5 categories • 15+ protocols • Cellular optimization & longevity
                   </p>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-6">
+              {/* Category Pills */}
+              <div className="flex flex-wrap gap-2 mb-8">
+                <Badge variant="outline" className="px-3 py-1 border-blue-500/30 text-blue-600">Growth & Recovery</Badge>
+                <Badge variant="outline" className="px-3 py-1 border-amber-500/30 text-amber-600">Cellular Energy</Badge>
+                <Badge variant="outline" className="px-3 py-1 border-pink-500/30 text-pink-600">Intimacy & Mood</Badge>
+                <Badge variant="outline" className="px-3 py-1 border-green-500/30 text-green-600">Metabolic</Badge>
+                <Badge variant="outline" className="px-3 py-1 border-purple-500/30 text-purple-600">Regeneration</Badge>
+              </div>
+
+              {/* Featured Peptides Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                {/* Sermorelin */}
                 <Card className="border border-border hover:border-gold/30 transition-all hover:shadow-lg flex flex-col">
                   <CardHeader className="pb-4">
-                    <Badge variant="outline" className="w-fit mb-2 text-muted-foreground">
-                      Growth & Recovery
-                    </Badge>
-                    <h3 className="text-xl font-cormorant text-foreground">Sermorelin/Tesamorelin</h3>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="outline" className="w-fit text-blue-600 border-blue-500/30">
+                        Growth & Recovery
+                      </Badge>
+                    </div>
+                    <h3 className="text-xl font-cormorant text-foreground">Sermorelin</h3>
                     <p className="text-sm text-muted-foreground font-lato">
                       Stimulates natural growth hormone production
                     </p>
@@ -937,10 +950,11 @@ const Pricing = () => {
                   </CardContent>
                 </Card>
 
+                {/* NAD+ */}
                 <Card className="border border-border hover:border-gold/30 transition-all hover:shadow-lg flex flex-col">
                   <CardHeader className="pb-4">
-                    <Badge variant="outline" className="w-fit mb-2 text-muted-foreground">
-                      Brain Restoration
+                    <Badge variant="outline" className="w-fit text-amber-600 border-amber-500/30">
+                      Cellular Energy
                     </Badge>
                     <h3 className="text-xl font-cormorant text-foreground">NAD+</h3>
                     <p className="text-sm text-muted-foreground font-lato">
@@ -972,24 +986,31 @@ const Pricing = () => {
                   </CardContent>
                 </Card>
 
+                {/* PT-141 + Oxytocin */}
                 <Card className="border border-border hover:border-gold/30 transition-all hover:shadow-lg flex flex-col">
                   <CardHeader className="pb-4">
-                    <Badge variant="outline" className="w-fit mb-2 text-muted-foreground">
-                      Intimacy & Desire
-                    </Badge>
-                    <h3 className="text-xl font-cormorant text-foreground">PT-141</h3>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="w-fit text-pink-600 border-pink-500/30">
+                        Intimacy & Mood
+                      </Badge>
+                      <Badge className="bg-green-500/10 text-green-600 border-green-500/30 text-[10px]" variant="outline">
+                        New
+                      </Badge>
+                    </div>
+                    <h3 className="text-xl font-cormorant text-foreground">PT-141 & Oxytocin</h3>
                     <p className="text-sm text-muted-foreground font-lato">
-                      Restore sexual desire naturally
+                      Restore desire, connection & intimacy
                     </p>
                   </CardHeader>
                   <CardContent className="flex flex-col flex-grow">
                     <div className="mb-2">
-                      <span className="text-3xl font-cormorant text-foreground">$225</span>
+                      <span className="text-xl font-cormorant text-foreground">PT-141</span>
+                      <span className="text-3xl font-cormorant text-foreground ml-2">$225</span>
                       <span className="text-muted-foreground font-lato">/kit</span>
                     </div>
-                    <p className="text-xs text-gold font-lato mb-4">
-                      10-dose kit • or 4 payments of $56 with Klarna
-                    </p>
+                    <div className="mb-4 text-sm text-muted-foreground">
+                      Oxytocin from <span className="font-cormorant text-foreground text-lg">$79</span>
+                    </div>
                     <ul className="space-y-2 mb-6 flex-grow">
                       <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
                         <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
@@ -997,7 +1018,7 @@ const Pricing = () => {
                       </li>
                       <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
                         <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                        Non-hormonal solution
+                        Anxiety & bonding support
                       </li>
                     </ul>
                     <Button variant="outline" className="w-full mt-auto" onClick={() => navigate("/peptides")}>
@@ -1005,6 +1026,56 @@ const Pricing = () => {
                     </Button>
                   </CardContent>
                 </Card>
+              </div>
+
+              {/* New Peptides Highlight */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card className="border border-green-500/30 bg-green-500/5 hover:border-green-500/50 transition-all">
+                  <CardContent className="p-4 text-center">
+                    <Badge className="mb-2 bg-green-500/10 text-green-600 border-green-500/30" variant="outline">New</Badge>
+                    <h4 className="font-cormorant text-lg text-foreground">5-Amino-1MQ</h4>
+                    <p className="text-xs text-muted-foreground mb-2">Metabolic Enhancer</p>
+                    <span className="text-xl font-cormorant text-foreground">$279/mo</span>
+                  </CardContent>
+                </Card>
+
+                <Card className="border border-green-500/30 bg-green-500/5 hover:border-green-500/50 transition-all">
+                  <CardContent className="p-4 text-center">
+                    <Badge className="mb-2 bg-green-500/10 text-green-600 border-green-500/30" variant="outline">New</Badge>
+                    <h4 className="font-cormorant text-lg text-foreground">GHK-Cu</h4>
+                    <p className="text-xs text-muted-foreground mb-2">Regeneration & Repair</p>
+                    <span className="text-xl font-cormorant text-foreground">From $99</span>
+                  </CardContent>
+                </Card>
+
+                <Card className="border border-green-500/30 bg-green-500/5 hover:border-green-500/50 transition-all">
+                  <CardContent className="p-4 text-center">
+                    <Badge className="mb-2 bg-gold/10 text-gold border-gold/30" variant="outline">Premium</Badge>
+                    <h4 className="font-cormorant text-lg text-foreground">Tesamorelin</h4>
+                    <p className="text-xs text-muted-foreground mb-2">Advanced GH Release</p>
+                    <span className="text-xl font-cormorant text-foreground">$399/mo</span>
+                  </CardContent>
+                </Card>
+
+                <Card className="border border-purple-500/30 bg-purple-500/5 hover:border-purple-500/50 transition-all">
+                  <CardContent className="p-4 text-center">
+                    <Badge className="mb-2 bg-purple-500/10 text-purple-600 border-purple-500/30" variant="outline">Advanced</Badge>
+                    <h4 className="font-cormorant text-lg text-foreground">Tesofensine</h4>
+                    <p className="text-xs text-muted-foreground mb-2">Appetite & Energy</p>
+                    <span className="text-xl font-cormorant text-foreground">$249/mo</span>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* View All CTA */}
+              <div className="text-center mt-8">
+                <Button 
+                  className="bg-gold hover:bg-gold-dark text-white rounded-full px-8"
+                  onClick={() => navigate("/peptides")}
+                >
+                  View All 15+ Peptide Protocols
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
               </div>
             </div>
           </section>
