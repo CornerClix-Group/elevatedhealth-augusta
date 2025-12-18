@@ -44,7 +44,7 @@ const PEPTIDE_CATEGORIES = {
       cjc_ipamorelin: {
         label: "CJC-1295/Ipamorelin",
         price: "$179/mo",
-        priceId: "", // Needs Stripe price ID
+        priceId: "price_1Sfm0oEOtKRY99puEurPSCU6",
         type: "recurring" as const,
         description: "Short-Acting GH Pulse",
         clinical: "Best for: Sleep, recovery (alternative to Sermorelin)",
