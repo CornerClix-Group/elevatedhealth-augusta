@@ -2363,7 +2363,6 @@ const ProviderDashboard = () => {
           }}
         />
       )}
-      )}
 
       {/* Provider AI Assistant - Floating Chat */}
       <ProviderAssistant />
