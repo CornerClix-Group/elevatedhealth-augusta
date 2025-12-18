@@ -117,6 +117,14 @@ const peptideCategories = [
         type: "recurring",
       },
       {
+        name: "CJC-1295/Ipamorelin",
+        subtitle: "Short-Acting GH Pulse Stimulation",
+        benefit: "Gently stimulates growth hormone pulses during sleep without supplying hormone directly. Often better tolerated than longer-acting formulations.",
+        price: "$179/mo",
+        type: "recurring",
+        badge: "Alternative",
+      },
+      {
         name: "Tesamorelin",
         subtitle: "FDA-Approved GH Releasing Hormone",
         benefit: "FDA-approved for visceral fat reduction. Affects growth hormone signaling to help reduce central adiposity in select patients.",
