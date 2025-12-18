@@ -492,6 +492,128 @@ const WeightLoss = () => {
             </div>
           </section>
 
+          {/* GLP-1 Comparison Table */}
+          <section className="py-16 md:py-24 bg-gradient-to-br from-[#f5f0e8] via-[#faf7f2] to-[#f0ebe3]">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="max-w-5xl mx-auto">
+                <div className="text-center mb-12">
+                  <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
+                    Compare Your Options
+                  </p>
+                  <h2 className="font-cormorant text-primary text-3xl md:text-4xl font-bold mb-4">
+                    Semaglutide vs. Tirzepatide
+                  </h2>
+                  <p className="text-lg text-muted-foreground font-lato max-w-2xl mx-auto">
+                    Both are FDA-approved GLP-1 medications. Choose based on your goals and budget.
+                  </p>
+                </div>
+
+                {/* Comparison Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr>
+                        <th className="p-4 text-left font-cormorant text-lg text-primary bg-white/50 border-b border-gold/20 rounded-tl-xl"></th>
+                        <th className="p-4 text-center font-cormorant text-xl text-primary bg-white/50 border-b border-gold/20">
+                          <div className="flex flex-col items-center gap-1">
+                            <span className="font-bold">Semaglutide</span>
+                            <span className="text-gold text-lg font-lato">$399/mo</span>
+                          </div>
+                        </th>
+                        <th className="p-4 text-center font-cormorant text-xl text-primary bg-gold/10 border-b border-gold/30 rounded-tr-xl">
+                          <div className="flex flex-col items-center gap-1">
+                            <span className="inline-block px-2 py-0.5 bg-gold text-white text-xs rounded-full mb-1 font-lato">Premium</span>
+                            <span className="font-bold">Tirzepatide</span>
+                            <span className="text-gold text-lg font-lato">$599/mo</span>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white/70">
+                      <tr className="border-b border-gold/10">
+                        <td className="p-4 font-lato text-primary font-medium">Mechanism</td>
+                        <td className="p-4 text-center font-lato text-primary/70">GLP-1 receptor agonist</td>
+                        <td className="p-4 text-center font-lato text-primary/70 bg-gold/5">Dual GLP-1 + GIP agonist</td>
+                      </tr>
+                      <tr className="border-b border-gold/10">
+                        <td className="p-4 font-lato text-primary font-medium">Avg. Weight Loss (Clinical Trials)</td>
+                        <td className="p-4 text-center font-lato text-primary/70">
+                          <span className="text-lg font-bold text-primary">~15%</span>
+                          <br />
+                          <span className="text-xs text-muted-foreground">of body weight</span>
+                        </td>
+                        <td className="p-4 text-center font-lato bg-gold/5">
+                          <span className="text-lg font-bold text-gold">~22.5%</span>
+                          <br />
+                          <span className="text-xs text-muted-foreground">of body weight</span>
+                        </td>
+                      </tr>
+                      <tr className="border-b border-gold/10">
+                        <td className="p-4 font-lato text-primary font-medium">Blood Sugar Control</td>
+                        <td className="p-4 text-center">
+                          <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
+                        </td>
+                        <td className="p-4 text-center bg-gold/5">
+                          <div className="flex items-center justify-center gap-1">
+                            <CheckCircle2 className="h-5 w-5 text-green-500" />
+                            <CheckCircle2 className="h-5 w-5 text-green-500" />
+                          </div>
+                          <span className="text-xs text-muted-foreground">Superior A1C reduction</span>
+                        </td>
+                      </tr>
+                      <tr className="border-b border-gold/10">
+                        <td className="p-4 font-lato text-primary font-medium">Appetite Suppression</td>
+                        <td className="p-4 text-center font-lato text-primary/70">Strong</td>
+                        <td className="p-4 text-center font-lato text-gold bg-gold/5 font-medium">Very Strong</td>
+                      </tr>
+                      <tr className="border-b border-gold/10">
+                        <td className="p-4 font-lato text-primary font-medium">FDA Approved For</td>
+                        <td className="p-4 text-center font-lato text-primary/70 text-sm">Diabetes (Ozempic) & Weight Loss (Wegovy)</td>
+                        <td className="p-4 text-center font-lato text-primary/70 text-sm bg-gold/5">Diabetes (Mounjaro) & Weight Loss (Zepbound)</td>
+                      </tr>
+                      <tr className="border-b border-gold/10">
+                        <td className="p-4 font-lato text-primary font-medium">Injection Frequency</td>
+                        <td className="p-4 text-center font-lato text-primary/70">Once weekly</td>
+                        <td className="p-4 text-center font-lato text-primary/70 bg-gold/5">Once weekly</td>
+                      </tr>
+                      <tr className="border-b border-gold/10">
+                        <td className="p-4 font-lato text-primary font-medium">Time on Market</td>
+                        <td className="p-4 text-center font-lato text-primary/70">Since 2017</td>
+                        <td className="p-4 text-center font-lato text-primary/70 bg-gold/5">Since 2022</td>
+                      </tr>
+                      <tr>
+                        <td className="p-4 font-lato text-primary font-medium">Best For</td>
+                        <td className="p-4 text-center font-lato text-primary/70 text-sm">
+                          Steady, sustainable weight loss with proven long-term data
+                        </td>
+                        <td className="p-4 text-center font-lato text-primary/70 text-sm bg-gold/5">
+                          Maximum weight loss, insulin resistance, or plateau breakers
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p className="text-center text-xs text-muted-foreground mt-6 font-lato">
+                  Clinical trial data from STEP (Semaglutide) and SURMOUNT (Tirzepatide) studies. Individual results may vary.
+                </p>
+
+                <div className="mt-8 text-center">
+                  <Button 
+                    onClick={handleConsultationCheckout}
+                    disabled={isConsultationLoading}
+                    className="bg-gold hover:bg-gold-dark text-white font-lato"
+                  >
+                    {isConsultationLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : null}
+                    {isConsultationLoading ? "Processing..." : "Not Sure Which? Book a Consultation - $99"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* À La Carte Options - For Budget-Conscious Patients */}
           <section className="py-16 md:py-24 bg-background">
             <div className="container mx-auto px-4 sm:px-6">
