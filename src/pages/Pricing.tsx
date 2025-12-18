@@ -1079,19 +1079,25 @@ const Pricing = () => {
             <h2 className="text-3xl md:text-4xl font-cormorant text-foreground mb-4">
               Not Sure Where to Start?
             </h2>
-            <p className="text-lg text-muted-foreground font-lato max-w-xl mx-auto mb-8">
-              Schedule a free 15-minute discovery call. We'll help you find 
-              the right path—no pressure, no commitment.
+            <p className="text-lg text-muted-foreground font-lato max-w-2xl mx-auto mb-4">
+              Schedule a free <span className="font-semibold text-foreground">New Patient Application Call</span>. 
+              Speak with our Care Coordination Team to discuss pricing, insurance, and logistics.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="bg-gold hover:bg-gold-dark text-gold-foreground"
-                onClick={handleBookCall}
-              >
-                <Calendar className="w-5 h-5 mr-2" />
-                Book Free Discovery Call
-              </Button>
+            <p className="text-sm text-muted-foreground font-lato max-w-xl mx-auto mb-8 italic">
+              This is a fit-check to see if our clinic is right for you. (No medical advice provided on this call.)
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex flex-col items-center">
+                <span className="text-xs text-green-600 font-semibold mb-1">FREE • $0</span>
+                <Button 
+                  size="lg" 
+                  className="bg-gold hover:bg-gold-dark text-gold-foreground"
+                  onClick={handleBookCall}
+                >
+                  <Calendar className="w-5 h-5 mr-2" />
+                  Apply for Care
+                </Button>
+              </div>
               <Button 
                 variant="outline" 
                 size="lg"

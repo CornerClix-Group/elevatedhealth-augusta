@@ -8,9 +8,9 @@ const WhatToExpect = () => {
   const steps = [
     {
       icon: Calendar,
-      title: "1. Book Your Free Consultation",
-      description: "Schedule a 15-minute virtual consultation to discuss your goals and answer any questions.",
-      duration: "15 minutes",
+      title: "1. New Patient Application Call",
+      description: "Speak with our Care Coordination Team to discuss pricing, insurance, and logistics. This fit-check ensures our clinic is right for you. (No medical advice provided.)",
+      duration: "15 minutes • FREE",
       color: "text-accent"
     },
     {

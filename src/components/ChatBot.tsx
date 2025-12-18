@@ -303,7 +303,7 @@ const ChatBot = () => {
             </div>
           </ScrollArea>
 
-          {/* Book Now CTA */}
+          {/* Apply for Care CTA */}
           {messages.length > 2 && (
             <div className="px-4 py-2 border-t border-border bg-accent/30">
               <a
@@ -313,7 +313,7 @@ const ChatBot = () => {
                 className="flex items-center justify-center gap-2 text-sm text-primary hover:text-primary/80 font-medium"
               >
                 <Calendar className="h-4 w-4" />
-                Book a Free Discovery Call
+                <span className="text-green-600 font-semibold text-xs mr-1">FREE</span> Apply for Care
               </a>
             </div>
           )}
