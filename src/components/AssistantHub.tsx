@@ -427,7 +427,7 @@ const AssistantHub = () => {
             </div>
           </ScrollArea>
 
-          {/* Book Now CTA */}
+          {/* Apply for Care CTA */}
           {messages.length > 2 && (
             <div className="px-4 py-2 border-t border-border bg-accent/30">
               <a
@@ -437,7 +437,7 @@ const AssistantHub = () => {
                 className="flex items-center justify-center gap-2 text-sm text-primary hover:text-primary/80 font-medium"
               >
                 <Calendar className="h-4 w-4" />
-                Book a Free Discovery Call
+                <span className="text-green-600 font-semibold text-xs mr-1">FREE</span> Apply for Care
               </a>
             </div>
           )}
@@ -541,7 +541,7 @@ const AssistantHub = () => {
               </Button>
             )}
 
-            {/* Book CTA */}
+            {/* Apply for Care CTA */}
             <a
               href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1TXM4LhPdRGp7nOBvJPbfiFFOquxK3lpKR6YXEgwYfF9HYSUCMqUJRlEJxsVCw7nJ1MhPCDXhT"
               target="_blank"
@@ -549,7 +549,7 @@ const AssistantHub = () => {
               className="flex items-center justify-center gap-2 text-sm text-primary hover:text-primary/80 font-medium"
             >
               <Calendar className="h-4 w-4" />
-              Book a Free Discovery Call
+              <span className="text-green-600 font-semibold text-xs mr-1">FREE</span> Apply for Care
             </a>
           </div>
         </div>

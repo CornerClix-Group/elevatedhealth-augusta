@@ -198,13 +198,13 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
                   {isLoading ? "Processing..." : "Book Consultation"}
                 </Button>
 
-                {/* Secondary - Free Call */}
+                {/* Secondary - Free Application Call */}
                 <button
                   onClick={() => handleFreeCall(option.freeCallUrl)}
                   className="text-xs text-muted-foreground hover:text-[#2C3E50] transition-colors flex items-center gap-1"
                 >
                   <Phone className="h-3 w-3" />
-                  Not ready? Free 15-min call
+                  <span className="text-green-600 font-medium">FREE</span> Apply for Care
                 </button>
               </div>
             );

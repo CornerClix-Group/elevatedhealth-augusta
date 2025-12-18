@@ -256,7 +256,7 @@ const Affordability = () => {
                   <ul className="space-y-2">
                     <li className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                      <span>Free 15-minute discovery calls</span>
+                      <span>Free New Patient Application Calls</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
