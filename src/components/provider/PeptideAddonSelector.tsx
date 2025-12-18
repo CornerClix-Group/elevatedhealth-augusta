@@ -41,6 +41,15 @@ const PEPTIDE_CATEGORIES = {
         description: "Sleep & Recovery Support",
         clinical: "Best for: Sleep issues, recovery, natural GH support",
       },
+      cjc_ipamorelin: {
+        label: "CJC-1295/Ipamorelin",
+        price: "$179/mo",
+        priceId: "", // Needs Stripe price ID
+        type: "recurring" as const,
+        description: "Short-Acting GH Pulse",
+        clinical: "Best for: Sleep, recovery (alternative to Sermorelin)",
+        badge: "Alternative",
+      },
       tesamorelin: {
         label: "Tesamorelin",
         price: "$399/mo",
