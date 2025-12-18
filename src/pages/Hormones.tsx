@@ -10,8 +10,6 @@ import ConsultationModal from "@/components/ConsultationModal";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { SITE_CONFIG } from "@/lib/siteConfig";
-import elevatedForHerLogo from "@/assets/elevated-for-her-logo.png";
-import elevatedForHimLogo from "@/assets/elevated-for-him-logo.png";
 import { CreditCodeInput } from "@/components/CreditCodeInput";
 
 const Hormones = () => {
@@ -426,18 +424,11 @@ const Hormones = () => {
                 <Link to="/hormones-women">
                   <Card className="h-full hover:shadow-2xl transition-all hover:-translate-y-2 cursor-pointer border-2 border-feminine/30 hover:border-feminine group">
                     <CardContent className="p-10 text-center">
-                      <div className="mb-6">
-                        <img 
-                          src={elevatedForHerLogo} 
-                          alt="Elevated+ for Her" 
-                          className="h-20 mx-auto mb-4"
-                        />
-                      </div>
                       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-feminine/10 group-hover:bg-feminine/20 transition-colors mb-6">
                         <Heart className="h-8 w-8 text-feminine" />
                       </div>
-                      <h3 className="text-2xl font-cormorant mb-4 group-hover:text-feminine transition-colors">
-                        For Women
+                      <h3 className="text-2xl font-cormorant mb-2 group-hover:text-feminine transition-colors">
+                        Elevated+ for Her
                       </h3>
                       <p className="text-muted-foreground mb-6 leading-relaxed font-light">
                         Menopause restoration, perimenopause support, and estrogen/progesterone optimization.
@@ -455,18 +446,11 @@ const Hormones = () => {
                 <Link to="/hormones-men">
                   <Card className="h-full hover:shadow-2xl transition-all hover:-translate-y-2 cursor-pointer border-2 border-primary/30 hover:border-primary group">
                     <CardContent className="p-10 text-center">
-                      <div className="mb-6">
-                        <img 
-                          src={elevatedForHimLogo} 
-                          alt="Elevated+ for Him" 
-                          className="h-20 mx-auto"
-                        />
-                      </div>
                       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors mb-6">
                         <Shield className="h-8 w-8 text-primary" />
                       </div>
-                      <h3 className="text-2xl font-cormorant mb-4 group-hover:text-primary transition-colors">
-                        For Men
+                      <h3 className="text-2xl font-cormorant mb-2 group-hover:text-primary transition-colors">
+                        Elevated+ for Him
                       </h3>
                       <p className="text-muted-foreground mb-6 leading-relaxed font-light">
                         Testosterone optimization, androgen vitality, and performance restoration.
