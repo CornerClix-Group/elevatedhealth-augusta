@@ -22,6 +22,7 @@ import PatientNavbar from "@/components/patient/PatientNavbar";
 import EditProfileModal from "@/components/patient/EditProfileModal";
 import WelcomeIntake from "@/components/patient/WelcomeIntake";
 import SafetyGate from "@/components/patient/SafetyGate";
+import OAuthOnboarding from "@/components/patient/OAuthOnboarding";
 
 interface Service {
   id: string;
@@ -135,16 +136,48 @@ const PatientServices = () => {
         return;
       }
 
-      const { data: patientData, error } = await supabase
+      let { data: patientData, error } = await supabase
         .from("patients")
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
 
       if (error) throw error;
+      
+      // If no patient record exists but user is authenticated via Google OAuth, create one
       if (!patientData) {
-        toast.error("Patient profile not found");
-        return;
+        const provider = user.app_metadata?.provider;
+        if (provider === 'google') {
+          console.log("[PatientServices] Creating patient record for new Google OAuth user");
+          const metadata = user.user_metadata;
+          const fullName = metadata?.full_name || metadata?.name || user.email?.split('@')[0] || 'Patient';
+          const avatarUrl = metadata?.avatar_url || metadata?.picture;
+          
+          const { data: newPatient, error: insertError } = await supabase
+            .from('patients')
+            .insert([{
+              user_id: user.id,
+              full_name: fullName,
+              email: user.email,
+              avatar_url: avatarUrl,
+              primary_program: null,
+              onboarding_status: 'needs_program_selection',
+              intake_completed: false,
+            }])
+            .select()
+            .single();
+          
+          if (insertError) {
+            console.error("Failed to create patient record:", insertError);
+            toast.error("Failed to create your profile. Please try again.");
+            return;
+          }
+          
+          patientData = newPatient;
+        } else {
+          toast.error("Patient profile not found");
+          return;
+        }
       }
 
       setPatient(patientData);
@@ -237,6 +270,18 @@ const PatientServices = () => {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
+    );
+  }
+
+  // Show OAuth onboarding for new Google users who haven't selected a program
+  if (patient && patient.onboarding_status === 'needs_program_selection') {
+    return (
+      <OAuthOnboarding
+        patientId={patient.id}
+        patientName={patient.full_name}
+        patientEmail={patient.email || ""}
+        onComplete={() => loadPatientData()}
+      />
     );
   }
 
