@@ -54,7 +54,7 @@ export const forceLogout = async (redirectPath = '/patient/login') => {
   window.location.href = redirectPath;
 };
 
-const SESSION_VALIDATION_TIMEOUT_MS = 3000; // 3 second timeout
+const SESSION_VALIDATION_TIMEOUT_MS = 8000; // 8 second timeout (increased for slow networks)
 
 /**
  * Validates if the current session is actually valid by checking with the server

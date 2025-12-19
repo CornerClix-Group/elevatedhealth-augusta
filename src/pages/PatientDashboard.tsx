@@ -24,6 +24,7 @@ import HealthOverview from "@/components/patient/HealthOverview";
 import ActionPlanTab from "@/components/patient/ActionPlanTab";
 import AnimatedCard from "@/components/patient/AnimatedCard";
 import MembershipSummary from "@/components/patient/MembershipSummary";
+import OAuthOnboarding from "@/components/patient/OAuthOnboarding";
 
 interface SymptomLog {
   id: string;
@@ -336,6 +337,18 @@ const PatientDashboard = () => {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-gold" />
       </div>
+    );
+  }
+
+  // Show OAuth onboarding for Google users who haven't selected a program
+  if (patient && patient.onboarding_status === 'needs_program_selection') {
+    return (
+      <OAuthOnboarding
+        patientId={patient.id}
+        patientName={patient.full_name}
+        patientEmail={patient.email || ""}
+        onComplete={() => loadDashboardData()}
+      />
     );
   }
 

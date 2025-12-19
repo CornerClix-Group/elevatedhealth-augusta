@@ -1,11 +1,15 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Brain, TrendingDown, Zap, ArrowRight } from "lucide-react";
+import { Brain, TrendingDown, Zap, ArrowRight, Phone, AlertCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { trackEvent } from "@/lib/analytics";
+import { toast } from "sonner";
 
 const Consult = () => {
+  const [failedUrls, setFailedUrls] = useState<Set<string>>(new Set());
+
   const consultationOptions = [
     {
       icon: Brain,
@@ -32,7 +36,34 @@ const Consult = () => {
 
   const handleBooking = (title: string, url: string) => {
     trackEvent("consultation_booking_click", { service: title, source: "consult_page" });
-    window.open(url, "_blank");
+    
+    try {
+      const newWindow = window.open(url, "_blank", "noopener,noreferrer");
+      
+      // Check if popup was blocked
+      if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+        // Popup blocked - show fallback
+        setFailedUrls(prev => new Set(prev).add(url));
+        toast.error(
+          "Unable to open booking calendar. Please call us at (706) 760-3470 to schedule.",
+          { duration: 8000 }
+        );
+        trackEvent("consultation_booking_blocked", { service: title, source: "consult_page" });
+      }
+    } catch (error) {
+      console.error("Error opening booking URL:", error);
+      setFailedUrls(prev => new Set(prev).add(url));
+      toast.error(
+        "Unable to open booking calendar. Please call us at (706) 760-3470 to schedule.",
+        { duration: 8000 }
+      );
+      trackEvent("consultation_booking_error", { service: title, source: "consult_page", error: String(error) });
+    }
+  };
+
+  const handleCallNow = () => {
+    trackEvent("phone_click", { source: "consult_page_fallback" });
+    window.location.href = "tel:7067603470";
   };
 
   return (
@@ -53,12 +84,14 @@ const Consult = () => {
           <div className="grid md:grid-cols-3 gap-6 mt-8">
             {consultationOptions.map((option, index) => {
               const Icon = option.icon;
+              const hasFailed = failedUrls.has(option.bookingUrl);
+              
               return (
                 <Card 
                   key={index}
                   className="group hover:shadow-2xl transition-all duration-300 cursor-pointer border-2 hover:border-primary/40 animate-fade-in-up"
                   style={{ animationDelay: `${index * 100}ms` }}
-                  onClick={() => handleBooking(option.title, option.bookingUrl)}
+                  onClick={() => !hasFailed && handleBooking(option.title, option.bookingUrl)}
                 >
                   <CardContent className="p-8 text-center h-full flex flex-col">
                     <div className="mb-6 inline-flex p-5 rounded-2xl bg-primary/10 group-hover:scale-110 transition-transform mx-auto">
@@ -73,16 +106,35 @@ const Consult = () => {
                       {option.description}
                     </p>
 
-                    <Button 
-                      className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-6 text-lg"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleBooking(option.title, option.bookingUrl);
-                      }}
-                    >
-                      Book Now
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
+                    {hasFailed ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-center gap-2 text-amber-500 text-sm">
+                          <AlertCircle className="w-4 h-4" />
+                          <span>Calendar unavailable</span>
+                        </div>
+                        <Button 
+                          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-6 text-lg"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCallNow();
+                          }}
+                        >
+                          <Phone className="mr-2 h-5 w-5" />
+                          Call to Book
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button 
+                        className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-6 text-lg"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBooking(option.title, option.bookingUrl);
+                        }}
+                      >
+                        Book Now
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
               );

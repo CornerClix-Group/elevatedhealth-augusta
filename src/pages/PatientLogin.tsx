@@ -96,14 +96,14 @@ const PatientLogin = () => {
     let isMounted = true;
     let timeoutId: NodeJS.Timeout;
     
-    // Aggressive timeout - show login form after 3 seconds no matter what
+    // Timeout - show login form after 8 seconds (increased for slow networks)
     timeoutId = setTimeout(() => {
       if (isMounted && checkingSession) {
         console.warn("[PatientLogin] Session check timed out - forcing login form");
         clearAuthStorage();
         setCheckingSession(false);
       }
-    }, 3000);
+    }, 8000);
 
     const checkExistingSession = async () => {
       try {
@@ -172,41 +172,50 @@ const PatientLogin = () => {
               const fullName = metadata?.full_name || metadata?.name;
               const avatarUrl = metadata?.avatar_url || metadata?.picture;
               
-              if (fullName || avatarUrl) {
-                // Check if patient record exists and update
-                const { data: existingPatient } = await supabase
-                  .from('patients')
-                  .select('id, full_name, avatar_url')
-                  .eq('user_id', user.id)
-                  .maybeSingle();
-                
-                if (existingPatient) {
-                  // Update existing patient with Google info if not already set
-                  const updates: Record<string, string> = {};
-                  if (!existingPatient.full_name && fullName) updates.full_name = fullName;
-                  if (!existingPatient.avatar_url && avatarUrl) updates.avatar_url = avatarUrl;
-                  
-                  if (Object.keys(updates).length > 0) {
-                    await supabase
-                      .from('patients')
-                      .update(updates)
-                      .eq('id', existingPatient.id);
-                  }
-                } else {
-                  // Create new patient record for Google user
-                  await supabase.from('patients').insert([{
-                    user_id: user.id,
-                    full_name: fullName || user.email?.split('@')[0] || 'Patient',
-                    email: user.email,
-                    avatar_url: avatarUrl,
-                    primary_program: 'hormone',
-                    onboarding_status: 'account_created',
-                  }]);
-                }
-              }
+              // Check if patient record exists
+              const { data: existingPatient } = await supabase
+                .from('patients')
+                .select('id, full_name, avatar_url, onboarding_status, intake_completed')
+                .eq('user_id', user.id)
+                .maybeSingle();
               
-              // Navigate after patient record is created/updated
-              navigate("/patient/dashboard", { replace: true });
+              if (existingPatient) {
+                // Existing patient - update with Google info if not already set
+                const updates: Record<string, string> = {};
+                if (!existingPatient.full_name && fullName) updates.full_name = fullName;
+                if (!existingPatient.avatar_url && avatarUrl) updates.avatar_url = avatarUrl;
+                
+                if (Object.keys(updates).length > 0) {
+                  await supabase
+                    .from('patients')
+                    .update(updates)
+                    .eq('id', existingPatient.id);
+                }
+                
+                // Check if they need to complete onboarding
+                if (existingPatient.onboarding_status === 'needs_program_selection') {
+                  console.log("[PatientLogin] Existing Google user needs onboarding");
+                  navigate("/patient/dashboard", { replace: true });
+                } else {
+                  console.log("[PatientLogin] Existing Google user - going to dashboard");
+                  navigate("/patient/dashboard", { replace: true });
+                }
+              } else {
+                // NEW Google user - create patient with needs_program_selection status
+                console.log("[PatientLogin] Creating new Google OAuth patient - needs program selection");
+                await supabase.from('patients').insert([{
+                  user_id: user.id,
+                  full_name: fullName || user.email?.split('@')[0] || 'Patient',
+                  email: user.email,
+                  avatar_url: avatarUrl,
+                  primary_program: null, // Will be set during onboarding
+                  onboarding_status: 'needs_program_selection',
+                  intake_completed: false,
+                }]);
+                
+                // Navigate to dashboard where they'll see onboarding
+                navigate("/patient/dashboard", { replace: true });
+              }
             } catch (err) {
               console.error("Error syncing Google profile:", err);
               // Still navigate even if sync fails
