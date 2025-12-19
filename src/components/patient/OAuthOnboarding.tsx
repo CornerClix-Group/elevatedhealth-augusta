@@ -4,8 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2, ChevronRight, Heart, Brain, Check, ShieldAlert } from "lucide-react";
+import { Loader2, ChevronRight, Heart, Brain, Check, ShieldAlert, Phone } from "lucide-react";
 import SafetyGate from "./SafetyGate";
 
 interface OAuthOnboardingProps {
@@ -38,10 +40,24 @@ const KETAMINE_HIGH_RISK_CONDITIONS = [
   { id: "pregnancy", label: "Pregnant or Trying to Conceive", description: "Are you currently pregnant or trying to become pregnant?" },
 ];
 
+// Phone number validation - accepts US formats
+const formatPhoneNumber = (value: string): string => {
+  const numbers = value.replace(/\D/g, '');
+  if (numbers.length <= 3) return numbers;
+  if (numbers.length <= 6) return `(${numbers.slice(0, 3)}) ${numbers.slice(3)}`;
+  return `(${numbers.slice(0, 3)}) ${numbers.slice(3, 6)}-${numbers.slice(6, 10)}`;
+};
+
+const isValidPhoneNumber = (phone: string): boolean => {
+  const numbers = phone.replace(/\D/g, '');
+  return numbers.length === 10;
+};
+
 const OAuthOnboarding = ({ patientId, patientName, patientEmail, onComplete }: OAuthOnboardingProps) => {
   const navigate = useNavigate();
-  const [step, setStep] = useState<"program" | "safety">("program");
+  const [step, setStep] = useState<"info" | "program" | "safety">("info");
   const [isLoading, setIsLoading] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [primaryProgram, setPrimaryProgram] = useState<PrimaryProgram | null>(null);
   const [hormoneSafetyScreening, setHormoneSafetyScreening] = useState({
@@ -120,6 +136,15 @@ const OAuthOnboarding = ({ patientId, patientName, patientEmail, onComplete }: O
     return selectedInterests.length === 1 && selectedInterests.includes("ketamine");
   };
 
+  const handleContinueFromInfo = () => {
+    // Phone is optional but if provided, must be valid
+    if (phoneNumber && !isValidPhoneNumber(phoneNumber)) {
+      toast.error("Please enter a valid 10-digit phone number");
+      return;
+    }
+    setStep("program");
+  };
+
   const handleCompleteOnboarding = async () => {
     setIsLoading(true);
 
@@ -130,11 +155,15 @@ const OAuthOnboarding = ({ patientId, patientName, patientEmail, onComplete }: O
         ? hormoneSafetyScreening 
         : ketamineSafetyScreening;
       const skipIntake = isKetamineOnly();
+      
+      // Clean phone number for storage (digits only)
+      const cleanPhone = phoneNumber ? phoneNumber.replace(/\D/g, '') : null;
 
-      // Update patient record with program selection and safety screening
+      // Update patient record with program selection, phone, and safety screening
       const { error } = await supabase
         .from("patients")
         .update({
+          phone: cleanPhone,
           primary_program: primaryProgram,
           treatment_request: selectedInterests.join(","),
           risk_status: highRisk ? "high_risk_review" : "standard",
@@ -153,6 +182,7 @@ const OAuthOnboarding = ({ patientId, patientName, patientEmail, onComplete }: O
           body: {
             patientName,
             patientEmail,
+            patientPhone: cleanPhone,
             primaryProgram,
             isHighRisk: highRisk,
             safetyFlags: highRisk ? safetyFlags : [],
@@ -180,29 +210,76 @@ const OAuthOnboarding = ({ patientId, patientName, patientEmail, onComplete }: O
       <SafetyGate
         patientName={patientName}
         patientEmail={patientEmail}
-        patientPhone=""
+        patientPhone={phoneNumber ? phoneNumber.replace(/\D/g, '') : ""}
         safetyFlags={getSafetyFlags()}
         treatmentType={primaryProgram || "treatment"}
       />
     );
   }
 
+  const getStepTitle = () => {
+    switch (step) {
+      case "info": return `Welcome, ${patientName.split(' ')[0]}!`;
+      case "program": return "Tell Us About Your Goals";
+      case "safety": return "Quick Safety Check";
+    }
+  };
+
+  const getStepDescription = () => {
+    switch (step) {
+      case "info": return "Let's get your contact info so we can reach you";
+      case "program": return "Select all the areas you're interested in exploring";
+      case "safety": return "Help us ensure your safety with a few quick questions";
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
       <Card className="w-full max-w-lg border-primary/20 bg-card">
         <CardHeader className="text-center pb-4">
           <CardTitle className="text-2xl font-playfair text-foreground">
-            {step === "program" ? "Welcome! Tell Us About Your Goals" : "Quick Safety Check"}
+            {getStepTitle()}
           </CardTitle>
           <p className="text-muted-foreground text-sm mt-2">
-            {step === "program" 
-              ? "Select all the areas you're interested in exploring"
-              : "Help us ensure your safety with a few quick questions"
-            }
+            {getStepDescription()}
           </p>
         </CardHeader>
 
         <CardContent className="space-y-4">
+          {step === "info" && (
+            <>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-foreground flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    Phone Number
+                    <span className="text-muted-foreground text-xs">(optional)</span>
+                  </Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="(706) 555-1234"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(formatPhoneNumber(e.target.value))}
+                    className="bg-background border-border h-12"
+                    maxLength={14}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    We'll only use this for appointment reminders and important updates
+                  </p>
+                </div>
+              </div>
+
+              <Button
+                onClick={handleContinueFromInfo}
+                className="w-full bg-primary hover:bg-primary/90 text-white h-12"
+              >
+                Continue
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            </>
+          )}
+
           {step === "program" && (
             <>
               <div className="space-y-3">
@@ -242,6 +319,14 @@ const OAuthOnboarding = ({ patientId, patientName, patientEmail, onComplete }: O
               >
                 Continue
                 <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                onClick={() => setStep("info")}
+                className="w-full text-muted-foreground"
+              >
+                Back
               </Button>
             </>
           )}
