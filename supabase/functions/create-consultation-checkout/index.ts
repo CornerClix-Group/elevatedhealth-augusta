@@ -12,6 +12,34 @@ const logStep = (step: string, details?: any) => {
   console.log(`[CREATE-CONSULTATION-CHECKOUT] ${step}${detailsStr}`);
 };
 
+// Service-specific configuration for Stripe checkout
+const SERVICE_CONFIG: Record<string, { name: string; description: string }> = {
+  ketamine: {
+    name: "Ketamine Therapy Consultation",
+    description: "45-minute consultation to discuss IV ketamine infusions & SPRAVATO® for depression, PTSD, and anxiety. Includes $99 credit toward treatment."
+  },
+  weight_loss: {
+    name: "Medical Weight Loss Consultation",
+    description: "45-minute consultation to discuss physician-supervised semaglutide (GLP-1) therapy. Includes $99 credit toward treatment."
+  },
+  hormone: {
+    name: "Hormone Replacement Consultation",
+    description: "45-minute consultation to discuss bioidentical hormone therapy. Includes $99 credit toward Hormone Mapping."
+  },
+  peptide: {
+    name: "Peptide Therapy Consultation",
+    description: "45-minute consultation to discuss Sermorelin, NAD+, PT-141 & GHK-Cu for cellular optimization. Includes $99 credit toward treatment."
+  },
+  hair: {
+    name: "Hair Restoration Consultation",
+    description: "45-minute consultation to discuss finasteride, minoxidil & PRP therapy for hair regrowth. Includes $99 credit toward treatment."
+  },
+  sexual: {
+    name: "Sexual Wellness Consultation",
+    description: "45-minute discreet consultation for ED, low libido & intimate health solutions. Includes $99 credit toward treatment."
+  }
+};
+
 // Generate a unique credit code
 const generateCreditCode = () => {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -45,10 +73,13 @@ serve(async (req) => {
     logStep("Service type", { serviceType });
 
     // Validate service type
-    const validServiceTypes = ["hormone", "weight_loss", "ketamine", "peptide"];
+    const validServiceTypes = ["hormone", "weight_loss", "ketamine", "peptide", "hair", "sexual"];
     if (!validServiceTypes.includes(serviceType)) {
       throw new Error(`Invalid service type: ${serviceType}`);
     }
+
+    // Get service-specific config
+    const config = SERVICE_CONFIG[serviceType];
 
     // Check for authenticated user (optional - supports guest checkout)
     const authHeader = req.headers.get("Authorization");
@@ -83,8 +114,7 @@ serve(async (req) => {
     const creditCode = generateCreditCode();
     logStep("Generated credit code", { creditCode });
 
-    // $99 Discovery Consultation - use existing price or create line item
-    // Price ID for $99 consultation: price_1SZiRMEOtKRY99puXXXXXX (you may need to create this in Stripe)
+    // $99 Discovery Consultation - use service-specific config
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
@@ -93,8 +123,8 @@ serve(async (req) => {
           price_data: {
             currency: "usd",
             product_data: {
-              name: "Discovery Consultation",
-              description: "15-minute consultation with hormone specialist. Includes $99 credit toward Hormone Mapping.",
+              name: config.name,
+              description: config.description,
             },
             unit_amount: 9900, // $99
           },
