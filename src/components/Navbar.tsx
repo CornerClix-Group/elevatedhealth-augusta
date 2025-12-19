@@ -24,6 +24,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
   const isHomePage = location.pathname === '/';
   const [isScrolled, setIsScrolled] = useState(!isHomePage);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
@@ -40,37 +41,50 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
   useEffect(() => {
     // Check auth state
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        setIsLoggedIn(true);
-        // Try to get patient name and avatar
-        const { data: patient } = await supabase
-          .from("patients")
-          .select("full_name, avatar_url")
-          .eq("user_id", session.user.id)
-          .maybeSingle();
-        setUserName(patient?.full_name || null);
-        setUserAvatar(patient?.avatar_url || null);
-      } else {
-        setIsLoggedIn(false);
-        setUserName(null);
-        setUserAvatar(null);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          setIsLoggedIn(true);
+          // Try to get patient name and avatar
+          const { data: patient } = await supabase
+            .from("patients")
+            .select("full_name, avatar_url")
+            .eq("user_id", session.user.id)
+            .maybeSingle();
+          setUserName(patient?.full_name || null);
+          setUserAvatar(patient?.avatar_url || null);
+        } else {
+          setIsLoggedIn(false);
+          setUserName(null);
+          setUserAvatar(null);
+        }
+      } finally {
+        setIsCheckingAuth(false);
       }
     };
 
     checkAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        setIsLoggedIn(false);
+        setUserName(null);
+        setUserAvatar(null);
+        return;
+      }
+      
       if (session?.user) {
         setIsLoggedIn(true);
-        // Fetch patient name and avatar
-        const { data: patient } = await supabase
-          .from("patients")
-          .select("full_name, avatar_url")
-          .eq("user_id", session.user.id)
-          .maybeSingle();
-        setUserName(patient?.full_name || null);
-        setUserAvatar(patient?.avatar_url || null);
+        // Defer Supabase call to avoid deadlock
+        setTimeout(async () => {
+          const { data: patient } = await supabase
+            .from("patients")
+            .select("full_name, avatar_url")
+            .eq("user_id", session.user.id)
+            .maybeSingle();
+          setUserName(patient?.full_name || null);
+          setUserAvatar(patient?.avatar_url || null);
+        }, 0);
       } else {
         setIsLoggedIn(false);
         setUserName(null);
@@ -113,39 +127,37 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
   };
 
   const handleLogout = async () => {
+    setIsLoggedIn(false);
+    setUserName(null);
+    setUserAvatar(null);
+    
     try {
-      // Try signOut with local scope to ensure local session is cleared
       await supabase.auth.signOut({ scope: 'local' });
     } catch (error) {
       console.error("SignOut error:", error);
-    } finally {
-      // Force clear all auth-related storage regardless of signOut result
-      try {
-        const keys = Object.keys(localStorage);
-        keys.forEach(key => {
-          if (key.startsWith('sb-') && key.includes('-auth-')) {
-            localStorage.removeItem(key);
-          }
-        });
-        sessionStorage.clear();
-        
-        // Clear service worker caches
-        if ('serviceWorker' in navigator && 'caches' in window) {
-          caches.keys().then(names => {
-            names.forEach(name => caches.delete(name));
-          });
-        }
-      } catch (e) {
-        console.error("Storage clear error:", e);
-      }
-      
-      setIsLoggedIn(false);
-      setUserName(null);
-      setUserAvatar(null);
-      toast.success("Logged out successfully");
-      // Force hard navigation to prevent any caching issues
-      window.location.href = '/';
     }
+    
+    // Clear all auth-related storage
+    try {
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.startsWith('sb-') && key.includes('-auth-')) {
+          localStorage.removeItem(key);
+        }
+      });
+      sessionStorage.clear();
+      
+      if ('serviceWorker' in navigator && 'caches' in window) {
+        caches.keys().then(names => {
+          names.forEach(name => caches.delete(name));
+        });
+      }
+    } catch (e) {
+      console.error("Storage clear error:", e);
+    }
+    
+    toast.success("Logged out successfully");
+    window.location.href = '/';
   };
 
   return (
@@ -264,7 +276,17 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
-            {isLoggedIn ? (
+            {isCheckingAuth ? (
+              <Button 
+                variant="outline"
+                className="font-lato font-normal text-sm tracking-wide px-5 py-2 border-primary/50 hover:bg-primary/5 bg-white opacity-50"
+                style={{ color: '#2C3E50' }}
+                disabled
+              >
+                <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                Loading...
+              </Button>
+            ) : isLoggedIn ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button 
@@ -468,7 +490,17 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                 Book Consultation
               </Button>
               
-              {isLoggedIn ? (
+              {isCheckingAuth ? (
+                <Button 
+                  variant="outline"
+                  className="w-full font-lato text-sm tracking-wide py-6 bg-white border-gray-400 opacity-50"
+                  style={{ color: '#2C3E50' }}
+                  disabled
+                >
+                  <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                  Loading...
+                </Button>
+              ) : isLoggedIn ? (
                 <>
                   <Button 
                     variant="outline"
