@@ -13,7 +13,7 @@ import { SITE_CONFIG } from "@/lib/siteConfig";
 const CALENDAR_URLS: Record<string, string> = {
   hormone: "https://calendar.app.google/npnih9qTAXu5PKLX6", // Hormone Optimization Strategy Session
   weight_loss: "https://calendar.app.google/Nr1ruba57eqELJG19", // Medical Weight Loss Strategy Session
-  ketamine: "https://calendar.app.google/Cmwuzg5TYMeACQ4i6", // Ketamine Candidacy Review
+  ketamine: "https://calendar.app.google/2zDZmMUzdw1RPR5E8", // Ketamine Candidacy Review
   peptide: "https://calendar.app.google/TwKGsbXLpGdTBpp9A", // Peptide Optimization Strategy Session
   hair: "https://calendar.app.google/qicauwUqfSerdEi16", // Hair Restoration Strategy Session
   sexual: "https://calendar.app.google/RkzUZ7uJZ3EJwyzy5", // Sexual Wellness Private Consultation

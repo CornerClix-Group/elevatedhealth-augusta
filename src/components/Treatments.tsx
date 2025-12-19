@@ -24,7 +24,7 @@ const Treatments = ({ onOpenQuiz }: TreatmentsProps) => {
         "Starting at $400/session (financing available)"
       ],
       ctaText: "Book IV Ketamine",
-      ctaUrl: "https://calendar.app.google/Cmwuzg5TYMeACQ4i6" // Ketamine Candidacy Review
+      ctaUrl: "https://calendar.app.google/2zDZmMUzdw1RPR5E8" // Ketamine Candidacy Review
     },
     {
       icon: Wind,
