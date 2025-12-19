@@ -15,7 +15,7 @@ export const SITE_CONFIG = {
     mensTRT: "https://calendar.app.google/wtenYwM2L2oPeZkW8",
     labReview: "https://calendar.app.google/wwZhbZ2hxcg4uic1A", // Clinical Strategy Session
     weightLoss: "https://calendar.app.google/Nr1ruba57eqELJG19",
-    ketamine: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ2PQwDIHsKim5qpCN-z73-og3o860VD1LF1ADcC2woFYPi1A7q3ccIDlJbfkoK1MSvHKIH5wPeS",
+    ketamine: "https://calendar.app.google/2zDZmMUzdw1RPR5E8",
     peptide: "https://calendar.app.google/TwKGsbXLpGdTBpp9A",
     iv: "https://calendar.app.google/tho8888rMkQpURzn7",
     hairRestoration: "https://calendar.app.google/qicauwUqfSerdEi16",
