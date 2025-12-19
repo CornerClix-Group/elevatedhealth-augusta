@@ -334,16 +334,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : (
-              <Button 
-                variant="outline"
-                className="font-lato font-normal text-sm tracking-wide px-5 py-2 border-primary/50 hover:bg-primary/5 bg-white"
-                style={{ color: '#2C3E50' }}
-                onClick={() => navigate("/patient/login")}
-              >
-                Patient Portal
-              </Button>
-            )}
+            ) : null}
             <Button 
               className="font-lato font-normal text-sm tracking-wide px-6 py-2"
               onClick={() => {
@@ -539,19 +530,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                     Logout
                   </Button>
                 </>
-              ) : (
-                <Button 
-                  variant="outline"
-                  className="w-full font-lato text-sm tracking-wide py-6 bg-white border-gray-400"
-                  style={{ color: '#2C3E50' }}
-                  onClick={() => {
-                    navigate("/patient/login");
-                    setIsMobileMenuOpen(false);
-                  }}
-                >
-                  Patient Portal
-                </Button>
-              )}
+              ) : null}
               
               <p className="mt-6 text-sm font-lato text-center" style={{ color: '#64748b' }}>
                 {SITE_CONFIG.phone}
