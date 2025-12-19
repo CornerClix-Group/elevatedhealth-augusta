@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { IdleWarningModal } from "@/components/auth/IdleWarningModal";
 
@@ -20,7 +19,6 @@ interface SessionSecurityProviderProps {
 }
 
 export const SessionSecurityProvider = ({ children }: SessionSecurityProviderProps) => {
-  const navigate = useNavigate();
   const [isIdle, setIsIdle] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [remainingTime, setRemainingTime] = useState(WARNING_DURATION_MS / 1000);
@@ -28,13 +26,25 @@ export const SessionSecurityProvider = ({ children }: SessionSecurityProviderPro
 
   const handleLogout = useCallback(async () => {
     try {
-      await supabase.auth.signOut();
-      navigate("/patient/login", { replace: true });
+      await supabase.auth.signOut({ scope: 'local' });
     } catch (error) {
       console.error("Logout error:", error);
-      navigate("/patient/login", { replace: true });
+    } finally {
+      // Force clear storage
+      try {
+        const keys = Object.keys(localStorage);
+        keys.forEach(key => {
+          if (key.startsWith('sb-') && key.includes('-auth-')) {
+            localStorage.removeItem(key);
+          }
+        });
+        sessionStorage.clear();
+      } catch (e) {
+        console.error("Storage clear error:", e);
+      }
+      window.location.href = '/patient/login';
     }
-  }, [navigate]);
+  }, []);
 
   const resetIdleTimer = useCallback(() => {
     setLastActivity(Date.now());
@@ -101,33 +111,25 @@ export const SessionSecurityProvider = ({ children }: SessionSecurityProviderPro
     return () => clearInterval(countdownInterval);
   }, [showWarning, handleLogout]);
 
-  // Browser/tab close detection
+  // Tab visibility detection - only check session validity when returning
   useEffect(() => {
-    const handleBeforeUnload = () => {
-      // Clear session data on browser close
-      // Note: signOut is async and may not complete, but we attempt it
-      supabase.auth.signOut();
-    };
-
     const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
+      if (document.visibilityState === "visible" && !showWarning) {
         // User returned to tab - check if session is still valid
         supabase.auth.getSession().then(({ data: { session } }) => {
           if (!session) {
-            navigate("/patient/login", { replace: true });
+            window.location.href = '/patient/login';
           }
         });
       }
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [navigate]);
+  }, [showWarning]);
 
   return (
     <SessionSecurityContext.Provider value={{ resetIdleTimer, isIdle, remainingTime }}>
