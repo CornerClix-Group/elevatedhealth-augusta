@@ -35,20 +35,35 @@ const PatientNavbar = ({ patientName, avatarUrl, onEditProfile }: PatientNavbarP
       .slice(0, 2);
   };
 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const handleLogout = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Logout error:", error);
-        toast.error("Failed to logout. Please try again.");
-        return;
-      }
-      toast.success("Logged out successfully");
-      // Use replace to prevent back navigation to protected pages
-      navigate("/patient/login", { replace: true });
+      // Try signOut with local scope to ensure local session is cleared
+      await supabase.auth.signOut({ scope: 'local' });
     } catch (error) {
-      console.error("Logout exception:", error);
-      toast.error("Failed to logout. Please try again.");
+      console.error("SignOut error:", error);
+    } finally {
+      // Force clear all auth-related storage regardless of signOut result
+      try {
+        // Clear Supabase auth token from localStorage
+        const keys = Object.keys(localStorage);
+        keys.forEach(key => {
+          if (key.startsWith('sb-') && key.includes('-auth-')) {
+            localStorage.removeItem(key);
+          }
+        });
+        sessionStorage.clear();
+      } catch (e) {
+        console.error("Storage clear error:", e);
+      }
+      
+      toast.success("Logged out successfully");
+      // Force hard navigation to prevent any caching issues
+      window.location.href = '/patient/login';
     }
   };
 
