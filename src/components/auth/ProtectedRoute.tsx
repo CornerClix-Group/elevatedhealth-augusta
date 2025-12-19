@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
   requireAdmin?: boolean;
 }
 
-const LOADING_TIMEOUT_MS = 5000; // 5 second timeout
+const LOADING_TIMEOUT_MS = 10000; // 10 second timeout (increased for slow networks)
 
 const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRouteProps) => {
   // Use undefined to distinguish "not loaded yet" from "no session" (null)
