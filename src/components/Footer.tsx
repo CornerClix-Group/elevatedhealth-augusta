@@ -182,9 +182,12 @@ const Footer = () => {
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-background/60 font-lato">
               <button 
                 onClick={() => navigate("/patient/login")} 
-                className="text-primary hover:text-primary-light transition-colors font-medium"
+                className="hover:text-background/80 transition-colors flex items-center gap-1"
               >
-                Patient Portal
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+                Returning Patient?
               </button>
               <button 
                 onClick={() => navigate("/admin/login")} 
