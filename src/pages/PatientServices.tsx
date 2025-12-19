@@ -13,10 +13,10 @@ import {
   Droplets, 
   Syringe, 
   Check, 
-  Plus,
   ArrowRight,
   Scissors,
-  Heart
+  Heart,
+  Calendar
 } from "lucide-react";
 import PatientNavbar from "@/components/patient/PatientNavbar";
 import EditProfileModal from "@/components/patient/EditProfileModal";
@@ -121,7 +121,6 @@ const PatientServices = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [patient, setPatient] = useState<any>(null);
   const [currentInterests, setCurrentInterests] = useState<string[]>([]);
-  const [addingService, setAddingService] = useState<string | null>(null);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
   useEffect(() => {
@@ -189,51 +188,6 @@ const PatientServices = () => {
       toast.error(error.message || "Failed to load data");
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleAddService = async (service: Service) => {
-    if (!patient) return;
-    
-    setAddingService(service.id);
-    try {
-      const newInterests = [...currentInterests, service.treatmentKey];
-      const treatmentRequest = newInterests.join(",");
-      
-      const { error } = await supabase
-        .from("patients")
-        .update({ 
-          treatment_request: treatmentRequest,
-          ...(service.treatmentKey !== "iv_lounge" && !patient.intake_completed && { 
-            onboarding_status: "intake_required" 
-          })
-        })
-        .eq("id", patient.id);
-
-      if (error) throw error;
-
-      await supabase.functions.invoke("send-patient-signup-notification", {
-        body: {
-          patientName: patient.full_name,
-          patientEmail: patient.email,
-          primaryProgram: service.treatmentKey,
-          isHighRisk: false,
-          notificationType: "service_added",
-          addedService: service.name,
-        }
-      });
-
-      setCurrentInterests(newInterests);
-      toast.success(`${service.name} added to your care plan! A provider will reach out.`);
-      
-      if (service.treatmentKey === "ketamine" && !patient.intake_completed) {
-        toast.info("Please complete the mental wellness intake for ketamine therapy.");
-        navigate("/patient/intake");
-      }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to add service");
-    } finally {
-      setAddingService(null);
     }
   };
 
@@ -311,7 +265,6 @@ const PatientServices = () => {
 
   // Get active services for display
   const activeServices = SERVICES.filter(s => hasService(s.treatmentKey));
-  const inactiveServices = SERVICES.filter(s => !hasService(s.treatmentKey));
 
   return (
     <div className="min-h-screen bg-background">
@@ -327,16 +280,16 @@ const PatientServices = () => {
           <p className="text-sm text-muted-foreground uppercase tracking-widest mb-1">Welcome back</p>
           <h1 className="font-cormorant text-3xl text-foreground mb-2">{patient?.full_name}</h1>
           <p className="text-muted-foreground">
-            Your personalized health services
+            Your personalized health journey
           </p>
         </div>
 
         {/* Active Services - Prominent Cards */}
-        {activeServices.length > 0 && (
+        {activeServices.length > 0 ? (
           <div className="mb-10">
             <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
               <span className="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
-              Your Active Services
+              Your Treatment Plan
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
               {activeServices.map((service) => (
@@ -375,76 +328,35 @@ const PatientServices = () => {
               ))}
             </div>
           </div>
+        ) : (
+          /* No Active Services - Consultation CTA */
+          <Card className="mb-10 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+            <CardContent className="pt-8 pb-8 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                <Calendar className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="font-cormorant text-2xl mb-2">Start Your Health Journey</h3>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                Schedule a consultation with our providers to create your personalized treatment plan. 
+                We'll discuss your health goals and recommend the best options for you.
+              </p>
+              <Button size="lg" onClick={() => navigate("/consult")}>
+                Book Your Consultation
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </CardContent>
+          </Card>
         )}
 
-        {/* Add More Services */}
-        {inactiveServices.length > 0 && (
-          <div>
-            <h2 className="font-semibold text-foreground mb-4 text-muted-foreground">
-              Explore More Services
-            </h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              {inactiveServices.map((service) => {
-                const isAdding = addingService === service.id;
-                
-                return (
-                  <Card 
-                    key={service.id}
-                    className="bg-card border-border/50 transition-all hover:shadow-md"
-                  >
-                    <CardHeader className="pb-2">
-                      <div className="flex items-start justify-between">
-                        <div className={`p-3 rounded-full bg-muted`}>
-                          {service.icon}
-                        </div>
-                      </div>
-                      <CardTitle className="font-cormorant text-xl text-muted-foreground">{service.name}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-sm text-muted-foreground">{service.description}</p>
-                      
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => navigate(service.publicPage)}
-                          className="flex-1"
-                        >
-                          Learn More
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => handleAddService(service)}
-                          disabled={isAdding}
-                          className="flex-1"
-                        >
-                          {isAdding ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <>
-                              <Plus className="w-4 h-4 mr-1" />
-                              Add
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Contact Card */}
-        <Card className="mt-8 bg-card border-border/50">
+        {/* Help Card */}
+        <Card className="bg-card border-border/50">
           <CardContent className="pt-6 text-center">
-            <h3 className="font-semibold mb-2">Questions about our services?</h3>
+            <h3 className="font-semibold mb-2">Questions about your treatment?</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Our team is happy to help you find the right treatment plan.
+              Our care team is here to help you every step of the way.
             </p>
-            <Button onClick={() => navigate("/consult")}>
-              Schedule a Consultation
+            <Button variant="outline" onClick={() => navigate("/consult")}>
+              Contact Us
             </Button>
           </CardContent>
         </Card>
