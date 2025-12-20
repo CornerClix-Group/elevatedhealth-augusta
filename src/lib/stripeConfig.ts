@@ -1,0 +1,353 @@
+/**
+ * Central Stripe Price & Product Configuration
+ * 
+ * This file serves as the single source of truth for all Stripe price IDs used across the application.
+ * Use this for auditing, maintenance, and ensuring consistency between UI and checkout functions.
+ * 
+ * IMPORTANT: When updating prices in Stripe, update them here first, then update the corresponding
+ * edge functions to reference these same IDs.
+ * 
+ * Last audited: 2025-12-20
+ */
+
+// ============================================================================
+// CONSULTATIONS
+// ============================================================================
+
+export const CONSULTATION_PRICES = {
+  discovery: {
+    priceId: null, // Uses price_data for dynamic product naming per service type
+    amount: 9900, // $99
+    displayPrice: "$99",
+    name: "Discovery Consultation",
+    description: "45-minute consultation with $99 credit toward treatment",
+    mode: "payment" as const,
+    edgeFunction: "create-consultation-checkout",
+  },
+} as const;
+
+// ============================================================================
+// DIAGNOSTIC KITS (ZRT Labs)
+// ============================================================================
+
+export const DIAGNOSTIC_KIT_PRICES = {
+  hormone: {
+    priceId: "price_1SZiRMEOtKRY99pua6QMu12h",
+    amount: 29900, // $299
+    displayPrice: "$299",
+    name: "Hormone Mapping Kit",
+    description: "ZRT Saliva Profile III - At-home saliva test kit + lab review consultation",
+    zrtPanel: "saliva_iii",
+    mode: "payment" as const,
+    edgeFunction: "create-hormone-checkout",
+  },
+  metabolic: {
+    priceId: "price_1Sa4bNEOtKRY99pulS73hT1V",
+    amount: 39900, // $399
+    displayPrice: "$399",
+    name: "Metabolic Mapping Kit",
+    description: "ZRT Weight Management Panel - At-home blood spot + saliva test kit + lab review consultation",
+    zrtPanel: "weight_management",
+    mode: "payment" as const,
+    edgeFunction: "create-hormone-checkout",
+  },
+  neurotransmitter: {
+    priceId: null, // Uses price_data at $399
+    amount: 39900, // $399
+    displayPrice: "$399",
+    name: "Neurotransmitter Analysis Kit",
+    description: "ZRT Neurotransmitter Profile - Comprehensive brain chemistry analysis",
+    zrtPanel: "neurotransmitter",
+    mode: "payment" as const,
+    edgeFunction: "create-neurotransmitter-checkout",
+  },
+  toxicity: {
+    priceId: null, // Uses price_data at $299
+    amount: 29900, // $299
+    displayPrice: "$299",
+    name: "Toxicity Panel Kit",
+    description: "Heavy metals and environmental toxin analysis",
+    mode: "payment" as const,
+    edgeFunction: "create-toxicity-checkout",
+  },
+  totalBody: {
+    priceId: null, // Uses price_data at $999
+    amount: 99900, // $999
+    displayPrice: "$999",
+    name: "The Elevated Architecture™ Protocol",
+    description: "Complete diagnostic workup with hormones, metabolic, neurotransmitter, and toxicity panels",
+    mode: "payment" as const,
+    edgeFunction: "create-total-body-checkout",
+  },
+} as const;
+
+// ============================================================================
+// MEMBERSHIPS (Subscriptions)
+// ============================================================================
+
+export const MEMBERSHIP_PRICES = {
+  vitality: {
+    priceId: "price_1SZickEOtKRY99pu7j2PtWZm",
+    amount: 19900, // $199/mo
+    displayPrice: "$199/mo",
+    name: "Vitality Membership",
+    description: "Monthly hormone optimization with provider support",
+    mode: "subscription" as const,
+    interval: "month",
+    edgeFunction: "create-vitality-checkout",
+  },
+  concierge: {
+    priceId: "price_1SZiXTEOtKRY99puR7PQUExU",
+    amount: 39900, // $399/mo
+    displayPrice: "$399/mo",
+    name: "Elevated Concierge Membership",
+    description: "Premium hormone therapy with priority support and additional services",
+    mode: "subscription" as const,
+    interval: "month",
+    edgeFunction: "create-membership-checkout",
+    requiresLabReview: true,
+  },
+} as const;
+
+// ============================================================================
+// KETAMINE THERAPY
+// ============================================================================
+
+export const KETAMINE_PRICES = {
+  deposit: {
+    priceId: "price_1Sa5jwEOtKRY99puYK2lpDw5",
+    amount: 15000, // $150
+    displayPrice: "$150",
+    name: "Ketamine Therapy Deposit",
+    description: "Deposit for ketamine therapy assessment",
+    mode: "payment" as const,
+    edgeFunction: "create-ketamine-checkout",
+  },
+  ivInfusion: {
+    priceId: "price_1SaYv3EOtKRY99pulkr4H1At",
+    amount: 40000, // $400
+    displayPrice: "$400",
+    name: "IV Ketamine Infusion",
+    description: "Single IV ketamine infusion session",
+    mode: "payment" as const,
+    edgeFunction: "create-iv-ketamine-checkout",
+  },
+} as const;
+
+// ============================================================================
+// WEIGHT LOSS / GLP-1
+// ============================================================================
+
+export const WEIGHT_LOSS_PRICES = {
+  glp1Continuation: {
+    priceId: "price_1Sd8ChEOtKRY99pu7iaAF3Jd",
+    amount: 44900, // $449
+    displayPrice: "$449",
+    name: "GLP-1 Continuation Month",
+    description: "One month of semaglutide medication supply",
+    mode: "payment" as const,
+    edgeFunction: "create-glp1-continuation-checkout",
+  },
+} as const;
+
+// ============================================================================
+// HAIR RESTORATION (Subscriptions)
+// ============================================================================
+
+export const HAIR_RESTORATION_PRICES = {
+  minoxidilFinasteride: {
+    priceId: "price_1SfijTEOtKRY99puE2WxgmrI",
+    amount: 12900, // $129/mo
+    displayPrice: "$129/mo",
+    name: "Minoxidil + Finasteride",
+    description: "Combination topical therapy for hair regrowth",
+    mode: "subscription" as const,
+    interval: "month",
+    productKey: "minoxidil_finasteride",
+    edgeFunction: "create-hair-restoration-checkout",
+  },
+  dutasteride: {
+    priceId: "price_1SfijUEOtKRY99puH5TqvFks",
+    amount: 14900, // $149/mo
+    displayPrice: "$149/mo",
+    name: "Dutasteride",
+    description: "Advanced DHT blocker for hair loss",
+    mode: "subscription" as const,
+    interval: "month",
+    productKey: "dutasteride",
+    edgeFunction: "create-hair-restoration-checkout",
+  },
+  ghkCuScalp: {
+    priceId: "price_1SfijVEOtKRY99puXq7N3Lp2",
+    amount: 14900, // $149/mo
+    displayPrice: "$149/mo",
+    name: "GHK-Cu Scalp Therapy",
+    description: "Copper peptide serum for scalp health",
+    mode: "subscription" as const,
+    interval: "month",
+    productKey: "ghk_cu_scalp",
+    edgeFunction: "create-hair-restoration-checkout",
+  },
+} as const;
+
+// ============================================================================
+// SEXUAL WELLNESS
+// ============================================================================
+
+export const SEXUAL_WELLNESS_PRICES = {
+  tadalafil: {
+    priceId: "price_1SfijREOtKRY99puq0ITndfC",
+    amount: 9900, // $99/mo
+    displayPrice: "$99/mo",
+    name: "Tadalafil (Cialis)",
+    description: "Daily or as-needed ED medication",
+    mode: "subscription" as const,
+    interval: "month",
+    productKey: "tadalafil",
+    edgeFunction: "create-sexual-wellness-checkout",
+  },
+  sildenafil: {
+    priceId: "price_1SfijSEOtKRY99pumi7jjNvs",
+    amount: 7900, // $79/mo
+    displayPrice: "$79/mo",
+    name: "Sildenafil (Viagra)",
+    description: "As-needed ED medication",
+    mode: "subscription" as const,
+    interval: "month",
+    productKey: "sildenafil",
+    edgeFunction: "create-sexual-wellness-checkout",
+  },
+  pt141: {
+    priceId: "price_1Sa67YEOtKRY99puQlYCjH4m",
+    amount: 22500, // $225
+    displayPrice: "$225",
+    name: "PT-141 (Bremelanotide)",
+    description: "Peptide therapy for libido enhancement",
+    mode: "payment" as const,
+    productKey: "pt141",
+    edgeFunction: "create-sexual-wellness-checkout",
+  },
+  oxytocinNasal: {
+    priceId: "price_1SfijWEOtKRY99puB9Rq4Lm3",
+    amount: 8900, // $89/mo
+    displayPrice: "$89/mo",
+    name: "Oxytocin Nasal Spray",
+    description: "Bonding and intimacy enhancement",
+    mode: "subscription" as const,
+    interval: "month",
+    productKey: "oxytocin_nasal",
+    edgeFunction: "create-sexual-wellness-checkout",
+  },
+} as const;
+
+// ============================================================================
+// ADMINISTRATIVE / OTHER
+// ============================================================================
+
+export const ADMIN_PRICES = {
+  rebookingFee: {
+    priceId: "price_1Sa5UFEOtKRY99pupEQlaFvN",
+    amount: 0, // Variable - check Stripe for actual amount
+    displayPrice: "See Stripe",
+    name: "Appointment Rebooking Fee",
+    description: "Fee for rescheduling a missed appointment",
+    mode: "payment" as const,
+    edgeFunction: "create-rebooking-checkout",
+  },
+} as const;
+
+// ============================================================================
+// PROVIDER-INITIATED KITS (sent via send-kit-payment-link)
+// ============================================================================
+
+export const PROVIDER_KIT_PRICES = {
+  hormone: {
+    priceId: "price_1SZiRMEOtKRY99pua6QMu12h",
+    fullPrice: 29900, // $299
+    creditPrice: 20000, // $200 after $99 credit
+    displayPrice: "$299 (or $200 with credit)",
+    name: "Hormone Mapping Kit",
+    description: "At-home Saliva Profile III test kit + lab review consultation",
+    edgeFunction: "send-kit-payment-link",
+  },
+  metabolic: {
+    priceId: "price_1Sa4bNEOtKRY99pulS73hT1V",
+    fullPrice: 39900, // $399
+    creditPrice: 30000, // $300 after $99 credit
+    displayPrice: "$399 (or $300 with credit)",
+    name: "Metabolic Mapping Kit",
+    description: "At-home Weight Management Panel test kit + lab review consultation",
+    edgeFunction: "send-kit-payment-link",
+  },
+} as const;
+
+// ============================================================================
+// HELPER TYPES
+// ============================================================================
+
+export type ConsultationPriceKey = keyof typeof CONSULTATION_PRICES;
+export type DiagnosticKitPriceKey = keyof typeof DIAGNOSTIC_KIT_PRICES;
+export type MembershipPriceKey = keyof typeof MEMBERSHIP_PRICES;
+export type KetaminePriceKey = keyof typeof KETAMINE_PRICES;
+export type WeightLossPriceKey = keyof typeof WEIGHT_LOSS_PRICES;
+export type HairRestorationPriceKey = keyof typeof HAIR_RESTORATION_PRICES;
+export type SexualWellnessPriceKey = keyof typeof SEXUAL_WELLNESS_PRICES;
+export type AdminPriceKey = keyof typeof ADMIN_PRICES;
+export type ProviderKitPriceKey = keyof typeof PROVIDER_KIT_PRICES;
+
+// ============================================================================
+// AUDIT HELPER - Get all prices for verification
+// ============================================================================
+
+export const getAllPriceIds = (): string[] => {
+  const allPrices = [
+    ...Object.values(DIAGNOSTIC_KIT_PRICES),
+    ...Object.values(MEMBERSHIP_PRICES),
+    ...Object.values(KETAMINE_PRICES),
+    ...Object.values(WEIGHT_LOSS_PRICES),
+    ...Object.values(HAIR_RESTORATION_PRICES),
+    ...Object.values(SEXUAL_WELLNESS_PRICES),
+    ...Object.values(ADMIN_PRICES),
+  ];
+  
+  return allPrices
+    .map((p) => p.priceId)
+    .filter((id): id is string => id !== null);
+};
+
+// ============================================================================
+// CONSULTATION CREDIT
+// ============================================================================
+
+export const CONSULTATION_CREDIT = {
+  amount: 9900, // $99 in cents
+  displayAmount: "$99",
+  description: "Credit toward diagnostic mapping kit when consultation is paid first",
+} as const;
+
+// ============================================================================
+// SUMMARY TABLE (for documentation)
+// ============================================================================
+/*
+| Category           | Product                          | Price    | Price ID                               | Mode         |
+|--------------------|----------------------------------|----------|----------------------------------------|--------------|
+| Consultations      | Discovery Consultation           | $99      | (dynamic)                              | payment      |
+| Diagnostic Kits    | Hormone Mapping                  | $299     | price_1SZiRMEOtKRY99pua6QMu12h         | payment      |
+| Diagnostic Kits    | Metabolic Mapping                | $399     | price_1Sa4bNEOtKRY99pulS73hT1V         | payment      |
+| Diagnostic Kits    | Neurotransmitter Analysis        | $399     | (dynamic)                              | payment      |
+| Diagnostic Kits    | Toxicity Panel                   | $299     | (dynamic)                              | payment      |
+| Diagnostic Kits    | Elevated Architecture Protocol   | $999     | (dynamic)                              | payment      |
+| Memberships        | Vitality Membership              | $199/mo  | price_1SZickEOtKRY99pu7j2PtWZm         | subscription |
+| Memberships        | Elevated Concierge               | $399/mo  | price_1SZiXTEOtKRY99puR7PQUExU         | subscription |
+| Ketamine           | Therapy Deposit                  | $150     | price_1Sa5jwEOtKRY99puYK2lpDw5         | payment      |
+| Ketamine           | IV Infusion                      | $400     | price_1SaYv3EOtKRY99pulkr4H1At         | payment      |
+| Weight Loss        | GLP-1 Continuation               | $449     | price_1Sd8ChEOtKRY99pu7iaAF3Jd         | payment      |
+| Hair Restoration   | Minoxidil + Finasteride          | $129/mo  | price_1SfijTEOtKRY99puE2WxgmrI         | subscription |
+| Hair Restoration   | Dutasteride                      | $149/mo  | price_1SfijUEOtKRY99puH5TqvFks         | subscription |
+| Hair Restoration   | GHK-Cu Scalp                     | $149/mo  | price_1SfijVEOtKRY99puXq7N3Lp2         | subscription |
+| Sexual Wellness    | Tadalafil                        | $99/mo   | price_1SfijREOtKRY99puq0ITndfC         | subscription |
+| Sexual Wellness    | Sildenafil                       | $79/mo   | price_1SfijSEOtKRY99pumi7jjNvs         | subscription |
+| Sexual Wellness    | PT-141                           | $225     | price_1Sa67YEOtKRY99puQlYCjH4m         | payment      |
+| Sexual Wellness    | Oxytocin Nasal                   | $89/mo   | price_1SfijWEOtKRY99puB9Rq4Lm3         | subscription |
+| Admin              | Rebooking Fee                    | varies   | price_1Sa5UFEOtKRY99pupEQlaFvN         | payment      |
+*/
