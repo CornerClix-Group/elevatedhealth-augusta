@@ -13,6 +13,192 @@ const logStep = (step: string, details?: any) => {
   console.log(`[VERIFY-CONSULTATION-PAYMENT] ${step}${detailsStr}`);
 };
 
+// Helper to send SMS via Sinch
+async function sendSMS(to: string, message: string): Promise<boolean> {
+  const sinchAccessKey = Deno.env.get("SINCH_ACCESS_KEY");
+  const sinchSecretKey = Deno.env.get("SINCH_SECRET_KEY");
+  
+  if (!sinchAccessKey || !sinchSecretKey) {
+    logStep("SMS credentials not configured");
+    return false;
+  }
+
+  try {
+    const response = await fetch("https://us.sms.api.sinch.com/xms/v1/" + sinchAccessKey + "/batches", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + sinchSecretKey,
+      },
+      body: JSON.stringify({
+        from: "+18339765929", // Elevated Health Sinch number
+        to: [to.replace(/\D/g, '')], // Strip non-digits
+        body: message,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      logStep("SMS send failed", { status: response.status, error: errorText });
+      return false;
+    }
+
+    logStep("SMS sent successfully", { to });
+    return true;
+  } catch (error) {
+    logStep("SMS error", { error: error instanceof Error ? error.message : String(error) });
+    return false;
+  }
+}
+
+// Helper to create Google Calendar event
+async function createCalendarEvent(
+  customerEmail: string,
+  customerName: string,
+  serviceType: string,
+  creditCode: string
+): Promise<boolean> {
+  const serviceAccountKeyStr = Deno.env.get("GOOGLE_SERVICE_ACCOUNT_KEY");
+  
+  if (!serviceAccountKeyStr) {
+    logStep("Google Calendar credentials not configured");
+    return false;
+  }
+
+  try {
+    const serviceAccount = JSON.parse(serviceAccountKeyStr);
+    
+    // Create JWT for Google API authentication
+    const header = { alg: "RS256", typ: "JWT" };
+    const now = Math.floor(Date.now() / 1000);
+    const claim = {
+      iss: serviceAccount.client_email,
+      scope: "https://www.googleapis.com/auth/calendar",
+      aud: "https://oauth2.googleapis.com/token",
+      iat: now,
+      exp: now + 3600,
+    };
+
+    // Import the private key
+    const pemHeader = "-----BEGIN PRIVATE KEY-----";
+    const pemFooter = "-----END PRIVATE KEY-----";
+    const pemContents = serviceAccount.private_key
+      .replace(pemHeader, "")
+      .replace(pemFooter, "")
+      .replace(/\n/g, "");
+    
+    const binaryKey = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
+    
+    const cryptoKey = await crypto.subtle.importKey(
+      "pkcs8",
+      binaryKey,
+      { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+
+    // Create JWT
+    const encoder = new TextEncoder();
+    const headerB64 = btoa(JSON.stringify(header)).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+    const claimB64 = btoa(JSON.stringify(claim)).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+    const signatureInput = encoder.encode(`${headerB64}.${claimB64}`);
+    
+    const signature = await crypto.subtle.sign(
+      "RSASSA-PKCS1-v1_5",
+      cryptoKey,
+      signatureInput
+    );
+    
+    const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)))
+      .replace(/=/g, "")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_");
+    
+    const jwt = `${headerB64}.${claimB64}.${signatureB64}`;
+
+    // Get access token
+    const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+        assertion: jwt,
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      logStep("Failed to get Google access token", { error: errorText });
+      return false;
+    }
+
+    const tokenData = await tokenResponse.json();
+    const accessToken = tokenData.access_token;
+
+    // Service type labels
+    const serviceLabels: Record<string, string> = {
+      ketamine: "Ketamine Therapy",
+      weight_loss: "Medical Weight Loss",
+      hormone: "Hormone Replacement",
+      peptide: "Peptide Therapy",
+      hair: "Hair Restoration",
+      sexual: "Sexual Wellness",
+    };
+
+    const serviceLabel = serviceLabels[serviceType] || "Consultation";
+
+    // Create a placeholder event on the admin calendar (they'll need to manually schedule)
+    // This creates an all-day event for today as a reminder
+    const today = new Date().toISOString().split("T")[0];
+    
+    const event = {
+      summary: `NEW CONSULT PAID: ${customerName || customerEmail} - ${serviceLabel}`,
+      description: `
+New consultation payment received!
+
+Patient: ${customerName || "Not provided"}
+Email: ${customerEmail}
+Service: ${serviceLabel}
+Credit Code: ${creditCode}
+
+ACTION NEEDED: Patient has been instructed to book via calendar link. Watch for their booking confirmation.
+
+This event was auto-created when payment was received.
+      `.trim(),
+      start: { date: today },
+      end: { date: today },
+      colorId: "11", // Red color for attention
+    };
+
+    // Use the admin calendar ID (you may need to replace this with the actual calendar ID)
+    const calendarId = "primary"; // Uses the service account's primary calendar
+    
+    const calendarResponse = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(event),
+      }
+    );
+
+    if (!calendarResponse.ok) {
+      const errorText = await calendarResponse.text();
+      logStep("Failed to create calendar event", { error: errorText });
+      return false;
+    }
+
+    logStep("Calendar event created successfully");
+    return true;
+  } catch (error) {
+    logStep("Calendar error", { error: error instanceof Error ? error.message : String(error) });
+    return false;
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -218,6 +404,34 @@ serve(async (req) => {
         logStep("Admin email failed", { error: emailError });
       }
     }
+
+    // Send SMS alerts to staff (background task - don't block response)
+    const staffPhoneNumbers = Deno.env.get("STAFF_NOTIFICATION_PHONE");
+    if (staffPhoneNumbers) {
+      const smsMessage = `🎉 NEW CONSULT PAID!\n\n${session.customer_details?.name || customerEmail}\nService: ${emailConfig.title}\nCredit: ${creditCode}\n\nPatient instructed to book via calendar link.`;
+      
+      // Parse multiple phone numbers (comma-separated)
+      const phoneNumbers = staffPhoneNumbers.split(",").map(p => p.trim());
+      
+      for (const phone of phoneNumbers) {
+        if (phone) {
+          sendSMS(phone, smsMessage).catch(err => {
+            logStep("SMS send error (non-blocking)", { phone, error: err });
+          });
+        }
+      }
+      logStep("SMS notifications queued", { phones: phoneNumbers });
+    }
+
+    // Create Google Calendar placeholder event (background task)
+    createCalendarEvent(
+      customerEmail,
+      session.customer_details?.name || "",
+      serviceType,
+      creditCode || ""
+    ).catch(err => {
+      logStep("Calendar event error (non-blocking)", { error: err });
+    });
 
     return new Response(JSON.stringify({ 
       success: true, 
