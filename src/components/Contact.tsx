@@ -64,49 +64,24 @@ const Contact = ({ onOpenBooking }: ContactProps) => {
       const validated = contactSchema.parse(formData);
       console.log("[Contact Form] Validation passed:", validated);
       
-      setSubmitStatus("Saving your message...");
+      setSubmitStatus("Sending your message...");
       
-      // Store lead in database with explicit verification
-      const { data: insertData, error: insertError } = await supabase
-        .from("chat_leads")
-        .insert({
-          name: validated.name,
-          email: validated.email,
-          phone: validated.phone,
-          chat_summary: validated.message,
-          interest: "contact_form",
-          source: "website_contact",
-          status: "new"
-        })
-        .select()
-        .single();
-
-      if (insertError) {
-        console.error("[Contact Form] Database insert failed:", insertError);
-        throw new Error(`Failed to save your message: ${insertError.message}`);
-      }
-      
-      if (!insertData) {
-        console.error("[Contact Form] Insert returned no data");
-        throw new Error("Failed to save your message. Please try again.");
-      }
-      
-      console.log("[Contact Form] Lead stored successfully with ID:", insertData.id);
-      toast.success("Message saved! Sending notification...");
-      
-      setSubmitStatus("Sending notification...");
-
-      // Send notification email via edge function
-      const { data: emailData, error: emailError } = await supabase.functions.invoke("send-contact-email", {
+      // Send everything to edge function which handles DB insert + email
+      const { data, error } = await supabase.functions.invoke("send-contact-email", {
         body: validated
       });
 
-      if (emailError) {
-        console.error("[Contact Form] Email notification failed:", emailError);
-        toast.warning("Your message was saved, but we couldn't send the notification. We'll still follow up!");
-      } else {
-        console.log("[Contact Form] Email notification sent successfully:", emailData);
+      if (error) {
+        console.error("[Contact Form] Edge function error:", error);
+        throw new Error(error.message || "Failed to send message. Please try again.");
       }
+
+      if (!data?.success) {
+        console.error("[Contact Form] Edge function returned failure:", data);
+        throw new Error(data?.message || "Failed to send message. Please try again.");
+      }
+      
+      console.log("[Contact Form] Submission successful:", data);
       
       setSubmittedName(validated.name.split(" ")[0]);
       setIsSuccess(true);
