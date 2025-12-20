@@ -256,7 +256,12 @@ const HairRestoration = () => {
           <section className="section-spacing-sm bg-background">
             <div className="container mx-auto px-6 lg:px-8">
               <div className="max-w-2xl mx-auto">
-                <NotReadyToBook variant="compact" />
+                <NotReadyToBook 
+                  variant="compact" 
+                  title="Wondering which protocol is right for you?"
+                  description="Hair loss treatment depends on your stage and pattern. We can help you understand options before your consultation."
+                  ctaText="Discuss Hair Restoration: (706) 760-3470"
+                />
               </div>
             </div>
           </section>

@@ -226,7 +226,12 @@ const Ketamine = () => {
           <section className="section-spacing-sm bg-background">
             <div className="container mx-auto px-6 lg:px-8">
               <div className="max-w-2xl mx-auto">
-                <NotReadyToBook variant="b" />
+                <NotReadyToBook 
+                  variant="b" 
+                  title="Nervous about trying ketamine therapy?"
+                  description="It's natural to have questions about this treatment. Our Care Team has helped hundreds of patients understand if ketamine is right for them—discussing eligibility, what to expect, and how our supervised protocols keep you safe."
+                  ctaText="Talk to Our Care Team"
+                />
               </div>
             </div>
           </section>

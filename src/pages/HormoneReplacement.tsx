@@ -70,7 +70,12 @@ const HormoneReplacement = () => {
         <section className="section-spacing-sm bg-background">
           <div className="container mx-auto px-6 lg:px-8">
             <div className="max-w-2xl mx-auto">
-              <NotReadyToBook variant="compact" />
+              <NotReadyToBook 
+                variant="compact" 
+                title="Curious about hormone replacement?"
+                description="Learn how we test, prescribe, and monitor your treatment. No pressure—just honest answers about the process."
+                ctaText="Ask Our Team: (706) 760-3470"
+              />
             </div>
           </div>
         </section>

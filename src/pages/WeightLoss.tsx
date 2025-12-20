@@ -363,7 +363,12 @@ const WeightLoss = () => {
           <section className="section-spacing-sm bg-secondary/30">
             <div className="container mx-auto px-6 lg:px-8">
               <div className="max-w-2xl mx-auto">
-                <NotReadyToBook variant="b" />
+                <NotReadyToBook 
+                  variant="b" 
+                  title="Frustrated by failed diets? Let's talk."
+                  description="If you've tried everything and nothing has worked, there may be a metabolic reason. Our team can explain how hormone testing reveals hidden blockers and whether GLP-1 therapy might finally break the cycle."
+                  ctaText="Understand Your Metabolism"
+                />
               </div>
             </div>
           </section>

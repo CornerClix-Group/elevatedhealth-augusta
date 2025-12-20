@@ -145,7 +145,12 @@ const IVKetamine = () => {
         <section className="section-spacing-sm bg-background">
           <div className="container mx-auto px-6 lg:px-8">
             <div className="max-w-2xl mx-auto">
-              <NotReadyToBook variant="compact" />
+              <NotReadyToBook 
+                variant="compact" 
+                title="Have questions about IV ketamine?"
+                description="This is a significant treatment decision. Ask about eligibility, what a session feels like, or how we ensure your safety."
+                ctaText="Speak With Our Team: (706) 760-3470"
+              />
             </div>
           </div>
         </section>

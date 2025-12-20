@@ -195,7 +195,12 @@ const SexualWellness = () => {
           <section className="section-spacing-sm bg-secondary/30">
             <div className="container mx-auto px-6 lg:px-8">
               <div className="max-w-2xl mx-auto">
-                <NotReadyToBook variant="compact" />
+                <NotReadyToBook 
+                  variant="compact" 
+                  title="Questions? 100% confidential."
+                  description="We understand this is personal. Ask about treatment options, dosing, or delivery—completely private, no judgment."
+                  ctaText="Call Discreetly: (706) 760-3470"
+                />
               </div>
             </div>
           </section>

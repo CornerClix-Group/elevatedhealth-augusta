@@ -383,7 +383,12 @@ const IVLounge = () => {
         <section className="section-spacing-sm bg-background">
           <div className="container mx-auto px-6 lg:px-8">
             <div className="max-w-2xl mx-auto">
-              <NotReadyToBook variant="compact" />
+              <NotReadyToBook 
+                variant="compact" 
+                title="Not sure which drip is right for you?"
+                description="Our team can recommend the perfect IV based on how you're feeling—whether it's recovery, energy, immunity, or beauty."
+                ctaText="Get a Recommendation: (706) 760-3470"
+              />
             </div>
           </div>
         </section>
