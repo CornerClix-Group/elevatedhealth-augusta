@@ -3,6 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Mail, UserPlus, Check, Calendar } from "lucide-react";
@@ -11,9 +18,17 @@ interface InvitePatientCardProps {
   onInviteSent?: () => void;
 }
 
+const SERVICE_TYPES = [
+  { value: "hormone", label: "Hormone Therapy" },
+  { value: "weight_loss", label: "Weight Loss" },
+  { value: "ketamine", label: "Ketamine Therapy" },
+  { value: "general", label: "General Consultation" },
+] as const;
+
 const InvitePatientCard = ({ onInviteSent }: InvitePatientCardProps) => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [serviceType, setServiceType] = useState<string>("hormone");
   const [isSending, setIsSending] = useState(false);
   const [sent, setSent] = useState(false);
 
@@ -38,6 +53,7 @@ const InvitePatientCard = ({ onInviteSent }: InvitePatientCardProps) => {
         body: {
           patient_email: email.trim(),
           patient_name: name.trim(),
+          service_type: serviceType,
         },
       });
 
@@ -45,9 +61,11 @@ const InvitePatientCard = ({ onInviteSent }: InvitePatientCardProps) => {
 
       if (data?.success) {
         setSent(true);
-        toast.success(`Consultation invite sent to ${email}!`);
+        const serviceLabel = SERVICE_TYPES.find(s => s.value === serviceType)?.label || "Consultation";
+        toast.success(`${serviceLabel} invite sent to ${email}!`);
         setEmail("");
         setName("");
+        setServiceType("hormone");
         onInviteSent?.();
         
         // Reset sent state after 3 seconds
@@ -117,6 +135,24 @@ const InvitePatientCard = ({ onInviteSent }: InvitePatientCardProps) => {
               className="mt-1"
               disabled={isSending}
             />
+          </div>
+
+          <div>
+            <Label htmlFor="invite-service" className="text-xs text-muted-foreground">
+              Service Interest
+            </Label>
+            <Select value={serviceType} onValueChange={setServiceType} disabled={isSending}>
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Select service type" />
+              </SelectTrigger>
+              <SelectContent>
+                {SERVICE_TYPES.map((service) => (
+                  <SelectItem key={service.value} value={service.value}>
+                    {service.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 

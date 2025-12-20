@@ -52,16 +52,25 @@ serve(async (req) => {
     logStep("Authorization verified");
 
     const body = await req.json();
-    const { patient_email, patient_name } = body;
+    const { patient_email, patient_name, service_type = "hormone" } = body;
 
     if (!patient_email || !patient_name) {
       throw new Error("Missing required fields: patient_email and patient_name");
     }
 
-    logStep("Request body", { patient_email, patient_name });
+    logStep("Request body", { patient_email, patient_name, service_type });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const origin = "https://elevatedhealthaugusta.com";
+
+    // Map service types to display names
+    const serviceLabels: Record<string, string> = {
+      hormone: "Hormone Therapy",
+      weight_loss: "Weight Loss",
+      ketamine: "Ketamine Therapy",
+      general: "General Consultation",
+    };
+    const serviceLabel = serviceLabels[service_type] || "Discovery Consultation";
 
     // Create Stripe Checkout session for $99 Discovery Consultation
     // NOTE: Credit code will be generated AFTER payment is confirmed
@@ -73,7 +82,7 @@ serve(async (req) => {
             currency: "usd",
             product_data: {
               name: "Discovery Consultation",
-              description: "45-minute consultation with Lauren Bursey, NP-C.",
+              description: `45-minute ${serviceLabel} consultation with Lauren Bursey, NP-C.`,
             },
             unit_amount: 9900, // $99
           },
@@ -81,12 +90,13 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/consultation-confirmed?session_id={CHECKOUT_SESSION_ID}&service=hormone`,
+      success_url: `${origin}/consultation-confirmed?session_id={CHECKOUT_SESSION_ID}&service=${service_type}`,
       cancel_url: `${origin}/`,
       metadata: {
         patient_email,
         patient_name,
         product: "discovery_consultation",
+        service_type,
         invite_type: "provider_consultation_invite",
       },
     });
