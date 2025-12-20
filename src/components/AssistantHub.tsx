@@ -64,7 +64,10 @@ const AssistantHub = () => {
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
   const [isVoiceConnecting, setIsVoiceConnecting] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [voiceTranscript, setVoiceTranscript] = useState("");
+  const [userTranscript, setUserTranscript] = useState("");
   const [needsAudioUnlock, setNeedsAudioUnlock] = useState(false);
   const [voiceSupported, setVoiceSupported] = useState(true);
 
@@ -215,27 +218,59 @@ const AssistantHub = () => {
     try {
       const agent = new VoiceAgent(
         (event) => {
-          // Handle transcripts
+          // Handle transcripts and state changes
           if (event.type === 'response.audio_transcript.delta') {
             setVoiceTranscript(prev => prev + (event.delta || ''));
+            setIsSpeaking(true);
+            setIsProcessing(false);
+            setIsListening(false);
           } else if (event.type === 'response.audio_transcript.done') {
-            // Could save transcript to messages
+            // Assistant finished speaking this segment
+          } else if (event.type === 'response.done') {
+            // Response complete, back to listening
+            setIsSpeaking(false);
+            setIsListening(true);
+            setVoiceTranscript("");
+          } else if (event.type === 'input_audio_buffer.speech_started') {
+            // User started speaking
+            setIsListening(true);
+            setIsProcessing(false);
+            setUserTranscript("");
+          } else if (event.type === 'input_audio_buffer.speech_stopped') {
+            // User stopped speaking, processing
+            setIsListening(false);
+            setIsProcessing(true);
           } else if (event.type === 'conversation.item.input_audio_transcription.completed') {
             // User's speech was transcribed
             console.log("User said:", event.transcript);
+            setUserTranscript(event.transcript || "");
+            setIsProcessing(true);
+          } else if (event.type === 'response.created') {
+            // AI is generating response
+            setIsProcessing(true);
+            setIsListening(false);
           }
         },
         (connected) => {
           setIsVoiceConnected(connected);
           setIsVoiceConnecting(false);
-          if (!connected) {
+          if (connected) {
+            setIsListening(true);
+          } else {
             setVoiceTranscript("");
+            setUserTranscript("");
+            setIsListening(false);
+            setIsProcessing(false);
           }
         },
         (speaking) => {
           setIsSpeaking(speaking);
-          if (!speaking) {
+          if (speaking) {
+            setIsListening(false);
+            setIsProcessing(false);
+          } else {
             setVoiceTranscript("");
+            setIsListening(true);
           }
         },
         (lead) => {
@@ -290,7 +325,10 @@ const AssistantHub = () => {
     setVoiceAgent(null);
     setIsVoiceConnected(false);
     setIsSpeaking(false);
+    setIsListening(false);
+    setIsProcessing(false);
     setVoiceTranscript("");
+    setUserTranscript("");
     setNeedsAudioUnlock(false);
   };
 
@@ -605,26 +643,94 @@ const AssistantHub = () => {
 
             {!needsAudioUnlock && (
               <>
-                {/* Visual Indicator */}
-                <div className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 ${
-                  isSpeaking 
-                    ? "bg-accent/20 ring-4 ring-accent/40 animate-pulse" 
-                    : isVoiceConnected 
-                      ? "bg-primary/10 ring-2 ring-primary/30" 
-                      : "bg-muted"
-                }`}>
-                  {isVoiceConnecting ? (
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                    </div>
-                  ) : isVoiceConnected ? (
-                    <Mic className={`h-10 w-10 ${isSpeaking ? "text-accent" : "text-primary"}`} />
-                  ) : (
-                    <MicOff className="h-10 w-10 text-muted-foreground" />
+                {/* Visual Indicator with State-Specific Animations */}
+                <div className="relative">
+                  {/* Outer ripple rings for listening state */}
+                  {isListening && isVoiceConnected && (
+                    <>
+                      <div className="absolute inset-0 w-24 h-24 rounded-full bg-green-500/20 animate-ping" style={{ animationDuration: '2s' }} />
+                      <div className="absolute inset-0 w-24 h-24 rounded-full bg-green-500/10 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }} />
+                    </>
                   )}
+                  
+                  {/* Processing pulse */}
+                  {isProcessing && (
+                    <div className="absolute inset-0 w-24 h-24 rounded-full bg-amber-500/30 animate-pulse" />
+                  )}
+                  
+                  {/* Speaking waves */}
+                  {isSpeaking && (
+                    <>
+                      <div className="absolute inset-0 w-24 h-24 rounded-full bg-accent/30 animate-pulse" style={{ animationDuration: '0.8s' }} />
+                      <div className="absolute inset-0 w-24 h-24 rounded-full ring-4 ring-accent/50 animate-ping" style={{ animationDuration: '1.5s' }} />
+                    </>
+                  )}
+                  
+                  {/* Main circle */}
+                  <div className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    isSpeaking 
+                      ? "bg-accent/30 ring-4 ring-accent" 
+                      : isProcessing
+                        ? "bg-amber-500/20 ring-4 ring-amber-500/60"
+                        : isListening
+                          ? "bg-green-500/20 ring-4 ring-green-500/60" 
+                          : isVoiceConnected 
+                            ? "bg-primary/10 ring-2 ring-primary/30" 
+                            : "bg-muted"
+                  }`}>
+                    {isVoiceConnecting ? (
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                      </div>
+                    ) : isSpeaking ? (
+                      /* Sound wave bars for speaking */
+                      <div className="flex items-center gap-1">
+                        <div className="w-1 bg-accent rounded-full animate-pulse" style={{ height: '24px', animationDuration: '0.4s' }} />
+                        <div className="w-1 bg-accent rounded-full animate-pulse" style={{ height: '32px', animationDuration: '0.3s', animationDelay: '0.1s' }} />
+                        <div className="w-1 bg-accent rounded-full animate-pulse" style={{ height: '20px', animationDuration: '0.5s', animationDelay: '0.05s' }} />
+                        <div className="w-1 bg-accent rounded-full animate-pulse" style={{ height: '28px', animationDuration: '0.35s', animationDelay: '0.15s' }} />
+                        <div className="w-1 bg-accent rounded-full animate-pulse" style={{ height: '16px', animationDuration: '0.45s', animationDelay: '0.2s' }} />
+                      </div>
+                    ) : isProcessing ? (
+                      /* Thinking dots */
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-bounce" style={{ animationDelay: "0ms", animationDuration: "0.6s" }} />
+                        <div className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-bounce" style={{ animationDelay: "150ms", animationDuration: "0.6s" }} />
+                        <div className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-bounce" style={{ animationDelay: "300ms", animationDuration: "0.6s" }} />
+                      </div>
+                    ) : isListening ? (
+                      <Mic className="h-10 w-10 text-green-600 animate-pulse" />
+                    ) : isVoiceConnected ? (
+                      <Mic className="h-10 w-10 text-primary" />
+                    ) : (
+                      <MicOff className="h-10 w-10 text-muted-foreground" />
+                    )}
+                  </div>
                 </div>
+
+                {/* Status Badge */}
+                {isVoiceConnected && (
+                  <div className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                    isSpeaking 
+                      ? "bg-accent/20 text-accent-foreground border border-accent"
+                      : isProcessing
+                        ? "bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/50"
+                        : isListening
+                          ? "bg-green-500/20 text-green-700 dark:text-green-300 border border-green-500/50"
+                          : "bg-muted text-muted-foreground"
+                  }`}>
+                    {isSpeaking 
+                      ? "🔊 Speaking..."
+                      : isProcessing
+                        ? "💭 Thinking..."
+                        : isListening
+                          ? "🎤 Listening..."
+                          : "Ready"
+                    }
+                  </div>
+                )}
 
                 {/* Status Text */}
                 <p className="text-sm text-muted-foreground text-center">
@@ -632,17 +738,32 @@ const AssistantHub = () => {
                     ? "Connecting to voice assistant..."
                     : isVoiceConnected 
                       ? isSpeaking 
-                        ? "Assistant is speaking..." 
-                        : "Speak now—I'm listening"
+                        ? "Assistant is responding" 
+                        : isProcessing
+                          ? "Processing your message..."
+                          : "Speak now—I'm listening"
                       : "Voice disconnected"
                   }
                 </p>
 
-                {/* Transcript Preview */}
+                {/* User Transcript Preview */}
+                {userTranscript && !isSpeaking && (
+                  <div className="w-full">
+                    <p className="text-xs text-muted-foreground mb-1">You said:</p>
+                    <p className="text-sm text-foreground bg-primary/10 rounded-lg p-2 border border-primary/20">
+                      {userTranscript}
+                    </p>
+                  </div>
+                )}
+
+                {/* Assistant Transcript Preview */}
                 {voiceTranscript && (
-                  <p className="text-xs text-foreground bg-muted rounded-lg p-2 max-h-20 overflow-y-auto w-full">
-                    {voiceTranscript}
-                  </p>
+                  <div className="w-full">
+                    <p className="text-xs text-muted-foreground mb-1">Assistant:</p>
+                    <p className="text-sm text-foreground bg-muted rounded-lg p-2 max-h-24 overflow-y-auto">
+                      {voiceTranscript}
+                    </p>
+                  </div>
                 )}
 
                 {/* Action Button */}
