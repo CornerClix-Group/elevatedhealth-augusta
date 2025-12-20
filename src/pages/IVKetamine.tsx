@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { Link } from "react-router-dom";
+import NotReadyToBook from "@/components/NotReadyToBook";
 
 const IVKetamine = () => {
   const safetyItems = [
@@ -136,6 +137,15 @@ const IVKetamine = () => {
                   </CardContent>
                 </Card>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Have Questions? Section */}
+        <section className="section-spacing-sm bg-background">
+          <div className="container mx-auto px-6 lg:px-8">
+            <div className="max-w-2xl mx-auto">
+              <NotReadyToBook variant="compact" />
             </div>
           </div>
         </section>

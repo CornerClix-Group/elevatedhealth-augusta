@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import NotReadyToBook from "@/components/NotReadyToBook";
 
 const HormoneReplacement = () => {
   const scrollToBooking = () => {
@@ -61,6 +62,15 @@ const HormoneReplacement = () => {
                   </ul>
                 </CardContent>
               </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Have Questions? Section */}
+        <section className="section-spacing-sm bg-background">
+          <div className="container mx-auto px-6 lg:px-8">
+            <div className="max-w-2xl mx-auto">
+              <NotReadyToBook variant="compact" />
             </div>
           </div>
         </section>

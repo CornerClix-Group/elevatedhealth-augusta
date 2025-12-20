@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import ConsultationModal from "@/components/ConsultationModal";
 import AssistantHub from "@/components/AssistantHub";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import NotReadyToBook from "@/components/NotReadyToBook";
 
 // Custom elegant line icons in gold
 const NeuralGrowthIcon = ({ className }: { className?: string }) => (
@@ -310,6 +311,15 @@ const PeptideTherapy = () => {
                 <p className="text-lg md:text-xl font-cormorant text-foreground leading-relaxed">
                   At Elevated Health, safety is our north star. We strictly utilize <span className="text-gold font-semibold">FDA-compliant, pharmacy-compounded peptides</span> sourced from licensed US facilities. We do not use research-grade or gray-market substances.
                 </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Have Questions? Section */}
+          <section className="section-spacing-sm bg-background">
+            <div className="container mx-auto px-6 lg:px-8">
+              <div className="max-w-2xl mx-auto">
+                <NotReadyToBook variant="compact" />
               </div>
             </div>
           </section>
