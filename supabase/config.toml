@@ -164,3 +164,6 @@ verify_jwt = false
 
 [functions.send-to-gohighlevel]
 verify_jwt = false
+
+[functions.send-consultation-booking-reminder]
+verify_jwt = false
