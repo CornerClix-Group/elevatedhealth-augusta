@@ -124,7 +124,7 @@ const WhyUsCompare = ({ onOpenBooking }: WhyUsCompareProps) => {
                 size="lg"
                 className="font-lato"
               >
-                Request Access
+                Schedule Discovery Call
               </Button>
               <Button 
                 onClick={handleLearnMore}

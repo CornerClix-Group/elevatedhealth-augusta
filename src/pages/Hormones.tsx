@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { CreditCodeInput } from "@/components/CreditCodeInput";
+import NotReadyToBook from "@/components/NotReadyToBook";
 
 const Hormones = () => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -164,7 +165,7 @@ const Hormones = () => {
                 className="animate-fade-in bg-gold border-gold text-white hover:bg-gold-dark"
                 style={{ animationDelay: "0.3s" }}
               >
-                Request Access
+                Book $99 Consultation
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -210,6 +211,15 @@ const Hormones = () => {
                     ))}
                   </div>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Have Questions? Section */}
+          <section className="section-spacing-sm bg-background">
+            <div className="container mx-auto px-6 lg:px-8">
+              <div className="max-w-2xl mx-auto">
+                <NotReadyToBook variant="b" />
               </div>
             </div>
           </section>

@@ -9,6 +9,7 @@ import ConsultationModal from "@/components/ConsultationModal";
 import AssistantHub from "@/components/AssistantHub";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { Check, Shield, Clock, Package, Heart } from "lucide-react";
+import NotReadyToBook from "@/components/NotReadyToBook";
 
 // Custom Vitality Icon
 const VitalityIcon = ({ className }: { className?: string }) => (
@@ -186,6 +187,15 @@ const SexualWellness = () => {
                     </p>
                   </div>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Have Questions? Section */}
+          <section className="section-spacing-sm bg-secondary/30">
+            <div className="container mx-auto px-6 lg:px-8">
+              <div className="max-w-2xl mx-auto">
+                <NotReadyToBook variant="compact" />
               </div>
             </div>
           </section>

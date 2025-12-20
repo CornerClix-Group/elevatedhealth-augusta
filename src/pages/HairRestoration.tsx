@@ -9,6 +9,7 @@ import ConsultationModal from "@/components/ConsultationModal";
 import AssistantHub from "@/components/AssistantHub";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { Check, Sparkles, Shield, Zap, Users } from "lucide-react";
+import NotReadyToBook from "@/components/NotReadyToBook";
 
 // Custom Hair/Follicle Icons
 const FollicleIcon = ({ className }: { className?: string }) => (
@@ -247,6 +248,15 @@ const HairRestoration = () => {
                     </div>
                   </div>
                 </Card>
+              </div>
+            </div>
+          </section>
+
+          {/* Have Questions? Section */}
+          <section className="section-spacing-sm bg-background">
+            <div className="container mx-auto px-6 lg:px-8">
+              <div className="max-w-2xl mx-auto">
+                <NotReadyToBook variant="compact" />
               </div>
             </div>
           </section>

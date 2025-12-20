@@ -16,6 +16,7 @@ import { CreditCodeInput } from "@/components/CreditCodeInput";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import NotReadyToBook from "@/components/NotReadyToBook";
 
 const WeightLoss = () => {
   const [isConsultationLoading, setIsConsultationLoading] = useState(false);
@@ -354,6 +355,15 @@ const WeightLoss = () => {
                     <span>Hormone Blocker Analysis</span>
                   </div>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Have Questions? Section */}
+          <section className="section-spacing-sm bg-secondary/30">
+            <div className="container mx-auto px-6 lg:px-8">
+              <div className="max-w-2xl mx-auto">
+                <NotReadyToBook variant="b" />
               </div>
             </div>
           </section>

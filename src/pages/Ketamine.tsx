@@ -9,6 +9,7 @@ import { Helmet } from "react-helmet";
 import { useState } from "react";
 import ConsultationModal from "@/components/ConsultationModal";
 import AssistantHub from "@/components/AssistantHub";
+import NotReadyToBook from "@/components/NotReadyToBook";
 
 const Ketamine = () => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -88,7 +89,7 @@ const Ketamine = () => {
               className="animate-fade-in bg-gold border-gold text-white hover:bg-gold-dark"
               style={{ animationDelay: "0.3s" }}
             >
-              Request Access
+              Book $99 Consultation
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
@@ -220,6 +221,15 @@ const Ketamine = () => {
             </div>
           </div>
         </section>
+
+          {/* Have Questions? Section */}
+          <section className="section-spacing-sm bg-background">
+            <div className="container mx-auto px-6 lg:px-8">
+              <div className="max-w-2xl mx-auto">
+                <NotReadyToBook variant="b" />
+              </div>
+            </div>
+          </section>
 
           {/* Your Path to Healing - Vertical Stepper */}
           <section className="section-spacing bg-secondary/30">
@@ -430,7 +440,7 @@ const Ketamine = () => {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
                 <p className="mt-6 text-sm text-primary-foreground/60 font-light">
-                  Request access to receive your secure patient portal invitation.
+                  Have questions first? Call us at (762) 333-3018 or use our chat.
                 </p>
               </div>
             </div>

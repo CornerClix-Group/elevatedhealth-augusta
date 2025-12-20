@@ -24,6 +24,7 @@ import {
 import BoosterInfoCard from "@/components/BoosterInfoCard";
 import BoosterModal from "@/components/BoosterModal";
 import { useIsMobile } from "@/hooks/use-mobile";
+import NotReadyToBook from "@/components/NotReadyToBook";
 
 interface IVTherapy {
   id: string;
@@ -375,6 +376,15 @@ const IVLounge = () => {
                 ))}
               </div>
             )}
+          </div>
+        </section>
+
+        {/* Have Questions? Section */}
+        <section className="section-spacing-sm bg-background">
+          <div className="container mx-auto px-6 lg:px-8">
+            <div className="max-w-2xl mx-auto">
+              <NotReadyToBook variant="compact" />
+            </div>
           </div>
         </section>
 
