@@ -28,6 +28,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [isProvider, setIsProvider] = useState(false);
 
   const getInitials = (name: string) => {
     return name
@@ -45,18 +46,35 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
           setIsLoggedIn(true);
-          // Try to get patient name and avatar
-          const { data: patient } = await supabase
-            .from("patients")
-            .select("full_name, avatar_url")
-            .eq("user_id", session.user.id)
-            .maybeSingle();
-          setUserName(patient?.full_name || null);
-          setUserAvatar(patient?.avatar_url || null);
+          
+          // Check if user is a provider (admin or staff)
+          const { data: roles } = await supabase
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", session.user.id);
+          
+          const hasProviderRole = roles?.some(r => r.role === "admin" || r.role === "staff" || r.role === "business_admin");
+          setIsProvider(hasProviderRole || false);
+          
+          // Try to get patient name and avatar (only if not a provider)
+          if (!hasProviderRole) {
+            const { data: patient } = await supabase
+              .from("patients")
+              .select("full_name, avatar_url")
+              .eq("user_id", session.user.id)
+              .maybeSingle();
+            setUserName(patient?.full_name || null);
+            setUserAvatar(patient?.avatar_url || null);
+          } else {
+            // For providers, use email as display name
+            setUserName(session.user.email?.split("@")[0] || "Provider");
+            setUserAvatar(null);
+          }
         } else {
           setIsLoggedIn(false);
           setUserName(null);
           setUserAvatar(null);
+          setIsProvider(false);
         }
       } finally {
         setIsCheckingAuth(false);
@@ -70,6 +88,7 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
         setIsLoggedIn(false);
         setUserName(null);
         setUserAvatar(null);
+        setIsProvider(false);
         return;
       }
       
@@ -77,18 +96,33 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
         setIsLoggedIn(true);
         // Defer Supabase call to avoid deadlock
         setTimeout(async () => {
-          const { data: patient } = await supabase
-            .from("patients")
-            .select("full_name, avatar_url")
-            .eq("user_id", session.user.id)
-            .maybeSingle();
-          setUserName(patient?.full_name || null);
-          setUserAvatar(patient?.avatar_url || null);
+          // Check if user is a provider
+          const { data: roles } = await supabase
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", session.user.id);
+          
+          const hasProviderRole = roles?.some(r => r.role === "admin" || r.role === "staff" || r.role === "business_admin");
+          setIsProvider(hasProviderRole || false);
+          
+          if (!hasProviderRole) {
+            const { data: patient } = await supabase
+              .from("patients")
+              .select("full_name, avatar_url")
+              .eq("user_id", session.user.id)
+              .maybeSingle();
+            setUserName(patient?.full_name || null);
+            setUserAvatar(patient?.avatar_url || null);
+          } else {
+            setUserName(session.user.email?.split("@")[0] || "Provider");
+            setUserAvatar(null);
+          }
         }, 0);
       } else {
         setIsLoggedIn(false);
         setUserName(null);
         setUserAvatar(null);
+        setIsProvider(false);
       }
     });
 
@@ -308,22 +342,37 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                   align="end" 
                   className="w-48 bg-white border border-border shadow-lg z-[100]"
                 >
-                  <DropdownMenuItem 
-                    onClick={() => navigate("/patient/dashboard")}
-                    className="cursor-pointer gap-2"
-                    style={{ color: '#2C3E50' }}
-                  >
-                    <LayoutDashboard className="w-4 h-4" />
-                    My Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => navigate("/patient/intake")}
-                    className="cursor-pointer gap-2"
-                    style={{ color: '#2C3E50' }}
-                  >
-                    <ClipboardList className="w-4 h-4" />
-                    Symptom Check-In
-                  </DropdownMenuItem>
+                  {isProvider ? (
+                    <>
+                      <DropdownMenuItem 
+                        onClick={() => navigate("/provider/dashboard")}
+                        className="cursor-pointer gap-2"
+                        style={{ color: '#2C3E50' }}
+                      >
+                        <LayoutDashboard className="w-4 h-4" />
+                        Provider Dashboard
+                      </DropdownMenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <DropdownMenuItem 
+                        onClick={() => navigate("/patient/dashboard")}
+                        className="cursor-pointer gap-2"
+                        style={{ color: '#2C3E50' }}
+                      >
+                        <LayoutDashboard className="w-4 h-4" />
+                        My Dashboard
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => navigate("/patient/intake")}
+                        className="cursor-pointer gap-2"
+                        style={{ color: '#2C3E50' }}
+                      >
+                        <ClipboardList className="w-4 h-4" />
+                        Symptom Check-In
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     onClick={handleLogout}
@@ -492,44 +541,73 @@ const Navbar = ({ onOpenBooking }: NavbarProps) => {
                   Loading...
                 </Button>
               ) : isLoggedIn ? (
-                <>
-                  <Button 
-                    variant="outline"
-                    className="w-full font-lato text-sm tracking-wide py-6 gap-2 bg-white border-gray-400"
-                    style={{ color: '#2C3E50' }}
-                    onClick={() => {
-                      navigate("/patient/dashboard");
-                      setIsMobileMenuOpen(false);
-                    }}
-                  >
-                    <LayoutDashboard className="w-4 h-4" />
-                    My Dashboard
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    className="w-full font-lato text-sm tracking-wide py-6 gap-2 bg-white border-gray-300"
-                    style={{ color: '#475569' }}
-                    onClick={() => {
-                      navigate("/patient/intake");
-                      setIsMobileMenuOpen(false);
-                    }}
-                  >
-                    <ClipboardList className="w-4 h-4" />
-                    Symptom Check-In
-                  </Button>
-                  <Button 
-                    variant="ghost"
-                    className="w-full font-lato text-sm tracking-wide py-6 gap-2"
-                    style={{ color: '#dc2626' }}
-                    onClick={() => {
-                      handleLogout();
-                      setIsMobileMenuOpen(false);
-                    }}
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Logout
-                  </Button>
-                </>
+                isProvider ? (
+                  <>
+                    <Button 
+                      variant="outline"
+                      className="w-full font-lato text-sm tracking-wide py-6 gap-2 bg-white border-gray-400"
+                      style={{ color: '#2C3E50' }}
+                      onClick={() => {
+                        navigate("/provider/dashboard");
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      Provider Dashboard
+                    </Button>
+                    <Button 
+                      variant="ghost"
+                      className="w-full font-lato text-sm tracking-wide py-6 gap-2"
+                      style={{ color: '#dc2626' }}
+                      onClick={() => {
+                        handleLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button 
+                      variant="outline"
+                      className="w-full font-lato text-sm tracking-wide py-6 gap-2 bg-white border-gray-400"
+                      style={{ color: '#2C3E50' }}
+                      onClick={() => {
+                        navigate("/patient/dashboard");
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      My Dashboard
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      className="w-full font-lato text-sm tracking-wide py-6 gap-2 bg-white border-gray-300"
+                      style={{ color: '#475569' }}
+                      onClick={() => {
+                        navigate("/patient/intake");
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <ClipboardList className="w-4 h-4" />
+                      Symptom Check-In
+                    </Button>
+                    <Button 
+                      variant="ghost"
+                      className="w-full font-lato text-sm tracking-wide py-6 gap-2"
+                      style={{ color: '#dc2626' }}
+                      onClick={() => {
+                        handleLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Logout
+                    </Button>
+                  </>
+                )
               ) : null}
               
               <p className="mt-6 text-sm font-lato text-center" style={{ color: '#64748b' }}>

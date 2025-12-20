@@ -94,7 +94,7 @@ const OfficeManagerDashboard = () => {
       const hasAccess = roles?.some(r => r.role === "admin" || r.role === "staff");
       if (!hasAccess) {
         toast.error("Access denied");
-        navigate("/");
+        navigate("/admin/login");
         return;
       }
 

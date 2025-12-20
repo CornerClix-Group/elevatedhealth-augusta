@@ -75,7 +75,7 @@ const BusinessDashboard = () => {
       );
       if (!hasAccess) {
         toast.error("Access denied - Business Admin role required");
-        navigate("/");
+        navigate("/admin/login");
         return;
       }
 
