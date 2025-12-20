@@ -6,8 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2, Settings, Building2, User, Save, ArrowLeft, Lock, Eye, EyeOff } from "lucide-react";
+import { Loader2, Settings, Building2, Save, ArrowLeft, Lock, Eye, EyeOff } from "lucide-react";
 import AdminNavbar from "@/components/admin/AdminNavbar";
+import ProviderNPIManager from "@/components/provider/ProviderNPIManager";
 
 interface ClinicSetting {
   key: string;
@@ -28,7 +29,6 @@ const ClinicSettings = () => {
   const [settings, setSettings] = useState<Record<string, string>>({
     clinic_legal_name: "",
     clinic_tax_id: "",
-    provider_npi: "",
     clinic_address: "",
     clinic_phone: "",
   });
@@ -246,32 +246,8 @@ const ClinicSettings = () => {
             </CardContent>
           </Card>
 
-          {/* Provider Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="w-5 h-5" />
-                Provider Information
-              </CardTitle>
-              <CardDescription>
-                Provider credentials for superbills and insurance claims
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="provider_npi">Provider NPI Number</Label>
-                <Input
-                  id="provider_npi"
-                  value={settings.provider_npi}
-                  onChange={(e) => updateSetting("provider_npi", e.target.value)}
-                  placeholder="e.g., 1578971552"
-                />
-                <p className="text-xs text-muted-foreground">
-                  National Provider Identifier - required for insurance claims
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Provider NPI Management */}
+          <ProviderNPIManager />
 
           {/* Save Button */}
           <div className="flex justify-end">
