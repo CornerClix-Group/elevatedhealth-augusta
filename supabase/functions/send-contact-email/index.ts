@@ -1,8 +1,11 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const PAUBOX_SMTP_PASSWORD = Deno.env.get("PAUBOX_SMTP_PASSWORD");
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,7 +13,7 @@ const corsHeaders = {
 };
 
 // Rate limiting: 5 requests per IP per 15 minutes
-const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
@@ -18,7 +21,6 @@ const checkRateLimit = (identifier: string): { allowed: boolean; retryAfter?: nu
   const now = Date.now();
   const record = rateLimitMap.get(identifier);
   
-  // Clean up expired entries periodically
   if (rateLimitMap.size > 1000) {
     for (const [key, value] of rateLimitMap.entries()) {
       if (now > value.resetTime) {
@@ -28,7 +30,6 @@ const checkRateLimit = (identifier: string): { allowed: boolean; retryAfter?: nu
   }
   
   if (!record || now > record.resetTime) {
-    // First request or window expired - reset
     rateLimitMap.set(identifier, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
     return { allowed: true };
   }
@@ -38,12 +39,10 @@ const checkRateLimit = (identifier: string): { allowed: boolean; retryAfter?: nu
     return { allowed: false, retryAfter };
   }
   
-  // Increment count
   record.count++;
   return { allowed: true };
 };
 
-// HTML escape function to prevent XSS in emails
 const escapeHtml = (str: string): string => str
   .replace(/&/g, '&amp;')
   .replace(/</g, '&lt;')
@@ -51,7 +50,6 @@ const escapeHtml = (str: string): string => str
   .replace(/"/g, '&quot;')
   .replace(/'/g, '&#039;');
 
-// Validation schema matching frontend
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
   email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
@@ -60,12 +58,10 @@ const contactSchema = z.object({
 });
 
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Rate limiting by IP address
   const clientIP = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || 
                    req.headers.get("cf-connecting-ip") || 
                    req.headers.get("x-real-ip") || 
@@ -97,8 +93,33 @@ const handler = async (req: Request): Promise<Response> => {
     const requestData = await req.json();
     console.log("Received data for:", requestData.name);
 
-    // Validate input with zod
     const validatedData = contactSchema.parse(requestData);
+    
+    // Create Supabase client with service role key to bypass RLS
+    const supabaseAdmin = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
+    
+    // Insert lead into database using service role (bypasses RLS)
+    console.log("Inserting lead into chat_leads table...");
+    const { data: insertData, error: insertError } = await supabaseAdmin
+      .from("chat_leads")
+      .insert({
+        name: validatedData.name,
+        email: validatedData.email,
+        phone: validatedData.phone,
+        chat_summary: validatedData.message,
+        interest: "contact_form",
+        source: "website_contact",
+        status: "new"
+      })
+      .select()
+      .single();
+
+    if (insertError) {
+      console.error("Database insert failed:", insertError);
+      throw new Error(`Failed to save lead: ${insertError.message}`);
+    }
+    
+    console.log("Lead saved successfully with ID:", insertData?.id);
     
     const timestamp = new Date().toLocaleString('en-US', { 
       timeZone: 'America/New_York',
@@ -106,7 +127,7 @@ const handler = async (req: Request): Promise<Response> => {
       timeStyle: 'long'
     });
 
-    // Send email via Paubox HIPAA-compliant SMTP (port 465 with implicit TLS)
+    // Send email via Paubox HIPAA-compliant SMTP
     const client = new SMTPClient({
       connection: {
         hostname: "smtp.paubox.com",
@@ -194,7 +215,8 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(
       JSON.stringify({ 
         success: true,
-        message: "Contact form submitted successfully"
+        message: "Contact form submitted successfully",
+        leadId: insertData?.id
       }), 
       {
         status: 200,
@@ -222,7 +244,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     return new Response(
       JSON.stringify({ 
-        error: "Failed to send email",
+        error: "Failed to process contact form",
         message: error.message || "Unknown error occurred"
       }),
       {
