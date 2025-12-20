@@ -219,7 +219,12 @@ const Hormones = () => {
           <section className="section-spacing-sm bg-background">
             <div className="container mx-auto px-6 lg:px-8">
               <div className="max-w-2xl mx-auto">
-                <NotReadyToBook variant="b" />
+                <NotReadyToBook 
+                  variant="b" 
+                  title="Not sure if hormone therapy is right for you?"
+                  description="Hormone imbalance symptoms can be confusing. Our team can explain the testing process, discuss what your symptoms might indicate, and answer questions about treatment options—no commitment required."
+                  ctaText="Discuss Your Symptoms"
+                />
               </div>
             </div>
           </section>

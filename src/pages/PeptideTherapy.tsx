@@ -319,7 +319,12 @@ const PeptideTherapy = () => {
           <section className="section-spacing-sm bg-background">
             <div className="container mx-auto px-6 lg:px-8">
               <div className="max-w-2xl mx-auto">
-                <NotReadyToBook variant="compact" />
+                <NotReadyToBook 
+                  variant="compact" 
+                  title="New to peptides? We can explain."
+                  description="Peptide therapy is cutting-edge—and we know it can feel complex. Ask about specific protocols, safety, or which peptides match your goals."
+                  ctaText="Ask About Peptides: (706) 760-3470"
+                />
               </div>
             </div>
           </section>
