@@ -21,16 +21,16 @@ const KIT_OPTIONS = [
   {
     id: "hormone",
     name: "Hormone Mapping Kit",
-    fullPrice: 299,
-    creditPrice: 200, // After $99 credit
-    description: "Saliva Profile III - For hormone optimization patients",
+    fullPrice: 349,
+    creditPrice: 250, // After $99 credit
+    description: "ZRT Saliva+Blood Panel - For hormone optimization patients",
   },
   {
     id: "metabolic",
     name: "Metabolic Mapping Kit", 
-    fullPrice: 399,
-    creditPrice: 300, // After $99 credit
-    description: "Weight Management Panel - For weight loss patients",
+    fullPrice: 349,
+    creditPrice: 250, // After $99 credit
+    description: "ZRT Saliva+Blood Panel - For weight loss patients",
   },
 ];
 

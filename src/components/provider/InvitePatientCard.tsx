@@ -73,7 +73,7 @@ const InvitePatientCard = ({ onInviteSent }: InvitePatientCardProps) => {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-xs text-muted-foreground">
-          Send a welcome email with the $299 Hormone Mapping payment link. After payment, 
+          Send a welcome email with the $349 Hormone Mapping payment link. After payment, 
           they'll be prompted to create their account.
         </p>
 
@@ -127,7 +127,7 @@ const InvitePatientCard = ({ onInviteSent }: InvitePatientCardProps) => {
           ) : (
             <>
               <Mail className="w-4 h-4 mr-2" />
-              Send $299 Payment Invite
+              Send $349 Payment Invite
             </>
           )}
         </Button>

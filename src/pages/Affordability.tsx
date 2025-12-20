@@ -184,11 +184,11 @@ const Affordability = () => {
                     </li>
                     <li className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                      <span>Reduces Hormone Mapping to $200</span>
+                      <span>Reduces Hormone Mapping to $250</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                      <span>Reduces Metabolic Mapping to $300</span>
+                      <span>Reduces Metabolic Mapping to $250</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
