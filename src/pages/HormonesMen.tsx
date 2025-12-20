@@ -38,15 +38,13 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import AssistantHub from "@/components/AssistantHub";
-import { CreditCodeInput } from "@/components/CreditCodeInput";
+
 
 const HormonesMen = () => {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [isMembershipLoading, setIsMembershipLoading] = useState(false);
   const [isConsultationLoading, setIsConsultationLoading] = useState(false);
-  const [creditCode, setCreditCode] = useState("");
-  const [creditApplied, setCreditApplied] = useState(false);
 
   const scrollToBooking = () => {
     const bookingSection = document.getElementById('booking-section');
@@ -77,42 +75,6 @@ const HormonesMen = () => {
     }
   };
 
-  const handleCheckout = async () => {
-    setIsCheckoutLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-hormone-checkout", {
-        body: { 
-          mappingType: "hormone",
-          creditCode: creditCode || undefined
-        }
-      });
-      
-      if (error) throw error;
-      
-      if (data?.url) {
-        window.open(data.url, "_blank");
-      } else {
-        throw new Error("No checkout URL returned");
-      }
-    } catch (err) {
-      console.error("Checkout error:", err);
-      toast.error("Failed to start checkout. Please try again or call us.");
-    } finally {
-      setIsCheckoutLoading(false);
-    }
-  };
-
-  const handleApplyCreditCode = () => {
-    if (creditCode && creditCode.length >= 5) {
-      setCreditApplied(true);
-      toast.success("Credit code applied! You'll save $99 at checkout.");
-    }
-  };
-
-  const handleClearCreditCode = () => {
-    setCreditCode("");
-    setCreditApplied(false);
-  };
 
   const handleMembershipCheckout = async () => {
     setIsMembershipLoading(true);
@@ -601,14 +563,17 @@ const HormonesMen = () => {
                     <CardContent className="p-8">
                       <div className="text-5xl font-bold text-primary/20 mb-4">02</div>
                       <h3 className="text-xl font-bold mb-2">The Hormone Mapping Experience</h3>
-                      <div className="text-3xl font-bold text-primary mb-4">$299</div>
+                      <div className="text-3xl font-bold text-primary mb-4">$349</div>
+                      <p className="text-xs text-green-600 font-medium mb-4">
+                        → $250 after $99 consultation credit
+                      </p>
                       <p className="text-sm text-muted-foreground mb-4">
                         This comprehensive diagnostic phase includes:
                       </p>
                       <ul className="text-sm text-muted-foreground space-y-2 mb-6">
                         <li className="flex items-start gap-2">
                           <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                          Comprehensive Lab Panel (Total/Free T, Estradiol, PSA, CBC)
+                          ZRT Saliva+Blood Comprehensive Hormone Panel
                         </li>
                         <li className="flex items-start gap-2">
                           <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
@@ -622,25 +587,18 @@ const HormonesMen = () => {
                       <p className="text-xs text-muted-foreground italic mb-4">
                         This fee covers your diagnostics and provider time. There is no obligation to proceed with treatment.
                       </p>
-                      <CreditCodeInput
-                        value={creditCode}
-                        onChange={setCreditCode}
-                        isApplied={creditApplied}
-                        onApply={handleApplyCreditCode}
-                        onClear={handleClearCreditCode}
-                        className="mb-3"
-                      />
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+                        <p className="text-xs text-amber-800 font-medium text-center">
+                          ⬆️ Complete Step 1 first to unlock Hormone Mapping
+                        </p>
+                      </div>
                       <Button 
-                        onClick={handleCheckout}
-                        disabled={isCheckoutLoading}
-                        className="w-full bg-primary hover:bg-primary-light text-primary-foreground"
+                        variant="outline"
+                        disabled
+                        className="w-full border-primary/50 text-muted-foreground"
                       >
-                        {isCheckoutLoading ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                          <CreditCard className="mr-2 h-4 w-4" />
-                        )}
-                        {isCheckoutLoading ? "Processing..." : creditApplied ? "Get Started - $200" : "Get Started - $299"}
+                        <CreditCard className="mr-2 h-4 w-4" />
+                        Book Consultation First
                       </Button>
                     </CardContent>
                   </Card>
