@@ -104,7 +104,7 @@ const SexualWellness = () => {
     <>
       <Helmet>
         <title>Sexual Wellness for Men Augusta | Tadalafil, Sildenafil - Elevated Health</title>
-        <meta name="description" content="Discreet sexual wellness treatments for men in Augusta, GA. Prescription Tadalafil (Cialis) and Sildenafil (Viagra) with telehealth consultations and private delivery." />
+        <meta name="description" content="Discreet sexual wellness for men in Augusta, GA. $99 private consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Tadalafil and Sildenafil prescriptions." />
         <meta name="keywords" content="sexual wellness Augusta, ED treatment Augusta GA, Tadalafil Augusta, Sildenafil Augusta, mens health clinic Georgia, erectile dysfunction treatment" />
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>

@@ -27,7 +27,7 @@ const HowKetamineWorks = () => {
         <title>How Ketamine Works | Elevated Health Augusta</title>
         <meta 
           name="description" 
-          content="See how ketamine rapidly resets brain pathways for depression, PTSD, and anxiety. Evidence-based explainers backed by Yale research." 
+          content="How ketamine works for depression, PTSD, and anxiety. $99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Evidence-based explainers backed by Yale research." 
         />
         <meta property="og:title" content="How Ketamine Works | Elevated Health Augusta" />
         <meta property="og:description" content="Evidence-based ketamine therapy explained with medical illustrations and research-backed data." />

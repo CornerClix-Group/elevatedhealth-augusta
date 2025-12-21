@@ -244,7 +244,7 @@ const HormonesWomen = () => {
     <>
       <Helmet>
         <title>Women's Hormone Therapy Augusta | Menopause Treatment GA - Elevated Health</title>
-        <meta name="description" content="Women's bioidentical hormone replacement therapy in Augusta, GA. Expert treatment for menopause, perimenopause, hot flashes, and hormone imbalance. Board-certified care starting at $149/month." />
+        <meta name="description" content="Women's hormone therapy in Augusta, GA. $99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Menopause and perimenopause care starting at $149/month." />
         <meta name="keywords" content="women's hormone therapy Augusta, menopause treatment Augusta, perimenopause treatment GA, estrogen progesterone balance, female hormone testing Augusta, BHRT for women" />
         <script type="application/ld+json">
           {JSON.stringify(schema)}

@@ -222,7 +222,7 @@ const WeightLoss = () => {
     <>
       <Helmet>
         <title>Metabolic Optimization Program - Weight Loss Augusta | Elevated Health</title>
-        <meta name="description" content="Repair your metabolism at the cellular level. GLP-1 therapy + ZRT hormone testing + metabolic analysis. Augusta's only comprehensive metabolic program." />
+        <meta name="description" content="Medical weight loss in Augusta, GA. $99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. GLP-1 therapy + ZRT hormone testing + metabolic analysis." />
         <meta name="keywords" content="metabolic optimization Augusta, semaglutide Augusta GA, tirzepatide Augusta, GLP-1 Augusta, weight loss clinic Georgia, ZRT testing Augusta, metabolic labs" />
       </Helmet>
 

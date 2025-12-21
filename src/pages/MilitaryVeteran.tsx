@@ -99,7 +99,7 @@ Thank you for considering my request.`;
         <title>Veteran Mental Health Augusta | TRICARE & VA Ketamine Therapy | Elevated Health</title>
         <meta 
           name="description" 
-          content="Ketamine therapy for Veterans in Augusta, GA. TRICARE and VA Community Care accepted. Free benefits verification. PTSD and depression treatment for military members." 
+          content="Ketamine therapy for Veterans in Augusta, GA. $99 consultation with free benefits verification. Chat with our Virtual Care Team 24/7. TRICARE and VA Community Care accepted." 
         />
         <meta 
           name="keywords" 

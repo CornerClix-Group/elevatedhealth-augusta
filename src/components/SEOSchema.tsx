@@ -7,7 +7,7 @@ const SEOSchema = () => {
     "@type": "MedicalClinic",
     "name": SITE_CONFIG.clinicName,
     "image": "https://elevatedhealthaugusta.com/og-image.jpg",
-    "description": "Ketamine therapy, medical weight loss, and hormone replacement therapy in Augusta, GA. Evidence-based treatment for depression, PTSD, anxiety with BCBS, TRICARE, and VA insurance accepted.",
+    "description": "Ketamine therapy, medical weight loss, and hormone replacement therapy in Augusta, GA. $99 medical consultation credited toward treatment. Chat with our Virtual Care Team 24/7. BCBS, TRICARE, VA accepted.",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": SITE_CONFIG.address.line1,

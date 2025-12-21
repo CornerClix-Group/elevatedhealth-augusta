@@ -257,7 +257,7 @@ const PeptideTherapy = () => {
     <>
       <Helmet>
         <title>Peptide Therapy Augusta | Sermorelin, NAD+, PT-141, Oxytocin, GHK-Cu - Elevated Health</title>
-        <meta name="description" content="Advanced peptide therapy protocols in Augusta, GA. FDA-compliant Sermorelin, NAD+, PT-141, Oxytocin, GHK-Cu, and metabolic peptides for cellular optimization and longevity." />
+        <meta name="description" content="Peptide therapy in Augusta, GA. $99 strategy session credited toward treatment. Chat with our Virtual Care Team 24/7. Sermorelin, NAD+, PT-141, Oxytocin, GHK-Cu protocols." />
         <meta name="keywords" content="peptide therapy Augusta, Sermorelin Augusta GA, NAD+ therapy Augusta, PT-141 Augusta, Oxytocin therapy, GHK-Cu peptide, 5-Amino-1MQ, anti-aging peptides Georgia" />
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>
