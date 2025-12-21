@@ -24,6 +24,7 @@ import HairRestoration from "./pages/HairRestoration";
 import SexualWellness from "./pages/SexualWellness";
 import IVLounge from "./pages/IVLounge";
 import Pricing from "./pages/Pricing";
+import PricingComparison from "./pages/PricingComparison";
 import WhatToExpect from "./pages/WhatToExpect";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import HipaaNotice from "./pages/HipaaNotice";
@@ -93,6 +94,7 @@ const App = () => (
           <Route path="/sexual-wellness" element={<SexualWellness />} />
           <Route path="/iv-lounge" element={<IVLounge />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/pricing-comparison" element={<PricingComparison />} />
           <Route path="/affordability" element={<Affordability />} />
           <Route path="/what-to-expect" element={<WhatToExpect />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

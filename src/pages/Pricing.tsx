@@ -313,7 +313,7 @@ const Pricing = () => {
             </div>
 
             {/* Category Pills */}
-            <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+            <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-6">
               {serviceCategories.map((cat) => (
                 <button
                   key={cat.id}
@@ -328,6 +328,15 @@ const Pricing = () => {
                 </button>
               ))}
             </div>
+
+            {/* Pricing Comparison CTA */}
+            <Link 
+              to="/pricing-comparison" 
+              className="inline-flex items-center gap-2 text-sm text-gold hover:text-gold/80 transition-colors"
+            >
+              <span>Compare Membership vs. À La Carte Pricing</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </section>
 

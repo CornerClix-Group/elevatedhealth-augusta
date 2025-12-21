@@ -29,6 +29,7 @@ import HormoneAddonSelector from "@/components/provider/HormoneAddonSelector";
 import PeptideAddonSelector from "@/components/provider/PeptideAddonSelector";
 import HairRestorationAddonSelector from "@/components/provider/HairRestorationAddonSelector";
 import SexualWellnessAddonSelector from "@/components/provider/SexualWellnessAddonSelector";
+import AlaCartePaymentCard from "@/components/provider/AlaCartePaymentCard";
 import PharmacyOrderCard from "@/components/provider/PharmacyOrderCard";
 import EditPatientProfileModal from "@/components/provider/EditPatientProfileModal";
 import InvitePatientCard from "@/components/provider/InvitePatientCard";
@@ -2133,6 +2134,14 @@ const ProviderDashboard = () => {
                 patientGender={selectedPatient.patient.gender || "male"}
                 currentProducts={(selectedPatient.patient.medical_history as Record<string, any>)?.sexual_wellness_products || []}
                 onUpdate={() => loadData()}
+              />
+
+              {/* À La Carte Payment Card - For non-members */}
+              <AlaCartePaymentCard
+                patientId={selectedPatient.patient.id}
+                patientName={selectedPatient.patient.full_name}
+                patientEmail={selectedPatient.patient.email}
+                hasMembership={!!selectedPatient.patient.membership_tier}
               />
 
               {/* IV Ketamine Billing - Show for ketamine patients or always visible */}
