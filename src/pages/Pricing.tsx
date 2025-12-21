@@ -106,7 +106,7 @@ const Pricing = () => {
         <title>Pricing - Transparent Healthcare Pricing | Elevated Health Augusta</title>
         <meta
           name="description"
-          content="View our transparent pricing for ketamine therapy, medical weight loss, hormone optimization, peptide therapy, and IV hydration in Augusta, GA. Memberships and à la carte options available."
+          content="Transparent pricing for all services. $99 medical consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Memberships and à la carte options available."
         />
         <meta
           name="keywords"

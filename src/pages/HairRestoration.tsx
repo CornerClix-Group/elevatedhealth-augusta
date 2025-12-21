@@ -127,7 +127,7 @@ const HairRestoration = () => {
     <>
       <Helmet>
         <title>Hair Restoration Augusta | Minoxidil, Finasteride, Dutasteride, GHK-Cu - Elevated Health</title>
-        <meta name="description" content="Medical hair restoration in Augusta, GA. Prescription Minoxidil, Finasteride, Dutasteride, and GHK-Cu peptide therapy. Stop hair loss and stimulate regrowth." />
+        <meta name="description" content="Hair restoration in Augusta, GA. $99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Minoxidil, Finasteride, Dutasteride, GHK-Cu protocols." />
         <meta name="keywords" content="hair restoration Augusta, hair loss treatment Augusta GA, Minoxidil Augusta, Finasteride Augusta, Dutasteride hair loss, GHK-Cu hair growth, male pattern baldness treatment Georgia" />
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>

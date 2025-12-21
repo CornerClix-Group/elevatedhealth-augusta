@@ -52,7 +52,7 @@ const Ketamine = () => {
     <>
       <Helmet>
         <title>Neural Restoration Therapy Augusta | Ketamine Treatment - Elevated Health</title>
-        <meta name="description" content="Advanced ketamine therapy in Augusta, GA. Neural restoration for treatment-resistant depression, anxiety, and PTSD. We test before we treat." />
+        <meta name="description" content="Advanced ketamine therapy in Augusta, GA. $99 medical consultation credited toward treatment. Chat with our Virtual Care Team or call (706) 760-3470. BCBS, TRICARE accepted." />
         <meta name="keywords" content="ketamine therapy Augusta, neural restoration Augusta GA, SPRAVATO Augusta, treatment-resistant depression Augusta, ketamine infusion Georgia" />
       </Helmet>
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Phone, AlertCircle } from "lucide-react";
+import { Helmet } from "react-helmet";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { trackEvent } from "@/lib/analytics";
@@ -129,6 +130,10 @@ const Consult = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>Book Your $99 Medical Consultation | Elevated Health Augusta</title>
+        <meta name="description" content="Book your $99 medical consultation—credited toward treatment. Choose ketamine therapy, medical weight loss, or hormone replacement. Chat with our Virtual Care Team 24/7." />
+      </Helmet>
       <Navbar />
       
       <main className="flex-1 pt-40 pb-16 px-4 bg-gradient-to-b from-background to-secondary/10">

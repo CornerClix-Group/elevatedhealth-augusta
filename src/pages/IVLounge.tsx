@@ -161,7 +161,7 @@ const IVLounge = () => {
         <title>IV Lounge | Elevated Health Augusta</title>
         <meta
           name="description"
-          content="Premium IV hydration therapy in Augusta. The Resurrection hangover relief, immune boosters, beauty drips, and athletic recovery infusions."
+          content="Premium IV hydration therapy in Augusta, GA. Chat with our Virtual Care Team to find your perfect drip. Hangover relief, immune boosters, beauty drips, and athletic recovery."
         />
       </Helmet>
 

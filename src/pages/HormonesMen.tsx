@@ -227,7 +227,7 @@ const HormonesMen = () => {
     <>
       <Helmet>
         <title>Testosterone Therapy Augusta | TRT Clinic GA - Elevated Health</title>
-        <meta name="description" content="Men's testosterone replacement therapy in Augusta, GA. Expert TRT clinic for low testosterone treatment. Restore energy, strength, and drive. Board-certified care starting at $149/month." />
+        <meta name="description" content="Men's testosterone therapy in Augusta, GA. $99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Board-certified TRT starting at $149/month." />
         <meta name="keywords" content="testosterone therapy Augusta, TRT clinic Augusta, men's hormone therapy GA, low testosterone treatment Augusta, men's health optimization, male hormone testing" />
         <script type="application/ld+json">
           {JSON.stringify(schema)}

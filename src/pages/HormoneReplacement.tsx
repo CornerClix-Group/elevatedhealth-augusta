@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
@@ -21,6 +22,10 @@ const HormoneReplacement = () => {
 
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>Hormone Replacement Therapy Augusta | HRT Clinic - Elevated Health</title>
+        <meta name="description" content="Hormone replacement therapy in Augusta, GA. $99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Personalized HRT for men and women." />
+      </Helmet>
       <Navbar />
       
       <main>

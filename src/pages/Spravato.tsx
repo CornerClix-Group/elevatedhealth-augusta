@@ -84,7 +84,7 @@ const Spravato = () => {
         <title>SPRAVATO® (Esketamine) Augusta GA | Insurance-Covered Ketamine | Elevated Health</title>
         <meta 
           name="description" 
-          content="SPRAVATO® esketamine nasal spray in Augusta, GA. FDA-approved for treatment-resistant depression. Often covered by BCBS, TRICARE with $0-50 copays. REMS-certified clinic." 
+          content="SPRAVATO® esketamine nasal spray in Augusta, GA. $99 consultation to verify insurance coverage. Chat with our Virtual Care Team 24/7. Often $0-50 copays with BCBS, TRICARE." 
         />
         <meta 
           name="keywords" 

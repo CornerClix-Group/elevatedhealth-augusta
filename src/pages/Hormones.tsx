@@ -128,7 +128,7 @@ const Hormones = () => {
     <>
       <Helmet>
         <title>Precision Bio-Identical Therapy Augusta | Hormone Optimization - Elevated Health</title>
-        <meta name="description" content="Advanced bioidentical hormone replacement therapy in Augusta, GA. We test before we treat. ZRT saliva diagnostics and pharmacy-grade bio-identicals for men and women." />
+        <meta name="description" content="Bioidentical hormone replacement therapy in Augusta, GA. $99 medical consultation credited toward treatment. Chat with our Virtual Care Team 24/7. ZRT diagnostics for men and women." />
         <meta name="keywords" content="bioidentical hormones Augusta, BHRT Augusta GA, testosterone therapy, menopause treatment, hormone optimization Augusta, ZRT testing" />
       </Helmet>
 
