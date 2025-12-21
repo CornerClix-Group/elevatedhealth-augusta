@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -54,6 +54,8 @@ const KETAMINE_HIGH_RISK_CONDITIONS = [
 
 const PatientLogin = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirect");
   const [isLoading, setIsLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -95,6 +97,9 @@ const PatientLogin = () => {
   
   // Ref to prevent race conditions with navigation
   const hasNavigatedRef = useRef(false);
+  
+  // Helper to get redirect path for returning patients
+  const getRedirectPath = () => redirectTo === "consult" ? "/consult" : "/patient/dashboard";
 
   // Check for existing session on mount with timeout protection
   useEffect(() => {
@@ -120,7 +125,7 @@ const PatientLogin = () => {
         if (valid && !hasNavigatedRef.current) {
           console.log("[PatientLogin] Valid session found - redirecting");
           hasNavigatedRef.current = true;
-          navigate("/patient/dashboard", { replace: true });
+          navigate(getRedirectPath(), { replace: true });
         } else {
           console.log("[PatientLogin] No valid session - showing login form");
           clearAuthStorage();
@@ -147,10 +152,11 @@ const PatientLogin = () => {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
+      const redirectPath = redirectTo === "consult" ? "/consult" : "/patient/dashboard";
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/patient/dashboard`,
+          redirectTo: `${window.location.origin}${redirectPath}`,
         }
       });
       if (error) throw error;
@@ -263,7 +269,7 @@ const PatientLogin = () => {
       }
       
       toast.success("Welcome back!");
-      navigate("/patient/dashboard");
+      navigate(getRedirectPath());
     } catch (error: any) {
       toast.error(error.message || "Login failed");
     } finally {
