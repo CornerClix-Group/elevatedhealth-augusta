@@ -101,51 +101,42 @@ const WellnessIcon = ({ className }: { className?: string }) => (
 const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
   const [loadingService, setLoadingService] = useState<string | null>(null);
 
-  // Clinical Eligibility URL for all free discovery calls
-  const clinicalEligibilityUrl = "https://calendar.app.google/5whDnpmP8vGhhEAx6";
-
   const consultationOptions = [
     {
       icon: NeuralIcon,
       title: "Ketamine Therapy",
       description: "IV infusions & SPRAVATO® for depression, PTSD, and anxiety",
-      serviceType: "ketamine",
-      freeCallUrl: clinicalEligibilityUrl
+      serviceType: "ketamine"
     },
     {
       icon: DNAIcon,
       title: "Medical Weight Loss",
       description: "Physician-supervised semaglutide (GLP-1) therapy",
-      serviceType: "weight_loss",
-      freeCallUrl: clinicalEligibilityUrl
+      serviceType: "weight_loss"
     },
     {
       icon: VitalityIcon,
       title: "Hormone Replacement",
       description: "Bioidentical hormone therapy to restore vitality",
-      serviceType: "hormone",
-      freeCallUrl: clinicalEligibilityUrl
+      serviceType: "hormone"
     },
     {
       icon: CellularIcon,
       title: "Peptide Therapy",
       description: "Sermorelin, NAD+, PT-141 & GHK-Cu for cellular optimization",
-      serviceType: "peptide",
-      freeCallUrl: clinicalEligibilityUrl
+      serviceType: "peptide"
     },
     {
       icon: HairIcon,
       title: "Hair Restoration",
       description: "Finasteride, minoxidil & PRP therapy for hair regrowth",
-      serviceType: "hair",
-      freeCallUrl: clinicalEligibilityUrl
+      serviceType: "hair"
     },
     {
       icon: WellnessIcon,
       title: "Sexual Wellness",
       description: "Discreet treatment for ED, low libido & intimate health",
-      serviceType: "sexual",
-      freeCallUrl: clinicalEligibilityUrl
+      serviceType: "sexual"
     }
   ];
 
@@ -233,23 +224,15 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
           })}
         </div>
 
-        {/* Not Ready Section - Updated Copy */}
+        {/* Not Ready Section - AI Chat First */}
         <div className="mt-6 p-4 bg-secondary/50 rounded-xl border border-border/30">
           <p className="text-sm font-medium text-foreground mb-2 text-center">
-            Not ready to book? Let's chat first.
+            Have questions? Chat with our AI assistant first.
           </p>
           <p className="text-xs text-muted-foreground text-center mb-3">
-            Questions about our process, insurance, or pricing? Our Care Coordination team is here to help.
+            Get instant answers about pricing, insurance, and our process—24/7.
           </p>
           <div className="flex flex-col sm:flex-row gap-2 justify-center items-center">
-            <a
-              href="tel:+17067603470"
-              className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
-            >
-              <Phone className="h-4 w-4" />
-              <span>Call our Concierge: (706) 760-3470</span>
-            </a>
-            <span className="hidden sm:inline text-muted-foreground">•</span>
             <button
               onClick={() => {
                 onClose();
@@ -259,11 +242,19 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
                   if (chatButton) (chatButton as HTMLButtonElement).click();
                 }, 300);
               }}
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-accent transition-colors"
+              className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
             >
               <MessageCircle className="h-4 w-4" />
-              <span>Chat with AI assistant</span>
+              <span>Chat with AI Assistant</span>
             </button>
+            <span className="hidden sm:inline text-muted-foreground">•</span>
+            <a
+              href="tel:+17067603470"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-accent transition-colors"
+            >
+              <Phone className="h-4 w-4" />
+              <span>Or Call: (706) 760-3470</span>
+            </a>
           </div>
           <p className="text-[10px] text-muted-foreground text-center mt-3 italic">
             Admin questions only • No medical advice provided

@@ -130,7 +130,7 @@ const questions = [
     id: 11,
     type: "contact",
     question: "Contact Information",
-    subtext: "We'll reach out to schedule your free consultation"
+    subtext: "We'll reach out to schedule your $99 Medical Consultation"
   }
 ];
 

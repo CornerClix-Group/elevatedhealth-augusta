@@ -10,7 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Calendar, ClipboardCheck, Heart, Shield, Clock, Phone, DollarSign, CheckCircle } from "lucide-react";
+import { MessageCircle, ClipboardCheck, Heart, Shield, Clock, Phone, DollarSign, CheckCircle } from "lucide-react";
 import { trackCTAClick, trackEvent } from "@/lib/analytics";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
@@ -35,17 +35,17 @@ const WhatToExpectPage = () => {
 
   const steps = [
     {
-      icon: Calendar,
-      title: "1. Book Your Free Consultation",
-      description: "Schedule a 15-minute virtual or in-person consultation to discuss your goals and answer any questions.",
-      duration: "15 minutes",
+      icon: MessageCircle,
+      title: "1. Chat with Our AI Assistant",
+      description: "Get instant answers about pricing, insurance, and our process. Available 24/7 for all your administrative questions.",
+      duration: "Instant • 24/7 • FREE",
       color: "text-accent"
     },
     {
       icon: ClipboardCheck,
-      title: "2. Medical Screening",
-      description: "Complete a brief health assessment to ensure ketamine therapy is safe and appropriate for you.",
-      duration: "15 minutes",
+      title: "2. $99 Medical Consultation",
+      description: "Your first conversation with a provider. Discuss your goals, review your health history, and get a personalized plan.",
+      duration: "$99 • Credited toward treatment",
       color: "text-primary"
     },
     {
@@ -172,8 +172,8 @@ const WhatToExpectPage = () => {
                 className="gap-2 shadow-lg hover:shadow-xl transition-all"
                 onClick={handleBookConsult}
               >
-                <Calendar className="h-5 w-5" />
-                Book Your Free 30-Min Consult
+                <ClipboardCheck className="h-5 w-5" />
+                Book $99 Medical Consultation
               </Button>
             </div>
           </div>
@@ -429,8 +429,8 @@ const WhatToExpectPage = () => {
                   className="gap-2 shadow-lg hover:shadow-xl transition-all"
                   onClick={handleBookConsult}
                 >
-                  <Calendar className="h-5 w-5" />
-                  Book Free Consultation
+                  <ClipboardCheck className="h-5 w-5" />
+                  Book $99 Medical Consultation
                 </Button>
                 
                 <Button

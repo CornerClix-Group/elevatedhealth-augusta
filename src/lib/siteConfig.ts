@@ -20,9 +20,6 @@ export const SITE_CONFIG = {
     iv: "https://calendar.app.google/tho8888rMkQpURzn7",
     hairRestoration: "https://calendar.app.google/qicauwUqfSerdEi16",
     sexualWellness: "https://calendar.app.google/RkzUZ7uJZ3EJwyzy5",
-    // Free discovery calls
-    clinicalEligibility: "https://calendar.app.google/5whDnpmP8vGhhEAx6",
-    newPatientApplication: "https://calendar.app.google/hf3NNdiqJDueUuSN9",
   },
   services: {
     primary: "IV Ketamine (infusion), SPRAVATO® (esketamine) nasal spray"
