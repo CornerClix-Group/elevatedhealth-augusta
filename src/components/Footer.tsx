@@ -181,7 +181,7 @@ const Footer = () => {
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-background/60 font-lato">
               <button 
-                onClick={() => navigate("/patient/login")} 
+                onClick={() => navigate("/patient/login?redirect=consult")} 
                 className="hover:text-background/80 transition-colors flex items-center gap-1"
               >
                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
