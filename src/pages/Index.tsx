@@ -15,6 +15,7 @@ import SEOSchema from "@/components/SEOSchema";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import AssistantHub from "@/components/AssistantHub";
 import { FloatingMobileCTA } from "@/components/FloatingMobileCTA";
+import { FloatingMobileChatCTA } from "@/components/FloatingMobileChatCTA";
 import { useState } from "react";
 
 const Index = () => {
@@ -41,6 +42,7 @@ const Index = () => {
       <Footer />
       <AssistantHub />
       <FloatingMobileCTA />
+      <FloatingMobileChatCTA />
       <PWAInstallPrompt />
       <ConsultationModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} />
     </div>
