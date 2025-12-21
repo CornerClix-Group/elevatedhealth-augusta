@@ -10,7 +10,11 @@ import {
   Clock, 
   AlertTriangle,
   Calendar,
-  FileText
+  FileText,
+  Brain,
+  ClipboardCheck,
+  ExternalLink,
+  Send
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -41,10 +45,25 @@ interface PharmacyOrder {
   updated_at: string | null;
 }
 
+interface WaiverTask {
+  id: string;
+  full_name: string;
+  email: string | null;
+  phone: string | null;
+  primary_program: string | null;
+  consent_sent_at: string | null;
+  consent_completed_at: string | null;
+  consent_method: string | null;
+  created_at: string | null;
+}
+
+const OSMIND_URL = "https://app.osmind.org";
+
 const StaffTasksTab = () => {
   const [kitsToShip, setKitsToShip] = useState<KitToShip[]>([]);
   const [consultationFollowUps, setConsultationFollowUps] = useState<ConsultationFollowUp[]>([]);
   const [pharmacyOrders, setPharmacyOrders] = useState<PharmacyOrder[]>([]);
+  const [waiverTasks, setWaiverTasks] = useState<WaiverTask[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
@@ -82,6 +101,16 @@ const StaffTasksTab = () => {
         .order("updated_at", { ascending: true });
 
       setPharmacyOrders((pharmacy || []) as PharmacyOrder[]);
+
+      // Load waiver tasks - patients who need consent sent or completed
+      const { data: waivers } = await supabase
+        .from("patients")
+        .select("id, full_name, email, phone, primary_program, consent_sent_at, consent_completed_at, consent_method, created_at")
+        .or("consent_sent_at.is.null,consent_completed_at.is.null")
+        .not("intake_completed", "eq", true)
+        .order("created_at", { ascending: true });
+
+      setWaiverTasks((waivers || []) as WaiverTask[]);
     } catch (error) {
       console.error("Error loading tasks:", error);
       toast.error("Failed to load staff tasks");
@@ -144,9 +173,69 @@ const StaffTasksTab = () => {
     }
   };
 
+  const markConsentSent = async (id: string, method: "osmind" | "internal") => {
+    setProcessingId(id);
+    try {
+      const { error } = await supabase
+        .from("patients")
+        .update({ 
+          consent_sent_at: new Date().toISOString(),
+          consent_method: method
+        })
+        .eq("id", id);
+
+      if (error) throw error;
+      toast.success(method === "osmind" ? "Osmind invite marked as sent" : "Intake link marked as sent");
+      loadTasks();
+    } catch (error) {
+      toast.error("Failed to update consent status");
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const sendIntakeLink = async (patient: WaiverTask) => {
+    setProcessingId(patient.id);
+    try {
+      // Call edge function to send SMS/email with intake link
+      const { error } = await supabase.functions.invoke("send-patient-invite", {
+        body: {
+          patientId: patient.id,
+          patientName: patient.full_name,
+          patientEmail: patient.email,
+          patientPhone: patient.phone,
+        }
+      });
+
+      if (error) throw error;
+
+      // Mark consent as sent
+      await supabase
+        .from("patients")
+        .update({ 
+          consent_sent_at: new Date().toISOString(),
+          consent_method: "internal"
+        })
+        .eq("id", patient.id);
+
+      toast.success("Intake link sent successfully");
+      loadTasks();
+    } catch (error) {
+      console.error("Error sending intake link:", error);
+      toast.error("Failed to send intake link");
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
   const getDaysWaiting = (dateStr: string) => {
     const days = Math.floor((Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24));
     return days;
+  };
+
+  const getHoursWaiting = (dateStr: string) => {
+    const hours = Math.floor((Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60));
+    return hours;
   };
 
   if (isLoading) {
@@ -157,12 +246,16 @@ const StaffTasksTab = () => {
     );
   }
 
-  const totalTasks = kitsToShip.length + consultationFollowUps.length + pharmacyOrders.length;
+  // Split waiver tasks by type
+  const ketamineWaivers = waiverTasks.filter(w => w.primary_program === "ketamine");
+  const internalWaivers = waiverTasks.filter(w => w.primary_program !== "ketamine");
+
+  const totalTasks = kitsToShip.length + consultationFollowUps.length + pharmacyOrders.length + waiverTasks.length;
 
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="border-green-200 bg-green-50">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
@@ -198,6 +291,18 @@ const StaffTasksTab = () => {
             </div>
           </CardContent>
         </Card>
+
+        <Card className="border-amber-200 bg-amber-50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <ClipboardCheck className="h-8 w-8 text-amber-600" />
+              <div>
+                <p className="text-2xl font-bold text-amber-700">{waiverTasks.length}</p>
+                <p className="text-sm text-amber-600">Waivers to Send</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {totalTasks === 0 && (
@@ -206,6 +311,155 @@ const StaffTasksTab = () => {
             <Check className="h-12 w-12 text-green-500 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-green-700">All Caught Up!</h3>
             <p className="text-green-600">No pending staff tasks at this time.</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Waivers to Send - Ketamine (Osmind) */}
+      {ketamineWaivers.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Brain className="h-5 w-5 text-blue-600" />
+              Ketamine Waivers (Osmind)
+              <Badge variant="secondary" className="bg-blue-100 text-blue-700">Osmind</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {ketamineWaivers.map((patient) => {
+                const hoursWaiting = patient.created_at ? getHoursWaiting(patient.created_at) : 0;
+                const isUrgent = hoursWaiting > 2;
+                const isSent = !!patient.consent_sent_at;
+                
+                return (
+                  <div 
+                    key={patient.id} 
+                    className={`flex items-center justify-between p-4 rounded-lg border ${
+                      isUrgent && !isSent ? "border-red-300 bg-red-50" : "bg-muted/30"
+                    }`}
+                  >
+                    <div>
+                      <p className="font-medium">{patient.full_name}</p>
+                      <p className="text-sm text-muted-foreground">{patient.email}</p>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                        <Clock className="h-3 w-3" />
+                        <span>Added {hoursWaiting} hour(s) ago</span>
+                        {isUrgent && !isSent && (
+                          <Badge variant="outline" className="text-red-600 border-red-400">
+                            <AlertTriangle className="h-3 w-3 mr-1" /> Urgent
+                          </Badge>
+                        )}
+                        {isSent && (
+                          <Badge className="bg-green-100 text-green-700">
+                            <Check className="h-3 w-3 mr-1" /> Sent
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => window.open(OSMIND_URL, "_blank")}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-1" />
+                        Open Osmind
+                      </Button>
+                      {!isSent && (
+                        <Button
+                          size="sm"
+                          onClick={() => markConsentSent(patient.id, "osmind")}
+                          disabled={processingId === patient.id}
+                        >
+                          {processingId === patient.id ? "..." : "Mark Sent"}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Waivers to Send - Internal (Hormone/Weight Loss) */}
+      {internalWaivers.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ClipboardCheck className="h-5 w-5 text-amber-600" />
+              Intake Waivers to Send
+              <Badge variant="secondary" className="bg-amber-100 text-amber-700">In-App Consent</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {internalWaivers.map((patient) => {
+                const hoursWaiting = patient.created_at ? getHoursWaiting(patient.created_at) : 0;
+                const isUrgent = hoursWaiting > 2;
+                const isSent = !!patient.consent_sent_at;
+                
+                return (
+                  <div 
+                    key={patient.id} 
+                    className={`flex items-center justify-between p-4 rounded-lg border ${
+                      isUrgent && !isSent ? "border-yellow-300 bg-yellow-50" : "bg-muted/30"
+                    }`}
+                  >
+                    <div>
+                      <p className="font-medium">{patient.full_name}</p>
+                      <p className="text-sm text-muted-foreground">{patient.email}</p>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                        <Clock className="h-3 w-3" />
+                        <span>Added {hoursWaiting} hour(s) ago</span>
+                        {patient.primary_program && (
+                          <Badge variant="outline" className="text-muted-foreground">
+                            {patient.primary_program}
+                          </Badge>
+                        )}
+                        {isUrgent && !isSent && (
+                          <Badge variant="outline" className="text-yellow-600 border-yellow-400">
+                            <AlertTriangle className="h-3 w-3 mr-1" /> {"> 2hrs"}
+                          </Badge>
+                        )}
+                        {isSent && (
+                          <Badge className="bg-green-100 text-green-700">
+                            <Check className="h-3 w-3 mr-1" /> Sent
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      {!isSent ? (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => sendIntakeLink(patient)}
+                            disabled={processingId === patient.id}
+                          >
+                            <Send className="h-4 w-4 mr-1" />
+                            {processingId === patient.id ? "..." : "Send Link"}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => markConsentSent(patient.id, "internal")}
+                            disabled={processingId === patient.id}
+                          >
+                            Mark Sent
+                          </Button>
+                        </>
+                      ) : (
+                        <span className="text-sm text-green-600">Waiting for patient...</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </CardContent>
         </Card>
       )}
@@ -369,12 +623,20 @@ const StaffTasksTab = () => {
               <span>Staff Task (can be delegated)</span>
             </div>
             <div className="flex items-center gap-1">
-              <div className="w-3 h-3 rounded bg-gold/20 border border-gold" />
-              <span>Provider Task (clinical decision)</span>
+              <div className="w-3 h-3 rounded bg-blue-100 border border-blue-300" />
+              <span>Osmind (external)</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 rounded bg-amber-100 border border-amber-300" />
+              <span>In-App Consent</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-3 h-3 rounded bg-yellow-50 border border-yellow-300" />
               <span>Overdue - needs attention</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 rounded bg-red-50 border border-red-300" />
+              <span>Urgent ({"> "}2 hours)</span>
             </div>
           </div>
         </CardContent>
