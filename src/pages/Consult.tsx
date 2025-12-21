@@ -135,10 +135,10 @@ const Consult = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12 animate-fade-in-up">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Book Your Free Consultation
+              Book Your $99 Medical Consultation
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Choose the service you're interested in to schedule your consultation with our team
+              Your first conversation with a provider—credited toward your treatment
             </p>
           </div>
 

@@ -1,37 +1,37 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, ClipboardCheck, Heart, Video, Shield, Clock, Phone } from "lucide-react";
+import { MessageCircle, ClipboardCheck, Heart, Video, Shield, Clock, Phone } from "lucide-react";
 import { trackCTAClick } from "@/lib/analytics";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
 const WhatToExpect = () => {
   const steps = [
     {
-      icon: Calendar,
-      title: "1. New Patient Application Call",
-      description: "Speak with our Care Coordination Team to discuss pricing, insurance, and logistics. This fit-check ensures our clinic is right for you. (No medical advice provided.)",
-      duration: "15 minutes • FREE",
+      icon: MessageCircle,
+      title: "1. Chat with Our AI Assistant",
+      description: "Get instant answers about pricing, insurance, and our process. Available 24/7 for all your administrative questions.",
+      duration: "Instant • 24/7 • FREE",
       color: "text-accent"
     },
     {
       icon: ClipboardCheck,
-      title: "2. Medical Screening",
-      description: "Complete a brief health assessment to ensure ketamine therapy is safe and appropriate for you.",
-      duration: "15 minutes",
+      title: "2. $99 Medical Consultation",
+      description: "Your first conversation with a provider. Discuss your goals, review your health history, and get a personalized plan.",
+      duration: "$99 • Credited toward treatment",
       color: "text-primary"
     },
     {
       icon: Heart,
-      title: "3. Your First Treatment",
-      description: "Arrive at our private, comfortable suite. Provider-monitored IV infusion or SPRAVATO® nasal spray in a relaxing environment.",
-      duration: "45-90 minutes",
+      title: "3. Lab Work & Personalized Plan",
+      description: "Complete any required testing. Receive your customized treatment protocol designed specifically for your needs.",
+      duration: "Varies by service",
       color: "text-accent"
     },
     {
       icon: Shield,
-      title: "4. Post-Treatment Care",
-      description: "Relax in our recovery area. Our team monitors you until you're ready to leave (with a ride home).",
-      duration: "30 minutes",
+      title: "4. Treatment & Ongoing Care",
+      description: "Begin your treatment with provider monitoring. Enjoy ongoing support, check-ins, and adjustments as needed.",
+      duration: "Ongoing",
       color: "text-primary"
     }
   ];
@@ -182,7 +182,7 @@ const WhatToExpect = () => {
             Ready to Begin Your Journey?
           </h3>
           <p className="font-inter text-lg text-muted-foreground mb-8">
-            Schedule your free consultation today. No obligation, completely confidential.
+            Your first conversation with a provider is just $99—and it's credited toward your treatment.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -195,8 +195,8 @@ const WhatToExpect = () => {
                 window.open(SITE_CONFIG.bookingUrl, '_blank', 'noopener,noreferrer');
               }}
             >
-              <Calendar className="h-5 w-5" />
-              Book Free Consultation
+              <ClipboardCheck className="h-5 w-5" />
+              Book $99 Medical Consultation
             </Button>
             
             <Button

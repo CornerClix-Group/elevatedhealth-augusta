@@ -58,29 +58,28 @@ const BookingWidget = () => {
             {/* Secondary Options */}
             <div className="bg-secondary/30 rounded-xl p-6 border border-border/20">
               <h3 className="text-lg font-semibold text-foreground text-center mb-2">
-                Let's chat first.
+                Have questions? Chat with our AI assistant.
               </h3>
               <p className="text-sm text-muted-foreground text-center mb-4">
-                Questions about our process, insurance, or pricing? Our Care Coordination team can help.
+                Get instant answers about pricing, insurance, and our process—24/7.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <Button 
+                  onClick={openAssistant}
+                  className="gap-2 bg-accent text-accent-foreground hover:bg-accent/90"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Chat with AI Assistant
+                </Button>
+                
                 <a 
                   href="tel:+17067603470" 
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:border-accent hover:text-accent transition-colors"
                 >
                   <Phone className="h-4 w-4" />
-                  <span>Call: (706) 760-3470</span>
+                  <span>Or Call: (706) 760-3470</span>
                 </a>
-                
-                <Button 
-                  onClick={openAssistant}
-                  variant="outline"
-                  className="gap-2"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                  Chat with AI Assistant
-                </Button>
               </div>
               
               <p className="text-[10px] text-muted-foreground text-center mt-4 italic">
