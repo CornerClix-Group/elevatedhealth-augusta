@@ -1,9 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-
-interface OurTreatmentsProps {
-  onOpenBooking: () => void;
-}
+import { useBooking } from "@/contexts/BookingContext";
 
 // Thin Stroke Minimalist Icons
 const LotusIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
@@ -60,8 +57,9 @@ const treatments = [
   },
 ];
 
-const OurTreatments = ({ onOpenBooking }: OurTreatmentsProps) => {
+const OurTreatments = () => {
   const navigate = useNavigate();
+  const { openBooking } = useBooking();
 
   return (
     <section id="treatments" className="py-16 md:py-24 bg-background scroll-mt-20">
@@ -126,7 +124,7 @@ const OurTreatments = ({ onOpenBooking }: OurTreatmentsProps) => {
             Not sure which reset is right for you?
           </p>
           <button
-            onClick={onOpenBooking}
+            onClick={openBooking}
             className="inline-flex items-center gap-2 text-primary font-lato text-sm tracking-wide hover:gap-3 transition-all duration-300"
           >
             <span className="elegant-underline">Request a personalized consultation</span>

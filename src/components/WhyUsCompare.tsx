@@ -1,12 +1,11 @@
 import { Check, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
+import { useBooking } from "@/contexts/BookingContext";
 
-interface WhyUsCompareProps {
-  onOpenBooking: () => void;
-}
-
-const WhyUsCompare = ({ onOpenBooking }: WhyUsCompareProps) => {
+const WhyUsCompare = () => {
+  const { openBooking } = useBooking();
+  
   const handleLearnMore = () => {
     trackEvent("cta_click", { cta_name: "compare_learn_more", destination: "/weight-loss" });
     window.location.href = "/weight-loss";
@@ -120,7 +119,7 @@ const WhyUsCompare = ({ onOpenBooking }: WhyUsCompareProps) => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
-                onClick={onOpenBooking}
+                onClick={openBooking}
                 size="lg"
                 className="font-lato"
               >

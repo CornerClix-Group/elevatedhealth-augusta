@@ -9,10 +9,7 @@ import { SITE_CONFIG } from "@/lib/siteConfig";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-
-interface ContactProps {
-  onOpenBooking?: () => void;
-}
+import { useBooking } from "@/contexts/BookingContext";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
@@ -29,7 +26,8 @@ const formatPhoneNumber = (value: string): string => {
   return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 };
 
-const Contact = ({ onOpenBooking }: ContactProps) => {
+const Contact = () => {
+  const { openBooking } = useBooking();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submittedName, setSubmittedName] = useState("");
@@ -53,9 +51,7 @@ const Contact = ({ onOpenBooking }: ContactProps) => {
 
   const handleBooking = () => {
     trackCTAClick('cta_request_access', 'booking_calendar');
-    if (onOpenBooking) {
-      onOpenBooking();
-    }
+    openBooking();
   };
 
   const [submitStatus, setSubmitStatus] = useState("");

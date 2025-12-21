@@ -15,11 +15,7 @@ import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import AssistantHub from "@/components/AssistantHub";
 import { FloatingMobileCTA } from "@/components/FloatingMobileCTA";
 import { FloatingMobileChatCTA } from "@/components/FloatingMobileChatCTA";
-import { useBooking } from "@/contexts/BookingContext";
-
 const Index = () => {
-  const { openBooking } = useBooking();
-
   return (
     <div className="min-h-screen">
       <SEOSchema />
@@ -28,15 +24,15 @@ const Index = () => {
         <Hero />
         <FinancingBanner />
         <MissionStatement />
-        <OurTreatments onOpenBooking={openBooking} />
+        <OurTreatments />
         <div className="container mx-auto px-4 py-12">
           <NotReadyToBook />
         </div>
-        <WhyUsCompare onOpenBooking={openBooking} />
+        <WhyUsCompare />
         <ClinicVideo />
         <InsuranceLogos />
         <MediaFeature />
-        <Contact onOpenBooking={openBooking} />
+        <Contact />
       </main>
       <Footer />
       <AssistantHub />
