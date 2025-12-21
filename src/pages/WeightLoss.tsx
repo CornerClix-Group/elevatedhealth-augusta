@@ -959,14 +959,14 @@ const WeightLoss = () => {
                   Ready to Start Your Transformation?
                 </h2>
                 <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                  Book your free consultation today and discover why Elevated Health is Augusta's 
+                  Book your $99 consultation today and discover why Elevated Health is Augusta's 
                   most comprehensive weight loss program. No generic dosing. No rushed appointments. 
                   Just expert support and real results.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                   <Button onClick={scrollToBooking} size="lg" className="text-lg px-8 py-6">
-                    Book Free Consultation
+                    Book $99 Consultation
                   </Button>
                   <Button 
                     onClick={() => {
