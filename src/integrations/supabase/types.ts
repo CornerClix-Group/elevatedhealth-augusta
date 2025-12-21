@@ -1038,6 +1038,11 @@ export type Database = {
           allergies: string | null
           avatar_url: string | null
           city: string | null
+          consent_completed_at: string | null
+          consent_method: string | null
+          consent_sent_at: string | null
+          consent_signature: string | null
+          consent_signature_date: string | null
           consultation_booking_id: string | null
           created_at: string | null
           current_protocol: string | null
@@ -1071,6 +1076,11 @@ export type Database = {
           allergies?: string | null
           avatar_url?: string | null
           city?: string | null
+          consent_completed_at?: string | null
+          consent_method?: string | null
+          consent_sent_at?: string | null
+          consent_signature?: string | null
+          consent_signature_date?: string | null
           consultation_booking_id?: string | null
           created_at?: string | null
           current_protocol?: string | null
@@ -1104,6 +1114,11 @@ export type Database = {
           allergies?: string | null
           avatar_url?: string | null
           city?: string | null
+          consent_completed_at?: string | null
+          consent_method?: string | null
+          consent_sent_at?: string | null
+          consent_signature?: string | null
+          consent_signature_date?: string | null
           consultation_booking_id?: string | null
           created_at?: string | null
           current_protocol?: string | null
