@@ -11,22 +11,17 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Menu, X, User, LayoutDashboard, ClipboardList, LogOut, ChevronDown } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { SITE_CONFIG } from "@/lib/siteConfig";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 import { useBooking } from "@/contexts/BookingContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { openBooking } = useBooking();
+  const { isLoading: isCheckingAuth, isLoggedIn, isProvider, userName, userAvatar, logout } = useAuth();
   const isHomePage = location.pathname === '/';
   const [isScrolled, setIsScrolled] = useState(!isHomePage);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState<string | null>(null);
-  const [userAvatar, setUserAvatar] = useState<string | null>(null);
-  const [isProvider, setIsProvider] = useState(false);
 
   const getInitials = (name: string) => {
     return name
@@ -36,96 +31,6 @@ const Navbar = () => {
       .toUpperCase()
       .slice(0, 2);
   };
-
-  useEffect(() => {
-    // Check auth state
-    const checkAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          setIsLoggedIn(true);
-          
-          // Check if user is a provider (admin or staff)
-          const { data: roles } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", session.user.id);
-          
-          const hasProviderRole = roles?.some(r => r.role === "admin" || r.role === "staff" || r.role === "business_admin");
-          setIsProvider(hasProviderRole || false);
-          
-          // Try to get patient name and avatar (only if not a provider)
-          if (!hasProviderRole) {
-            const { data: patient } = await supabase
-              .from("patients")
-              .select("full_name, avatar_url")
-              .eq("user_id", session.user.id)
-              .maybeSingle();
-            setUserName(patient?.full_name || null);
-            setUserAvatar(patient?.avatar_url || null);
-          } else {
-            // For providers, use email as display name
-            setUserName(session.user.email?.split("@")[0] || "Provider");
-            setUserAvatar(null);
-          }
-        } else {
-          setIsLoggedIn(false);
-          setUserName(null);
-          setUserAvatar(null);
-          setIsProvider(false);
-        }
-      } finally {
-        setIsCheckingAuth(false);
-      }
-    };
-
-    checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        setIsLoggedIn(false);
-        setUserName(null);
-        setUserAvatar(null);
-        setIsProvider(false);
-        return;
-      }
-      
-      if (session?.user) {
-        setIsLoggedIn(true);
-        // Defer Supabase call to avoid deadlock
-        setTimeout(async () => {
-          // Check if user is a provider
-          const { data: roles } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", session.user.id);
-          
-          const hasProviderRole = roles?.some(r => r.role === "admin" || r.role === "staff" || r.role === "business_admin");
-          setIsProvider(hasProviderRole || false);
-          
-          if (!hasProviderRole) {
-            const { data: patient } = await supabase
-              .from("patients")
-              .select("full_name, avatar_url")
-              .eq("user_id", session.user.id)
-              .maybeSingle();
-            setUserName(patient?.full_name || null);
-            setUserAvatar(patient?.avatar_url || null);
-          } else {
-            setUserName(session.user.email?.split("@")[0] || "Provider");
-            setUserAvatar(null);
-          }
-        }, 0);
-      } else {
-        setIsLoggedIn(false);
-        setUserName(null);
-        setUserAvatar(null);
-        setIsProvider(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   useEffect(() => {
     if (!isHomePage) {
@@ -159,37 +64,7 @@ const Navbar = () => {
   };
 
   const handleLogout = async () => {
-    setIsLoggedIn(false);
-    setUserName(null);
-    setUserAvatar(null);
-    
-    try {
-      await supabase.auth.signOut({ scope: 'local' });
-    } catch (error) {
-      console.error("SignOut error:", error);
-    }
-    
-    // Clear all auth-related storage
-    try {
-      const keys = Object.keys(localStorage);
-      keys.forEach(key => {
-        if (key.startsWith('sb-') && key.includes('-auth-')) {
-          localStorage.removeItem(key);
-        }
-      });
-      sessionStorage.clear();
-      
-      if ('serviceWorker' in navigator && 'caches' in window) {
-        caches.keys().then(names => {
-          names.forEach(name => caches.delete(name));
-        });
-      }
-    } catch (e) {
-      console.error("Storage clear error:", e);
-    }
-    
-    toast.success("Logged out successfully");
-    window.location.href = '/';
+    await logout();
   };
 
   return (
