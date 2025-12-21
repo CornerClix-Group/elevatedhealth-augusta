@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "@/components/ScrollToTop";
 import { BookingProvider } from "@/contexts/BookingContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import ConsultationModal from "@/components/ConsultationModal";
 import { useBooking } from "@/contexts/BookingContext";
 import SecurePatientRoute from "@/components/auth/SecurePatientRoute";
@@ -71,6 +72,7 @@ const GlobalBookingModal = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <AuthProvider>
       <BookingProvider>
         <Toaster />
         <Sonner />
@@ -199,6 +201,7 @@ const App = () => (
         </Routes>
         </BrowserRouter>
       </BookingProvider>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
