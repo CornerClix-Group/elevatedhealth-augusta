@@ -788,7 +788,7 @@ const HormonesWomen = () => {
                 <Card className="shadow-2xl overflow-hidden">
                   <CardContent className="p-8 md:p-12">
                     <div className="mb-8">
-                      <h3 className="text-2xl font-bold mb-6 text-center">Schedule Your Free Consultation</h3>
+                      <h3 className="text-2xl font-bold mb-6 text-center">Schedule Your $99 Consultation</h3>
                       <div className="w-full h-[600px] rounded-lg overflow-hidden">
                         <iframe 
                           src="https://calendar.app.google/npnih9qTAXu5PKLX6"

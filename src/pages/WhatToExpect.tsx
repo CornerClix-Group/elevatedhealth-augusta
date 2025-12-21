@@ -79,7 +79,7 @@ const WhatToExpectPage = () => {
         <title>What to Expect from Ketamine Therapy Augusta | Elevated Health</title>
         <meta 
           name="description" 
-          content="Learn about ketamine infusion cost Augusta, treatment protocol, and what to expect during your visit. 6-8 infusions at $400 each. Free consultation available." 
+          content="Learn about ketamine infusion cost Augusta, treatment protocol, and what to expect during your visit. 6-8 infusions at $400 each. $99 consultation available." 
         />
         <meta name="keywords" content="ketamine infusion cost Augusta, ketamine therapy protocol, ketamine treatment Augusta GA, IV ketamine price, SPRAVATO cost" />
         <link rel="canonical" href="https://www.elevatedhealthaugusta.com/what-to-expect" />

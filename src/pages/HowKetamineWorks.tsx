@@ -108,7 +108,7 @@ const HowKetamineWorks = () => {
                 Ready to Start Your Healing Journey?
               </h2>
               <p className="font-inter text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Book a free consultation to discuss your treatment options with our board-certified providers.
+                Book a $99 consultation to discuss your treatment options with our board-certified providers. The fee is credited toward your treatment.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Button 

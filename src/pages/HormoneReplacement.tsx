@@ -119,7 +119,7 @@ const HormoneReplacement = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Book Your Free Consultation
+                    Book Your $99 Consultation
                   </a>
                 </Button>
               </div>

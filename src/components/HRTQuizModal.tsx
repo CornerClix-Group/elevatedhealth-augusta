@@ -247,7 +247,7 @@ export const HRTQuizModal = ({ isOpen, onClose }: HRTQuizModalProps) => {
         past_hrt: quizData.past_hrt
       });
 
-      toast.success("Thank you! We'll contact you soon to schedule your free consultation.");
+      toast.success("Thank you! We'll contact you soon to schedule your $99 consultation.");
       
       // Reset and close
       setTimeout(() => {
