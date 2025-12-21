@@ -1,10 +1,17 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Input validation schema
+const consentPdfRequestSchema = z.object({
+  patientId: z.string().uuid("Invalid patient ID format"),
+  action: z.enum(["download", "email"]).optional(),
+});
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -13,13 +20,21 @@ serve(async (req) => {
   }
 
   try {
-    const { patientId, action } = await req.json();
+    const rawBody = await req.json();
     
-    console.log(`[generate-consent-pdf] Processing request for patient: ${patientId}, action: ${action}`);
-
-    if (!patientId) {
-      throw new Error("Patient ID is required");
+    // Validate input against schema
+    const validationResult = consentPdfRequestSchema.safeParse(rawBody);
+    if (!validationResult.success) {
+      console.error('[generate-consent-pdf] Validation error:', validationResult.error.errors);
+      return new Response(
+        JSON.stringify({ error: "Invalid request format: " + validationResult.error.errors[0]?.message }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
+    
+    const { patientId, action } = validationResult.data;
+    
+    console.log(`[generate-consent-pdf] Processing validated request for patient: ${patientId}, action: ${action}`);
 
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;

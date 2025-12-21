@@ -1,11 +1,18 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Input validation schema
+const hormoneCheckoutSchema = z.object({
+  mappingType: z.enum(["hormone", "metabolic"]).optional(),
+  creditCode: z.string().max(50, "Credit code too long").optional().nullable(),
+});
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
@@ -48,13 +55,22 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
 
-    // Parse request body for mapping type and credit code
-    const body = await req.json().catch(() => ({}));
-    const mappingType = body.mappingType || "hormone"; // Default to hormone mapping
-    const creditCode = body.creditCode || null;
+    // Parse and validate request body
+    const rawBody = await req.json().catch(() => ({}));
+    
+    const validationResult = hormoneCheckoutSchema.safeParse(rawBody);
+    if (!validationResult.success) {
+      logStep("Validation error", { errors: validationResult.error.errors });
+      return new Response(
+        JSON.stringify({ error: "Invalid request format" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
+    
+    const { mappingType = "hormone", creditCode = null } = validationResult.data;
     
     const tier = MAPPING_TIERS[mappingType as keyof typeof MAPPING_TIERS] || MAPPING_TIERS.hormone;
-    logStep("Mapping tier selected", { mappingType, tier: tier.name, priceId: tier.priceId, creditCode });
+    logStep("Validated mapping tier selected", { mappingType, tier: tier.name, priceId: tier.priceId, creditCode });
 
     // Check for authenticated user (optional - supports guest checkout)
     const authHeader = req.headers.get("Authorization");
