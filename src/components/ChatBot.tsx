@@ -208,14 +208,23 @@ const ChatBot = () => {
                 <p className="text-xs opacity-80">Admin questions • No medical advice</p>
               </div>
             </div>
-            <Button
-              onClick={() => setIsOpen(false)}
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <a
+                href="tel:+17067603470"
+                className="h-8 w-8 flex items-center justify-center rounded-md text-primary-foreground hover:bg-primary-foreground/20 transition-colors"
+                title="Call (706) 760-3470"
+              >
+                <Phone className="h-4 w-4" />
+              </a>
+              <Button
+                onClick={() => setIsOpen(false)}
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Messages */}
