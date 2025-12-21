@@ -36,6 +36,7 @@ import {
   ShieldAlert,
   Scissors,
   HeartPulse,
+  MessageCircle,
 } from "lucide-react";
 
 const serviceCategories = [
@@ -172,7 +173,7 @@ const Pricing = () => {
                 "name": "What is the cheapest way to get started at Elevated Health?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "The most affordable entry point is our free New Patient Application Call—speak with our Care Coordination Team to discuss pricing, insurance, and logistics (no medical advice provided). For committed patients, our $99 Discovery Consultation provides a comprehensive clinical assessment. If you're interested in weight loss or hormone therapy, the $349 Metabolic or Hormone Mapping provides the best diagnostic value."
+                  "text": "The most affordable entry point is chatting with our Virtual Care Team—available 24/7 to answer questions about pricing, insurance, and logistics. When you're ready for personalized medical guidance, our $99 Medical Consultation provides a comprehensive clinical assessment and the fee is credited toward your first treatment."
                 }
               },
               {
@@ -1798,7 +1799,7 @@ const Pricing = () => {
           </div>
         </section>
 
-        {/* CTA Section - Reduced padding + fixed FREE badge */}
+        {/* CTA Section - Reduced padding */}
         <section className="py-16 lg:py-20 bg-gradient-to-b from-secondary to-background">
           <div className="container mx-auto px-4 text-center">
             <Sparkles className="w-10 h-10 text-gold mx-auto mb-6" />
@@ -1806,31 +1807,33 @@ const Pricing = () => {
               Not Sure Where to Start?
             </h2>
             <p className="text-lg text-muted-foreground font-lato max-w-2xl mx-auto mb-4">
-              Schedule a free <span className="font-semibold text-foreground">New Patient Application Call</span>. 
-              Speak with our Care Coordination Team to discuss pricing, insurance, and logistics.
+              Chat with our <span className="font-semibold text-foreground">Virtual Care Team</span> for instant answers about pricing, insurance, and logistics—24/7.
             </p>
             <p className="text-sm text-muted-foreground font-lato max-w-xl mx-auto mb-8 italic">
-              This is a fit-check to see if our clinic is right for you. (No medical advice provided on this call.)
+              When you're ready for personalized medical guidance, book a $99 Medical Consultation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button 
+                size="lg" 
+                className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                onClick={() => {
+                  const chatButton = document.querySelector('[aria-label="Open assistant"]');
+                  if (chatButton) (chatButton as HTMLButtonElement).click();
+                }}
+              >
+                <span className="inline-flex items-center gap-2 bg-green-500/20 text-green-600 text-xs font-semibold px-2 py-0.5 rounded-full mr-2">
+                  FREE
+                </span>
+                <MessageCircle className="w-5 h-5 mr-2" />
+                Chat with Virtual Care Team
+              </Button>
               <Button 
                 size="lg" 
                 className="bg-gold hover:bg-gold-dark text-gold-foreground"
                 onClick={() => handleBookCall()}
               >
-                <span className="inline-flex items-center gap-2 bg-green-500/20 text-green-600 text-xs font-semibold px-2 py-0.5 rounded-full mr-2">
-                  FREE
-                </span>
                 <Calendar className="w-5 h-5 mr-2" />
-                Apply for Care
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg"
-                onClick={() => window.location.href = `tel:${SITE_CONFIG.phoneRaw}`}
-              >
-                <Phone className="w-5 h-5 mr-2" />
-                Call {SITE_CONFIG.phone}
+                Book $99 Consultation
               </Button>
             </div>
           </div>
