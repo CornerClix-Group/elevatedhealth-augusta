@@ -1,10 +1,18 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
+import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Input validation schema
+const checkoutRequestSchema = z.object({
+  name: z.string().max(100, "Name too long").optional(),
+  email: z.string().email("Invalid email format").max(255, "Email too long"),
+  phone: z.string().max(20, "Phone too long").optional(),
+});
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
@@ -19,12 +27,20 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { name, email, phone } = await req.json();
+    const rawBody = await req.json();
     
-    if (!email) {
-      throw new Error("Email is required");
+    // Validate input against schema
+    const validationResult = checkoutRequestSchema.safeParse(rawBody);
+    if (!validationResult.success) {
+      logStep("Validation error", { errors: validationResult.error.errors });
+      return new Response(
+        JSON.stringify({ error: "Invalid request format: " + validationResult.error.errors[0]?.message }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
     }
-    logStep("Request data received", { name, email, phone });
+    
+    const { name, email, phone } = validationResult.data;
+    logStep("Validated request data received", { name, email: email.substring(0, 5) + "***", phone });
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY not configured");

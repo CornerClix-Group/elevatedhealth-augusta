@@ -1,10 +1,29 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Input validation schema
+const messageSchema = z.object({
+  role: z.enum(["user", "assistant", "system"]),
+  content: z.string().max(10000, "Message content too long"),
+});
+
+const captureLeadInfoSchema = z.object({
+  name: z.string().max(100).optional().nullable(),
+  email: z.string().email().max(255).optional().nullable(),
+  phone: z.string().max(20).optional().nullable(),
+  interest: z.string().max(100).optional().nullable(),
+}).optional().nullable();
+
+const chatRequestSchema = z.object({
+  messages: z.array(messageSchema).max(50, "Too many messages"),
+  captureLeadInfo: captureLeadInfoSchema,
+});
 
 // ============================================================================
 // PATIENT-FACING KNOWLEDGE BASE
@@ -192,7 +211,19 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, captureLeadInfo } = await req.json();
+    const rawBody = await req.json();
+    
+    // Validate input against schema
+    const validationResult = chatRequestSchema.safeParse(rawBody);
+    if (!validationResult.success) {
+      console.error("Validation error:", validationResult.error.errors);
+      return new Response(
+        JSON.stringify({ error: "Invalid request format" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
+    const { messages, captureLeadInfo } = validationResult.data;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -201,7 +232,7 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    console.log("Received chat request with", messages.length, "messages");
+    console.log("Received validated chat request with", messages.length, "messages");
 
     // If we're capturing lead info, save it to the database and trigger GoHighLevel
     if (captureLeadInfo && SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {

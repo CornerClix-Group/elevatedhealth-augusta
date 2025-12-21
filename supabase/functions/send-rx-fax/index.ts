@@ -1,27 +1,31 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface FaxRequest {
-  patient_id: string;
-  medication_name: string;
-  medication_strength: string;
-  medication_sig: string;
-  quantity: number;
-  refills: number;
-  supply_days: number;
-  provider_name: string;
-  provider_credentials: string;
-  provider_npi: string;
-  provider_notes?: string;
-  diagnosis_code?: string;
-  diagnosis_description?: string;
-  provider_signature_url?: string;
-}
+// Input validation schema for prescription fax requests
+const faxRequestSchema = z.object({
+  patient_id: z.string().uuid("Invalid patient ID format"),
+  medication_name: z.string().min(1).max(200, "Medication name too long"),
+  medication_strength: z.string().min(1).max(100, "Medication strength too long"),
+  medication_sig: z.string().min(1).max(500, "Sig instructions too long"),
+  quantity: z.number().int().positive().max(999, "Invalid quantity"),
+  refills: z.number().int().min(0).max(12, "Invalid refill count"),
+  supply_days: z.number().int().positive().max(365, "Invalid supply days"),
+  provider_name: z.string().min(1).max(100, "Provider name too long"),
+  provider_credentials: z.string().min(1).max(50, "Provider credentials too long"),
+  provider_npi: z.string().regex(/^\d{10}$/, "Invalid NPI format - must be 10 digits"),
+  provider_notes: z.string().max(1000, "Provider notes too long").optional(),
+  diagnosis_code: z.string().max(20).optional(),
+  diagnosis_description: z.string().max(200).optional(),
+  provider_signature_url: z.string().url().max(500).optional(),
+});
+
+type FaxRequest = z.infer<typeof faxRequestSchema>;
 
 function generatePrescriptionHtml(
   patient: any,
@@ -165,7 +169,18 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    const body: FaxRequest = await req.json();
+    const rawBody = await req.json();
+    
+    // Validate input against schema
+    const validationResult = faxRequestSchema.safeParse(rawBody);
+    if (!validationResult.success) {
+      console.error("Fax request validation error:", validationResult.error.errors);
+      return new Response(
+        JSON.stringify({ success: false, error: "Invalid request format: " + validationResult.error.errors[0]?.message }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+    
     const { 
       patient_id, 
       medication_name, 
@@ -181,9 +196,9 @@ serve(async (req) => {
       diagnosis_code,
       diagnosis_description,
       provider_signature_url
-    } = body;
+    } = validationResult.data;
 
-    console.log("Processing fax request for patient:", patient_id);
+    console.log("Processing validated fax request for patient:", patient_id);
     console.log("Provider:", provider_name, provider_credentials, "NPI:", provider_npi);
 
     // Fetch patient data
