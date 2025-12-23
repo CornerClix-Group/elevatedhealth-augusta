@@ -127,7 +127,11 @@ const App = () => (
           <Route path="/consultation-confirmed" element={<ConsultationConfirmed />} />
           <Route path="/iv-payment-success" element={<IVPaymentSuccess />} />
           <Route path="/alacarte-success" element={<AlaCartePaymentSuccess />} />
-          <Route path="/staff-pricing-cheatsheet" element={<StaffPricingCheatsheet />} />
+          <Route path="/staff-pricing-cheatsheet" element={
+            <ProviderLayout title="Staff Quick Reference" subtitle="Internal Use Only" showNavbar={false}>
+              <StaffPricingCheatsheet />
+            </ProviderLayout>
+          } />
           <Route path="/patient/create-account" element={<CreateAccount />} />
           
           {/* Protected Patient Routes */}
