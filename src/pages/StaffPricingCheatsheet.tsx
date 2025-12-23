@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 import { 
   Accordion, 
   AccordionContent, 
@@ -19,7 +20,8 @@ import {
   Pill,
   Sparkles,
   Droplets,
-  Printer
+  Printer,
+  ArrowLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -37,6 +39,16 @@ const StaffPricingCheatsheet = () => {
 
       <div className="min-h-screen bg-background print:bg-white">
         <div className="max-w-4xl mx-auto px-4 py-8 print:py-4">
+          {/* Back Button */}
+          <div className="mb-6 print:hidden">
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/provider/dashboard">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Dashboard
+              </Link>
+            </Button>
+          </div>
+
           {/* Header */}
           <div className="text-center mb-8 print:mb-4">
             <Badge variant="outline" className="mb-4 print:hidden">
