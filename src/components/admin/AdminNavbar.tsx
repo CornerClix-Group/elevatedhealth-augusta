@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { LogOut, Stethoscope, RefreshCw, Settings, Menu, MessageCircle } from "lucide-react";
+import { LogOut, Stethoscope, RefreshCw, Settings, Menu, MessageCircle, FileText } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -137,6 +137,12 @@ const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMes
             )}
           </Button>
 
+          <Button variant="ghost" size="icon" asChild title="Staff Pricing Cheatsheet">
+            <Link to="/staff-pricing-cheatsheet" target="_blank">
+              <FileText className="w-5 h-5" />
+            </Link>
+          </Button>
+
           {!isOnSettings && (
             <Button variant="ghost" size="icon" asChild>
               <Link to="/admin/settings">
@@ -208,6 +214,13 @@ const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMes
                 </DropdownMenuItem>
               )}
               
+              <DropdownMenuItem asChild>
+                <Link to="/staff-pricing-cheatsheet" target="_blank" className="cursor-pointer gap-2">
+                  <FileText className="w-4 h-4" />
+                  Pricing Cheatsheet
+                </Link>
+              </DropdownMenuItem>
+
               {!isOnSettings && (
                 <DropdownMenuItem asChild>
                   <Link to="/admin/settings" className="cursor-pointer gap-2">
