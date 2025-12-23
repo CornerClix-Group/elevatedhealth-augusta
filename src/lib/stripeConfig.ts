@@ -36,7 +36,7 @@ export const DIAGNOSTIC_KIT_PRICES = {
     amount: 34900, // $349
     displayPrice: "$349",
     name: "Hormone Mapping Kit",
-    description: "ZRT Saliva & Blood Spot Panel - Comprehensive at-home test kit covering Insulin, Thyroid, Cortisol, and Hormones + lab review consultation",
+    description: "ZRT Saliva Profile III - Comprehensive at-home saliva test kit covering Cortisol, DHEA-S, Estradiol, Progesterone & Testosterone + lab review consultation",
     zrtPanel: "saliva_iii",
     mode: "payment" as const,
     edgeFunction: "create-hormone-checkout",
@@ -46,7 +46,7 @@ export const DIAGNOSTIC_KIT_PRICES = {
     amount: 34900, // $349
     displayPrice: "$349",
     name: "Metabolic Mapping Kit",
-    description: "ZRT Saliva & Blood Spot Panel - Comprehensive at-home test kit covering Insulin, Thyroid, Cortisol, and Hormones + lab review consultation",
+    description: "ZRT Weight Management Profile - Comprehensive metabolic panel + lab review consultation",
     zrtPanel: "weight_management",
     mode: "payment" as const,
     edgeFunction: "create-hormone-checkout",
@@ -319,7 +319,7 @@ export const PROVIDER_KIT_PRICES = {
     creditPrice: 25000, // $250 after $99 credit
     displayPrice: "$349 (or $250 with credit)",
     name: "Hormone Mapping Kit",
-    description: "Comprehensive at-home Saliva & Blood Spot test kit + lab review consultation",
+    description: "ZRT Saliva Profile III - Comprehensive at-home saliva test kit + lab review consultation",
     edgeFunction: "send-kit-payment-link",
   },
   metabolic: {
@@ -328,7 +328,7 @@ export const PROVIDER_KIT_PRICES = {
     creditPrice: 25000, // $250 after $99 credit
     displayPrice: "$349 (or $250 with credit)",
     name: "Metabolic Mapping Kit",
-    description: "Comprehensive at-home Saliva & Blood Spot test kit + lab review consultation",
+    description: "ZRT Weight Management Profile - Comprehensive metabolic panel + lab review consultation",
     edgeFunction: "send-kit-payment-link",
   },
 } as const;
