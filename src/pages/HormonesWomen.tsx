@@ -437,7 +437,7 @@ const HormonesWomen = () => {
                         Includes $99 credit toward Hormone Mapping
                       </p>
                       <p className="text-sm text-muted-foreground mb-4">
-                        A 15-minute consultation with our hormone specialist to discuss your goals and determine if you're a candidate.
+                        A 30-minute in-person consultation at our Evans clinic to discuss your goals and determine if you're a candidate.
                       </p>
                       <ul className="text-xs text-muted-foreground space-y-1.5 mb-4">
                         <li className="flex items-start gap-2">

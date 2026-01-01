@@ -580,7 +580,7 @@ const HormonesMen = () => {
                         </li>
                         <li className="flex items-start gap-2">
                           <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                          45-Minute Deep-Dive Clinical Review with Lauren Bursey, NP
+                          Clinical Lab Review with Lauren Bursey, NP
                         </li>
                         <li className="flex items-start gap-2">
                           <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />

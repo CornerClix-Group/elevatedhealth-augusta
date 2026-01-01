@@ -689,7 +689,7 @@ const WeightLoss = () => {
                         Credit toward Metabolic Mapping
                       </p>
                       <p className="text-sm text-muted-foreground mb-4 font-lato">
-                        45-minute deep dive with our provider to assess your metabolic health and discuss options.
+                        30-minute in-person strategy session at our Evans clinic to assess your eligibility and discuss options.
                       </p>
                       <Button 
                         onClick={handleConsultationCheckout}
