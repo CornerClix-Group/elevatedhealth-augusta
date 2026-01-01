@@ -351,7 +351,7 @@ const Hormones = () => {
                         Includes $99 credit toward Hormone Mapping
                       </p>
                       <p className="text-sm text-muted-foreground mb-4 font-light">
-                        45-minute assessment with our hormone specialist to discuss symptoms and treatment options.
+                        30-minute in-person visit with Lauren to discuss symptoms and treatment options.
                       </p>
                       <Button 
                         onClick={handleConsultationCheckout}

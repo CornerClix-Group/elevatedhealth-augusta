@@ -578,39 +578,39 @@ const Pricing = () => {
                   <div className="absolute left-[2.25rem] top-full w-0.5 h-8 bg-gradient-to-b from-amber-500 to-slate-300" />
                 </div>
 
-                {/* Step 2: The Data */}
+                {/* Step 2: Medical Clearance */}
                 <div className="relative mt-8">
                   <Card className="bg-white rounded-2xl border-0 shadow-md hover:shadow-lg transition-shadow p-8 opacity-95">
                     <div className="flex items-start gap-6">
                       {/* Step Number & Icon */}
                       <div className="flex-shrink-0">
                         <div className="w-14 h-14 rounded-full bg-slate-200 flex items-center justify-center">
-                          <Activity className="w-7 h-7 text-slate-600 stroke-[1.5]" />
+                          <Shield className="w-7 h-7 text-slate-600 stroke-[1.5]" />
                         </div>
                       </div>
                       
                       {/* Content */}
                       <div className="flex-grow">
-                        <Badge className="bg-slate-100 text-slate-700 font-lato text-xs mb-3">
-                          Step 2: Diagnostics
+                        <Badge className="bg-green-100 text-green-700 font-lato text-xs mb-3">
+                          Step 2: Medical Clearance
                         </Badge>
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                           <div>
                             <h3 className="text-xl font-cormorant text-slate-900 mb-2">
-                              Metabolic Mapping Panel
+                              Provider Review
                             </h3>
                             <p className="text-slate-600 font-lato text-sm leading-relaxed">
-                              A comprehensive at-home Saliva & Blood Spot kit. We test Cortisol, Insulin, Thyroid, and Sex Hormones to engineer your custom protocol.
+                              Lauren reviews your eligibility and may request recent labs from your PCP if needed. Most patients are cleared to start during their consultation.
                             </p>
                           </div>
                           <div className="text-right flex-shrink-0">
-                            <span className="text-3xl font-cormorant text-slate-900">$349</span>
-                            <span className="block text-xs text-slate-500 font-lato">one-time</span>
+                            <span className="text-2xl font-cormorant text-green-600">Included</span>
+                            <span className="block text-xs text-slate-500 font-lato">no extra cost</span>
                           </div>
                         </div>
-                        <p className="mt-4 text-xs text-amber-600 font-lato flex items-center gap-1">
-                          <Lock className="w-3 h-3" />
-                          Unlocked after completing Step 1
+                        <p className="mt-4 text-xs text-green-600 font-lato flex items-center gap-1">
+                          <Check className="w-3 h-3" />
+                          Labs NOT required to start — most patients begin same week
                         </p>
                       </div>
                     </div>
@@ -668,7 +668,7 @@ const Pricing = () => {
                           </li>
                           <li className="flex items-center gap-2 text-sm font-lato text-slate-700">
                             <Check className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                            <span>Quarterly metabolic labs included</span>
+                            <span>Dosing adjustments & ongoing supervision</span>
                           </li>
                         </ul>
                         

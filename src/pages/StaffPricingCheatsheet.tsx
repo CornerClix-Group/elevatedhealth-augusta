@@ -254,6 +254,13 @@ const StaffPricingCheatsheet = () => {
                         At-home saliva collection kit. Tests cortisol rhythm, DHEA-S, estradiol, progesterone, testosterone, and more.
                       </p>
                     </div>
+                    <div className="bg-amber-500/10 rounded-lg p-3 text-sm mt-3">
+                      <p className="font-medium text-amber-700 dark:text-amber-400 mb-1">⚠️ Lab Requirements by Service</p>
+                      <p className="text-muted-foreground">
+                        <strong>Hormones:</strong> Labs REQUIRED before treatment<br />
+                        <strong>Weight Loss:</strong> Labs NOT required — most start same week
+                      </p>
+                    </div>
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -348,9 +355,16 @@ const StaffPricingCheatsheet = () => {
                       </div>
                       <Badge variant="outline">Varies</Badge>
                     </div>
-                    <div className="bg-muted/50 rounded-lg p-3 text-sm">
+                    <div className="bg-green-500/10 rounded-lg p-3 text-sm">
+                      <p className="font-medium text-green-700 dark:text-green-400 mb-1">✓ Labs NOT Required to Start</p>
                       <p className="text-muted-foreground">
-                        All GLP-1 patients start with $99 Discovery Consultation + Hormone Mapping Kit for metabolic baseline.
+                        Most weight loss patients start GLP-1 medication after their $99 consultation—no mandatory lab kit. Lauren reviews eligibility in-person.
+                      </p>
+                    </div>
+                    <div className="bg-muted/50 rounded-lg p-3 text-sm">
+                      <p className="font-medium mb-1">💡 Optional Add-on:</p>
+                      <p className="text-muted-foreground">
+                        If patient suspects hormonal barriers (thyroid, cortisol), offer Hormone Optimization Bundle at +$149/mo.
                       </p>
                     </div>
                   </div>
