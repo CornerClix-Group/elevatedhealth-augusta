@@ -166,24 +166,24 @@ const WeightLoss = () => {
     {
       step: "01",
       headline: "Meet Lauren In-Person.",
-      body: "Book a $99 consultation at our Evans clinic. During your 30-minute visit, Lauren will hand you your ZRT Saliva Test kit and explain exactly how to complete it at home."
+      body: "Book a $99 consultation at our Evans clinic. During your 30-minute visit, Lauren will review your medical history, medications, and determine your GLP-1 eligibility."
     },
     {
       step: "02",
-      headline: "Identify Your Barriers.",
-      body: "Our providers analyze your lab results to find the invisible hormonal blockers—like high cortisol or low testosterone—that have made previous diets fail."
+      headline: "Get Medical Clearance.",
+      body: "Based on your consultation, Lauren determines if you can start immediately or if she needs recent labs from your PCP. Most patients start the same week."
     },
     {
       step: "03",
-      headline: "GLP-1s + Hormone Support.",
-      body: "Receive your FDA-approved GLP-1 medication alongside targeted hormone support to ensure you burn fat while protecting your energy and lean muscle."
+      headline: "Start Your GLP-1.",
+      body: "Receive your FDA-approved Semaglutide or Tirzepatide medication with full provider support, dosing adjustments, and ongoing guidance."
     }
   ];
 
   const programIncludes = [
     { icon: Pill, text: "Weekly GLP-1 Medication (Semaglutide)" },
-    { icon: Droplet, text: "ZRT Home Hormone Kit (Included)" },
-    { icon: Activity, text: "'Blocker' Analysis Review" },
+    { icon: Shield, text: "Medical Eligibility Assessment" },
+    { icon: Activity, text: "Ongoing Provider Supervision" },
     { icon: Apple, text: "Nutrition & Macro Guidance" }
   ];
 
@@ -212,28 +212,28 @@ const WeightLoss = () => {
 
   const membershipInclusions = [
     "FDA-Approved GLP-1 Medication (Semaglutide) included.",
-    "ZRT Saliva Diagnostic Kit (shipped to your door).",
-    "Hormone Blocker Analysis (Cortisol, Estrogen, Testosterone check).",
-    "Adrenal & Hormone Support Protocols (if indicated by labs).",
+    "Medical eligibility screening included.",
+    "Unlimited provider messaging and support.",
+    "Dosage adjustments as needed.",
     "Priority Shipping from our Compounding Partner."
   ];
 
   const faqs = [
     {
       q: "How is this different from other online Semaglutide clinics?",
-      a: "Most clinics prescribe blindly. We are the only program that combines GLP-1 therapy with advanced saliva testing. We don't just suppress your appetite; we identify if stress (cortisol) or hormonal imbalances are driving your weight gain in the first place."
+      a: "Unlike telehealth-only clinics, we meet you in person at our Evans clinic. Lauren reviews your complete medical history, checks for contraindications, and provides ongoing supervision—not just a prescription and a wave goodbye."
     },
     {
-      q: "Do I need to go to a lab for blood work?",
-      a: "No. We use advanced ZRT Saliva testing which is more accurate for tissue hormone levels and can be done from the comfort of your home. No needles required."
+      q: "Do I need labs to start?",
+      a: "Most patients can start GLP-1 medication after their $99 consultation. If Lauren determines additional lab work would benefit your safety or results, she may request recent labs from your PCP or recommend optional hormone testing."
     },
     {
-      q: "Why do you test hormones for weight loss?",
-      a: "Because calories aren't the whole story. High cortisol causes belly fat, and estrogen dominance causes hip retention. If we don't fix the hormones, the weight often comes back."
+      q: "What if I want hormone testing too?",
+      a: "If you suspect hormonal barriers (high cortisol, thyroid issues), you can add our Hormone Optimization Bundle ($149/month) to your membership for comprehensive testing and bio-identical support."
     },
     {
-      q: "What if I have 'Adrenal Fatigue'?",
-      a: "This is exactly why we test. If your cortisol is dysregulated, we add a specific Adrenal Support protocol to your plan to ensure your body feels safe enough to release the weight."
+      q: "How quickly can I start medication?",
+      a: "Most patients start within a week of their consultation. Lauren will determine eligibility during your in-person visit and can often authorize treatment the same day."
     }
   ];
 
