@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { CheckCircle2, Calendar, Gift, Copy, Check, Phone } from "lucide-react";
+import { CheckCircle2, Calendar, Gift, Copy, Check, Phone, MapPin, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
@@ -220,6 +220,29 @@ const ConsultationConfirmed = () => {
                       style={{ border: 0, width: "100%", height: "500px" }}
                       title="Book Discovery Consultation"
                     />
+                  </div>
+
+                  {/* Clinic Location - In-Person Consultations */}
+                  <div className="bg-primary/5 rounded-lg p-4 border border-primary/20 mb-6">
+                    <div className="flex items-start gap-3">
+                      <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm mb-1">In-Person Visit Location</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          {SITE_CONFIG.address.line1}<br />
+                          {SITE_CONFIG.address.cityStateZip}
+                        </p>
+                        <a 
+                          href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(SITE_CONFIG.address.full)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                        >
+                          Get Directions
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
