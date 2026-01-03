@@ -419,7 +419,7 @@ const WhatToExpectPage = () => {
                 Ready to Start Your Healing Journey?
               </h2>
               <p className="font-inter text-xl mb-8 text-primary-foreground/90">
-                Book your free 15-minute consultation today. No obligation, completely confidential.
+                Book your 30-minute consultation today. No obligation, completely confidential.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

@@ -1096,7 +1096,7 @@ const PatientLogin = () => {
                             At Elevated Health, we prioritize your safety above all else.
                           </p>
                           <p className="text-muted-foreground text-sm">
-                            This brief 15-minute triage call is designed to:
+                            This brief 30-minute triage call is designed to:
                           </p>
                           <ul className="text-sm text-muted-foreground text-left mt-3 space-y-2 max-w-sm mx-auto">
                             <li className="flex items-start gap-2">

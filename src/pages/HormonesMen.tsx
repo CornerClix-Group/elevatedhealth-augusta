@@ -480,7 +480,7 @@ const HormonesMen = () => {
                   </p>
                 </div>
                 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-2 gap-6">
                   {treatmentOptions.map((option, index) => (
                     <Card key={index} className="hover:shadow-lg transition-shadow border-primary/20">
                       <CardContent className="p-6">
@@ -519,7 +519,7 @@ const HormonesMen = () => {
                         Includes $99 credit toward Diagnostics
                       </p>
                       <p className="text-sm text-muted-foreground mb-4">
-                        A 15-minute consultation to discuss your goals and determine if you are a candidate for testosterone optimization.
+                        A 30-minute consultation to discuss your goals and determine if you are a candidate for testosterone optimization.
                       </p>
                       <ul className="text-xs text-muted-foreground space-y-1.5 mb-4">
                         <li className="flex items-start gap-2">
@@ -660,7 +660,7 @@ const HormonesMen = () => {
                       <div>
                         <h3 className="text-xl font-bold mb-2">The Precision Dosing Advantage</h3>
                         <p className="text-muted-foreground">
-                          Unlike pellets, which lock you into a dose for months even if side effects occur, our <strong>injection and cream protocols allow for weekly micro-adjustments</strong> to ensure optimal testosterone levels. We can fine-tune your therapy in real-time based on how you feel and your lab results.
+                          Unlike pellets, which lock you into a dose for months even if side effects occur, our <strong>cream protocols allow for daily micro-adjustments</strong> to ensure optimal testosterone levels. We can fine-tune your therapy in real-time based on how you feel and your lab results.
                         </p>
                       </div>
                     </div>
