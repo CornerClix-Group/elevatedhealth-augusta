@@ -87,7 +87,7 @@ const SafetyGate = ({ patientName, patientEmail, patientPhone, safetyFlags, trea
             <div className="bg-white dark:bg-gray-900 rounded-lg p-4 space-y-3">
               <h3 className="font-medium text-foreground flex items-center gap-2">
                 <Clock className="w-4 h-4 text-primary" />
-                This brief 15-minute triage call is designed to:
+                This brief 30-minute triage call is designed to:
               </h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
