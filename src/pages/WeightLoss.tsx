@@ -95,18 +95,18 @@ const WeightLoss = () => {
   const processSteps = [
     {
       step: "01",
-      headline: "Meet Lauren In-Person.",
-      body: "Book a $99 consultation at our Evans clinic. During your 30-minute visit, Lauren will review your medical history, medications, and determine your GLP-1 eligibility."
+      headline: "Book Your $99 Consultation.",
+      body: "Schedule your 30-minute in-person visit at our Evans clinic. Lauren will review your medical history, medications, and determine your GLP-1 eligibility."
     },
     {
       step: "02",
-      headline: "Get Medical Clearance.",
-      body: "Based on your consultation, Lauren determines if you can start immediately or if she needs recent labs from your PCP. Most patients start the same week."
+      headline: "Get Cleared Same Day.",
+      body: "Most patients are approved immediately during their consultation. If Lauren needs additional information, she'll coordinate with your PCP."
     },
     {
       step: "03",
-      headline: "Start Your GLP-1.",
-      body: "Receive your FDA-approved Semaglutide or Tirzepatide medication with full provider support, dosing adjustments, and ongoing guidance."
+      headline: "Start Medication with First Month Discount.",
+      body: "Your $99 consultation fee is credited toward your first month — pay just $300 for Semaglutide or $400 for Tirzepatide to start."
     }
   ];
 
@@ -466,6 +466,163 @@ const WeightLoss = () => {
             </div>
           </section>
 
+          {/* Stop Overpaying - National Brand Comparison */}
+          <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 to-secondary/30">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="max-w-5xl mx-auto">
+                <div className="text-center mb-12">
+                  <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
+                    The Real Cost
+                  </p>
+                  <h2 className="font-cormorant text-primary text-3xl md:text-4xl font-bold mb-4">
+                    Stop Overpaying for Less Care
+                  </h2>
+                  <p className="text-lg text-muted-foreground font-lato max-w-2xl mx-auto">
+                    Telehealth apps split charges to hide the real cost. We include everything in one transparent price.
+                  </p>
+                </div>
+
+                {/* Savings Callout */}
+                <div className="mb-10 flex flex-col sm:flex-row gap-4 justify-center">
+                  <div className="inline-flex items-center gap-3 px-6 py-3 bg-green-50 border border-green-200 rounded-xl">
+                    <div className="flex items-center justify-center w-10 h-10 bg-green-500 rounded-full">
+                      <TrendingDown className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm text-green-600 font-medium font-lato">Save up to</p>
+                      <p className="text-2xl font-bold text-green-700 font-cormorant">$1,140/year</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Comparison Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse bg-white rounded-xl shadow-sm overflow-hidden">
+                    <thead>
+                      <tr className="bg-primary/5">
+                        <th className="p-4 text-left font-cormorant text-lg text-primary"></th>
+                        <th className="p-4 text-center font-cormorant text-lg text-muted-foreground">
+                          <span className="block">Telehealth Apps</span>
+                          <span className="text-sm font-lato font-normal">(Ro, Hims, etc.)</span>
+                        </th>
+                        <th className="p-4 text-center font-cormorant text-lg text-gold bg-gold/10">
+                          <span className="block">Elevated Health</span>
+                          <span className="text-sm font-lato font-normal">Augusta, GA</span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b border-border/50">
+                        <td className="p-4 font-lato text-primary font-medium">Real Cost (Semaglutide)</td>
+                        <td className="p-4 text-center">
+                          <span className="text-lg font-bold text-muted-foreground line-through">$494/mo</span>
+                          <p className="text-xs text-muted-foreground">$145 membership + $349 medication</p>
+                        </td>
+                        <td className="p-4 text-center bg-gold/5">
+                          <span className="text-xl font-bold text-gold">$399/mo</span>
+                          <p className="text-xs text-green-600 font-medium">All-inclusive</p>
+                        </td>
+                      </tr>
+                      <tr className="border-b border-border/50">
+                        <td className="p-4 font-lato text-primary font-medium">Real Cost (Tirzepatide)</td>
+                        <td className="p-4 text-center">
+                          <span className="text-lg font-bold text-muted-foreground line-through">$594/mo</span>
+                          <p className="text-xs text-muted-foreground">$145 membership + $449 medication</p>
+                        </td>
+                        <td className="p-4 text-center bg-gold/5">
+                          <span className="text-xl font-bold text-gold">$499/mo</span>
+                          <p className="text-xs text-green-600 font-medium">All-inclusive</p>
+                        </td>
+                      </tr>
+                      <tr className="border-b border-border/50">
+                        <td className="p-4 font-lato text-primary font-medium">Hidden Membership Fees</td>
+                        <td className="p-4 text-center">
+                          <span className="text-red-500 font-medium">Yes — $145/month ongoing</span>
+                        </td>
+                        <td className="p-4 text-center bg-gold/5">
+                          <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
+                          <span className="text-xs text-green-600">No hidden fees</span>
+                        </td>
+                      </tr>
+                      <tr className="border-b border-border/50">
+                        <td className="p-4 font-lato text-primary font-medium">In-Person Medical Exam</td>
+                        <td className="p-4 text-center">
+                          <span className="text-muted-foreground">Video call or questionnaire</span>
+                        </td>
+                        <td className="p-4 text-center bg-gold/5">
+                          <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
+                          <span className="text-xs text-green-600">30-min with Lauren</span>
+                        </td>
+                      </tr>
+                      <tr className="border-b border-border/50">
+                        <td className="p-4 font-lato text-primary font-medium">Same-Day Approval</td>
+                        <td className="p-4 text-center">
+                          <span className="text-muted-foreground">2-5 business days</span>
+                        </td>
+                        <td className="p-4 text-center bg-gold/5">
+                          <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
+                          <span className="text-xs text-green-600">Most patients</span>
+                        </td>
+                      </tr>
+                      <tr className="border-b border-border/50">
+                        <td className="p-4 font-lato text-primary font-medium">Local Provider Access</td>
+                        <td className="p-4 text-center">
+                          <span className="text-muted-foreground">Call center support</span>
+                        </td>
+                        <td className="p-4 text-center bg-gold/5">
+                          <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
+                          <span className="text-xs text-green-600">Direct messaging</span>
+                        </td>
+                      </tr>
+                      <tr className="border-b border-border/50">
+                        <td className="p-4 font-lato text-primary font-medium">Hormone Integration</td>
+                        <td className="p-4 text-center">
+                          <span className="text-muted-foreground">Not offered</span>
+                        </td>
+                        <td className="p-4 text-center bg-gold/5">
+                          <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
+                          <span className="text-xs text-green-600">$149/mo add-on</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="p-4 font-lato text-primary font-medium">Mental Health Support</td>
+                        <td className="p-4 text-center">
+                          <span className="text-muted-foreground">Not offered</span>
+                        </td>
+                        <td className="p-4 text-center bg-gold/5">
+                          <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
+                          <span className="text-xs text-green-600">Ketamine-certified provider</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p className="text-center text-xs text-muted-foreground mt-6 font-lato">
+                  Comparison based on publicly available Ro pricing as of January 2025. Membership: $45 first month, then $145/mo. 
+                  Medication costs are additional and vary by dosage.
+                </p>
+
+                <div className="mt-10 text-center">
+                  <Button 
+                    onClick={handleConsultationCheckout}
+                    disabled={isConsultationLoading}
+                    size="lg"
+                    className="bg-primary hover:bg-primary/90 text-white font-lato"
+                  >
+                    {isConsultationLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Calendar className="mr-2 h-4 w-4" />
+                    )}
+                    {isConsultationLoading ? "Processing..." : "Book $99 Consultation — Get $99 Credit"}
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-2">First month: $300 (Semaglutide) or $400 (Tirzepatide)</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* GLP-1 Comparison Table */}
           <section className="py-16 md:py-24 bg-gradient-to-br from-[#f5f0e8] via-[#faf7f2] to-[#f0ebe3]">
             <div className="container mx-auto px-4 sm:px-6">
@@ -498,7 +655,7 @@ const WeightLoss = () => {
                           <div className="flex flex-col items-center gap-1">
                             <span className="inline-block px-2 py-0.5 bg-gold text-white text-xs rounded-full mb-1 font-lato">Premium</span>
                             <span className="font-bold">Tirzepatide</span>
-                            <span className="text-gold text-lg font-lato">$599/mo</span>
+                            <span className="text-gold text-lg font-lato">$499/mo</span>
                           </div>
                         </th>
                       </tr>
