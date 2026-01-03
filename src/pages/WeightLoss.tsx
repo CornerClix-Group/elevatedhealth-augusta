@@ -111,7 +111,7 @@ const WeightLoss = () => {
   ];
 
   const programIncludes = [
-    { icon: Pill, text: "Weekly GLP-1 Medication (Semaglutide)" },
+    { icon: Pill, text: "Weekly GLP-1 Medications" },
     { icon: Shield, text: "Medical Eligibility Assessment" },
     { icon: Activity, text: "Ongoing Provider Supervision" },
     { icon: Apple, text: "Nutrition & Macro Guidance" }
