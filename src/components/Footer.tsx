@@ -74,22 +74,6 @@ const Footer = () => {
                 </li>
                 <li>
                   <button 
-                    onClick={() => navigate(SITE_CONFIG.routes.ivLounge)} 
-                    className="hover:text-background transition-colors"
-                  >
-                    IV Lounge
-                  </button>
-                </li>
-                <li>
-                  <button 
-                    onClick={() => navigate("/peptides")} 
-                    className="hover:text-background transition-colors"
-                  >
-                    Peptide Therapy
-                  </button>
-                </li>
-                <li>
-                  <button 
                     onClick={() => navigate("/pricing")} 
                     className="hover:text-background transition-colors"
                   >

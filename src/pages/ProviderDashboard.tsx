@@ -2154,14 +2154,14 @@ const ProviderDashboard = () => {
                 baseMembership="metabolic"
               />
 
-              {/* Peptide Add-On Selector */}
+              {/* SUNSETTED ADD-ON SELECTORS - Hidden but code preserved for future reactivation
+              
               <PeptideAddonSelector
                 patientId={selectedPatient.patient.id}
                 patientName={selectedPatient.patient.full_name}
                 currentPeptides={(selectedPatient.patient.medical_history as Record<string, any>)?.peptide_protocols || []}
               />
 
-              {/* Hair Restoration Add-On Selector */}
               <HairRestorationAddonSelector
                 patientId={selectedPatient.patient.id}
                 patientName={selectedPatient.patient.full_name}
@@ -2170,7 +2170,6 @@ const ProviderDashboard = () => {
                 onUpdate={() => loadData()}
               />
 
-              {/* Sexual Wellness Add-On Selector */}
               <SexualWellnessAddonSelector
                 patientId={selectedPatient.patient.id}
                 patientName={selectedPatient.patient.full_name}
@@ -2179,6 +2178,8 @@ const ProviderDashboard = () => {
                 currentProducts={(selectedPatient.patient.medical_history as Record<string, any>)?.sexual_wellness_products || []}
                 onUpdate={() => loadData()}
               />
+              
+              */}
 
               {/* À La Carte Payment Card - For non-members */}
               <AlaCartePaymentCard

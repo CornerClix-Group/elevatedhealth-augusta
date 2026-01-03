@@ -82,37 +82,16 @@ Labs are the Gold Standard, but NOT a barrier to entry. We strongly recommend di
 **LABS NOT REQUIRED:** Most patients can start GLP-1 medication after their $99 consultation. Lauren reviews your medical history during the visit and determines eligibility. If needed, she may request recent labs from your PCP (within 3 months).
 **Optional Enhancement:** Patients concerned about hormonal barriers (cortisol, thyroid) can add Hormone Optimization Bundle for $149/month.
 
-### 4. PEPTIDE THERAPY
-**Options:**
-- Sermorelin: $149/month (growth hormone support, better sleep, recovery)
-- NAD+ Injections: $199/month (anti-aging, brain clarity, energy)
-- NAD+ Nasal Spray: $99 one-time
-- NAD+ Troches: $99/month
-- PT-141: $225 per 10-dose kit (intimacy support)
+// NOTE: The following services are currently paused. 
+// If asked, respond: "We're currently focusing on our core services—Ketamine Therapy, 
+// Hormone Optimization, and Medical Weight Loss. These additional services will be 
+// available again soon. How can I help you with one of our active programs?"
 
-### 5. SEXUAL WELLNESS
-**For Men:**
-- Tadalafil (generic Cialis): $99/month
-- Sildenafil (generic Viagra): $79/month
-**For Women:**
-- PT-141 peptide: $225 per kit
-- Oxytocin nasal spray: $79/month
-
-### 6. HAIR RESTORATION
-**Options:**
-- Oral Minoxidil + Finasteride: $129/month
-- Dutasteride Protocol: $149/month
-- GHK-Cu Copper Peptide Serum: $99 one-time
-
-### 7. IV NUTRIENT THERAPY (No Consult Required)
-**Popular Drips:**
-- The Resurrection: $169 (hangover/nausea recovery)
-- The Shield: $179 (immunity boost)
-- The Glow: $169 (beauty/skin)
-- Beast Mode: $189 (athletic performance)
-- Myers Cocktail: $149 (general wellness)
-**Add-ons:** B12 ($25), Glutathione ($35), NAD+ Booster ($50)
-**Note:** Can book directly without a prior consultation
+// PAUSED SERVICES (do not actively promote):
+// - Peptide Therapy
+// - Sexual Wellness  
+// - Hair Restoration
+// - IV Nutrient Therapy
 
 ---
 

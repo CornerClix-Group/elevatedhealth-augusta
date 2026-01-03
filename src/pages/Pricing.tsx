@@ -43,20 +43,18 @@ const serviceCategories = [
   { id: "mental", label: "Mental Wellness", icon: Brain },
   { id: "weight", label: "Weight Loss", icon: Scale },
   { id: "hormones", label: "Hormones", icon: Heart },
-  { id: "peptides", label: "Peptides", icon: Syringe },
-  { id: "iv", label: "IV Hydration", icon: Droplets },
-  { id: "hair", label: "Hair Restoration", icon: Scissors },
-  { id: "sexual", label: "Sexual Wellness", icon: HeartPulse },
+  // SUNSETTED: peptides, iv, hair, sexual - hidden but code preserved
 ];
 
 const serviceBookingUrls: Record<string, string> = {
   mental: "https://calendar.app.google/Cmwuzg5TYMeACQ4i6", // Ketamine Candidacy Review
   weight: "https://calendar.app.google/Nr1ruba57eqELJG19", // Medical Weight Loss Strategy Session
   hormones: "https://calendar.app.google/npnih9qTAXu5PKLX6", // Hormone Optimization Strategy Session
-  peptides: "https://calendar.app.google/TwKGsbXLpGdTBpp9A", // Peptide Optimization Strategy Session
-  iv: "https://calendar.app.google/tho8888rMkQpURzn7", // IV Therapy Session
-  hair: "https://calendar.app.google/qicauwUqfSerdEi16", // Hair Restoration Strategy Session
-  sexual: "https://calendar.app.google/RkzUZ7uJZ3EJwyzy5", // Sexual Wellness Private Consultation
+  // SUNSETTED booking URLs preserved for future reactivation:
+  // peptides: "https://calendar.app.google/TwKGsbXLpGdTBpp9A",
+  // iv: "https://calendar.app.google/tho8888rMkQpURzn7",
+  // hair: "https://calendar.app.google/qicauwUqfSerdEi16",
+  // sexual: "https://calendar.app.google/RkzUZ7uJZ3EJwyzy5",
   default: SITE_CONFIG.bookingUrl, // New Patient Application Call
 };
 
@@ -94,7 +92,14 @@ const Pricing = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // SUNSETTED: peptides, iv, hair, sexual are excluded from "all" view
+  const sunsettedCategories = ["peptides", "iv", "hair", "sexual"];
+  
   const shouldShow = (category: string) => {
+    // Never show sunsetted categories
+    if (sunsettedCategories.includes(category)) {
+      return false;
+    }
     return activeCategory === "all" || activeCategory === category;
   };
 

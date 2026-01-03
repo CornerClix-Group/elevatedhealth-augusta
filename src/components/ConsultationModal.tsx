@@ -101,6 +101,7 @@ const WellnessIcon = ({ className }: { className?: string }) => (
 const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
   const [loadingService, setLoadingService] = useState<string | null>(null);
 
+  // Active services only - sunsetted services (peptide, hair, sexual) hidden but code preserved
   const consultationOptions = [
     {
       icon: NeuralIcon,
@@ -120,24 +121,25 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
       description: "Bioidentical hormone therapy to restore vitality",
       serviceType: "hormone"
     },
-    {
-      icon: CellularIcon,
-      title: "Peptide Therapy",
-      description: "Sermorelin, NAD+, PT-141 & GHK-Cu for cellular optimization",
-      serviceType: "peptide"
-    },
-    {
-      icon: HairIcon,
-      title: "Hair Restoration",
-      description: "Finasteride, minoxidil & PRP therapy for hair regrowth",
-      serviceType: "hair"
-    },
-    {
-      icon: WellnessIcon,
-      title: "Sexual Wellness",
-      description: "Discreet treatment for ED, low libido & intimate health",
-      serviceType: "sexual"
-    }
+    // SUNSETTED OPTIONS - preserved for future reactivation:
+    // {
+    //   icon: CellularIcon,
+    //   title: "Peptide Therapy",
+    //   description: "Sermorelin, NAD+, PT-141 & GHK-Cu for cellular optimization",
+    //   serviceType: "peptide"
+    // },
+    // {
+    //   icon: HairIcon,
+    //   title: "Hair Restoration",
+    //   description: "Finasteride, minoxidil & PRP therapy for hair regrowth",
+    //   serviceType: "hair"
+    // },
+    // {
+    //   icon: WellnessIcon,
+    //   title: "Sexual Wellness",
+    //   description: "Discreet treatment for ED, low libido & intimate health",
+    //   serviceType: "sexual"
+    // }
   ];
 
   const handlePaidConsultation = async (serviceType: string) => {
