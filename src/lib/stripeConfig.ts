@@ -188,18 +188,31 @@ export const KETAMINE_PRICES = {
 } as const;
 
 // ============================================================================
-// WEIGHT LOSS / GLP-1
+// WEIGHT LOSS / GLP-1 MEMBERSHIPS
 // ============================================================================
 
 export const WEIGHT_LOSS_PRICES = {
-  glp1Continuation: {
-    priceId: "price_1Sd8ChEOtKRY99pu7iaAF3Jd",
-    amount: 44900, // $449
-    displayPrice: "$449",
-    name: "GLP-1 Continuation Month",
-    description: "One month of semaglutide medication supply",
-    mode: "payment" as const,
-    edgeFunction: "create-glp1-continuation-checkout",
+  semaglutide: {
+    priceId: "price_1SlZnwEOtKRY99puaBhrh2iB",
+    amount: 39900, // $399/mo
+    displayPrice: "$399/mo",
+    firstMonthWithCredit: "$300", // $399 - $99 consultation credit
+    name: "Semaglutide Membership",
+    description: "Monthly Semaglutide GLP-1 medication with provider support",
+    mode: "subscription" as const,
+    interval: "month",
+    edgeFunction: "create-semaglutide-checkout",
+  },
+  tirzepatide: {
+    priceId: "price_1SlZnyEOtKRY99puE9JNOrTR",
+    amount: 49900, // $499/mo
+    displayPrice: "$499/mo",
+    firstMonthWithCredit: "$400", // $499 - $99 consultation credit
+    name: "Tirzepatide Membership",
+    description: "Monthly Tirzepatide GLP-1/GIP medication with provider support",
+    mode: "subscription" as const,
+    interval: "month",
+    edgeFunction: "create-tirzepatide-checkout",
   },
 } as const;
 

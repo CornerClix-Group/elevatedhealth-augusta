@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { 
   CheckCircle2, Award, Heart, Users, TrendingDown, Activity, 
   Apple, Scale, Droplet, LineChart, Brain, Pill, Clock, 
-  MessageCircle, Shield, Sparkles, CreditCard, Loader2, RefreshCw, Calendar
+  MessageCircle, Shield, Sparkles, CreditCard, Loader2, Calendar
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -12,7 +12,6 @@ import { Helmet } from "react-helmet";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { trackEvent } from "@/lib/analytics";
 import AssistantHub from "@/components/AssistantHub";
-import { CreditCodeInput } from "@/components/CreditCodeInput";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -20,35 +19,8 @@ import NotReadyToBook from "@/components/NotReadyToBook";
 
 const WeightLoss = () => {
   const [isConsultationLoading, setIsConsultationLoading] = useState(false);
-  const [isMappingLoading, setIsMappingLoading] = useState(false);
-  const [isContinuationLoading, setIsContinuationLoading] = useState(false);
+  const [isSemaglutideLoading, setIsSemaglutideLoading] = useState(false);
   const [isTirzepatideLoading, setIsTirzepatideLoading] = useState(false);
-  const [isStarterLoading, setIsStarterLoading] = useState(false);
-  const [creditCode, setCreditCode] = useState("");
-  const [creditApplied, setCreditApplied] = useState(false);
-
-  const handleGLP1StarterCheckout = async () => {
-    setIsStarterLoading(true);
-    trackEvent("cta_click", { cta_name: "glp1_starter", destination: "checkout" });
-    try {
-      const { data, error } = await supabase.functions.invoke("create-glp1-starter-checkout", {
-        body: {}
-      });
-      
-      if (error) throw error;
-      
-      if (data?.url) {
-        window.open(data.url, "_blank");
-      } else {
-        throw new Error("No checkout URL returned");
-      }
-    } catch (err) {
-      console.error("GLP-1 Starter checkout error:", err);
-      toast.error("Failed to start checkout. Please try again or call us.");
-    } finally {
-      setIsStarterLoading(false);
-    }
-  };
 
   const handleConsultationCheckout = async () => {
     setIsConsultationLoading(true);
@@ -73,50 +45,11 @@ const WeightLoss = () => {
     }
   };
 
-  const handleMappingCheckout = async () => {
-    setIsMappingLoading(true);
-    trackEvent("cta_click", { cta_name: "hormone_mapping_weightloss", destination: "checkout" });
+  const handleSemaglutideCheckout = async () => {
+    setIsSemaglutideLoading(true);
+    trackEvent("cta_click", { cta_name: "semaglutide_membership", destination: "checkout" });
     try {
-      // Using "hormone" tier for $349 comprehensive Saliva + Blood Spot panel
-      const { data, error } = await supabase.functions.invoke("create-hormone-checkout", {
-        body: { 
-          mappingType: "hormone",
-          creditCode: creditCode || undefined
-        }
-      });
-      
-      if (error) throw error;
-      
-      if (data?.url) {
-        window.open(data.url, "_blank");
-      } else {
-        throw new Error("No checkout URL returned");
-      }
-    } catch (err) {
-      console.error("Mapping checkout error:", err);
-      toast.error("Failed to start checkout. Please try again or call us.");
-    } finally {
-      setIsMappingLoading(false);
-    }
-  };
-
-  const handleApplyCreditCode = () => {
-    if (creditCode && creditCode.length >= 5) {
-      setCreditApplied(true);
-      toast.success("Credit code applied! You'll save $99 at checkout.");
-    }
-  };
-
-  const handleClearCreditCode = () => {
-    setCreditCode("");
-    setCreditApplied(false);
-  };
-
-  const handleContinuationCheckout = async () => {
-    setIsContinuationLoading(true);
-    trackEvent("cta_click", { cta_name: "glp1_continuation", destination: "checkout" });
-    try {
-      const { data, error } = await supabase.functions.invoke("create-glp1-continuation-checkout", {
+      const { data, error } = await supabase.functions.invoke("create-semaglutide-checkout", {
         body: {}
       });
       
@@ -128,10 +61,10 @@ const WeightLoss = () => {
         throw new Error("No checkout URL returned");
       }
     } catch (err) {
-      console.error("Continuation checkout error:", err);
+      console.error("Semaglutide checkout error:", err);
       toast.error("Failed to start checkout. Please try again or call us.");
     } finally {
-      setIsContinuationLoading(false);
+      setIsSemaglutideLoading(false);
     }
   };
 
@@ -139,11 +72,8 @@ const WeightLoss = () => {
     setIsTirzepatideLoading(true);
     trackEvent("cta_click", { cta_name: "tirzepatide_membership", destination: "checkout" });
     try {
-      const { data, error } = await supabase.functions.invoke("create-metabolic-checkout", {
-        body: { 
-          priceId: "price_1SfidbEOtKRY99pulxINzzKl",
-          productType: "tirzepatide"
-        }
+      const { data, error } = await supabase.functions.invoke("create-tirzepatide-checkout", {
+        body: {}
       });
       
       if (error) throw error;
@@ -658,123 +588,7 @@ const WeightLoss = () => {
             </div>
           </section>
 
-          {/* À La Carte Options - For Budget-Conscious Patients */}
-          <section className="py-16 md:py-24 bg-background">
-            <div className="container mx-auto px-4 sm:px-6">
-              <div className="max-w-5xl mx-auto">
-                <div className="text-center mb-12">
-                  <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
-                    Flexible Options
-                  </p>
-                  <h2 className="font-cormorant text-primary text-3xl md:text-4xl font-bold mb-4">
-                    À La Carte Services
-                  </h2>
-                  <p className="text-lg text-muted-foreground font-lato max-w-2xl mx-auto">
-                    Not ready for a full membership? Start with a single consultation or diagnostic to see if our approach is right for you.
-                  </p>
-                </div>
-
-                <div className="grid md:grid-cols-3 gap-6">
-                  {/* Discovery Consultation */}
-                  <Card className="border border-border/50 hover:border-gold/40 transition-all">
-                    <CardContent className="p-6 text-center">
-                      <div className="inline-flex p-3 bg-gold/10 rounded-full mb-4">
-                        <MessageCircle className="h-6 w-6 text-gold" />
-                      </div>
-                      <h3 className="font-cormorant text-xl text-primary font-bold mb-2">
-                        Discovery Consultation
-                      </h3>
-                      <p className="text-3xl font-cormorant text-primary mb-2">$99</p>
-                      <p className="text-sm text-muted-foreground mb-4 font-lato">
-                        30-minute in-person strategy session at our Evans clinic to assess your eligibility and discuss options.
-                      </p>
-                      <Button 
-                        onClick={handleConsultationCheckout}
-                        disabled={isConsultationLoading}
-                        className="w-full bg-gold hover:bg-gold-dark text-white"
-                      >
-                        {isConsultationLoading ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                          <CreditCard className="mr-2 h-4 w-4" />
-                        )}
-                        {isConsultationLoading ? "..." : "Book - $99"}
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  {/* GLP-1 Starter */}
-                  <Card className="border border-gold/40 hover:border-gold transition-all relative">
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="bg-gold text-white text-xs px-3 py-1 rounded-full font-lato">
-                        Most Popular
-                      </span>
-                    </div>
-                    <CardContent className="p-6 text-center">
-                      <div className="inline-flex p-3 bg-gold/10 rounded-full mb-4">
-                        <Sparkles className="h-6 w-6 text-gold" />
-                      </div>
-                      <h3 className="font-cormorant text-xl text-primary font-bold mb-2">
-                        GLP-1 Starter Month
-                      </h3>
-                      <p className="text-3xl font-cormorant text-primary mb-2">$349</p>
-                      <p className="text-sm text-muted-foreground mb-4 font-lato">
-                        First month of Semaglutide + provider consultation. No commitment.
-                      </p>
-                      <Button 
-                        onClick={handleGLP1StarterCheckout}
-                        disabled={isStarterLoading}
-                        className="w-full bg-gold hover:bg-gold-dark text-white"
-                      >
-                        {isStarterLoading ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                          <CreditCard className="mr-2 h-4 w-4" />
-                        )}
-                        {isStarterLoading ? "Processing..." : "Start Your Trial - $349"}
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  {/* GLP-1 Continuation Month */}
-                  <Card className="border border-border/50 hover:border-gold/40 transition-all">
-                    <CardContent className="p-6 text-center">
-                      <div className="inline-flex p-3 bg-gold/10 rounded-full mb-4">
-                        <RefreshCw className="h-6 w-6 text-gold" />
-                      </div>
-                      <h3 className="font-cormorant text-xl text-primary font-bold mb-2">
-                        GLP-1 Continuation
-                      </h3>
-                      <p className="text-3xl font-cormorant text-primary mb-2">$449</p>
-                      <p className="text-xs text-muted-foreground mb-1 font-lato">
-                        per month • no commitment
-                      </p>
-                      <p className="text-sm text-muted-foreground mb-4 font-lato">
-                        Already started? Continue your GLP-1 with a monthly refill + check-in.
-                      </p>
-                      <Button 
-                        variant="outline"
-                        onClick={handleContinuationCheckout}
-                        disabled={isContinuationLoading}
-                        className="w-full border-gold/30 hover:bg-gold/5"
-                      >
-                        {isContinuationLoading ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                          <RefreshCw className="mr-2 h-4 w-4" />
-                        )}
-                        {isContinuationLoading ? "..." : "Continue Treatment"}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <p className="text-center text-sm text-muted-foreground mt-8 font-lato">
-                  All à la carte services can be applied toward membership enrollment within 60 days.
-                </p>
-              </div>
-            </div>
-          </section>
+          {/* Pricing Section - Simplified */}
           <section className="py-16 md:py-24 relative overflow-hidden">
             {/* Soft Slate Blue Gradient Background */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#2C3E50]/10 via-[#34495e]/15 to-[#2C3E50]/20" />
@@ -782,72 +596,108 @@ const WeightLoss = () => {
             <div className="container mx-auto px-4 sm:px-6 relative z-10">
               <div className="max-w-4xl mx-auto text-center mb-12">
                 <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
-                  By Invitation
+                  Simple Pricing
                 </p>
                 <h2 className="font-cormorant text-primary text-3xl md:text-4xl font-bold mb-4">
-                  The Elevated Membership
+                  Start Your Journey
                 </h2>
                 <p className="text-lg text-muted-foreground font-lato">
-                  Choose your GLP-1 medication • All-inclusive hormone-optimized care
+                  $99 consultation credited toward your first month of treatment
                 </p>
               </div>
 
-              {/* Two Membership Options */}
-              <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
-                {/* Semaglutide - Standard */}
+              {/* Three Cards: Consultation + Two Memberships */}
+              <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
+                
+                {/* Discovery Consultation */}
+                <Card className="border border-gold/30 hover:border-gold/50 transition-all">
+                  <CardContent className="p-6 text-center">
+                    <div className="inline-flex p-3 bg-gold/10 rounded-full mb-4">
+                      <MessageCircle className="h-6 w-6 text-gold" />
+                    </div>
+                    <h3 className="font-cormorant text-xl text-primary font-bold mb-2">
+                      Discovery Consultation
+                    </h3>
+                    <p className="text-3xl font-cormorant text-primary mb-2">$99</p>
+                    <p className="text-xs text-green-600 font-medium mb-2">
+                      Credited toward your first month
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-4 font-lato">
+                      30-minute in-person session to assess eligibility and create your personalized plan.
+                    </p>
+                    <Button 
+                      onClick={handleConsultationCheckout}
+                      disabled={isConsultationLoading}
+                      className="w-full bg-gold hover:bg-gold-dark text-white"
+                    >
+                      {isConsultationLoading ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <Calendar className="mr-2 h-4 w-4" />
+                      )}
+                      {isConsultationLoading ? "..." : "Book Consultation"}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Semaglutide Membership */}
                 <div 
-                  className="relative p-8 rounded-2xl border border-gold/30 animate-fade-in-up"
+                  className="relative p-6 rounded-2xl border border-gold/30 animate-fade-in-up"
                   style={{
                     background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 50%, rgba(250,247,242,0.8) 100%)',
                     backdropFilter: 'blur(20px)',
                     boxShadow: '0 8px 32px rgba(44, 62, 80, 0.08), inset 0 1px 0 rgba(255,255,255,0.8)'
                   }}
                 >
-                  <div className="relative z-10">
-                    <div className="text-center mb-6">
-                      <span className="inline-block px-3 py-1 bg-gold/10 text-gold text-xs font-medium rounded-full mb-3">
-                        Most Popular
-                      </span>
-                      <h3 className="font-cormorant text-2xl text-primary font-bold mb-2">
-                        Semaglutide
-                      </h3>
-                      <p className="text-sm text-muted-foreground font-lato mb-4">
-                        The trusted GLP-1 for steady, sustainable weight loss
-                      </p>
-                      <div className="flex items-baseline justify-center gap-1">
-                        <span className="font-cormorant text-4xl text-primary font-light">$399</span>
-                        <span className="text-primary/60 font-lato text-sm">/ month</span>
-                      </div>
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="bg-gold text-white text-xs px-3 py-1 rounded-full font-lato">
+                      Most Popular
+                    </span>
+                  </div>
+                  <div className="relative z-10 text-center pt-2">
+                    <div className="inline-flex p-3 bg-gold/10 rounded-full mb-4">
+                      <Pill className="h-6 w-6 text-gold" />
                     </div>
-
-                    <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent mb-6" />
-
-                    <ul className="space-y-3 mb-6 text-sm">
-                      {membershipInclusions.map((inclusion, index) => (
+                    <h3 className="font-cormorant text-xl text-primary font-bold mb-2">
+                      Semaglutide Membership
+                    </h3>
+                    <div className="flex items-baseline justify-center gap-1 mb-1">
+                      <span className="font-cormorant text-3xl text-primary font-light">$399</span>
+                      <span className="text-primary/60 font-lato text-sm">/ month</span>
+                    </div>
+                    <p className="text-xs text-green-600 font-medium mb-3">
+                      First month $300 with consultation credit
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-4 font-lato">
+                      FDA-approved GLP-1 for steady, sustainable weight loss with full provider support.
+                    </p>
+                    
+                    <ul className="space-y-2 mb-4 text-sm text-left">
+                      {membershipInclusions.slice(0, 4).map((inclusion, index) => (
                         <li key={index} className="flex items-start gap-2">
                           <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                          <span className="text-primary/70 font-lato">{inclusion}</span>
+                          <span className="text-primary/70 font-lato text-xs">{inclusion}</span>
                         </li>
                       ))}
                     </ul>
 
                     <Button 
-                      onClick={handleGLP1StarterCheckout}
-                      disabled={isStarterLoading}
+                      onClick={handleSemaglutideCheckout}
+                      disabled={isSemaglutideLoading}
                       size="lg" 
                       className="w-full bg-primary hover:bg-primary/90 text-white font-lato"
                     >
-                      {isStarterLoading ? (
+                      {isSemaglutideLoading ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       ) : null}
-                      {isStarterLoading ? "Processing..." : "Start with Semaglutide - $349"}
+                      {isSemaglutideLoading ? "Processing..." : "Start Semaglutide"}
                     </Button>
                   </div>
                 </div>
 
-                {/* Tirzepatide - Premium */}
+                {/* Tirzepatide Membership - Premium */}
                 <div 
-                  className="relative p-8 rounded-2xl border-2 border-gold/60 animate-fade-in-up"
+                  className="relative p-6 rounded-2xl border-2 border-gold/60 animate-fade-in-up"
                   style={{
                     animationDelay: "0.1s",
                     background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(250,247,242,0.9) 50%, rgba(212,160,23,0.05) 100%)',
@@ -862,45 +712,40 @@ const WeightLoss = () => {
                     </span>
                   </div>
 
-                  <div className="relative z-10">
-                    <div className="text-center mb-6 pt-2">
-                      <h3 className="font-cormorant text-2xl text-primary font-bold mb-2">
-                        Tirzepatide
-                      </h3>
-                      <p className="text-sm text-muted-foreground font-lato mb-4">
-                        Dual-action GLP-1/GIP for accelerated results
-                      </p>
-                      <div className="flex items-baseline justify-center gap-1">
-                        <span className="font-cormorant text-4xl text-gold font-light">$599</span>
-                        <span className="text-primary/60 font-lato text-sm">/ month</span>
-                      </div>
-                      <p className="text-xs text-green-600 font-medium mt-1">
-                        Up to 22.5% weight loss in clinical trials
-                      </p>
+                  <div className="relative z-10 text-center pt-2">
+                    <div className="inline-flex p-3 bg-gold/10 rounded-full mb-4">
+                      <Sparkles className="h-6 w-6 text-gold" />
                     </div>
+                    <h3 className="font-cormorant text-xl text-primary font-bold mb-2">
+                      Tirzepatide Membership
+                    </h3>
+                    <div className="flex items-baseline justify-center gap-1 mb-1">
+                      <span className="font-cormorant text-3xl text-gold font-light">$499</span>
+                      <span className="text-primary/60 font-lato text-sm">/ month</span>
+                    </div>
+                    <p className="text-xs text-green-600 font-medium mb-3">
+                      First month $400 with consultation credit
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-4 font-lato">
+                      Dual-action GLP-1/GIP for accelerated results — up to 22.5% weight loss.
+                    </p>
 
-                    <div className="h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent mb-6" />
-
-                    <ul className="space-y-3 mb-6 text-sm">
+                    <ul className="space-y-2 mb-4 text-sm text-left">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-lato">FDA-Approved Tirzepatide (dual GLP-1/GIP)</span>
+                        <span className="text-primary/70 font-lato text-xs">FDA-Approved Tirzepatide (dual GLP-1/GIP)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-lato">ZRT Saliva Diagnostic Kit included</span>
+                        <span className="text-primary/70 font-lato text-xs">Medical eligibility screening included</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-lato">Hormone Blocker Analysis (Cortisol, E2, T)</span>
+                        <span className="text-primary/70 font-lato text-xs">Unlimited provider messaging & support</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-lato">Adrenal & Hormone Support Protocols</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-lato">Priority Shipping from our Partner</span>
+                        <span className="text-primary/70 font-lato text-xs">Priority shipping from our partner</span>
                       </li>
                     </ul>
 
@@ -913,14 +758,14 @@ const WeightLoss = () => {
                       {isTirzepatideLoading ? (
                         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                       ) : null}
-                      {isTirzepatideLoading ? "Processing..." : "Apply for Tirzepatide"}
+                      {isTirzepatideLoading ? "Processing..." : "Start Tirzepatide"}
                     </Button>
                   </div>
                 </div>
               </div>
 
               <p className="mt-8 text-center text-xs text-primary/50 font-lato">
-                Limited availability. We accept new members each month. Cancel anytime.
+                Cancel anytime. Most patients see results within the first month.
               </p>
             </div>
           </section>
