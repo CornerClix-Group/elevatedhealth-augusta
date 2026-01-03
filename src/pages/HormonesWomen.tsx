@@ -286,12 +286,12 @@ const HormonesWomen = () => {
           {/* Hero Section */}
           <section className="relative pt-20 pb-24 md:pt-28 md:pb-32 overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-feminine/10 via-background to-feminine/5"></div>
-            <div className="container mx-auto px-4 sm:px-6 relative z-10">
+            <div className="container mx-auto px-3 sm:px-4 md:px-6 relative z-10">
               <div className="max-w-5xl mx-auto text-center">
                 <img 
                   src={elevatedForHerLogo} 
                   alt="Elevated+ for Her" 
-                  className="h-32 mx-auto mb-8 animate-fade-in-up"
+                  className="h-20 sm:h-24 md:h-32 w-auto max-w-full mx-auto mb-8 animate-fade-in-up"
                 />
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in-up leading-tight" style={{ animationDelay: "0.1s" }}>
                   Finally Feel Like<br />Yourself Again
