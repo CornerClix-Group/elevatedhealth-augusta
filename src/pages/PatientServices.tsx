@@ -23,6 +23,7 @@ interface Service {
   actionLabel: string;
 }
 
+// ACTIVE SERVICES - Core offerings shown to patients
 const SERVICES: Service[] = [
   {
     id: "hormone",
@@ -57,50 +58,51 @@ const SERVICES: Service[] = [
     journeyPage: "/patient/mental-wellness",
     actionLabel: "Access Mind Care",
   },
-  {
-    id: "peptides",
-    name: "Peptide Therapy",
-    description: "Growth hormone support, NAD+ for brain restoration, and intimacy enhancement.",
-    icon: <Syringe className="w-6 h-6" />,
-    treatmentKey: "peptides",
-    publicPage: "/peptides",
-    color: "blue",
-    journeyPage: "/patient/hormone-journey",
-    actionLabel: "View Protocol",
-  },
-  {
-    id: "iv_lounge",
-    name: "IV Hydration Lounge",
-    description: "Vitamin infusions for wellness, immunity, recovery, and beauty.",
-    icon: <Droplets className="w-6 h-6" />,
-    treatmentKey: "iv_lounge",
-    publicPage: "/iv-lounge",
-    color: "teal",
-    journeyPage: "/iv-lounge",
-    actionLabel: "Book Session",
-  },
-  {
-    id: "hair_restoration",
-    name: "Hair Restoration",
-    description: "FDA-approved medications and peptide therapy for hair loss and regrowth.",
-    icon: <Scissors className="w-6 h-6" />,
-    treatmentKey: "hair_restoration",
-    publicPage: "/hair-restoration",
-    color: "amber",
-    journeyPage: "/patient/hormone-journey",
-    actionLabel: "View Protocol",
-  },
-  {
-    id: "sexual_wellness",
-    name: "Sexual Wellness",
-    description: "Discreet ED treatments and intimacy enhancement. Private consultations.",
-    icon: <Heart className="w-6 h-6" />,
-    treatmentKey: "sexual_wellness",
-    publicPage: "/sexual-wellness",
-    color: "rose",
-    journeyPage: "/patient/hormone-journey",
-    actionLabel: "View Treatment",
-  },
+  // SUNSETTED SERVICES - Hidden but code preserved for future reactivation
+  // {
+  //   id: "peptides",
+  //   name: "Peptide Therapy",
+  //   description: "Growth hormone support, NAD+ for brain restoration, and intimacy enhancement.",
+  //   icon: <Syringe className="w-6 h-6" />,
+  //   treatmentKey: "peptides",
+  //   publicPage: "/peptides",
+  //   color: "blue",
+  //   journeyPage: "/patient/hormone-journey",
+  //   actionLabel: "View Protocol",
+  // },
+  // {
+  //   id: "iv_lounge",
+  //   name: "IV Hydration Lounge",
+  //   description: "Vitamin infusions for wellness, immunity, recovery, and beauty.",
+  //   icon: <Droplets className="w-6 h-6" />,
+  //   treatmentKey: "iv_lounge",
+  //   publicPage: "/iv-lounge",
+  //   color: "teal",
+  //   journeyPage: "/iv-lounge",
+  //   actionLabel: "Book Session",
+  // },
+  // {
+  //   id: "hair_restoration",
+  //   name: "Hair Restoration",
+  //   description: "FDA-approved medications and peptide therapy for hair loss and regrowth.",
+  //   icon: <Scissors className="w-6 h-6" />,
+  //   treatmentKey: "hair_restoration",
+  //   publicPage: "/hair-restoration",
+  //   color: "amber",
+  //   journeyPage: "/patient/hormone-journey",
+  //   actionLabel: "View Protocol",
+  // },
+  // {
+  //   id: "sexual_wellness",
+  //   name: "Sexual Wellness",
+  //   description: "Discreet ED treatments and intimacy enhancement. Private consultations.",
+  //   icon: <Heart className="w-6 h-6" />,
+  //   treatmentKey: "sexual_wellness",
+  //   publicPage: "/sexual-wellness",
+  //   color: "rose",
+  //   journeyPage: "/patient/hormone-journey",
+  //   actionLabel: "View Treatment",
+  // },
 ];
 
 const PatientServices = () => {

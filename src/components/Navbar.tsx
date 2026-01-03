@@ -118,53 +118,7 @@ const Navbar = () => {
               Hormones
             </button>
 
-            {/* Secondary Services - More Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button 
-                  className="text-sm font-lato font-normal tracking-wide transition-colors hover:opacity-70 flex items-center gap-1"
-                  style={{ color: '#2C3E50' }}
-                >
-                  More
-                  <ChevronDown className="w-3 h-3" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                align="start" 
-                className="w-48 bg-white border border-border shadow-lg z-[100]"
-              >
-                <DropdownMenuItem 
-                  onClick={() => navigate(SITE_CONFIG.routes.ivLounge)}
-                  className="cursor-pointer"
-                  style={{ color: '#2C3E50' }}
-                >
-                  IV Lounge
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => navigate("/peptides")}
-                  className="cursor-pointer"
-                  style={{ color: '#2C3E50' }}
-                >
-                  Peptides
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => navigate("/hair-restoration")}
-                  className="cursor-pointer"
-                  style={{ color: '#2C3E50' }}
-                >
-                  Hair Restoration
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => navigate("/sexual-wellness")}
-                  className="cursor-pointer"
-                  style={{ color: '#2C3E50' }}
-                >
-                  Sexual Wellness
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <button 
+            <button
               onClick={() => navigate("/pricing")}
               className="text-sm font-lato font-normal tracking-wide transition-colors hover:opacity-70"
               style={{ color: '#2C3E50' }}
@@ -328,47 +282,7 @@ const Navbar = () => {
                 Hormones
               </button>
 
-              <button 
-                onClick={() => {
-                  navigate(SITE_CONFIG.routes.ivLounge);
-                  setIsMobileMenuOpen(false);
-                }}
-                className="mobile-menu-link"
-              >
-                IV Lounge
-              </button>
-
-              <button 
-                onClick={() => {
-                  navigate("/peptides");
-                  setIsMobileMenuOpen(false);
-                }}
-                className="mobile-menu-link"
-              >
-                Peptides
-              </button>
-
-              <button 
-                onClick={() => {
-                  navigate("/hair-restoration");
-                  setIsMobileMenuOpen(false);
-                }}
-                className="mobile-menu-link"
-              >
-                Hair Restoration
-              </button>
-
-              <button 
-                onClick={() => {
-                  navigate("/sexual-wellness");
-                  setIsMobileMenuOpen(false);
-                }}
-                className="mobile-menu-link"
-              >
-                Sexual Wellness
-              </button>
-
-              <button 
+              <button
                 onClick={() => {
                   navigate("/pricing");
                   setIsMobileMenuOpen(false);

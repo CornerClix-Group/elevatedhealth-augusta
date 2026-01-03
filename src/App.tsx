@@ -103,10 +103,11 @@ const App = () => (
           {/* Informational Routes */}
           <Route path="/military-veteran" element={<MilitaryVeteran />} />
           <Route path="/how-ketamine-works" element={<HowKetamineWorks />} />
-          <Route path="/peptides" element={<PeptideTherapy />} />
-          <Route path="/hair-restoration" element={<HairRestoration />} />
-          <Route path="/sexual-wellness" element={<SexualWellness />} />
-          <Route path="/iv-lounge" element={<IVLounge />} />
+          {/* SUNSETTED SERVICE ROUTES - Redirect to homepage */}
+          <Route path="/peptides" element={<NotFound />} />
+          <Route path="/hair-restoration" element={<NotFound />} />
+          <Route path="/sexual-wellness" element={<NotFound />} />
+          <Route path="/iv-lounge" element={<NotFound />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/pricing-comparison" element={<PricingComparison />} />
           <Route path="/affordability" element={<Affordability />} />
