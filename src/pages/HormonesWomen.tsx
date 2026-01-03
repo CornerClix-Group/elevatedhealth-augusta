@@ -563,18 +563,22 @@ const HormonesWomen = () => {
                         <strong>Ideal for:</strong> Women seeking menopause relief, libido restoration, or hormone optimization.
                       </p>
                       
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+                        <p className="text-xs text-amber-800 font-medium text-center">
+                          ⬆️ Complete Steps 1 & 2 first to unlock Membership
+                        </p>
+                      </div>
                       <Button 
-                        onClick={handleVitalityCheckout}
-                        disabled={isVitalityLoading}
-                        className="w-full bg-feminine hover:bg-feminine-light text-feminine-foreground"
+                        variant="outline"
+                        disabled
+                        className="w-full border-feminine/50 text-muted-foreground"
                       >
-                        {isVitalityLoading ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                          <CreditCard className="mr-2 h-4 w-4" />
-                        )}
-                        {isVitalityLoading ? "Processing..." : "Apply for Membership"}
+                        <Calendar className="mr-2 h-4 w-4" />
+                        Book Consultation First
                       </Button>
+                      <p className="text-[10px] text-muted-foreground text-center mt-3 italic">
+                        Your provider will enroll you after your consultation and lab review.
+                      </p>
                     </CardContent>
                   </Card>
                 </div>
