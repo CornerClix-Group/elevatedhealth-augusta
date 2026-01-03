@@ -630,19 +630,22 @@ const HormonesMen = () => {
                           Direct provider access
                         </li>
                       </ul>
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+                        <p className="text-xs text-amber-800 font-medium text-center">
+                          ⬆️ Complete Steps 1 & 2 first to unlock Membership
+                        </p>
+                      </div>
                       <Button 
-                        onClick={handleMembershipCheckout}
-                        disabled={isMembershipLoading}
-                        variant="outline" 
-                        className="w-full border-primary hover:bg-primary hover:text-primary-foreground"
+                        variant="outline"
+                        disabled
+                        className="w-full border-primary/50 text-muted-foreground"
                       >
-                        {isMembershipLoading ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                          <CreditCard className="mr-2 h-4 w-4" />
-                        )}
-                        {isMembershipLoading ? "Processing..." : "Apply for Membership"}
+                        <Calendar className="mr-2 h-4 w-4" />
+                        Book Consultation First
                       </Button>
+                      <p className="text-[10px] text-muted-foreground text-center mt-3 italic">
+                        Your provider will enroll you after your consultation and lab review.
+                      </p>
                     </CardContent>
                   </Card>
                 </div>
