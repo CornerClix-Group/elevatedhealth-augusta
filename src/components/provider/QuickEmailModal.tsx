@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Search, Mail, Send } from "lucide-react";
+import { Loader2, Search, Mail, Send, MessageSquare } from "lucide-react";
 
 interface Patient {
   id: string;
@@ -32,20 +32,73 @@ interface QuickEmailModalProps {
   onSuccess?: () => void;
 }
 
-const EMAIL_TYPES = [
-  { value: "welcome", label: "Welcome Email", description: "Welcome to Elevated Health + portal access" },
-  { value: "kit_payment", label: "Kit Payment Request", description: "Request payment for hormone mapping kit" },
-  { value: "labs_reviewed", label: "Labs Reviewed", description: "Notify patient their labs are ready" },
-  { value: "vitality_activation", label: "Vitality Activation", description: "Send $249/mo Vitality membership link" },
-  { value: "glp1_activation", label: "GLP-1 Activation", description: "Send Semaglutide/Tirzepatide payment link" },
-  { value: "hormone_addon", label: "Hormone Add-On", description: "Send $149/mo hormone add-on link (GLP-1 members)" },
+type DeliveryMethod = "email" | "sms";
+
+const MESSAGE_TYPES = [
+  { 
+    value: "welcome", 
+    label: "Welcome", 
+    description: "Welcome to Elevated Health + portal access",
+    emailFunction: "send-welcome-email",
+    smsFunction: null,
+  },
+  { 
+    value: "kit_payment", 
+    label: "Kit Payment Request", 
+    description: "Request payment for hormone mapping kit",
+    emailFunction: "send-kit-payment-link",
+    smsFunction: "send-kit-payment-sms",
+  },
+  { 
+    value: "labs_reviewed", 
+    label: "Labs Reviewed", 
+    description: "Notify patient their labs are ready",
+    emailFunction: "send-labs-reviewed-notification",
+    smsFunction: null,
+  },
+  { 
+    value: "vitality_activation", 
+    label: "Vitality Activation", 
+    description: "Send $249/mo Vitality membership link",
+    emailFunction: "send-vitality-activation",
+    smsFunction: null,
+  },
+  { 
+    value: "glp1_activation", 
+    label: "GLP-1 Activation", 
+    description: "Send Semaglutide/Tirzepatide payment link",
+    emailFunction: "send-glp1-activation",
+    smsFunction: null,
+  },
+  { 
+    value: "hormone_addon", 
+    label: "Hormone Add-On", 
+    description: "Send $149/mo hormone add-on link (GLP-1 members)",
+    emailFunction: "send-hormone-addon-activation",
+    smsFunction: null,
+  },
+  { 
+    value: "consultation_invite", 
+    label: "Consultation Invite", 
+    description: "Send $99 consultation payment link",
+    emailFunction: "send-consultation-invite",
+    smsFunction: "send-consultation-invite-sms",
+  },
+  { 
+    value: "iv_ketamine", 
+    label: "IV Ketamine Payment", 
+    description: "Send $400 IV ketamine payment link",
+    emailFunction: "send-iv-ketamine-payment-email",
+    smsFunction: "send-iv-ketamine-payment-sms",
+  },
 ];
 
 const QuickEmailModal = ({ open, onOpenChange, onSuccess }: QuickEmailModalProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [patients, setPatients] = useState<Patient[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-  const [emailType, setEmailType] = useState<string>("");
+  const [messageType, setMessageType] = useState<string>("");
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("email");
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
 
@@ -73,51 +126,66 @@ const QuickEmailModal = ({ open, onOpenChange, onSuccess }: QuickEmailModalProps
     }
   };
 
-  const getEdgeFunction = (type: string) => {
-    switch (type) {
-      case "welcome": return "send-welcome-email";
-      case "kit_payment": return "send-kit-payment-link";
-      case "labs_reviewed": return "send-labs-reviewed-notification";
-      case "vitality_activation": return "send-vitality-activation";
-      case "glp1_activation": return "send-glp1-activation";
-      case "hormone_addon": return "send-hormone-addon-activation";
-      default: return "send-welcome-email";
-    }
+  const selectedMessageInfo = MESSAGE_TYPES.find(m => m.value === messageType);
+  
+  const canSendSms = selectedMessageInfo?.smsFunction !== null;
+  const canSendEmail = selectedMessageInfo?.emailFunction !== null;
+
+  const getEdgeFunction = () => {
+    if (!selectedMessageInfo) return null;
+    return deliveryMethod === "sms" 
+      ? selectedMessageInfo.smsFunction 
+      : selectedMessageInfo.emailFunction;
+  };
+
+  const hasRequiredContact = () => {
+    if (!selectedPatient) return false;
+    if (deliveryMethod === "email") return !!selectedPatient.email;
+    if (deliveryMethod === "sms") return !!selectedPatient.phone;
+    return false;
   };
 
   const handleSend = async () => {
-    if (!selectedPatient || !emailType) {
-      toast.error("Please select a patient and email type");
+    if (!selectedPatient || !messageType) {
+      toast.error("Please select a patient and message type");
       return;
     }
 
-    if (!selectedPatient.email) {
-      toast.error("Patient does not have an email on file");
+    const edgeFunction = getEdgeFunction();
+    if (!edgeFunction) {
+      toast.error(`${deliveryMethod === "sms" ? "SMS" : "Email"} not available for this message type`);
+      return;
+    }
+
+    if (!hasRequiredContact()) {
+      toast.error(`Patient does not have a ${deliveryMethod === "sms" ? "phone number" : "email"} on file`);
       return;
     }
 
     setIsSending(true);
     try {
-      const edgeFunction = getEdgeFunction(emailType);
-      
       const { data, error } = await supabase.functions.invoke(edgeFunction, {
         body: {
           patient_id: selectedPatient.id,
           patient_name: selectedPatient.full_name,
           patient_email: selectedPatient.email,
+          patient_phone: selectedPatient.phone,
           first_name: selectedPatient.full_name.split(" ")[0],
-          send_email: true,
+          send_email: deliveryMethod === "email",
         },
       });
 
       if (error) throw error;
 
-      toast.success(`Email sent to ${selectedPatient.email}!`);
+      const destination = deliveryMethod === "sms" 
+        ? selectedPatient.phone 
+        : selectedPatient.email;
+      toast.success(`${deliveryMethod === "sms" ? "SMS" : "Email"} sent to ${destination}!`);
       onOpenChange(false);
       onSuccess?.();
       resetForm();
     } catch (err: any) {
-      toast.error(err.message || "Failed to send email");
+      toast.error(err.message || `Failed to send ${deliveryMethod}`);
     } finally {
       setIsSending(false);
     }
@@ -127,18 +195,28 @@ const QuickEmailModal = ({ open, onOpenChange, onSuccess }: QuickEmailModalProps
     setSearchQuery("");
     setPatients([]);
     setSelectedPatient(null);
-    setEmailType("");
+    setMessageType("");
+    setDeliveryMethod("email");
   };
 
-  const selectedEmailInfo = EMAIL_TYPES.find(e => e.value === emailType);
+  // Auto-switch to email if SMS not available for selected type
+  useEffect(() => {
+    if (messageType && deliveryMethod === "sms" && !canSendSms) {
+      setDeliveryMethod("email");
+    }
+  }, [messageType, canSendSms, deliveryMethod]);
 
   return (
     <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) resetForm(); }}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Mail className="w-5 h-5 text-primary" />
-            Send Email
+            {deliveryMethod === "sms" ? (
+              <MessageSquare className="w-5 h-5 text-primary" />
+            ) : (
+              <Mail className="w-5 h-5 text-primary" />
+            )}
+            Send Notification
           </DialogTitle>
         </DialogHeader>
 
@@ -167,7 +245,9 @@ const QuickEmailModal = ({ open, onOpenChange, onSuccess }: QuickEmailModalProps
                     className="w-full text-left px-3 py-2 hover:bg-muted/50 border-b last:border-b-0"
                   >
                     <p className="font-medium">{patient.full_name}</p>
-                    <p className="text-xs text-muted-foreground">{patient.email || "No email"}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {patient.email || "No email"} • {patient.phone || "No phone"}
+                    </p>
                   </button>
                 ))}
               </div>
@@ -178,9 +258,14 @@ const QuickEmailModal = ({ open, onOpenChange, onSuccess }: QuickEmailModalProps
           {selectedPatient && (
             <div className="bg-primary/5 rounded-lg p-3">
               <p className="font-medium">{selectedPatient.full_name}</p>
-              <p className="text-sm text-muted-foreground">
-                {selectedPatient.email || "No email on file"}
-              </p>
+              <div className="text-sm text-muted-foreground space-y-0.5">
+                <p className={!selectedPatient.email ? "text-amber-600" : ""}>
+                  ✉️ {selectedPatient.email || "No email on file"}
+                </p>
+                <p className={!selectedPatient.phone ? "text-amber-600" : ""}>
+                  📱 {selectedPatient.phone || "No phone on file"}
+                </p>
+              </div>
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -192,30 +277,69 @@ const QuickEmailModal = ({ open, onOpenChange, onSuccess }: QuickEmailModalProps
             </div>
           )}
 
-          {/* Email Type */}
+          {/* Message Type */}
           <div className="space-y-2">
-            <Label>Email Type</Label>
-            <Select value={emailType} onValueChange={setEmailType}>
+            <Label>Message Type</Label>
+            <Select value={messageType} onValueChange={setMessageType}>
               <SelectTrigger>
-                <SelectValue placeholder="Select email type..." />
+                <SelectValue placeholder="Select message type..." />
               </SelectTrigger>
               <SelectContent>
-                {EMAIL_TYPES.map((type) => (
+                {MESSAGE_TYPES.map((type) => (
                   <SelectItem key={type.value} value={type.value}>
-                    {type.label}
+                    <span className="flex items-center gap-2">
+                      {type.label}
+                      {type.smsFunction && (
+                        <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">SMS</span>
+                      )}
+                    </span>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            {selectedEmailInfo && (
-              <p className="text-xs text-muted-foreground">{selectedEmailInfo.description}</p>
+            {selectedMessageInfo && (
+              <p className="text-xs text-muted-foreground">{selectedMessageInfo.description}</p>
             )}
           </div>
+
+          {/* Delivery Method Toggle */}
+          {messageType && (
+            <div className="space-y-2">
+              <Label>Send via</Label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant={deliveryMethod === "email" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setDeliveryMethod("email")}
+                  disabled={!canSendEmail}
+                  className="flex-1"
+                >
+                  <Mail className="w-4 h-4 mr-2" />
+                  Email
+                </Button>
+                <Button
+                  type="button"
+                  variant={deliveryMethod === "sms" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setDeliveryMethod("sms")}
+                  disabled={!canSendSms}
+                  className="flex-1"
+                >
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  SMS
+                </Button>
+              </div>
+              {!canSendSms && messageType && (
+                <p className="text-xs text-muted-foreground">SMS not available for this message type</p>
+              )}
+            </div>
+          )}
 
           {/* Send Button */}
           <Button
             onClick={handleSend}
-            disabled={!selectedPatient || !emailType || !selectedPatient?.email || isSending}
+            disabled={!selectedPatient || !messageType || !hasRequiredContact() || isSending}
             className="w-full"
           >
             {isSending ? (
@@ -223,12 +347,12 @@ const QuickEmailModal = ({ open, onOpenChange, onSuccess }: QuickEmailModalProps
             ) : (
               <Send className="w-4 h-4 mr-2" />
             )}
-            Send Email
+            Send {deliveryMethod === "sms" ? "SMS" : "Email"}
           </Button>
 
-          {selectedPatient && !selectedPatient.email && (
+          {selectedPatient && !hasRequiredContact() && (
             <p className="text-xs text-center text-amber-600">
-              Cannot send email - no email address on file
+              Cannot send {deliveryMethod === "sms" ? "SMS - no phone number" : "email - no email address"} on file
             </p>
           )}
         </div>
