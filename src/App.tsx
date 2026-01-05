@@ -62,6 +62,7 @@ import Affordability from "./pages/Affordability";
 import AlaCartePaymentSuccess from "./pages/AlaCartePaymentSuccess";
 import ProviderLayout from "./components/provider/ProviderLayout";
 import StaffPricingCheatsheet from "./pages/StaffPricingCheatsheet";
+import StaffQuickCard from "./pages/StaffQuickCard";
 
 const queryClient = new QueryClient();
 
@@ -131,6 +132,11 @@ const App = () => (
           <Route path="/staff-pricing-cheatsheet" element={
             <ProviderLayout title="Staff Quick Reference" subtitle="Internal Use Only" showNavbar={false}>
               <StaffPricingCheatsheet />
+            </ProviderLayout>
+          } />
+          <Route path="/staff-quick-card" element={
+            <ProviderLayout title="Quick Reference Card" subtitle="Internal Use Only" showNavbar={false}>
+              <StaffQuickCard />
             </ProviderLayout>
           } />
           <Route path="/patient/create-account" element={<CreateAccount />} />
