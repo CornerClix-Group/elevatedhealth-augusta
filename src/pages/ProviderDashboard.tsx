@@ -58,6 +58,7 @@ import ConsentPDFCard from "@/components/provider/ConsentPDFCard";
 import CreditCodeLookup from "@/components/provider/CreditCodeLookup";
 import ResendWelcomeEmailButton from "@/components/provider/ResendWelcomeEmailButton";
 import ProviderQuickActions from "@/components/provider/ProviderQuickActions";
+import PatientDatabase from "@/components/provider/PatientDatabase";
 
 interface Patient {
   id: string;
@@ -1064,6 +1065,13 @@ const ProviderDashboard = () => {
                   <Users className="w-4 h-4 flex-shrink-0" />
                   <span>Team</span>
                 </TabsTrigger>
+                <TabsTrigger 
+                  value="allpatients" 
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm whitespace-nowrap text-sm"
+                >
+                  <User className="w-4 h-4 flex-shrink-0" />
+                  <span>All Patients</span>
+                </TabsTrigger>
               </TabsList>
             </div>
             {/* Scroll fade indicators */}
@@ -1767,6 +1775,45 @@ const ProviderDashboard = () => {
           {/* Team Management Tab */}
           <TabsContent value="team">
             <TeamManagement />
+          </TabsContent>
+
+          {/* All Patients Tab */}
+          <TabsContent value="allpatients">
+            <Card className="bg-card border-border/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  All Patients
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <PatientDatabase
+                  onSelectPatient={(patientId) => {
+                    const patient = pendingPatients.find(p => p.patient.id === patientId);
+                    if (patient) {
+                      selectPatient(patient);
+                    } else {
+                      // Load patient directly if not in pending list
+                      supabase
+                        .from("patients")
+                        .select("*")
+                        .eq("id", patientId)
+                        .single()
+                        .then(({ data }) => {
+                          if (data) {
+                            selectPatient({
+                              patient: data as Patient,
+                              latestLog: null,
+                              highestCategory: "Unknown",
+                              riskLevel: "green",
+                            });
+                          }
+                        });
+                    }
+                  }}
+                />
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </main>

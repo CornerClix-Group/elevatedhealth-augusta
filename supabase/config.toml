@@ -191,3 +191,30 @@ verify_jwt = false
 
 [functions.add-existing-patient]
 verify_jwt = false
+
+[functions.send-vitality-activation]
+verify_jwt = false
+
+[functions.send-glp1-activation]
+verify_jwt = false
+
+[functions.send-labs-reviewed-notification]
+verify_jwt = false
+
+[functions.send-kit-payment-sms]
+verify_jwt = false
+
+[functions.send-iv-ketamine-payment-email]
+verify_jwt = false
+
+[functions.send-iv-ketamine-payment-sms]
+verify_jwt = false
+
+[functions.send-consultation-invite-sms]
+verify_jwt = false
+
+[functions.create-semaglutide-checkout]
+verify_jwt = false
+
+[functions.create-tirzepatide-checkout]
+verify_jwt = false
