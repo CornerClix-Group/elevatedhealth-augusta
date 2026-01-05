@@ -137,7 +137,7 @@ const StaffPricingCheatsheet = () => {
               Staff Quick Reference: Services & Pricing
             </h1>
             <p className="text-muted-foreground">
-              Updated December 2024 • All prices subject to change
+              Updated January 2025 • All prices subject to change
             </p>
             <Button 
               variant="outline" 
@@ -190,8 +190,8 @@ const StaffPricingCheatsheet = () => {
                 <span className="font-semibold text-foreground">Key Starting Point</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                <strong>Discovery Consultation: $99</strong> — This fee is credited toward any treatment plan. 
-                Use this as the entry point for all new patient inquiries.
+                <strong>Discovery Consultation: $99 (30 min, IN-PERSON)</strong> — First visit is at our Evans clinic. 
+                This fee is credited toward any treatment plan. Use this as the entry point for all new patient inquiries.
               </p>
             </CardContent>
           </Card>
@@ -213,7 +213,7 @@ const StaffPricingCheatsheet = () => {
                     <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <div>
                         <p className="font-medium">Discovery Consultation</p>
-                        <p className="text-sm text-muted-foreground">Initial assessment, credited toward treatment</p>
+                        <p className="text-sm text-muted-foreground">30-minute, IN-PERSON at Evans clinic • Credited toward treatment</p>
                       </div>
                       <Badge variant="secondary" className="font-mono">$99</Badge>
                     </div>
@@ -346,14 +346,14 @@ const StaffPricingCheatsheet = () => {
                         <p className="font-medium">Semaglutide (GLP-1 Continuation)</p>
                         <p className="text-sm text-muted-foreground">Monthly supply, compounded</p>
                       </div>
-                      <Badge className="font-mono bg-primary">$449/mo</Badge>
+                      <Badge className="font-mono bg-primary">$399/mo</Badge>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <div>
                         <p className="font-medium">Tirzepatide</p>
-                        <p className="text-sm text-muted-foreground">Contact provider for pricing</p>
+                        <p className="text-sm text-muted-foreground">Monthly supply, compounded</p>
                       </div>
-                      <Badge variant="outline">Varies</Badge>
+                      <Badge className="font-mono bg-primary">$499/mo</Badge>
                     </div>
                     <div className="bg-green-500/10 rounded-lg p-3 text-sm">
                       <p className="font-medium text-green-700 dark:text-green-400 mb-1">✓ Labs NOT Required to Start</p>
@@ -613,6 +613,13 @@ const StaffPricingCheatsheet = () => {
                   <p className="font-medium text-sm">"They have labs from another provider"</p>
                   <p className="text-sm text-muted-foreground">
                     Offer $99 consult to review their existing labs and discuss our protocols.
+                  </p>
+                </div>
+
+                <div className="border-l-2 border-primary pl-4">
+                  <p className="font-medium text-sm">"Is the consultation in-person or telehealth?"</p>
+                  <p className="text-sm text-muted-foreground">
+                    First visit is IN-PERSON (30 minutes) at our Evans clinic. Follow-up appointments can be done via telehealth.
                   </p>
                 </div>
 
