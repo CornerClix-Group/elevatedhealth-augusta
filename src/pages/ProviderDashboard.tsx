@@ -59,6 +59,7 @@ import CreditCodeLookup from "@/components/provider/CreditCodeLookup";
 import ResendWelcomeEmailButton from "@/components/provider/ResendWelcomeEmailButton";
 import ProviderQuickActions from "@/components/provider/ProviderQuickActions";
 import PatientDatabase from "@/components/provider/PatientDatabase";
+import DashboardActivityWidget from "@/components/provider/DashboardActivityWidget";
 
 interface Patient {
   id: string;
@@ -1181,8 +1182,11 @@ const ProviderDashboard = () => {
           </TabsContent>
 
           <TabsContent value="triage">
+            {/* Activity Overview Widget */}
+            <DashboardActivityWidget />
+            
             {/* Patient Add Options - Side by Side */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 mt-6">
               <InvitePatientCard onInviteSent={() => loadData()} />
               <AddExistingPatientCard onPatientAdded={() => loadData()} />
               <CreditCodeLookup />

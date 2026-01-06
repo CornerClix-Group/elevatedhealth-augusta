@@ -217,6 +217,31 @@ serve(async (req) => {
           });
           
           logStep("Welcome email sent", { emailId: emailResponse.data?.id, to: customerEmail });
+          
+          // Send SMS alert to staff about payment received
+          try {
+            const staffAlertResponse = await fetch(
+              `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-staff-alert-sms`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`,
+                },
+                body: JSON.stringify({
+                  alert_type: "payment_received",
+                  patient_name: patientName,
+                  patient_email: customerEmail,
+                  amount: session.amount_total ? session.amount_total / 100 : null,
+                  payment_type: "subscription activation",
+                  program: baseMembership,
+                }),
+              }
+            );
+            logStep("Staff SMS alert sent", { success: staffAlertResponse.ok });
+          } catch (smsError) {
+            logStep("Staff SMS alert failed (non-critical)", { error: String(smsError) });
+          }
         } catch (emailError) {
           const errorMsg = emailError instanceof Error ? emailError.message : String(emailError);
           logStep("Error sending welcome email", { error: errorMsg });
