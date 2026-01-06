@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Pill } from "lucide-react";
+import { Pill, Sparkles } from "lucide-react";
 import FCCPortalModal from "./FCCPortalModal";
+import { MedicationRecommendation } from "@/lib/medicationMapping";
 
 interface PatientData {
   id: string;
@@ -26,6 +27,7 @@ interface PatientData {
 interface PharmacyOrderCardProps {
   patient: PatientData;
   onOrderCreated?: () => void;
+  recommendedMedications?: MedicationRecommendation[];
 }
 
 // Clinic Approved Formulary - Updated with specific protocols
@@ -217,17 +219,33 @@ const CADENCE_OPTIONS = [
   { value: "90", label: "90 Day Supply (Renewal)" },
 ];
 
-const PharmacyOrderCard = ({ patient, onOrderCreated }: PharmacyOrderCardProps) => {
+const PharmacyOrderCard = ({ patient, onOrderCreated, recommendedMedications }: PharmacyOrderCardProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedMed, setSelectedMed] = useState<string>("");
   const [cadence, setCadence] = useState<string>("30");
   const [quantity, setQuantity] = useState("1");
   const [refills, setRefills] = useState("0");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRecommended, setIsRecommended] = useState(false);
 
   // Auto-select category based on patient gender
   const defaultCategory = patient.gender === "male" ? "male_hormone" : 
                           patient.gender === "female" ? "female_hormone" : "all";
+  
+  // Auto-apply recommended medication when passed
+  useEffect(() => {
+    if (recommendedMedications && recommendedMedications.length > 0) {
+      const primaryRec = recommendedMedications[0];
+      // Find the medication in formulary
+      const formularyMed = FORMULARY.find(m => m.id === primaryRec.formularyId);
+      if (formularyMed) {
+        setSelectedMed(primaryRec.formularyId);
+        setSelectedCategory(formularyMed.category);
+        setCadence(formularyMed.defaultCadence);
+        setIsRecommended(true);
+      }
+    }
+  }, [recommendedMedications]);
   
   // Filter medications by category
   const filteredMedications = selectedCategory === "all" 
@@ -258,14 +276,22 @@ const PharmacyOrderCard = ({ patient, onOrderCreated }: PharmacyOrderCardProps) 
 
   return (
     <>
-      <Card className="border-gold/30">
+      <Card className={isRecommended ? "border-green-400 border-2" : "border-gold/30"}>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Pill className="w-5 h-5 text-gold" />
-            Pharmacy Order
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Pill className="w-5 h-5 text-gold" />
+              Pharmacy Order
+            </CardTitle>
+            {isRecommended && (
+              <Badge className="bg-green-100 text-green-800 border border-green-300 gap-1">
+                <Sparkles className="h-3 w-3" />
+                Holgate Recommended
+              </Badge>
+            )}
+          </div>
           <p className="text-sm text-muted-foreground">
-            Clinic approved protocols
+            {isRecommended ? "Protocol auto-selected from lab analysis" : "Clinic approved protocols"}
           </p>
         </CardHeader>
         <CardContent className="space-y-4">

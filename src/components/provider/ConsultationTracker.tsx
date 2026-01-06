@@ -111,29 +111,113 @@ const ConsultationTracker = () => {
 
     setIsConverting(consult.id);
     try {
-      // Call the send-patient-invite edge function
-      const { data, error } = await supabase.functions.invoke("send-patient-invite", {
-        body: {
-          patient_email: consult.customer_email,
-          patient_name: consult.customer_name,
-        },
-      });
-
-      if (error) throw error;
-
-      if (data?.success) {
-        // Update consultation status
+      const serviceType = consult.service_type?.toLowerCase() || '';
+      const isWeightLoss = serviceType.includes('weight') || serviceType.includes('glp') || serviceType.includes('semaglutide') || serviceType.includes('tirzepatide');
+      const isKetamine = serviceType.includes('ketamine') || serviceType.includes('mental');
+      
+      if (isWeightLoss) {
+        // Weight Loss flow: Create patient directly, no kit needed
+        const { data: existingPatient } = await supabase
+          .from("patients")
+          .select("id")
+          .eq("email", consult.customer_email)
+          .maybeSingle();
+          
+        if (existingPatient) {
+          // Update existing patient
+          await supabase
+            .from("patients")
+            .update({ 
+              onboarding_status: "awaiting_medical_clearance",
+              primary_program: "weight_loss",
+              treatment_request: "weight_loss",
+              consultation_booking_id: consult.id,
+            })
+            .eq("id", existingPatient.id);
+        } else {
+          // Create new patient
+          await supabase
+            .from("patients")
+            .insert({
+              full_name: consult.customer_name,
+              email: consult.customer_email,
+              phone: consult.customer_phone,
+              onboarding_status: "awaiting_medical_clearance",
+              primary_program: "weight_loss",
+              treatment_request: "weight_loss",
+              consultation_booking_id: consult.id,
+            });
+        }
+        
         await supabase
           .from("consultation_bookings")
-          .update({ status: "converted_to_mapping" })
+          .update({ status: "converted_to_glp1" })
           .eq("id", consult.id);
-
-        toast.success(`Kit payment link sent to ${consult.customer_email} ($250 with credit)`);
-        loadConsultations();
-        setSelectedConsultation(null);
+          
+        toast.success(`${consult.customer_name} added as Weight Loss patient - ready for medical clearance`);
+      } else if (isKetamine) {
+        // Ketamine flow: Create patient with ketamine screening status
+        const { data: existingPatient } = await supabase
+          .from("patients")
+          .select("id")
+          .eq("email", consult.customer_email)
+          .maybeSingle();
+          
+        if (existingPatient) {
+          await supabase
+            .from("patients")
+            .update({ 
+              onboarding_status: "ketamine_screening",
+              primary_program: "ketamine",
+              treatment_request: "ketamine",
+              consultation_booking_id: consult.id,
+            })
+            .eq("id", existingPatient.id);
+        } else {
+          await supabase
+            .from("patients")
+            .insert({
+              full_name: consult.customer_name,
+              email: consult.customer_email,
+              phone: consult.customer_phone,
+              onboarding_status: "ketamine_screening",
+              primary_program: "ketamine",
+              treatment_request: "ketamine",
+              consultation_booking_id: consult.id,
+            });
+        }
+        
+        await supabase
+          .from("consultation_bookings")
+          .update({ status: "converted_to_ketamine" })
+          .eq("id", consult.id);
+          
+        toast.success(`${consult.customer_name} added as Ketamine patient - ready for screening`);
       } else {
-        throw new Error(data?.error || "Failed to send invite");
+        // Hormone flow: Send kit payment link (existing behavior)
+        const { data, error } = await supabase.functions.invoke("send-patient-invite", {
+          body: {
+            patient_email: consult.customer_email,
+            patient_name: consult.customer_name,
+          },
+        });
+
+        if (error) throw error;
+
+        if (data?.success) {
+          await supabase
+            .from("consultation_bookings")
+            .update({ status: "converted_to_mapping" })
+            .eq("id", consult.id);
+
+          toast.success(`Kit payment link sent to ${consult.customer_email} ($250 with credit)`);
+        } else {
+          throw new Error(data?.error || "Failed to send invite");
+        }
       }
+      
+      loadConsultations();
+      setSelectedConsultation(null);
     } catch (err: any) {
       console.error("Convert error:", err);
       toast.error(err.message || "Failed to convert to patient");

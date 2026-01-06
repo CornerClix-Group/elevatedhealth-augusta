@@ -335,7 +335,7 @@ serve(async (req) => {
     logStep("Email sent", { emailId: emailResponse.data?.id });
 
     // Create a pending patient record
-    const { error: patientError } = await supabase
+    const { data: patientData, error: patientError } = await supabase
       .from("patients")
       .insert({
         full_name: patient_name,
@@ -343,12 +343,27 @@ serve(async (req) => {
         onboarding_status: "consultation_invited",
         invited_at: new Date().toISOString(),
         invited_by: userData.user.id,
-      });
+      })
+      .select("id")
+      .single();
 
     if (patientError) {
       logStep("Patient record creation warning", { error: patientError.message });
     } else {
       logStep("Patient record created with consultation_invited status");
+      
+      // Log communication
+      if (patientData?.id) {
+        await supabase.from("communication_logs").insert({
+          patient_id: patientData.id,
+          template_key: invite_type === "already_booked" ? "consultation_payment_only" : "consultation_invite",
+          subject: `Consultation Invite - ${service_type}`,
+          body_preview: invite_type === "already_booked" ? "Payment link for already booked patient" : "Consultation booking invite sent",
+          delivery_method: "email",
+          status: "sent",
+        });
+        logStep("Communication logged");
+      }
     }
 
     return new Response(JSON.stringify({ 
