@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -9,6 +10,7 @@ const corsHeaders = {
 };
 
 interface WelcomeEmailRequest {
+  patient_id?: string;
   patient_name: string;
   patient_email: string;
   primary_program?: string;
@@ -19,8 +21,12 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
+
   try {
-    const { patient_name, patient_email, primary_program }: WelcomeEmailRequest = await req.json();
+    const { patient_id, patient_name, patient_email, primary_program }: WelcomeEmailRequest = await req.json();
 
     console.log(`Sending welcome email to ${patient_email}`);
 
@@ -102,6 +108,19 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     console.log("Welcome email sent successfully:", emailResponse);
+
+    // Log communication
+    if (patient_id) {
+      await supabase.from("communication_logs").insert({
+        patient_id,
+        template_key: "welcome_email",
+        subject: "Welcome to Elevated Health!",
+        body_preview: `Welcome email sent for ${primary_program || 'general'} program`,
+        delivery_method: "email",
+        status: "sent",
+      });
+      console.log("Communication logged");
+    }
 
     return new Response(JSON.stringify({ success: true, emailResponse }), {
       status: 200,

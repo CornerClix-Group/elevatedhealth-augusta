@@ -6,8 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Brain, Beaker, AlertTriangle, CheckCircle, Copy, Sparkles, Activity, Flame, Heart } from 'lucide-react';
+import { Brain, Beaker, AlertTriangle, CheckCircle, Copy, Sparkles, Activity, Flame, Heart, Pill, ArrowRight } from 'lucide-react';
 import { analyzeLabResults, LabValues, ClinicalImpression, REFERENCE_RANGES, KitType } from '@/lib/holgateLogic';
+import { generateMedicationRecommendations, MedicationRecommendation } from '@/lib/medicationMapping';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -15,13 +16,15 @@ interface LabInterpretationEngineProps {
   patientId: string;
   patientName: string;
   patientGender?: string;
+  onApplyToRx?: (recommendations: MedicationRecommendation[]) => void;
 }
 
-export function LabInterpretationEngine({ patientId, patientName, patientGender = 'female' }: LabInterpretationEngineProps) {
+export function LabInterpretationEngine({ patientId, patientName, patientGender = 'female', onApplyToRx }: LabInterpretationEngineProps) {
   const [kitType, setKitType] = useState<KitType>('hormone_mapping');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [impression, setImpression] = useState<ClinicalImpression | null>(null);
+  const [medicationRecs, setMedicationRecs] = useState<MedicationRecommendation[]>([]);
   
   // Hormone values
   const [estradiol, setEstradiol] = useState('');
@@ -95,8 +98,20 @@ export function LabInterpretationEngine({ patientId, patientName, patientGender 
     setTimeout(() => {
       const result = analyzeLabResults(values, patientGender, kitType);
       setImpression(result);
+      
+      // Generate medication recommendations from Holgate analysis
+      const meds = generateMedicationRecommendations(result, values, patientGender);
+      setMedicationRecs(meds);
+      
       setIsAnalyzing(false);
     }, 500);
+  };
+
+  const handleApplyToRx = () => {
+    if (medicationRecs.length > 0 && onApplyToRx) {
+      onApplyToRx(medicationRecs);
+      toast.success('Medication recommendations applied to Rx card');
+    }
   };
 
   const handleSaveToRecord = async () => {
@@ -543,6 +558,37 @@ export function LabInterpretationEngine({ patientId, patientName, patientGender 
                 </div>
               )}
             </div>
+
+            {/* Medication Recommendations - Apply to Rx */}
+            {medicationRecs.length > 0 && onApplyToRx && (
+              <>
+                <Separator />
+                <div>
+                  <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-3">
+                    Recommended Medications (Holgate Protocol)
+                  </h4>
+                  <div className="space-y-2 mb-4">
+                    {medicationRecs.map((med, idx) => (
+                      <div key={idx} className="flex items-center gap-3 p-3 rounded-lg bg-green-50 border border-green-200">
+                        <Pill className="h-5 w-5 text-green-600" />
+                        <div className="flex-1">
+                          <p className="font-medium text-green-800">{med.name}</p>
+                          <p className="text-sm text-green-600">{med.strength}</p>
+                        </div>
+                        <Badge variant="outline" className="border-green-400 text-green-700">
+                          Priority {med.priority}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                  <Button onClick={handleApplyToRx} className="w-full gap-2" size="lg">
+                    <Pill className="h-4 w-4" />
+                    Apply to Rx Card
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       )}

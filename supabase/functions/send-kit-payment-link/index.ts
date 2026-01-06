@@ -169,6 +169,19 @@ serve(async (req) => {
 
     logStep("Email sent to patient", { patientEmail });
 
+    // Log communication
+    if (patientId) {
+      await supabaseClient.from("communication_logs").insert({
+        patient_id: patientId,
+        template_key: "kit_payment_link",
+        subject: `Your ${kit.name} is Ready`,
+        body_preview: `Payment link sent for ${kit.name} - $${formattedPrice}`,
+        delivery_method: "email",
+        status: "sent",
+      });
+      logStep("Communication logged");
+    }
+
     // Track kit link sent in patient record
     if (patientId) {
       await supabaseClient

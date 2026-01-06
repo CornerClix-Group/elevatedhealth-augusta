@@ -281,6 +281,16 @@ serve(async (req) => {
       console.error("Error creating order record:", orderError);
     }
 
+    // Log communication
+    await supabase.from("communication_logs").insert({
+      patient_id,
+      template_key: "rx_fax",
+      subject: `Rx Fax: ${medication_name}`,
+      body_preview: `${medication_name} ${medication_strength} faxed to pharmacy`,
+      delivery_method: "fax",
+      status: "sent",
+    });
+
     console.log("Fax sent successfully, ID:", faxId);
 
     return new Response(

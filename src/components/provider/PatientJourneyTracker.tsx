@@ -1,0 +1,169 @@
+import { Check, Clock, TestTube, Sparkles, Pill, Stethoscope, Activity, UserPlus } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface PatientJourneyTrackerProps {
+  onboardingStatus: string | null;
+  primaryProgram: string | null;
+  className?: string;
+}
+
+interface JourneyStep {
+  id: string;
+  label: string;
+  shortLabel: string;
+  icon: React.ReactNode;
+}
+
+// Hormone therapy journey (requires labs)
+const HORMONE_STEPS: JourneyStep[] = [
+  { id: 'consultation', label: 'Consultation', shortLabel: 'Consult', icon: <Stethoscope className="h-4 w-4" /> },
+  { id: 'kit_sent', label: 'Kit Sent', shortLabel: 'Kit', icon: <TestTube className="h-4 w-4" /> },
+  { id: 'sample_collected', label: 'Sample Collected', shortLabel: 'Sample', icon: <Activity className="h-4 w-4" /> },
+  { id: 'labs_ready', label: 'Labs Ready', shortLabel: 'Labs', icon: <TestTube className="h-4 w-4" /> },
+  { id: 'protocol_approved', label: 'Protocol Approved', shortLabel: 'Protocol', icon: <Sparkles className="h-4 w-4" /> },
+  { id: 'rx_sent', label: 'Rx Sent', shortLabel: 'Rx', icon: <Pill className="h-4 w-4" /> },
+  { id: 'active', label: 'Active Treatment', shortLabel: 'Active', icon: <Check className="h-4 w-4" /> },
+];
+
+// Weight loss journey (no labs required)
+const WEIGHT_LOSS_STEPS: JourneyStep[] = [
+  { id: 'consultation', label: 'Consultation', shortLabel: 'Consult', icon: <Stethoscope className="h-4 w-4" /> },
+  { id: 'clearance', label: 'Medical Clearance', shortLabel: 'Clearance', icon: <Check className="h-4 w-4" /> },
+  { id: 'rx_sent', label: 'Rx Sent', shortLabel: 'Rx', icon: <Pill className="h-4 w-4" /> },
+  { id: 'active', label: 'Active Treatment', shortLabel: 'Active', icon: <Check className="h-4 w-4" /> },
+];
+
+// Map onboarding_status to step index
+function getHormoneStepIndex(status: string | null): number {
+  const statusMap: Record<string, number> = {
+    'pending_invite': 0,
+    'account_created': 0,
+    'consultation_paid': 0,
+    'consultation_scheduled': 0,
+    'consultation_complete': 0,
+    'intake_complete': 0,
+    'kit_link_sent': 1,
+    'labs_paid': 1,
+    'kit_shipped': 2,
+    'sample_received': 3,
+    'results_ready': 3,
+    'labs_reviewed': 4,
+    'protocol_approved': 4,
+    'pending_pharmacy_order': 5,
+    'rx_sent': 5,
+    'treatment_active': 6,
+  };
+  return statusMap[status || ''] ?? 0;
+}
+
+function getWeightLossStepIndex(status: string | null): number {
+  const statusMap: Record<string, number> = {
+    'pending_invite': 0,
+    'account_created': 0,
+    'consultation_paid': 0,
+    'consultation_scheduled': 0,
+    'consultation_complete': 0,
+    'intake_complete': 0,
+    'awaiting_medical_clearance': 1,
+    'glp1_approved': 1,
+    'medical_clearance_complete': 1,
+    'pending_pharmacy_order': 2,
+    'glp1_rx_sent': 2,
+    'rx_sent': 2,
+    'treatment_active': 3,
+  };
+  return statusMap[status || ''] ?? 0;
+}
+
+function getNextAction(status: string | null, primaryProgram: string | null): string | null {
+  const isWeightLoss = primaryProgram === 'weight_loss' || primaryProgram === 'glp1';
+  
+  const actionMap: Record<string, string> = isWeightLoss ? {
+    'consultation_complete': 'Medical clearance review',
+    'intake_complete': 'Medical clearance review',
+    'awaiting_medical_clearance': 'Approve for GLP-1',
+    'glp1_approved': 'Send Rx to pharmacy',
+    'medical_clearance_complete': 'Send Rx to pharmacy',
+  } : {
+    'consultation_complete': 'Send $349 kit link',
+    'intake_complete': 'Send $349 kit link',
+    'labs_paid': 'Ship kit to patient',
+    'kit_shipped': 'Waiting for sample return',
+    'sample_received': 'Waiting for lab results',
+    'results_ready': 'Review labs & create protocol',
+    'labs_reviewed': 'Approve protocol',
+    'protocol_approved': 'Send Rx to pharmacy',
+    'pending_pharmacy_order': 'Pharmacy order pending',
+  };
+  
+  return actionMap[status || ''] || null;
+}
+
+export function PatientJourneyTracker({ onboardingStatus, primaryProgram, className }: PatientJourneyTrackerProps) {
+  const isWeightLoss = primaryProgram === 'weight_loss' || primaryProgram === 'glp1';
+  const steps = isWeightLoss ? WEIGHT_LOSS_STEPS : HORMONE_STEPS;
+  const currentStepIndex = isWeightLoss 
+    ? getWeightLossStepIndex(onboardingStatus) 
+    : getHormoneStepIndex(onboardingStatus);
+  const nextAction = getNextAction(onboardingStatus, primaryProgram);
+  
+  return (
+    <div className={cn("space-y-3", className)}>
+      {/* Journey Stepper */}
+      <div className="flex items-center justify-between">
+        {steps.map((step, idx) => {
+          const isComplete = idx < currentStepIndex;
+          const isCurrent = idx === currentStepIndex;
+          const isFuture = idx > currentStepIndex;
+          
+          return (
+            <div key={step.id} className="flex items-center flex-1">
+              {/* Step Circle */}
+              <div className="flex flex-col items-center">
+                <div
+                  className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors",
+                    isComplete && "bg-green-500 border-green-500 text-white",
+                    isCurrent && "bg-primary border-primary text-primary-foreground",
+                    isFuture && "bg-muted border-border text-muted-foreground"
+                  )}
+                >
+                  {isComplete ? <Check className="h-4 w-4" /> : step.icon}
+                </div>
+                <span 
+                  className={cn(
+                    "text-xs mt-1 text-center whitespace-nowrap",
+                    isCurrent && "font-semibold text-foreground",
+                    isFuture && "text-muted-foreground"
+                  )}
+                >
+                  {step.shortLabel}
+                </span>
+              </div>
+              
+              {/* Connector Line */}
+              {idx < steps.length - 1 && (
+                <div 
+                  className={cn(
+                    "flex-1 h-0.5 mx-1 mt-[-16px]",
+                    idx < currentStepIndex ? "bg-green-500" : "bg-border"
+                  )} 
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+      
+      {/* Next Action Badge */}
+      {nextAction && (
+        <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg">
+          <Clock className="h-4 w-4 text-amber-600" />
+          <span className="text-sm font-medium text-amber-800">Next: {nextAction}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default PatientJourneyTracker;

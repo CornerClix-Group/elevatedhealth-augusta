@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -9,6 +10,7 @@ const corsHeaders = {
 };
 
 interface LabsReviewedRequest {
+  patient_id?: string;
   patient_name: string;
   patient_email: string;
   provider_name?: string;
@@ -21,8 +23,13 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
+
   try {
     const { 
+      patient_id,
       patient_name, 
       patient_email, 
       provider_name = "Your Provider",
@@ -151,6 +158,19 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     console.log("Labs reviewed notification sent successfully:", emailResponse);
+
+    // Log communication
+    if (patient_id) {
+      await supabase.from("communication_logs").insert({
+        patient_id,
+        template_key: "labs_reviewed",
+        subject: "Your Lab Results Have Been Reviewed",
+        body_preview: `Labs reviewed by ${provider_name} - ${next_step}`,
+        delivery_method: "email",
+        status: "sent",
+      });
+      console.log("Communication logged");
+    }
 
     return new Response(JSON.stringify({ success: true, emailResponse }), {
       status: 200,
