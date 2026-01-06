@@ -239,6 +239,36 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("[send-intake-completion-notification] Email sent successfully:", emailResponse);
 
+    // Send SMS alert to staff (especially for high-risk patients)
+    try {
+      const smsAlertType = data.isHighRisk ? "high_risk_patient" : "intake_completed";
+      const supabaseUrl = Deno.env.get("SUPABASE_URL");
+      const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
+      
+      if (supabaseUrl && supabaseAnonKey) {
+        const smsResponse = await fetch(
+          `${supabaseUrl}/functions/v1/send-staff-alert-sms`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${supabaseAnonKey}`,
+            },
+            body: JSON.stringify({
+              alert_type: smsAlertType,
+              patient_name: data.patientName,
+              patient_email: data.patientEmail,
+              is_high_risk: data.isHighRisk,
+              program: data.primaryProgram,
+            }),
+          }
+        );
+        console.log("[send-intake-completion-notification] Staff SMS alert sent:", smsResponse.ok);
+      }
+    } catch (smsError) {
+      console.log("[send-intake-completion-notification] Staff SMS failed (non-critical):", smsError);
+    }
+
     return new Response(JSON.stringify({ success: true, emailResponse }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
