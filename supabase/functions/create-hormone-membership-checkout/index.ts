@@ -8,20 +8,20 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Tier configuration
+// Tier configuration with confirmed Stripe price IDs
 const MEMBERSHIP_TIERS = {
   access: {
-    priceId: "price_1Sonn4EOtKRY99puEv2aLJ7U",
+    priceId: "price_1Soo21EOtKRY99pursQ4Vnh3",
     name: "ACCESS",
     amount: 9900,
   },
   vitality: {
-    priceId: "price_1Sonn6EOtKRY99puceDBRyq4",
+    priceId: "price_1Soo23EOtKRY99puIku6s4DU",
     name: "VITALITY",
     amount: 14900,
   },
   concierge: {
-    priceId: "price_1Sonn7EOtKRY99pu1jcQC9Dz",
+    priceId: "price_1Soo25EOtKRY99puMndJjRr4",
     name: "CONCIERGE",
     amount: 24900,
   },

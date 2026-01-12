@@ -7,7 +7,14 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const logStep = (step: string, details?: any) => {
+// Tier-based pricing configuration
+const TIRZEPATIDE_PRICES = {
+  full: { priceId: "price_1SlZnyEOtKRY99puE9JNOrTR", amount: 49900 },
+  vitality: { priceId: "price_1Soo2AEOtKRY99puMopN9V2Q", amount: 44900 },
+  concierge: { priceId: "price_1Soo2CEOtKRY99puKfwGnQOw", amount: 42400 },
+};
+
+const logStep = (step: string, details?: unknown) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
   console.log(`[TIRZEPATIDE-CHECKOUT] ${step}${detailsStr}`);
 };
@@ -26,11 +33,53 @@ serve(async (req) => {
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
 
-    const { email, name } = await req.json();
-    logStep("Request body parsed", { email, name });
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
 
-    // Tirzepatide Membership - $499/month
-    const TIRZEPATIDE_PRICE_ID = "price_1SlZnyEOtKRY99puE9JNOrTR";
+    const { email, name, patientId } = await req.json();
+    logStep("Request body parsed", { email, name, patientId });
+
+    // Check for hormone membership tier to apply discount
+    let membershipTier: string | null = null;
+    
+    if (patientId) {
+      const { data: patient } = await supabaseClient
+        .from("patients")
+        .select("membership_tier, email")
+        .eq("id", patientId)
+        .single();
+      
+      if (patient?.membership_tier) {
+        membershipTier = patient.membership_tier;
+        logStep("Patient membership tier found", { tier: membershipTier });
+      }
+    } else if (email) {
+      // Check by email if no patientId
+      const { data: patient } = await supabaseClient
+        .from("patients")
+        .select("membership_tier")
+        .eq("email", email)
+        .single();
+      
+      if (patient?.membership_tier) {
+        membershipTier = patient.membership_tier;
+        logStep("Patient membership tier found by email", { tier: membershipTier });
+      }
+    }
+
+    // Determine which price to use based on hormone membership tier
+    let priceConfig = TIRZEPATIDE_PRICES.full;
+    if (membershipTier === "vitality") {
+      priceConfig = TIRZEPATIDE_PRICES.vitality;
+      logStep("Applying VITALITY discount (10% off)", { priceId: priceConfig.priceId });
+    } else if (membershipTier === "concierge") {
+      priceConfig = TIRZEPATIDE_PRICES.concierge;
+      logStep("Applying CONCIERGE discount (15% off)", { priceId: priceConfig.priceId });
+    } else {
+      logStep("No hormone membership - using full price", { priceId: priceConfig.priceId });
+    }
 
     // Check if customer exists
     let customerId: string | undefined;
@@ -42,47 +91,49 @@ serve(async (req) => {
       }
     }
 
+    const origin = req.headers.get("origin") || "https://elevatedhealthaugusta.com";
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : email,
       line_items: [
         {
-          price: TIRZEPATIDE_PRICE_ID,
+          price: priceConfig.priceId,
           quantity: 1,
         },
       ],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/payment-success?type=tirzepatide`,
-      cancel_url: `${req.headers.get("origin")}/weight-loss`,
+      success_url: `${origin}/payment-success?type=tirzepatide`,
+      cancel_url: `${origin}/weight-loss`,
       metadata: {
         service_type: "tirzepatide_membership",
         patient_name: name || "",
         patient_email: email || "",
+        patient_id: patientId || "",
+        hormone_tier: membershipTier || "none",
       },
       subscription_data: {
         metadata: {
           service_type: "tirzepatide_membership",
           patient_name: name || "",
+          hormone_tier: membershipTier || "none",
         },
       },
     });
 
-    logStep("Checkout session created", { sessionId: session.id, url: session.url });
+    logStep("Checkout session created", { sessionId: session.id, url: session.url, priceUsed: priceConfig.priceId });
 
     // Record pending subscription in database
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    
-    if (supabaseUrl && supabaseKey && email) {
-      const supabase = createClient(supabaseUrl, supabaseKey);
-      
-      await supabase.from("consultation_bookings").insert({
+    if (email) {
+      await supabaseClient.from("consultation_bookings").insert({
         customer_email: email,
         customer_name: name || null,
         service_type: "tirzepatide_membership",
         status: "pending_payment",
         stripe_session_id: session.id,
-        notes: "Tirzepatide Membership subscription - $499/month",
+        notes: membershipTier 
+          ? `Tirzepatide Membership - ${membershipTier.toUpperCase()} member discount applied`
+          : "Tirzepatide Membership subscription - $499/month",
       });
       logStep("Pending subscription recorded in database");
     }
