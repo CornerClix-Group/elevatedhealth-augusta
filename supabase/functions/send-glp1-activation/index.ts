@@ -9,7 +9,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const logStep = (step: string, details?: any) => {
+const logStep = (step: string, details?: unknown) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : "";
   console.log(`[SEND-GLP1-ACTIVATION] ${step}${detailsStr}`);
 };
@@ -21,7 +21,22 @@ interface GLP1ActivationRequest {
   payment_link?: string;
   include_hormone_addon?: boolean;
   patient_id?: string;
+  hormone_membership_tier?: "access" | "vitality" | "concierge" | null;
 }
+
+// Pricing configuration
+const PRICING = {
+  semaglutide: {
+    full: { price: "$399", amount: 399 },
+    vitality: { price: "$359", amount: 359, discount: "10% off" },
+    concierge: { price: "$339", amount: 339, discount: "15% off" },
+  },
+  tirzepatide: {
+    full: { price: "$499", amount: 499 },
+    vitality: { price: "$449", amount: 449, discount: "10% off" },
+    concierge: { price: "$424", amount: 424, discount: "15% off" },
+  },
+};
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -38,17 +53,35 @@ const handler = async (req: Request): Promise<Response> => {
       payment_link,
       include_hormone_addon,
       patient_id,
+      hormone_membership_tier,
     }: GLP1ActivationRequest = await req.json();
 
-    logStep("Request received", { patient_name, patient_email, medication_type, patient_id });
+    logStep("Request received", { patient_name, patient_email, medication_type, patient_id, hormone_membership_tier });
 
     const firstName = patient_name.split(' ')[0];
     const activationLink = payment_link || "https://elevatedhealthaugusta.com/consult";
     
     const isSemaglutide = medication_type === "semaglutide";
     const medicationName = isSemaglutide ? "Semaglutide" : "Tirzepatide";
-    const monthlyPrice = isSemaglutide ? "$399" : "$499";
-    const totalWithAddon = isSemaglutide ? "$548" : "$648";
+    
+    // Determine pricing based on hormone membership tier
+    const medPricing = PRICING[medication_type];
+    let monthlyPrice: string;
+    let discountBadge = "";
+    
+    if (hormone_membership_tier === "concierge") {
+      monthlyPrice = medPricing.concierge.price;
+      discountBadge = `<span style="background: #D4A017; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">CONCIERGE MEMBER - 15% OFF</span>`;
+    } else if (hormone_membership_tier === "vitality") {
+      monthlyPrice = medPricing.vitality.price;
+      discountBadge = `<span style="background: #2C3E50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">VITALITY MEMBER - 10% OFF</span>`;
+    } else {
+      monthlyPrice = medPricing.full.price;
+    }
+    
+    const totalWithAddon = isSemaglutide 
+      ? `$${(hormone_membership_tier === "concierge" ? 339 : hormone_membership_tier === "vitality" ? 359 : 399) + 149}` 
+      : `$${(hormone_membership_tier === "concierge" ? 424 : hormone_membership_tier === "vitality" ? 449 : 499) + 149}`;
 
     const hormoneAddonSection = include_hormone_addon ? `
       <div style="background: #FDF8E7; border-radius: 8px; padding: 16px; margin-top: 16px; border: 1px solid #D4A017;">
@@ -96,6 +129,7 @@ const handler = async (req: Request): Promise<Response> => {
               </p>
 
               <div style="background: linear-gradient(135deg, #F9F9F7 0%, #EEF2F6 100%); border-radius: 8px; padding: 24px; margin-bottom: 24px; border-left: 4px solid #D4A017;">
+                ${discountBadge ? `<div style="margin-bottom: 12px;">${discountBadge}</div>` : ''}
                 <h3 style="font-family: Georgia, serif; font-size: 18px; color: #2C3E50; margin: 0 0 12px 0;">
                   ${medicationName} Membership - ${monthlyPrice}/month
                 </h3>
@@ -158,7 +192,7 @@ const handler = async (req: Request): Promise<Response> => {
           patient_id,
           template_key: "glp1_activation",
           subject: `Your ${medicationName} Weight Loss Program is Ready`,
-          body_preview: `${medicationName} activation email sent to ${patient_email}${include_hormone_addon ? ' (with hormone addon)' : ''}`,
+          body_preview: `${medicationName} activation email sent to ${patient_email}${include_hormone_addon ? ' (with hormone addon)' : ''}${hormone_membership_tier ? ` - ${hormone_membership_tier.toUpperCase()} discount` : ''}`,
           delivery_method: "email",
           status: "sent",
         });
@@ -172,10 +206,11 @@ const handler = async (req: Request): Promise<Response> => {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });
-  } catch (error: any) {
-    logStep("ERROR", { message: error.message });
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logStep("ERROR", { message: errorMessage });
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: errorMessage }),
       { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }

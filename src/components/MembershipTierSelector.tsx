@@ -23,6 +23,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface MembershipTierSelectorProps {
   gender?: "male" | "female";
@@ -36,14 +38,34 @@ export function MembershipTierSelector({
   className 
 }: MembershipTierSelectorProps) {
   const [selectedTier, setSelectedTier] = useState<HormoneMembershipTier | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingTier, setLoadingTier] = useState<HormoneMembershipTier | null>(null);
 
   const isFeminine = gender === "female";
   const accentColor = isFeminine ? "feminine" : "primary";
 
-  const handleSelectTier = (tier: HormoneMembershipTier) => {
+  const handleSelectTier = async (tier: HormoneMembershipTier) => {
     setSelectedTier(tier);
+    setLoadingTier(tier);
     onSelectTier?.(tier);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke("create-hormone-membership-checkout", {
+        body: { tier }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      } else {
+        throw new Error("No checkout URL returned");
+      }
+    } catch (err) {
+      console.error("Membership checkout error:", err);
+      toast.error("Failed to start checkout. Please try again or call us.");
+    } finally {
+      setLoadingTier(null);
+    }
   };
 
   const tierConfigs = [
@@ -118,7 +140,7 @@ export function MembershipTierSelector({
               recommended ? `border-2 ${borderColor} shadow-lg scale-[1.02]` : `border ${borderColor}`,
               selectedTier === key && "ring-2 ring-offset-2 ring-gold"
             )}
-            onClick={() => handleSelectTier(key)}
+            onClick={() => !loadingTier && handleSelectTier(key)}
           >
             {/* Top Badge */}
             {recommended && (
@@ -256,12 +278,12 @@ export function MembershipTierSelector({
                     ? "bg-gold hover:bg-gold/90 text-gold-foreground"
                     : "bg-slate-600 hover:bg-slate-700 text-white"
                 )}
-                disabled={isLoading}
+                disabled={!!loadingTier}
               >
-                {isLoading && selectedTier === key ? (
+                {loadingTier === key ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : null}
-                {recommended ? "Get Started" : "Select Plan"}
+                {loadingTier === key ? "Processing..." : recommended ? "Get Started" : "Select Plan"}
               </Button>
 
               {/* Annual Savings Teaser */}

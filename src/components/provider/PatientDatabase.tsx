@@ -92,7 +92,9 @@ const statusLabels: Record<string, { label: string; variant: "default" | "second
 };
 
 const membershipLabels: Record<string, { label: string; color: string }> = {
-  vitality: { label: "Vitality ($249)", color: "bg-amber-100 text-amber-800" },
+  access: { label: "ACCESS ($99)", color: "bg-slate-100 text-slate-800" },
+  vitality: { label: "VITALITY ($149)", color: "bg-amber-100 text-amber-800" },
+  concierge: { label: "CONCIERGE ($249)", color: "bg-gold/20 text-gold" },
   semaglutide: { label: "Semaglutide ($399)", color: "bg-blue-100 text-blue-800" },
   tirzepatide: { label: "Tirzepatide ($499)", color: "bg-purple-100 text-purple-800" },
 };
@@ -281,7 +283,9 @@ export default function PatientDatabase({
           <SelectContent>
             <SelectItem value="all">All Memberships</SelectItem>
             <SelectItem value="none">No Membership</SelectItem>
-            <SelectItem value="vitality">Vitality ($249)</SelectItem>
+            <SelectItem value="access">ACCESS ($99)</SelectItem>
+            <SelectItem value="vitality">VITALITY ($149)</SelectItem>
+            <SelectItem value="concierge">CONCIERGE ($249)</SelectItem>
             <SelectItem value="semaglutide">Semaglutide ($399)</SelectItem>
             <SelectItem value="tirzepatide">Tirzepatide ($499)</SelectItem>
           </SelectContent>

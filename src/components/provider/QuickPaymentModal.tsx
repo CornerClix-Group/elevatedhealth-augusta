@@ -34,7 +34,9 @@ interface QuickPaymentModalProps {
 }
 
 const PRODUCTS = [
-  { value: "vitality", label: "Vitality Membership", price: "$249/mo" },
+  { value: "hormone_access", label: "Hormone ACCESS", price: "$99/mo" },
+  { value: "hormone_vitality", label: "Hormone VITALITY", price: "$149/mo" },
+  { value: "hormone_concierge", label: "Hormone CONCIERGE", price: "$249/mo" },
   { value: "semaglutide", label: "Semaglutide Membership", price: "$399/mo" },
   { value: "tirzepatide", label: "Tirzepatide Membership", price: "$499/mo" },
   { value: "hormoneAddon", label: "Hormone Add-On (GLP-1)", price: "+$149/mo" },
@@ -77,6 +79,9 @@ const QuickPaymentModal = ({ open, onOpenChange, onSuccess }: QuickPaymentModalP
 
   const getEdgeFunction = (product: string) => {
     switch (product) {
+      case "hormone_access": return "create-hormone-membership-checkout";
+      case "hormone_vitality": return "create-hormone-membership-checkout";
+      case "hormone_concierge": return "create-hormone-membership-checkout";
       case "vitality": return "create-vitality-checkout";
       case "semaglutide": return "create-semaglutide-checkout";
       case "tirzepatide": return "create-tirzepatide-checkout";
@@ -84,6 +89,18 @@ const QuickPaymentModal = ({ open, onOpenChange, onSuccess }: QuickPaymentModalP
       case "ivKetamine": return "create-iv-ketamine-checkout";
       default: return "create-alacarte-checkout";
     }
+  };
+
+  const getCheckoutBody = (product: string, patient: Patient) => {
+    if (product.startsWith("hormone_")) {
+      const tier = product.replace("hormone_", "") as "access" | "vitality" | "concierge";
+      return { tier, patientId: patient.id };
+    }
+    return {
+      email: patient.email,
+      name: patient.full_name,
+      patientId: patient.id,
+    };
   };
 
   const handleSend = async () => {
@@ -136,13 +153,10 @@ const QuickPaymentModal = ({ open, onOpenChange, onSuccess }: QuickPaymentModalP
     setIsSending(true);
     try {
       const edgeFunction = getEdgeFunction(selectedProduct);
+      const checkoutBody = getCheckoutBody(selectedProduct, selectedPatient);
       
       const { data, error } = await supabase.functions.invoke(edgeFunction, {
-        body: {
-          email: selectedPatient.email,
-          name: selectedPatient.full_name,
-          patientId: selectedPatient.id,
-        },
+        body: checkoutBody,
       });
 
       if (error) throw error;

@@ -116,7 +116,7 @@ export const MEMBERSHIP_PRICES = {
 
 export const HORMONE_MEMBERSHIP_TIERS = {
   access: {
-    priceId: "price_1Sonn4EOtKRY99puEv2aLJ7U",
+    priceId: "price_1Soo21EOtKRY99pursQ4Vnh3",
     amount: 9900, // $99/mo
     displayPrice: "$99/mo",
     name: "ACCESS",
@@ -136,7 +136,7 @@ export const HORMONE_MEMBERSHIP_TIERS = {
     },
   },
   vitality: {
-    priceId: "price_1Sonn6EOtKRY99puceDBRyq4",
+    priceId: "price_1Soo23EOtKRY99puIku6s4DU",
     amount: 14900, // $149/mo
     displayPrice: "$149/mo",
     name: "VITALITY",
@@ -156,7 +156,7 @@ export const HORMONE_MEMBERSHIP_TIERS = {
     },
   },
   concierge: {
-    priceId: "price_1Sonn7EOtKRY99pu1jcQC9Dz",
+    priceId: "price_1Soo25EOtKRY99puMndJjRr4",
     amount: 24900, // $249/mo
     displayPrice: "$249/mo",
     name: "CONCIERGE",
@@ -186,12 +186,12 @@ export const TIERED_GLP1_PRICES = {
       displayPrice: "$399/mo",
     },
     vitality: {
-      priceId: "price_1SonnAEOtKRY99puUEM8SiLt",
+      priceId: "price_1Soo27EOtKRY99punKCdKBDe",
       amount: 35900, // 10% off
       displayPrice: "$359/mo",
     },
     concierge: {
-      priceId: "price_1SonnBEOtKRY99puAhWobthB",
+      priceId: "price_1Soo29EOtKRY99pulu8UKUJt",
       amount: 33900, // 15% off
       displayPrice: "$339/mo",
     },
@@ -203,12 +203,12 @@ export const TIERED_GLP1_PRICES = {
       displayPrice: "$499/mo",
     },
     vitality: {
-      priceId: "price_1SonnDEOtKRY99pufTejsVjO",
+      priceId: "price_1Soo2AEOtKRY99puMopN9V2Q",
       amount: 44900, // 10% off
       displayPrice: "$449/mo",
     },
     concierge: {
-      priceId: "price_1SonnEEOtKRY99pubW5G3TxJ",
+      priceId: "price_1Soo2CEOtKRY99puKfwGnQOw",
       amount: 42400, // 15% off
       displayPrice: "$424/mo",
     },
