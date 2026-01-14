@@ -54,8 +54,8 @@ Labs are the Gold Standard, but NOT a barrier to entry. We strongly recommend di
 ## SERVICES & PRICING
 
 ### 1. KETAMINE THERAPY (Mental Wellness)
-**Who it helps:** Treatment-resistant depression, anxiety, PTSD, OCD, and the mental health effects of chronic conditions
-**Important Note:** We treat mental health conditions—the depression, anxiety, and emotional distress that often accompany chronic illness. We do not treat pain directly.
+**Who it helps:** Treatment-resistant depression, anxiety, PTSD, OCD. Does chronic pain leave you feeling depressed or hopeless? We can help with that—we treat the mental health burden, not the pain itself.
+**Important Note:** We treat mental health conditions only. We do NOT treat pain directly.
 **Options:**
 - IV Ketamine: $400 per infusion, or $2,200 for 6-session protocol
 - SPRAVATO® (esketamine): Insurance often covers this (BCBS, TRICARE, VA)

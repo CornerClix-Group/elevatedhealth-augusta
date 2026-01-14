@@ -130,6 +130,9 @@ const IVKetamine = () => {
                       <li>• PTSD and trauma</li>
                       <li>• OCD (obsessive-compulsive disorder)</li>
                     </ul>
+                    <p className="text-xs text-muted-foreground/70 mt-4 italic">
+                      Does chronic pain leave you feeling depressed? We treat the mental health burden—not the pain itself.
+                    </p>
                   </CardContent>
                 </Card>
                 <Card>

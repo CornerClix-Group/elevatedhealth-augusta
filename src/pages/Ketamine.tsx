@@ -162,11 +162,14 @@ const Ketamine = () => {
                       believing they have a "brain chemistry" problem when they actually have a 
                       hormonal imbalance that has never been properly tested.
                     </p>
-                    <p className="text-lg text-muted-foreground leading-relaxed font-light">
-                      <span className="text-foreground font-medium">We check both.</span> Using 
-                      advanced saliva diagnostics, we map your cortisol rhythm and hormone levels 
-                      before prescribing anything. This ensures we treat the root, not just the symptom.
-                    </p>
+                <p className="text-lg text-muted-foreground leading-relaxed font-light">
+                  <span className="text-foreground font-medium">We check both.</span> Using 
+                  advanced saliva diagnostics, we map your cortisol rhythm and hormone levels 
+                  before prescribing anything. This ensures we treat the root, not just the symptom.
+                </p>
+                <p className="text-sm text-muted-foreground/80 mt-6 italic border-l-2 border-gold/50 pl-4">
+                  Note: We treat mental health conditions—including the depression and anxiety that often accompany chronic illness. We do not treat pain directly.
+                </p>
                   </div>
                   <div className="space-y-4">
                     <Card className="bg-card/80 border-border/50">
