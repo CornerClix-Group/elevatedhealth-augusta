@@ -10,6 +10,7 @@ import { useState } from "react";
 import ConsultationModal from "@/components/ConsultationModal";
 import AssistantHub from "@/components/AssistantHub";
 import NotReadyToBook from "@/components/NotReadyToBook";
+import CacheRefreshBanner from "@/components/CacheRefreshBanner";
 
 const Ketamine = () => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -50,6 +51,7 @@ const Ketamine = () => {
 
   return (
     <>
+      <CacheRefreshBanner />
       <Helmet>
         <title>Neural Restoration Therapy Augusta | Ketamine Treatment - Elevated Health</title>
         <meta name="description" content="Advanced ketamine therapy in Augusta, GA. $99 medical consultation credited toward treatment. Chat with our Virtual Care Team or call (706) 760-3470. BCBS, TRICARE accepted." />
