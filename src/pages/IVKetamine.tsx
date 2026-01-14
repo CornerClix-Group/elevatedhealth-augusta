@@ -8,6 +8,7 @@ import { SITE_CONFIG } from "@/lib/siteConfig";
 import { Link } from "react-router-dom";
 import NotReadyToBook from "@/components/NotReadyToBook";
 import { useBooking } from "@/contexts/BookingContext";
+import CacheRefreshBanner from "@/components/CacheRefreshBanner";
 
 const IVKetamine = () => {
   const { openBooking } = useBooking();
@@ -44,6 +45,7 @@ const IVKetamine = () => {
 
   return (
     <div className="min-h-screen">
+      <CacheRefreshBanner />
       <Helmet>
         <title>IV Ketamine Therapy Augusta GA | Treatment-Resistant Depression | Elevated Health</title>
         <meta 
