@@ -2,10 +2,9 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Calendar, Loader2, Save, Sparkles, Scale, Star, Zap } from "lucide-react";
+import { Crown, Calendar, Loader2, Save, Scale, Star, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -132,61 +131,26 @@ const MembershipAssignmentCard = ({
           </div>
         )}
 
-        {/* Tier Selection */}
+        {/* Tier Selection - Native HTML Select */}
         <div className="space-y-2">
           <Label htmlFor="tier" className="text-sm">Membership Tier</Label>
-          <Select value={tier} onValueChange={setTier}>
-            <SelectTrigger id="tier">
-              <SelectValue placeholder="Select tier" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">
-                <span className="flex items-center gap-2">
-                  No Membership
-                </span>
-              </SelectItem>
-              
-              {/* Hormone Membership Tiers */}
-              <div className="px-2 py-1 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">
-                Hormone Memberships
-              </div>
-              <SelectItem value="access">
-                <span className="flex items-center gap-2">
-                  <Zap className="w-3.5 h-3.5 text-slate-500" />
-                  ACCESS ($99/mo) - 20% labs
-                </span>
-              </SelectItem>
-              <SelectItem value="vitality">
-                <span className="flex items-center gap-2">
-                  <Star className="w-3.5 h-3.5 text-primary" />
-                  VITALITY ($149/mo) - 30% labs, 10% GLP-1
-                </span>
-              </SelectItem>
-              <SelectItem value="concierge">
-                <span className="flex items-center gap-2">
-                  <Crown className="w-3.5 h-3.5 text-gold" />
-                  CONCIERGE ($249/mo) - 40% labs, 15% GLP-1
-                </span>
-              </SelectItem>
-              
-              {/* GLP-1 Memberships */}
-              <div className="px-2 py-1 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">
-                GLP-1 Memberships
-              </div>
-              <SelectItem value="semaglutide">
-                <span className="flex items-center gap-2">
-                  <Scale className="w-3.5 h-3.5 text-green-500" />
-                  Semaglutide ($399/mo)
-                </span>
-              </SelectItem>
-              <SelectItem value="tirzepatide">
-                <span className="flex items-center gap-2">
-                  <Scale className="w-3.5 h-3.5 text-blue-500" />
-                  Tirzepatide ($499/mo)
-                </span>
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <select
+            id="tier"
+            value={tier}
+            onChange={(e) => setTier(e.target.value)}
+            className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="none">No Membership</option>
+            <optgroup label="Hormone Memberships">
+              <option value="access">ACCESS ($99/mo) - 20% labs</option>
+              <option value="vitality">VITALITY ($149/mo) - 30% labs, 10% GLP-1</option>
+              <option value="concierge">CONCIERGE ($249/mo) - 40% labs, 15% GLP-1</option>
+            </optgroup>
+            <optgroup label="GLP-1 Memberships">
+              <option value="semaglutide">Semaglutide ($399/mo)</option>
+              <option value="tirzepatide">Tirzepatide ($499/mo)</option>
+            </optgroup>
+          </select>
         </div>
 
         {/* Renewal Date */}
