@@ -177,20 +177,27 @@ serve(async (req) => {
       }
     }
 
-    // Map patient_status to onboarding_status
-    let onboardingStatus = "existing_patient";
+    // Map patient_status to onboarding_status (use treatment_active as default for existing patients)
+    let onboardingStatus = "treatment_active";
     switch (patient_status) {
-      case "existing_patient":
-        onboardingStatus = "existing_patient";
+      case "treatment_active":
+        onboardingStatus = "treatment_active";
+        break;
+      case "results_ready":
+        onboardingStatus = "results_ready";
+        break;
+      case "protocol_approved":
+        onboardingStatus = "protocol_approved";
         break;
       case "consultation_completed":
         onboardingStatus = "consultation_completed";
         break;
-      case "treatment_active":
+      case "existing_patient":
+        // Legacy status - map to treatment_active
         onboardingStatus = "treatment_active";
         break;
       default:
-        onboardingStatus = "existing_patient";
+        onboardingStatus = "treatment_active";
     }
 
     // Create the patient record

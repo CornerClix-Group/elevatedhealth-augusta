@@ -34,9 +34,10 @@ const SERVICE_TYPES = [
 ] as const;
 
 const PATIENT_STATUS_OPTIONS = [
-  { value: "existing_patient", label: "Existing Patient (Skip Consultation)" },
-  { value: "consultation_completed", label: "Consultation Completed" },
   { value: "treatment_active", label: "Active on Treatment" },
+  { value: "results_ready", label: "Labs Uploaded, Pending Review" },
+  { value: "protocol_approved", label: "Protocol Approved, Pending Rx" },
+  { value: "consultation_completed", label: "Start at Step 1 (Consultation Done)" },
 ] as const;
 
 const AddExistingPatientCard = ({ onPatientAdded, embedded = false }: AddExistingPatientCardProps) => {
@@ -44,7 +45,7 @@ const AddExistingPatientCard = ({ onPatientAdded, embedded = false }: AddExistin
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [serviceInterests, setServiceInterests] = useState<string[]>(["hormone"]);
-  const [patientStatus, setPatientStatus] = useState<string>("existing_patient");
+  const [patientStatus, setPatientStatus] = useState<string>("treatment_active");
   const [sendWelcomeEmail, setSendWelcomeEmail] = useState(true);
   const [creditCode, setCreditCode] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -114,7 +115,7 @@ const AddExistingPatientCard = ({ onPatientAdded, embedded = false }: AddExistin
         setName("");
         setPhone("");
         setServiceInterests(["hormone"]);
-        setPatientStatus("existing_patient");
+        setPatientStatus("treatment_active");
         setSendWelcomeEmail(true);
         setCreditCode("");
         setShowAdvanced(false);

@@ -14,12 +14,16 @@ import { toast } from "sonner";
 import { Loader2, Beaker, AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import LabPdfUploader from "./LabPdfUploader";
+import HolgateAnalysisPanel from "./HolgateAnalysisPanel";
+import { analyzeLabResults, ClinicalImpression, LabValues } from "@/lib/holgateLogic";
+import { generateMedicationRecommendations, MedicationRecommendation } from "@/lib/medicationMapping";
 
 interface NewLabResultModalProps {
   isOpen: boolean;
   onClose: () => void;
   patientId: string;
   patientName: string;
+  patientGender?: string;
   latestSymptomScore?: {
     estrogen: number;
     progesterone: number;
@@ -27,6 +31,7 @@ interface NewLabResultModalProps {
     cortisol: number;
   };
   onSaved: () => void;
+  onApplyToRx?: (medications: MedicationRecommendation[]) => void;
 }
 
 interface ProtocolRecommendation {
@@ -57,8 +62,10 @@ const NewLabResultModal = ({
   onClose, 
   patientId, 
   patientName,
+  patientGender = 'female',
   latestSymptomScore,
-  onSaved 
+  onSaved,
+  onApplyToRx
 }: NewLabResultModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [collectionDate, setCollectionDate] = useState(new Date().toISOString().split('T')[0]);
@@ -91,6 +98,10 @@ const NewLabResultModal = ({
   
   const [recommendation, setRecommendation] = useState<ProtocolRecommendation | null>(null);
   const [labcorpAlerts, setLabcorpAlerts] = useState<ProtocolRecommendation[]>([]);
+  
+  // Holgate analysis state
+  const [holgateAnalysis, setHolgateAnalysis] = useState<ClinicalImpression | null>(null);
+  const [medicationRecs, setMedicationRecs] = useState<MedicationRecommendation[]>([]);
 
   // Handle parsed PDF data - auto-populate editable fields
   const handleParsedData = (data: ParsedLabData) => {
@@ -294,6 +305,24 @@ const NewLabResultModal = ({
 
         const correlationAlert = getCorrelationAlert(e2Value, pgValue, tValue);
 
+        // Build lab values for Holgate analysis
+        const labValues: LabValues = {
+          estradiol_e2: e2Value,
+          progesterone_pg: pgValue,
+          testosterone_t: tValue,
+          cortisol_morning: cortisolValue,
+          dhea_s: dheasValue,
+          fasting_insulin: insulinValue,
+          a1c: a1cValue,
+          vitamin_d: vitDValue,
+        };
+
+        // Run Holgate analysis
+        const analysis = analyzeLabResults(labValues, patientGender, 'hormone_mapping');
+        
+        // Generate medication recommendations
+        const medications = generateMedicationRecommendations(analysis, labValues, patientGender);
+
         const { error } = await supabase.from("lab_results").insert({
           patient_id: patientId,
           collection_date: collectionDate,
@@ -310,19 +339,32 @@ const NewLabResultModal = ({
           correlation_alert: correlationAlert,
           pdf_url: pdfUrl,
           parsed_from_pdf: parsedFromPdf,
+          clinical_story: analysis.story,
+          treatment_plan: JSON.parse(JSON.stringify({
+            findings: analysis.findings,
+            protocols: analysis.protocols,
+            medications: medications,
+          })),
           created_by: user?.id
         });
 
         if (error) throw error;
 
-        const rec = getProtocolRecommendation(e2Value, tValue, pgValue, pgE2Value);
-        if (rec) {
-          setRecommendation(rec);
+        // Update patient onboarding status to results_ready
+        await supabase
+          .from("patients")
+          .update({ onboarding_status: "results_ready" })
+          .eq("id", patientId);
+
+        // Show Holgate analysis panel if we have findings
+        if (analysis.findings.length > 0 || medications.length > 0) {
+          setHolgateAnalysis(analysis);
+          setMedicationRecs(medications);
           toast.success("Lab results saved!", {
-            description: "Protocol recommendation generated."
+            description: `${analysis.findings.length} findings detected. Review recommendations.`
           });
         } else {
-          toast.success("Lab results saved successfully!");
+          toast.success("Lab results saved successfully! No abnormalities detected.");
           resetAndClose();
         }
       }
@@ -363,7 +405,18 @@ const NewLabResultModal = ({
     // Recommendations
     setRecommendation(null);
     setLabcorpAlerts([]);
+    // Holgate analysis
+    setHolgateAnalysis(null);
+    setMedicationRecs([]);
     onClose();
+  };
+
+  const handleApplyToRx = (medications: MedicationRecommendation[]) => {
+    if (onApplyToRx) {
+      onApplyToRx(medications);
+    }
+    toast.success("Medications applied to Rx card");
+    resetAndClose();
   };
 
   // Helper to get field status
@@ -394,8 +447,16 @@ const NewLabResultModal = ({
           </p>
         </DialogHeader>
 
-        {/* Show recommendations if any */}
-        {(recommendation || labcorpAlerts.length > 0) ? (
+        {/* Show Holgate Analysis Panel */}
+        {holgateAnalysis ? (
+          <HolgateAnalysisPanel
+            analysis={holgateAnalysis}
+            medications={medicationRecs}
+            pdfUrl={pdfUrl}
+            onApplyToRx={handleApplyToRx}
+            onClose={resetAndClose}
+          />
+        ) : (recommendation || labcorpAlerts.length > 0) ? (
           <div className="space-y-4">
             {recommendation && (
               <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
