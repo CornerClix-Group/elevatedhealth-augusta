@@ -41,6 +41,7 @@ function getHormoneStepIndex(status: string | null): number {
     'consultation_paid': 0,
     'consultation_scheduled': 0,
     'consultation_complete': 0,
+    'consultation_completed': 0,
     'intake_complete': 0,
     'kit_link_sent': 1,
     'labs_paid': 1,
@@ -52,6 +53,7 @@ function getHormoneStepIndex(status: string | null): number {
     'pending_pharmacy_order': 5,
     'rx_sent': 5,
     'treatment_active': 6,
+    'existing_patient': 6, // Existing patients are treated as active
   };
   return statusMap[status || ''] ?? 0;
 }
@@ -63,6 +65,7 @@ function getWeightLossStepIndex(status: string | null): number {
     'consultation_paid': 0,
     'consultation_scheduled': 0,
     'consultation_complete': 0,
+    'consultation_completed': 0,
     'intake_complete': 0,
     'awaiting_medical_clearance': 1,
     'glp1_approved': 1,
@@ -71,6 +74,7 @@ function getWeightLossStepIndex(status: string | null): number {
     'glp1_rx_sent': 2,
     'rx_sent': 2,
     'treatment_active': 3,
+    'existing_patient': 3, // Existing patients are treated as active
   };
   return statusMap[status || ''] ?? 0;
 }

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Beaker, Plus, TrendingUp } from "lucide-react";
 import LabGauge from "./LabGauge";
 import NewLabResultModal from "./NewLabResultModal";
+import { MedicationRecommendation } from "@/lib/medicationMapping";
 
 interface LabResult {
   id: string;
@@ -19,15 +20,17 @@ interface LabResult {
 interface LabAnalysisCardProps {
   patientId: string;
   patientName: string;
+  patientGender?: string;
   latestSymptomScore?: {
     estrogen: number;
     progesterone: number;
     androgen: number;
     cortisol: number;
   };
+  onApplyToRx?: (medications: MedicationRecommendation[]) => void;
 }
 
-const LabAnalysisCard = ({ patientId, patientName, latestSymptomScore }: LabAnalysisCardProps) => {
+const LabAnalysisCard = ({ patientId, patientName, patientGender = 'female', latestSymptomScore, onApplyToRx }: LabAnalysisCardProps) => {
   const [latestLab, setLatestLab] = useState<LabResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -156,8 +159,10 @@ const LabAnalysisCard = ({ patientId, patientName, latestSymptomScore }: LabAnal
         onClose={() => setIsModalOpen(false)}
         patientId={patientId}
         patientName={patientName}
+        patientGender={patientGender}
         latestSymptomScore={latestSymptomScore}
         onSaved={loadLatestLab}
+        onApplyToRx={onApplyToRx}
       />
     </>
   );

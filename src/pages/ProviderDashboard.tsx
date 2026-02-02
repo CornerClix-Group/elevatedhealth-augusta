@@ -217,6 +217,8 @@ const ProviderDashboard = () => {
   // Quick pharmacy order modal state
   const [pharmacyOrderPatient, setPharmacyOrderPatient] = useState<PendingPharmacyPatient | null>(null);
   const [isPharmacyModalOpen, setIsPharmacyModalOpen] = useState(false);
+  // Recommended medications from lab analysis
+  const [recommendedMedications, setRecommendedMedications] = useState<import("@/lib/medicationMapping").MedicationRecommendation[]>([]);
 
   // Provider lookup based on email - expand this as you add more providers
   const getProviderInfo = (email: string) => {
@@ -2194,12 +2196,14 @@ const ProviderDashboard = () => {
               <LabAnalysisCard
                 patientId={selectedPatient.patient.id}
                 patientName={selectedPatient.patient.full_name}
+                patientGender={selectedPatient.patient.gender || 'female'}
                 latestSymptomScore={selectedPatient.latestLog ? {
                   estrogen: selectedPatient.latestLog.estrogen_score || 0,
                   progesterone: selectedPatient.latestLog.progesterone_score || 0,
                   androgen: selectedPatient.latestLog.androgen_score || 0,
                   cortisol: selectedPatient.latestLog.cortisol_score || 0,
                 } : undefined}
+                onApplyToRx={(meds) => setRecommendedMedications(meds)}
               />
 
               {/* Lab Interpretation Engine - Holgate Logic */}
@@ -2353,6 +2357,7 @@ const ProviderDashboard = () => {
                   gender: selectedPatient.patient.gender,
                 }}
                 onOrderCreated={() => loadData()}
+                recommendedMedications={recommendedMedications}
               />
 
               {/* Supplement Plan Card - Dr. Holgate's Protocols */}
