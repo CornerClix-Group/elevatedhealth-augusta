@@ -22,6 +22,7 @@ import { Loader2, UserCheck, Check, Users, Mail, CreditCard, ChevronDown } from 
 
 interface AddExistingPatientCardProps {
   onPatientAdded?: () => void;
+  embedded?: boolean;
 }
 
 const SERVICE_TYPES = [
@@ -37,7 +38,7 @@ const PATIENT_STATUS_OPTIONS = [
   { value: "treatment_active", label: "Active on Treatment" },
 ] as const;
 
-const AddExistingPatientCard = ({ onPatientAdded }: AddExistingPatientCardProps) => {
+const AddExistingPatientCard = ({ onPatientAdded, embedded = false }: AddExistingPatientCardProps) => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -114,192 +115,198 @@ const AddExistingPatientCard = ({ onPatientAdded }: AddExistingPatientCardProps)
     }
   };
 
-  return (
-    <Card className="border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-transparent">
+  const formContent = (
+    <div className="space-y-4">
+      <p className="text-xs text-muted-foreground">
+        Add a current clinic patient without requiring the $99 consultation. 
+        Perfect for established patients who need to be added to the system.
+      </p>
+      
+      <div className="text-xs bg-accent/50 rounded-lg p-3 border border-accent">
+        <p className="font-medium text-foreground mb-1 flex items-center gap-1.5">
+          <UserCheck className="w-3.5 h-3.5 text-primary" />
+          No Payment Required
+        </p>
+        <p className="text-muted-foreground">
+          Patient is added directly. Use "Send Kit Link" or "À La Carte" cards to send service-specific payment links.
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        <div>
+          <Label htmlFor="existing-name" className="text-xs text-muted-foreground">
+            Patient Name
+          </Label>
+          <Input
+            id="existing-name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="John Smith"
+            className="mt-1"
+            disabled={isAdding}
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="existing-email" className="text-xs text-muted-foreground">
+            Patient Email
+          </Label>
+          <Input
+            id="existing-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="patient@example.com"
+            className="mt-1"
+            disabled={isAdding}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="existing-phone" className="text-xs text-muted-foreground">
+            Phone (Optional)
+          </Label>
+          <Input
+            id="existing-phone"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="(555) 555-5555"
+            className="mt-1"
+            disabled={isAdding}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="existing-service" className="text-xs text-muted-foreground">
+            Service Interest
+          </Label>
+          <Select value={serviceType} onValueChange={setServiceType} disabled={isAdding}>
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Select service type" />
+            </SelectTrigger>
+            <SelectContent>
+              {SERVICE_TYPES.map((service) => (
+                <SelectItem key={service.value} value={service.value}>
+                  {service.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <Label htmlFor="existing-status" className="text-xs text-muted-foreground">
+            Starting Status
+          </Label>
+          <Select value={patientStatus} onValueChange={setPatientStatus} disabled={isAdding}>
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Select patient status" />
+            </SelectTrigger>
+            <SelectContent>
+              {PATIENT_STATUS_OPTIONS.map((status) => (
+                <SelectItem key={status.value} value={status.value}>
+                  {status.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Welcome Email Checkbox */}
+        <div className="flex items-center space-x-2 pt-1">
+          <Checkbox
+            id="send-welcome"
+            checked={sendWelcomeEmail}
+            onCheckedChange={(checked) => setSendWelcomeEmail(checked as boolean)}
+            disabled={isAdding}
+          />
+          <Label 
+            htmlFor="send-welcome" 
+            className="text-xs text-muted-foreground cursor-pointer flex items-center gap-1.5"
+          >
+            <Mail className="w-3.5 h-3.5" />
+            Send welcome email to patient
+          </Label>
+        </div>
+
+        {/* Advanced Options */}
+        <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-between text-xs text-muted-foreground hover:text-foreground p-0 h-auto"
+              disabled={isAdding}
+            >
+              <span className="flex items-center gap-1.5">
+                <CreditCard className="w-3.5 h-3.5" />
+                Advanced Options
+              </span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${showAdvanced ? 'rotate-180' : ''}`} />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="pt-3 space-y-3">
+            <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
+              <Label htmlFor="credit-code" className="text-xs text-muted-foreground">
+                Apply Consultation Credit Code (Optional)
+              </Label>
+              <Input
+                id="credit-code"
+                type="text"
+                value={creditCode}
+                onChange={(e) => setCreditCode(e.target.value.toUpperCase())}
+                placeholder="e.g., EH-ABC123"
+                className="mt-1 font-mono"
+                disabled={isAdding}
+              />
+              <p className="text-xs text-muted-foreground mt-1.5">
+                Enter a credit code if this patient previously paid for a $99 consultation.
+                The $99 will be applied toward their Hormone Mapping Kit.
+              </p>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+
+      <Button
+        onClick={handleAddPatient}
+        disabled={isAdding || !email.trim() || !name.trim()}
+        variant="outline"
+        className="w-full border-primary/50 text-primary hover:bg-primary/10"
+      >
+        {isAdding ? (
+          <>
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            Adding...
+          </>
+        ) : added ? (
+          <>
+            <Check className="w-4 h-4 mr-2" />
+            Patient Added!
+          </>
+        ) : (
+          <>
+            <UserCheck className="w-4 h-4 mr-2" />
+            Add Patient (No Payment)
+          </>
+        )}
+      </Button>
+    </div>
+  );
+
+  return embedded ? (
+    formContent
+  ) : (
+    <Card className="border-gold/30 bg-gradient-to-br from-gold/5 to-transparent">
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm flex items-center gap-2 text-emerald-600">
+        <CardTitle className="text-sm flex items-center gap-2 text-gold">
           <Users className="w-4 h-4" />
           Add Existing Patient
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-xs text-muted-foreground">
-          Add a current clinic patient without requiring the $99 consultation. 
-          Perfect for established patients who need to be added to the system.
-        </p>
-        
-        <div className="text-xs bg-emerald-500/10 rounded-lg p-3 border border-emerald-500/20">
-          <p className="font-medium text-foreground mb-1 flex items-center gap-1.5">
-            <UserCheck className="w-3.5 h-3.5 text-emerald-600" />
-            No Payment Required
-          </p>
-          <p className="text-muted-foreground">
-            Patient is added directly. Use "Send Kit Link" or "À La Carte" cards to send service-specific payment links.
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <div>
-            <Label htmlFor="existing-name" className="text-xs text-muted-foreground">
-              Patient Name
-            </Label>
-            <Input
-              id="existing-name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="John Smith"
-              className="mt-1"
-              disabled={isAdding}
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="existing-email" className="text-xs text-muted-foreground">
-              Patient Email
-            </Label>
-            <Input
-              id="existing-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="patient@example.com"
-              className="mt-1"
-              disabled={isAdding}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="existing-phone" className="text-xs text-muted-foreground">
-              Phone (Optional)
-            </Label>
-            <Input
-              id="existing-phone"
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="(555) 555-5555"
-              className="mt-1"
-              disabled={isAdding}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="existing-service" className="text-xs text-muted-foreground">
-              Service Interest
-            </Label>
-            <Select value={serviceType} onValueChange={setServiceType} disabled={isAdding}>
-              <SelectTrigger className="mt-1">
-                <SelectValue placeholder="Select service type" />
-              </SelectTrigger>
-              <SelectContent>
-                {SERVICE_TYPES.map((service) => (
-                  <SelectItem key={service.value} value={service.value}>
-                    {service.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label htmlFor="existing-status" className="text-xs text-muted-foreground">
-              Starting Status
-            </Label>
-            <Select value={patientStatus} onValueChange={setPatientStatus} disabled={isAdding}>
-              <SelectTrigger className="mt-1">
-                <SelectValue placeholder="Select patient status" />
-              </SelectTrigger>
-              <SelectContent>
-                {PATIENT_STATUS_OPTIONS.map((status) => (
-                  <SelectItem key={status.value} value={status.value}>
-                    {status.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Welcome Email Checkbox */}
-          <div className="flex items-center space-x-2 pt-1">
-            <Checkbox
-              id="send-welcome"
-              checked={sendWelcomeEmail}
-              onCheckedChange={(checked) => setSendWelcomeEmail(checked as boolean)}
-              disabled={isAdding}
-            />
-            <Label 
-              htmlFor="send-welcome" 
-              className="text-xs text-muted-foreground cursor-pointer flex items-center gap-1.5"
-            >
-              <Mail className="w-3.5 h-3.5" />
-              Send welcome email to patient
-            </Label>
-          </div>
-
-          {/* Advanced Options */}
-          <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
-            <CollapsibleTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-between text-xs text-muted-foreground hover:text-foreground p-0 h-auto"
-                disabled={isAdding}
-              >
-                <span className="flex items-center gap-1.5">
-                  <CreditCard className="w-3.5 h-3.5" />
-                  Advanced Options
-                </span>
-                <ChevronDown className={`w-4 h-4 transition-transform ${showAdvanced ? 'rotate-180' : ''}`} />
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pt-3 space-y-3">
-              <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
-                <Label htmlFor="credit-code" className="text-xs text-muted-foreground">
-                  Apply Consultation Credit Code (Optional)
-                </Label>
-                <Input
-                  id="credit-code"
-                  type="text"
-                  value={creditCode}
-                  onChange={(e) => setCreditCode(e.target.value.toUpperCase())}
-                  placeholder="e.g., EH-ABC123"
-                  className="mt-1 font-mono"
-                  disabled={isAdding}
-                />
-                <p className="text-xs text-muted-foreground mt-1.5">
-                  Enter a credit code if this patient previously paid for a $99 consultation.
-                  The $99 will be applied toward their Hormone Mapping Kit.
-                </p>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </div>
-
-        <Button
-          onClick={handleAddPatient}
-          disabled={isAdding || !email.trim() || !name.trim()}
-          variant="outline"
-          className="w-full border-emerald-500/50 text-emerald-600 hover:bg-emerald-500/10"
-        >
-          {isAdding ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Adding...
-            </>
-          ) : added ? (
-            <>
-              <Check className="w-4 h-4 mr-2" />
-              Patient Added!
-            </>
-          ) : (
-            <>
-              <UserCheck className="w-4 h-4 mr-2" />
-              Add Patient (No Payment)
-            </>
-          )}
-        </Button>
-      </CardContent>
+      <CardContent>{formContent}</CardContent>
     </Card>
   );
 };

@@ -24,6 +24,7 @@ import { Loader2, Mail, MessageSquare, UserPlus, Check, Calendar, Eye, Send } fr
 
 interface InvitePatientCardProps {
   onInviteSent?: () => void;
+  embedded?: boolean;
 }
 
 const SERVICE_TYPES = [
@@ -35,7 +36,7 @@ const SERVICE_TYPES = [
 
 type InviteType = "needs_booking" | "already_booked";
 
-const InvitePatientCard = ({ onInviteSent }: InvitePatientCardProps) => {
+const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCardProps) => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -266,201 +267,209 @@ const InvitePatientCard = ({ onInviteSent }: InvitePatientCardProps) => {
   const emailPreview = getEmailPreviewContent();
   const smsPreview = getSMSPreviewContent();
 
+  const formContent = (
+    <div className="space-y-4">
+      <p className="text-xs text-muted-foreground">
+        Send a $99 Discovery Consultation invite. After payment, they'll schedule their consultation. 
+        The $99 becomes a credit toward their $349 Hormone Mapping Kit.
+      </p>
+      
+      {/* Invite Type Selection */}
+      <div className="bg-muted/50 rounded-lg p-3 border border-border/50">
+        <Label className="text-xs font-medium text-foreground mb-2 block">Invite Type</Label>
+        <RadioGroup 
+          value={inviteType} 
+          onValueChange={(v) => setInviteType(v as InviteType)}
+          className="space-y-2"
+          disabled={isLoading}
+        >
+          <div className="flex items-start space-x-2">
+            <RadioGroupItem value="needs_booking" id="needs_booking" className="mt-0.5" />
+            <div>
+              <Label htmlFor="needs_booking" className="text-sm font-medium cursor-pointer">
+                Needs to Book
+              </Label>
+              <p className="text-xs text-muted-foreground">Patient pays $99 → then schedules consultation</p>
+            </div>
+          </div>
+          <div className="flex items-start space-x-2">
+            <RadioGroupItem value="already_booked" id="already_booked" className="mt-0.5" />
+            <div>
+              <Label htmlFor="already_booked" className="text-sm font-medium cursor-pointer">
+                Already Booked
+              </Label>
+              <p className="text-xs text-muted-foreground">Patient already scheduled, just needs to pay $99</p>
+            </div>
+          </div>
+        </RadioGroup>
+      </div>
+
+      <div className="space-y-3">
+        <div>
+          <Label htmlFor="invite-name" className="text-xs text-muted-foreground">
+            Patient Name *
+          </Label>
+          <Input
+            id="invite-name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="John Smith"
+            className="mt-1"
+            disabled={isLoading}
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="invite-email" className="text-xs text-muted-foreground">
+            Patient Email
+          </Label>
+          <Input
+            id="invite-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="patient@example.com"
+            className="mt-1"
+            disabled={isLoading}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="invite-phone" className="text-xs text-muted-foreground">
+            Patient Phone (for SMS)
+          </Label>
+          <Input
+            id="invite-phone"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="(555) 123-4567"
+            className="mt-1"
+            disabled={isLoading}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="invite-service" className="text-xs text-muted-foreground">
+            Service Interest
+          </Label>
+          <Select value={serviceType} onValueChange={setServiceType} disabled={isLoading}>
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Select service type" />
+            </SelectTrigger>
+            <SelectContent>
+              {SERVICE_TYPES.map((service) => (
+                <SelectItem key={service.value} value={service.value}>
+                  {service.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Show scheduled date picker only for "already booked" */}
+        {inviteType === "already_booked" && (
+          <div>
+            <Label htmlFor="scheduled-date" className="text-xs text-muted-foreground">
+              Scheduled Date/Time (optional)
+            </Label>
+            <Input
+              id="scheduled-date"
+              type="datetime-local"
+              value={scheduledDate}
+              onChange={(e) => setScheduledDate(e.target.value)}
+              className="mt-1"
+              disabled={isLoading}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Preview & Send Buttons */}
+      <div className="grid grid-cols-2 gap-2">
+        <Button
+          variant="outline"
+          onClick={() => handlePreview("email")}
+          disabled={isLoading || !name.trim() || !email.trim()}
+        >
+          <Eye className="w-4 h-4 mr-2" />
+          Preview Email
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => handlePreview("sms")}
+          disabled={isLoading || !name.trim() || !phone.trim()}
+        >
+          <Eye className="w-4 h-4 mr-2" />
+          Preview SMS
+        </Button>
+      </div>
+
+      {/* Direct Send Buttons */}
+      <div className="grid grid-cols-2 gap-2">
+        <Button
+          onClick={() => handleSendInvite("email")}
+          disabled={isLoading || !name.trim() || !email.trim()}
+        >
+          {isSendingEmail ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Sending...
+            </>
+          ) : sent === "email" ? (
+            <>
+              <Check className="w-4 h-4 mr-2" />
+              Emailed!
+            </>
+          ) : (
+            <>
+              <Mail className="w-4 h-4 mr-2" />
+              Send Email
+            </>
+          )}
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => handleSendInvite("sms")}
+          disabled={isLoading || !name.trim() || !phone.trim()}
+        >
+          {isSendingSMS ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Sending...
+            </>
+          ) : sent === "sms" ? (
+            <>
+              <Check className="w-4 h-4 mr-2" />
+              Texted!
+            </>
+          ) : (
+            <>
+              <MessageSquare className="w-4 h-4 mr-2" />
+              Send SMS
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+
   return (
     <>
-      <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-transparent">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm flex items-center gap-2 text-primary">
-            <UserPlus className="w-4 h-4" />
-            Invite New Patient
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-xs text-muted-foreground">
-            Send a $99 Discovery Consultation invite. After payment, they'll schedule their consultation. 
-            The $99 becomes a credit toward their $349 Hormone Mapping Kit.
-          </p>
-          
-          {/* Invite Type Selection */}
-          <div className="bg-muted/50 rounded-lg p-3 border border-border/50">
-            <Label className="text-xs font-medium text-foreground mb-2 block">Invite Type</Label>
-            <RadioGroup 
-              value={inviteType} 
-              onValueChange={(v) => setInviteType(v as InviteType)}
-              className="space-y-2"
-              disabled={isLoading}
-            >
-              <div className="flex items-start space-x-2">
-                <RadioGroupItem value="needs_booking" id="needs_booking" className="mt-0.5" />
-                <div>
-                  <Label htmlFor="needs_booking" className="text-sm font-medium cursor-pointer">
-                    Needs to Book
-                  </Label>
-                  <p className="text-xs text-muted-foreground">Patient pays $99 → then schedules consultation</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <RadioGroupItem value="already_booked" id="already_booked" className="mt-0.5" />
-                <div>
-                  <Label htmlFor="already_booked" className="text-sm font-medium cursor-pointer">
-                    Already Booked
-                  </Label>
-                  <p className="text-xs text-muted-foreground">Patient already scheduled, just needs to pay $99</p>
-                </div>
-              </div>
-            </RadioGroup>
-          </div>
-
-          <div className="space-y-3">
-            <div>
-              <Label htmlFor="invite-name" className="text-xs text-muted-foreground">
-                Patient Name *
-              </Label>
-              <Input
-                id="invite-name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="John Smith"
-                className="mt-1"
-                disabled={isLoading}
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="invite-email" className="text-xs text-muted-foreground">
-                Patient Email
-              </Label>
-              <Input
-                id="invite-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="patient@example.com"
-                className="mt-1"
-                disabled={isLoading}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="invite-phone" className="text-xs text-muted-foreground">
-                Patient Phone (for SMS)
-              </Label>
-              <Input
-                id="invite-phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="(555) 123-4567"
-                className="mt-1"
-                disabled={isLoading}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="invite-service" className="text-xs text-muted-foreground">
-                Service Interest
-              </Label>
-              <Select value={serviceType} onValueChange={setServiceType} disabled={isLoading}>
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Select service type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {SERVICE_TYPES.map((service) => (
-                    <SelectItem key={service.value} value={service.value}>
-                      {service.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Show scheduled date picker only for "already booked" */}
-            {inviteType === "already_booked" && (
-              <div>
-                <Label htmlFor="scheduled-date" className="text-xs text-muted-foreground">
-                  Scheduled Date/Time (optional)
-                </Label>
-                <Input
-                  id="scheduled-date"
-                  type="datetime-local"
-                  value={scheduledDate}
-                  onChange={(e) => setScheduledDate(e.target.value)}
-                  className="mt-1"
-                  disabled={isLoading}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Preview & Send Buttons */}
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              variant="outline"
-              onClick={() => handlePreview("email")}
-              disabled={isLoading || !name.trim() || !email.trim()}
-            >
-              <Eye className="w-4 h-4 mr-2" />
-              Preview Email
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handlePreview("sms")}
-              disabled={isLoading || !name.trim() || !phone.trim()}
-            >
-              <Eye className="w-4 h-4 mr-2" />
-              Preview SMS
-            </Button>
-          </div>
-
-          {/* Direct Send Buttons */}
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              onClick={() => handleSendInvite("email")}
-              disabled={isLoading || !name.trim() || !email.trim()}
-            >
-              {isSendingEmail ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Sending...
-                </>
-              ) : sent === "email" ? (
-                <>
-                  <Check className="w-4 h-4 mr-2" />
-                  Emailed!
-                </>
-              ) : (
-                <>
-                  <Mail className="w-4 h-4 mr-2" />
-                  Send Email
-                </>
-              )}
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => handleSendInvite("sms")}
-              disabled={isLoading || !name.trim() || !phone.trim()}
-            >
-              {isSendingSMS ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Sending...
-                </>
-              ) : sent === "sms" ? (
-                <>
-                  <Check className="w-4 h-4 mr-2" />
-                  Texted!
-                </>
-              ) : (
-                <>
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  Send SMS
-                </>
-              )}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {embedded ? (
+        formContent
+      ) : (
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-transparent">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2 text-primary">
+              <UserPlus className="w-4 h-4" />
+              Invite New Patient
+            </CardTitle>
+          </CardHeader>
+          <CardContent>{formContent}</CardContent>
+        </Card>
+      )}
 
       {/* Preview Modal */}
       <Dialog open={showPreview} onOpenChange={setShowPreview}>

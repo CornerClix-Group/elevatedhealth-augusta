@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { LogOut, Stethoscope, RefreshCw, Settings, Menu, MessageCircle, FileText, Mail } from "lucide-react";
+import { LogOut, Stethoscope, RefreshCw, Settings, Menu, MessageCircle, FileText, Mail, UserPlus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import AddPatientModal from "@/components/provider/AddPatientModal";
 
 interface AdminNavbarProps {
   title: string;
@@ -19,9 +20,10 @@ interface AdminNavbarProps {
   onRefresh?: () => Promise<void>;
   isRefreshing?: boolean;
   onNavigateToMessages?: () => void;
+  onPatientAdded?: () => void;
 }
 
-const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMessages }: AdminNavbarProps) => {
+const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMessages, onPatientAdded }: AdminNavbarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
@@ -110,6 +112,19 @@ const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMes
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-2">
+          {/* Add Patient Button */}
+          {isOnProviderDashboard && (
+            <AddPatientModal
+              onPatientAdded={onPatientAdded}
+              trigger={
+                <Button size="sm" className="gap-2">
+                  <UserPlus className="w-4 h-4" />
+                  Add Patient
+                </Button>
+              }
+            />
+          )}
+          
           {!isOnProviderDashboard && (
             <Button variant="outline" size="sm" asChild>
               <Link to="/provider/dashboard">
