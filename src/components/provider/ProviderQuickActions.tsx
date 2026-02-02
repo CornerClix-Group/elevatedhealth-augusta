@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Package, CreditCard, CheckCircle, MessageSquare, Mail, FileText } from "lucide-react";
+import { Package, CreditCard, CheckCircle, MessageSquare, Mail, FileText, UserPlus } from "lucide-react";
 import QuickSendKitModal from "./QuickSendKitModal";
 import QuickPaymentModal from "./QuickPaymentModal";
 import QuickLabsReviewedModal from "./QuickLabsReviewedModal";
 import QuickMessageModal from "./QuickMessageModal";
 import QuickEmailModal from "./QuickEmailModal";
 import EncounterFormModal from "./EncounterFormModal";
+import AddPatientModal from "./AddPatientModal";
 
 interface ProviderQuickActionsProps {
   onRefresh?: () => void;
@@ -26,6 +27,16 @@ const ProviderQuickActions = ({ onRefresh }: ProviderQuickActionsProps) => {
           <span className="text-xs font-medium text-muted-foreground whitespace-nowrap mr-2">
             QUICK ACTIONS:
           </span>
+          
+          <AddPatientModal
+            onPatientAdded={onRefresh}
+            trigger={
+              <Button variant="default" size="sm" className="whitespace-nowrap">
+                <UserPlus className="w-4 h-4 mr-2" />
+                Add Patient
+              </Button>
+            }
+          />
           
           <Button
             variant="outline"
@@ -79,11 +90,7 @@ const ProviderQuickActions = ({ onRefresh }: ProviderQuickActionsProps) => {
           
           <EncounterFormModal
             trigger={
-              <Button
-                variant="outline"
-                size="sm"
-                className="whitespace-nowrap"
-              >
+              <Button variant="outline" size="sm" className="whitespace-nowrap">
                 <FileText className="w-4 h-4 mr-2" />
                 Encounter
               </Button>

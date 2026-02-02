@@ -65,6 +65,8 @@ import CommunicationLog from "@/components/provider/CommunicationLog";
 import { PatientJourneyTracker } from "@/components/provider/PatientJourneyTracker";
 import MedicalClearanceCard from "@/components/provider/MedicalClearanceCard";
 import EncounterFormModal from "@/components/provider/EncounterFormModal";
+import TodayScheduleWidget from "@/components/provider/TodayScheduleWidget";
+import PatientNotesCard from "@/components/provider/PatientNotesCard";
 
 interface Patient {
   id: string;

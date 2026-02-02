@@ -139,6 +139,47 @@ export type Database = {
         }
         Relationships: []
       }
+      clinical_notes: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_private: boolean | null
+          note_type: string
+          patient_id: string | null
+          provider_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_private?: boolean | null
+          note_type?: string
+          patient_id?: string | null
+          provider_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_private?: boolean | null
+          note_type?: string
+          patient_id?: string | null
+          provider_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_notes_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       communication_logs: {
         Row: {
           body_preview: string | null
