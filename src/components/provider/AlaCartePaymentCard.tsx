@@ -29,7 +29,21 @@ interface AlaCartePaymentCardProps {
   patientEmail?: string;
   patientPhone?: string;
   hasMembership?: boolean;
+  membershipTier?: string | null;
 }
+
+// Helper function to get member pricing based on tier
+const getMemberPrice = (basePrice: number, tier: string | null | undefined): number => {
+  if (tier === 'concierge') return Math.round(basePrice * 0.85); // 15% off
+  if (tier === 'vitality') return Math.round(basePrice * 0.90); // 10% off
+  return basePrice; // ACCESS or non-member = full price
+};
+
+const getTierDiscount = (tier: string | null | undefined): string => {
+  if (tier === 'concierge') return '15%';
+  if (tier === 'vitality') return '10%';
+  return '';
+};
 
 const ALACARTE_OPTIONS = Object.entries(ALACARTE_PRICES).map(([key, value]) => ({
   key: key as AlacartePriceKey,
@@ -44,6 +58,7 @@ const AlaCartePaymentCard = ({
   patientEmail,
   patientPhone,
   hasMembership = false,
+  membershipTier = null,
 }: AlaCartePaymentCardProps) => {
   const [selectedProduct, setSelectedProduct] = useState<AlacartePriceKey | "">("");
   const [isSending, setIsSending] = useState(false);
@@ -163,8 +178,26 @@ const AlaCartePaymentCard = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Membership Upsell Banner */}
-        {!hasMembership && (
+        {/* Membership Status Banner */}
+        {hasMembership ? (
+          <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 text-xs">
+            <div className="flex items-start gap-2">
+              <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-medium text-green-600">
+                  {membershipTier?.toUpperCase() || 'MEMBER'} Pricing Applied
+                </p>
+                <p className="text-muted-foreground mt-1">
+                  {getTierDiscount(membershipTier) ? (
+                    <>You receive {getTierDiscount(membershipTier)} off à la carte items with your membership.</>
+                  ) : (
+                    <>Your membership includes many services. À la carte items available below.</>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
           <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-xs">
             <div className="flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
@@ -211,8 +244,24 @@ const AlaCartePaymentCard = ({
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">{selectedItem.name}</span>
-              <span className="text-amber-600 text-xl font-bold">{selectedItem.displayPrice}</span>
+              {hasMembership && getTierDiscount(membershipTier) ? (
+                <div className="text-right">
+                  <span className="text-muted-foreground line-through text-sm mr-2">
+                    {selectedItem.displayPrice}
+                  </span>
+                  <span className="text-green-600 text-xl font-bold">
+                    ${getMemberPrice(selectedItem.amount / 100, membershipTier)}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-amber-600 text-xl font-bold">{selectedItem.displayPrice}</span>
+              )}
             </div>
+            {hasMembership && getTierDiscount(membershipTier) && (
+              <p className="text-xs text-green-600 mt-1 text-right">
+                {getTierDiscount(membershipTier)} member discount applied
+              </p>
+            )}
           </div>
         )}
 
