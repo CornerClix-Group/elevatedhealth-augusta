@@ -1,178 +1,103 @@
 
 
-## Comprehensive Patient Portal Enhancement Plan
+## Fix Payment Link Generation & Delivery System
 
-### Overview
+### Problem Summary
+The "Send Payment Link" modal in the Provider Dashboard is broken because:
+1. **The "Send Link" button sends the wrong data** - it sends `product_type` but the edge function expects a `payment_url`
+2. **No Stripe checkout session is created** before attempting to send the email/SMS
+3. **The "Copy" button works** because it correctly generates the URL first
 
-This plan addresses:
-1. **PDF Upload & Storage**: Fix parsing reliability + archive PDFs after successful extraction
-2. **Lab Analysis Integration**: Connect lab results to existing Holgate Protocol for medication recommendations
-3. **Existing Patient Status Optimization**: Replace confusing "existing_patient" status with clear journey steps
-4. **End-to-End Journey Flow**: Full 7-step tracker with appropriate next actions
+### Solution Overview
+Refactor `QuickPaymentModal.tsx` to:
+1. First generate the Stripe checkout URL by calling the appropriate checkout edge function
+2. Then send that URL via email or SMS using the `send-alacarte-payment-link` or `send-alacarte-payment-sms` functions
 
----
+### Technical Implementation
 
-### Part 1: Fix PDF Parsing & Add Storage
+**Step 1: Update `handleSend()` in `QuickPaymentModal.tsx`**
 
-**Problem Identified**:
-The edge function logs show the PDF parsing IS now working correctly. However, the PDF is only being saved to storage, not reliably linked to the lab result record.
-
-**Solution**:
-
-1. **Update `LabPdfUploader.tsx`**:
-   - Ensure PDF uploads to `lab-documents` bucket BEFORE parsing
-   - Return storage URL to parent component regardless of parse success
-   - Show clear status: "PDF archived" vs "Values extracted"
-
-2. **Update `NewLabResultModal.tsx`**:
-   - Store `pdf_url` in lab_results when saving
-   - Track `parsed_from_pdf` boolean correctly
-   - Add "View Original PDF" link after saving
-
-3. **Enhanced Error Handling**:
-   - If parsing fails, still save the PDF URL
-   - Provider can manually enter values with PDF available for reference
-
----
-
-### Part 2: Lab Analysis → Protocol Recommendations Flow
-
-**Current State**:
-- `NewLabResultModal` shows basic protocol recommendations inline
-- `LabInterpretationEngine` has full Holgate analysis logic
-- Medication recommendations exist in `medicationMapping.ts`
-
-**Proposed Flow**:
-
-```
-Upload PDF → Extract Values → Review/Edit → Save
-                                    ↓
-                     Show Protocol Recommendations
-                                    ↓
-              [Apply to Rx] button → Populate Pharmacy Card
-```
-
-**Changes**:
-
-1. **After lab save, show Holgate analysis**:
-   - Run `analyzeLabResults()` from `holgateLogic.ts`
-   - Generate `generateMedicationRecommendations()` from `medicationMapping.ts`
-   - Display findings + protocols in recommendation panel
-
-2. **Add "Apply to Rx" button**:
-   - When clicked, populates the Pharmacy Order Card
-   - Provider still reviews and sends to pharmacy manually
-
-3. **Update Patient Status**:
-   - When labs are saved → auto-update `onboarding_status` to `results_ready`
-   - When protocol is approved → update to `protocol_approved`
-
----
-
-### Part 3: Optimize "Existing Patient" Status
-
-**Current Issue**:
-The status `existing_patient` is not mapped in `PatientJourneyTracker.tsx`, showing "Unknown Status" (step 0).
-
-**Status Mapping in Journey Tracker**:
-
-| Current onboarding_status | Journey Step | Next Action |
-|---------------------------|--------------|-------------|
-| `pending_invite` | Step 0 | Send invite |
-| `existing_patient` | **Step 6 (Active)** | Mark as active patient |
-| `treatment_active` | Step 6 | Patient is active |
-
-**Solution - Update `PatientJourneyTracker.tsx`**:
-
+The current code:
 ```typescript
-// Add to statusMap:
-'existing_patient': 6, // Treat as active (your preference)
+// BROKEN: Sends product_type instead of generating URL first
+await supabase.functions.invoke(edgeFunction, {
+  body: {
+    product_type: selectedProduct, // ← Edge function expects payment_url, not product_type
+  },
+});
 ```
 
-**Alternative Status Options**:
-Since you said "Mark Active" is the preferred action for existing patients, we'll:
-1. When adding an existing patient, set status to `treatment_active` (not `existing_patient`)
-2. Update `AddExistingPatientCard` to use clearer status options
+The fix:
+```typescript
+// Step 1: Generate the Stripe checkout URL
+const checkoutFunction = getEdgeFunction(selectedProduct);
+const checkoutBody = getCheckoutBody(selectedProduct, selectedPatient);
+const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(checkoutFunction, {
+  body: checkoutBody,
+});
+if (checkoutError || !checkoutData?.url) throw new Error("Failed to generate payment link");
 
-**Updated Status Options for Add Existing Patient**:
+// Step 2: Send the URL via email or SMS
+const sendFunction = sendMethod === "email" ? "send-alacarte-payment-link" : "send-alacarte-payment-sms";
+await supabase.functions.invoke(sendFunction, {
+  body: {
+    patient_email: selectedPatient.email,
+    patient_phone: selectedPatient.phone,
+    patient_name: selectedPatient.full_name,
+    payment_url: checkoutData.url,  // ← Now we pass the actual URL
+    product_name: getProductDisplayName(selectedProduct),
+    amount: getProductDisplayPrice(selectedProduct),
+  },
+});
+```
 
-| UI Label | Database Value | Journey Step |
-|----------|----------------|--------------|
-| "Active on Treatment" | `treatment_active` | Step 6 (Active) |
-| "Labs Uploaded, Pending Review" | `results_ready` | Step 3 (Labs Ready) |
-| "Protocol Approved, Pending Rx" | `protocol_approved` | Step 4 (Protocol) |
-| "Skip - Send to Step 1" | `consultation_complete` | Step 0 (Consultation) |
+**Step 2: Add helper functions for product info**
 
----
+Add these helpers to map product keys to display names and prices:
+```typescript
+const getProductDisplayName = (product: string): string => {
+  const found = PRODUCTS.find(p => p.value === product);
+  return found?.label || product;
+};
 
-### Part 4: Database Changes
+const getProductDisplayPrice = (product: string): string => {
+  const found = PRODUCTS.find(p => p.value === product);
+  return found?.price || "";
+};
+```
 
-**No schema changes needed** - all columns already exist in `lab_results`:
-- `pdf_url` (text) - stores archived PDF URL
-- `parsed_from_pdf` (boolean) - tracks parse source
-- `clinical_story` (text) - stores Holgate analysis narrative
-- `treatment_plan` (jsonb) - stores protocol recommendations
+**Step 3: Fix edge function body mapping for all product types**
 
----
+Update `getCheckoutBody()` to include patient email for all product types, ensuring each checkout function receives the data it expects.
 
-### Part 5: Files to Modify
+### Files to Modify
 
-| File | Change |
-|------|--------|
-| `src/components/provider/LabPdfUploader.tsx` | Upload PDF first, then parse; return URL to parent |
-| `src/components/provider/NewLabResultModal.tsx` | Store pdf_url, show Holgate analysis after save |
-| `src/components/provider/PatientJourneyTracker.tsx` | Map `existing_patient` → Step 6 (Active) |
-| `src/components/provider/AddExistingPatientCard.tsx` | Update status options to use `treatment_active` by default |
-| `supabase/functions/add-existing-patient/index.ts` | Map "existing_patient" status to `treatment_active` |
+| File | Changes |
+|------|---------|
+| `src/components/provider/QuickPaymentModal.tsx` | Refactor `handleSend()` to generate URL first, then send; add helper functions |
 
----
+### Edge Functions Involved (no changes needed)
+- `send-alacarte-payment-link` - Already expects `payment_url` ✓
+- `send-alacarte-payment-sms` - Already expects `payment_url` ✓
+- `create-alacarte-checkout` - Returns `url` ✓
+- `create-semaglutide-checkout` - Returns `url` ✓
+- `create-tirzepatide-checkout` - Returns `url` ✓
+- `create-hormone-membership-checkout` - Returns `url` ✓
+- `create-consultation-checkout` - Returns `url` ✓
+- `create-iv-ketamine-checkout` - Returns `url` ✓
 
-### Part 6: Implementation Flow
-
-**Step 1: Fix Status Mapping (Quick Win)**
-- Update `PatientJourneyTracker.tsx` to recognize `existing_patient` as active
-- Update `AddExistingPatientCard.tsx` default to `treatment_active`
-
-**Step 2: Enhance Lab Save Flow**
-- Upload PDF to storage first
-- Parse with AI (current flow)
-- Save lab results with `pdf_url` and `parsed_from_pdf`
-- Run Holgate analysis on save
-- Display recommendations with "Apply to Rx" button
-
-**Step 3: Connect to Pharmacy Order**
-- When "Apply to Rx" is clicked, emit medication recommendations
-- Provider Dashboard receives and populates Pharmacy Order Card
-
----
-
-### User Flow After Implementation
-
-**For Existing Patient Added as "Active"**:
-1. Staff adds patient via "Add Existing Patient"
-2. Default status: "Active on Treatment" → `treatment_active`
-3. Journey Tracker shows: ✓ Consult → ✓ Kit → ✓ Sample → ✓ Labs → ✓ Protocol → ✓ Rx → ★ Active
-4. Staff can add labs anytime (for records)
-
-**For New Lab Upload**:
-1. Provider clicks "Add Labs" on patient record
-2. Uploads ZRT PDF → PDF archived to storage
-3. AI extracts values → populates form (editable)
-4. Provider reviews/edits → clicks "Save Lab Results"
-5. System shows: Protocol Recommendations based on Holgate analysis
-6. Provider clicks "Apply to Rx" → Pharmacy Order Card populated
-7. Provider reviews → sends Rx to pharmacy
-
----
-
-### Verification Checklist
-
+### Testing Checklist
 After implementation:
-- Existing patient added → shows as "Active" on Step 6/7
-- Lab PDF uploads → stored in `lab-documents` bucket
-- Parsed values populate form → remain editable
-- Manual corrections save correctly
-- Holgate recommendations display after save
-- "Apply to Rx" button populates pharmacy order
-- Patient journey tracker shows correct step throughout
+- Select a patient and a product (e.g., "IV Ketamine Infusion")
+- Click "Send Link" with Email selected → Patient receives email with working Stripe link
+- Click "Send Link" with SMS selected → Patient receives SMS with working Stripe link
+- Click Copy button → URL copied to clipboard, paste and verify it opens Stripe checkout
+- Verify all product types work: memberships, subscriptions, one-time payments
+
+### Additional Enhancement: Better Product Mapping
+Add missing products from `stripeConfig.ts` to the PRODUCTS array for comprehensive coverage:
+- Sexual wellness options
+- Hair restoration options
+- Peptide therapy
+- Lab panels
 
