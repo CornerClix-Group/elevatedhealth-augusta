@@ -9,6 +9,26 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Service-specific email content
+const serviceDescriptions: Record<string, { name: string; description: string }> = {
+  ketamine: {
+    name: "Mental Wellness & Ketamine Therapy",
+    description: "Our ketamine therapy program offers breakthrough treatment for depression, anxiety, and PTSD. Our medical team will guide you through every step of your healing journey."
+  },
+  hormone: {
+    name: "Hormone Optimization",
+    description: "Our hormone optimization program is designed to restore your energy, vitality, and overall well-being through personalized bioidentical hormone therapy."
+  },
+  weight_loss: {
+    name: "Weight Loss & Metabolic Health",
+    description: "Our medical weight loss program uses the latest GLP-1 therapies to help you achieve sustainable results with ongoing clinical support."
+  },
+  general: {
+    name: "Personalized Wellness",
+    description: "Our personalized wellness programs are tailored to your unique health needs, combining cutting-edge treatments with compassionate care."
+  }
+};
+
 interface WelcomeEmailRequest {
   patient_id?: string;
   patient_name: string;
@@ -30,14 +50,40 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Sending welcome email to ${patient_email}`);
 
-    const programText = primary_program === 'ketamine' 
-      ? 'Ketamine Therapy & Mental Wellness'
-      : 'Hormone Optimization & Weight Loss';
+    // Get service-specific content
+    const service = serviceDescriptions[primary_program || 'general'] || serviceDescriptions.general;
+    const firstName = patient_name.split(" ")[0];
+
+    // Generate or retrieve intake token
+    let intakeToken = "";
+    let intakeUrl = "https://elevatedhealthaugusta.com/patient/intake";
+    
+    if (patient_id) {
+      // Check if patient has an intake token, if not generate one
+      const { data: patient } = await supabase
+        .from("patients")
+        .select("intake_token, intake_token_expires_at")
+        .eq("id", patient_id)
+        .single();
+      
+      if (patient?.intake_token) {
+        intakeToken = patient.intake_token;
+      } else {
+        // Generate new token
+        intakeToken = crypto.randomUUID();
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+        await supabase
+          .from("patients")
+          .update({ intake_token: intakeToken, intake_token_expires_at: expiresAt })
+          .eq("id", patient_id);
+      }
+      intakeUrl = `https://elevatedhealthaugusta.com/intake?token=${intakeToken}`;
+    }
 
     const emailResponse = await resend.emails.send({
       from: "Elevated Health <noreply@stripe.elevatedhealthaugusta.com>",
       to: [patient_email],
-      subject: "Welcome to Elevated Health! Your Next Steps",
+      subject: `Welcome to Elevated Health, ${firstName}!`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -60,12 +106,16 @@ const handler = async (req: Request): Promise<Response> => {
             <!-- Main Content -->
             <div style="background: white; border-radius: 12px; padding: 32px; border: 1px solid #E5E5E5;">
               <h2 style="font-family: Georgia, serif; font-size: 24px; color: #2C3E50; margin: 0 0 16px 0;">
-                Welcome, ${patient_name}!
+                Welcome, ${firstName}!
               </h2>
               
               <p style="color: #5D6D7E; font-size: 16px; line-height: 1.6; margin: 0 0 24px 0;">
-                Thank you for choosing Elevated Health Augusta for your ${programText} journey. We're honored to partner with you on your path to optimal wellness.
+                Thank you for choosing Elevated Health Augusta for your <strong>${service.name}</strong> journey. We're honored to partner with you on your path to optimal wellness.
               </p>
+
+              <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <p style="margin: 0; color: #4a5568;">${service.description}</p>
+              </div>
 
               <div style="background: #F9F9F7; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
                 <h3 style="font-family: Georgia, serif; font-size: 18px; color: #2C3E50; margin: 0 0 12px 0;">
@@ -74,10 +124,11 @@ const handler = async (req: Request): Promise<Response> => {
                 <p style="color: #5D6D7E; font-size: 14px; line-height: 1.6; margin: 0 0 16px 0;">
                   To ensure we create the perfect personalized protocol for you, please complete your medical intake form. This comprehensive assessment helps our providers understand your unique health profile.
                 </p>
-                <a href="https://elevatedhealthaugusta.com/patient/intake" 
-                   style="display: inline-block; background: #D4A017; color: white; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: 500; font-size: 14px;">
-                  Complete Medical Intake →
+                <a href="${intakeUrl}" 
+                   style="display: inline-block; background: #0d9488; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+                  Complete Medical Intake
                 </a>
+                ${intakeToken ? '<p style="margin-top: 10px; font-size: 12px; color: #666;">This link expires in 7 days</p>' : ''}
               </div>
 
               <div style="border-top: 1px solid #E5E5E5; padding-top: 24px;">
@@ -91,14 +142,15 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
             </div>
 
-            <!-- Footer -->
+            <!-- Footer with CORRECT contact info -->
             <div style="text-align: center; margin-top: 32px; color: #8E9EAB; font-size: 12px;">
               <p style="margin: 0 0 8px 0;">
                 Elevated Health Augusta<br>
-                3540 Wheeler Road, Suite 505, Augusta, GA 30909
+                7013 Evans Town Center Blvd, Suite 203 | Evans, GA 30809
               </p>
               <p style="margin: 0;">
-                Questions? Call us at (762) 821-7640
+                Questions? Call us at (706) 760-3470<br>
+                booking@elevatedhealthaugusta.com
               </p>
             </div>
           </div>
@@ -114,8 +166,8 @@ const handler = async (req: Request): Promise<Response> => {
       await supabase.from("communication_logs").insert({
         patient_id,
         template_key: "welcome_email",
-        subject: "Welcome to Elevated Health!",
-        body_preview: `Welcome email sent for ${primary_program || 'general'} program`,
+        subject: `Welcome to Elevated Health, ${firstName}!`,
+        body_preview: `Welcome email sent for ${service.name}`,
         delivery_method: "email",
         status: "sent",
       });
