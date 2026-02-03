@@ -197,8 +197,8 @@ const StaffTasksTab = () => {
   const sendIntakeLink = async (patient: WaiverTask) => {
     setProcessingId(patient.id);
     try {
-      // Call edge function to send SMS/email with intake link
-      const { error } = await supabase.functions.invoke("send-patient-invite", {
+      // Call dedicated edge function to send intake link (not payment invite)
+      const { data, error } = await supabase.functions.invoke("send-intake-link", {
         body: {
           patientId: patient.id,
           patientName: patient.full_name,
@@ -209,16 +209,16 @@ const StaffTasksTab = () => {
 
       if (error) throw error;
 
-      // Mark consent as sent
-      await supabase
-        .from("patients")
-        .update({ 
-          consent_sent_at: new Date().toISOString(),
-          consent_method: "internal"
-        })
-        .eq("id", patient.id);
-
-      toast.success("Intake link sent successfully");
+      // The edge function already updates consent_sent_at
+      const successMsg = data.email_sent && data.sms_sent 
+        ? "Intake link sent via email & SMS" 
+        : data.email_sent 
+        ? "Intake link sent via email"
+        : data.sms_sent
+        ? "Intake link sent via SMS"
+        : "Intake link generated";
+      
+      toast.success(successMsg);
       loadTasks();
     } catch (error) {
       console.error("Error sending intake link:", error);
