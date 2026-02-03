@@ -1,143 +1,152 @@
 
-# Plan: Seamless Lab-to-Pharmacy Flow
+# Pricing Page Fixes & Consistency Plan
 
-## Problem Statement
+## Issues Identified
 
-Currently, after reviewing the Health Report with medication recommendations, providers must manually scroll to find the PharmacyOrderCard. This creates friction in what should be a streamlined clinical workflow.
+### 1. Broken "Elevated for Her" and "Elevated for Him" Links (404 Errors)
+**Problem**: On the pricing page, the navigation uses `/hormones/women` and `/hormones/men`, but the actual routes defined in `App.tsx` are `/hormones-women` and `/hormones-men` (with hyphens, not slashes).
 
-## Solution
+**Evidence**: Console logs show:
+- `404 Error: User attempted to access non-existent route: /hormones/women`
+- `404 Error: User attempted to access non-existent route: /hormones/men`
 
-Add a direct "Apply Recommended Medications" action button within the HealthReportPreview component that:
-1. Auto-selects the recommended medications in the PharmacyOrderCard
-2. Optionally scrolls the view to the pharmacy card OR opens a quick-order modal inline
+**Files Affected**:
+- `src/pages/Pricing.tsx` (lines 927 and 942)
 
-## Technical Approach
+---
 
-### Option A: Callback Pattern (Recommended)
+### 2. Metabolic Reset Membership Pricing Inconsistency
+**Problem**: The pricing page shows "$399/month" generically for the Metabolic Reset Membership, but Semaglutide and Tirzepatide have different prices:
+- Semaglutide: $399/mo
+- Tirzepatide: $499/mo
 
-Wire the HealthReportPreview to call a parent callback that sets the recommended medications, then auto-scrolls to the PharmacyOrderCard.
+**Current Display**: Line 644 shows a single "$399" price without differentiating medications.
 
-### Changes Required
+**Files Affected**:
+- `src/pages/Pricing.tsx` (Weight Loss section around lines 630-670)
 
-**1. Update HealthReportPreview.tsx**
+---
 
-Add a callback prop and "Apply to Rx" button:
+### 3. Hormone Mapping Panel Inaccuracies
+**Problem**: The description on line 783 says:
+> "A comprehensive at-home Saliva & Blood Spot kit. We test Estrogen, Testosterone, Progesterone, Cortisol, and **Thyroid**..."
 
-```typescript
-interface HealthReportPreviewProps {
-  patientId: string;
-  patientName: string;
-  patientGender?: string;
-  onApplyMedications?: (medications: MedicationRecommendation[]) => void; // NEW
-}
-```
+**Issues**:
+- Incorrectly mentions "Blood Spot kit" — it's actually a **saliva-only** ZRT Saliva Profile III kit
+- Includes **Thyroid** which is NOT tested in this panel
 
-Add button in the Medication Recommendations section:
-```tsx
-{medications.length > 0 && (
-  <Button 
-    onClick={() => onApplyMedications?.(medications)}
-    className="w-full bg-primary hover:bg-primary/90"
-  >
-    <Pill className="w-4 h-4 mr-2" />
-    Apply Recommended Medications
-  </Button>
-)}
-```
+**Correct Description**: "ZRT Saliva Profile III — Comprehensive saliva test covering Estradiol, Testosterone, Progesterone, DHEA-S & Cortisol"
 
-**2. Update ProviderDashboard.tsx**
+**Files Affected**:
+- `src/pages/Pricing.tsx` (line 783)
 
-Pass the callback prop to HealthReportPreview and add scroll-to behavior:
+---
 
-```tsx
-// Add ref to PharmacyOrderCard section
-const pharmacyCardRef = useRef<HTMLDivElement>(null);
+### 4. Concierge Membership Option Should Be Removed
+**Problem**: The Concierge Membership section (lines 844-921) should be removed from the pricing page.
 
-// Handler function
-const handleApplyFromHealthReport = (meds: MedicationRecommendation[]) => {
-  setRecommendedMedications(meds);
-  toast.success("Medications applied to Rx card");
-  
-  // Scroll to pharmacy card
-  setTimeout(() => {
-    pharmacyCardRef.current?.scrollIntoView({ 
-      behavior: 'smooth', 
-      block: 'center' 
-    });
-  }, 100);
-};
+**Note**: The `MembershipTierSelector` component also includes Concierge as a tier — this may need to remain for internal use but should be hidden from public pricing.
 
-// In JSX
-<HealthReportPreview
-  patientId={selectedPatient.patient.id}
-  patientName={selectedPatient.patient.full_name}
-  patientGender={selectedPatient.patient.gender || 'female'}
-  onApplyMedications={handleApplyFromHealthReport} // NEW PROP
-/>
+**Files Affected**:
+- `src/pages/Pricing.tsx` (lines 844-922 — "Concierge Upgrade" section)
 
-// Wrap PharmacyOrderCard with ref
-<div ref={pharmacyCardRef}>
-  <PharmacyOrderCard ... />
-</div>
-```
+---
 
-## Visual Flow After Implementation
+### 5. Lab Panel À La Carte Price Wrong ($149 → $349)
+**Problem**: The Lab Panel shows $149 in the À La Carte section (line 1645), but it should be **$349**.
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│  HEALTH REPORT PREVIEW (Expanded)                           │
-├─────────────────────────────────────────────────────────────┤
-│  ✓ Labs Reviewed - Health Report Ready                      │
-│                                                             │
-│  [Lab Values Grid: E2, P4, T, Cortisol]                     │
-│                                                             │
-│  Clinical Story: "This patient presents with..."            │
-│                                                             │
-│  Medication Recommendations:                                │
-│  ┌────────────────────────────────────────────────────────┐ │
-│  │ Testosterone Cream - Male 150mg                        │ │
-│  │ 150mg/g (Liposomal Base)                               │ │
-│  │ Low testosterone (30-50 pg/mL) requires moderate...    │ │
-│  └────────────────────────────────────────────────────────┘ │
-│                                                             │
-│  ┌────────────────────────────────────────────────────────┐ │
-│  │     [✨ Apply Recommended Medications]                 │ │  <-- NEW BUTTON
-│  └────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
-                           │
-                           │ Click
-                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│  PHARMACY ORDER CARD (Auto-scrolled into view)              │
-├─────────────────────────────────────────────────────────────┤
-│  ✨ Holgate Recommended                                     │
-│                                                             │
-│  Medication: [Testosterone Cream - Male 150mg ▼]  <-- Auto-selected
-│  Supply Duration: [30 Day Supply ▼]                         │
-│                                                             │
-│  Rx Preview: Testosterone 150mg/g (Liposomal Base)...       │
-│                                                             │
-│  [Prepare Portal Order]                                     │
-└─────────────────────────────────────────────────────────────┘
-```
+**Files Affected**:
+- `src/pages/Pricing.tsx` (lines 1631-1651)
+- `src/lib/stripeConfig.ts` (line 262-269 — `ALACARTE_PRICES.labPanel`)
+- Potentially other files referencing this price
 
-## Files to Modify
+---
 
+### 6. Stripe Test Payment Rejection
+**Problem**: Test payments are being rejected.
+
+**Possible Causes**:
+1. Using wrong test card number (should use `4242 4242 4242 4242`)
+2. Missing or expired test card details
+3. Stripe account in test mode but using live API keys (or vice versa)
+
+**Verification Needed**: Check STRIPE_SECRET_KEY is a test key (starts with `sk_test_`), not a live key.
+
+---
+
+## Implementation Plan
+
+### Phase 1: Fix Broken Links
 | File | Change |
 |------|--------|
-| `src/components/provider/HealthReportPreview.tsx` | Add `onApplyMedications` callback prop and "Apply" button |
-| `src/pages/ProviderDashboard.tsx` | Pass callback to HealthReportPreview, add ref for scroll-to behavior |
+| `src/pages/Pricing.tsx` line 927 | Change `navigate("/hormones/women")` → `navigate("/hormones-women")` |
+| `src/pages/Pricing.tsx` line 942 | Change `navigate("/hormones/men")` → `navigate("/hormones-men")` |
 
-## Benefits
+### Phase 2: Fix Metabolic Reset Medication Pricing Display
+Update the Weight Loss section to clearly show both medication options:
 
-1. **One-Click Flow**: Provider sees recommendations and applies them instantly
-2. **Visual Confirmation**: Auto-scroll ensures the PharmacyOrderCard is visible and shows the "Holgate Recommended" badge
-3. **No Modal Juggling**: Everything stays in context within the patient profile
-4. **Preserves Override Option**: Provider can still manually select different medications if needed
+```text
+Semaglutide: $399/mo
+Tirzepatide: $499/mo
+```
 
-## Alternative Considered
+Show these as two distinct price points in the Treatment step, matching `stripeConfig.ts` which already has correct prices:
+- `WEIGHT_LOSS_PRICES.semaglutide.amount = 39900`
+- `WEIGHT_LOSS_PRICES.tirzepatide.amount = 49900`
 
-Embedding a mini pharmacy order form directly inside HealthReportPreview was considered but rejected because:
-- The PharmacyOrderCard has significant logic (FCCPortalModal integration, Rx string building)
-- Duplicating this would create maintenance overhead
-- Scroll-to approach keeps a single source of truth for pharmacy ordering
+### Phase 3: Correct Hormone Mapping Description
+Update the Hormone Mapping Panel description:
+
+**Before**:
+> "A comprehensive at-home Saliva & Blood Spot kit. We test Estrogen, Testosterone, Progesterone, Cortisol, and Thyroid..."
+
+**After**:
+> "ZRT Saliva Profile III — Comprehensive at-home saliva test covering Estradiol, Testosterone, Progesterone, DHEA-S & Cortisol to engineer your custom protocol."
+
+### Phase 4: Remove Concierge Membership Section
+Remove the entire "Concierge Upgrade" section (approximately lines 844-922) from the Hormone Optimization area on the pricing page.
+
+### Phase 5: Update Lab Panel Pricing
+| File | Location | Change |
+|------|----------|--------|
+| `src/lib/stripeConfig.ts` | `ALACARTE_PRICES.labPanel` | Update `amount: 14900` → `amount: 34900`, `displayPrice: "$149"` → `displayPrice: "$349"` |
+| `src/pages/Pricing.tsx` | À La Carte section | Update displayed price from $149 to $349 |
+| `src/pages/PricingComparison.tsx` | Calculator logic | Verify it references updated `stripeConfig` values (it does use imports) |
+
+### Phase 6: Investigate Stripe Payment Issues
+1. Check if `STRIPE_SECRET_KEY` secret is configured correctly (test mode key)
+2. Verify the test card being used is correct:
+   - Card: `4242 4242 4242 4242`
+   - Expiry: Any future date (e.g., `12/34`)
+   - CVC: Any 3 digits (e.g., `123`)
+3. Review network responses for specific error messages
+
+---
+
+## Technical Details
+
+### Files to Modify
+
+| File | Changes |
+|------|---------|
+| `src/pages/Pricing.tsx` | Fix navigation routes, update Metabolic Reset pricing display, correct Hormone Mapping description, remove Concierge section, update Lab Panel price |
+| `src/lib/stripeConfig.ts` | Update `ALACARTE_PRICES.labPanel` to $349 |
+
+### Stripe Price ID Note
+The Lab Panel currently uses price ID `price_1Sga6CEOtKRY99puOXGAaRwh` with amount 14900 ($149). This needs to be either:
+- Updated in Stripe to $349 (recommended), OR
+- A new price created at $349 and the config updated with the new price ID
+
+---
+
+## Verification Checklist
+
+After implementation:
+- [ ] "Elevated for Her" card navigates to `/hormones-women` 
+- [ ] "Elevated for Him" card navigates to `/hormones-men`
+- [ ] Weight Loss section shows Semaglutide $399/mo and Tirzepatide $499/mo separately
+- [ ] Hormone Mapping says "ZRT Saliva Profile III" with no mention of blood spot or thyroid
+- [ ] Concierge Membership section is removed from pricing page
+- [ ] Lab Panel shows $349 in À La Carte section
+- [ ] `stripeConfig.ts` shows Lab Panel at $349
+- [ ] Stripe test payment works with test card `4242 4242 4242 4242`
