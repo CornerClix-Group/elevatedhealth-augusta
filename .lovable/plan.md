@@ -1,245 +1,139 @@
 
 
-# Complete Plan: Secure Public Intake + Personalized Welcome Emails
+# Enhance Public Intake: HIPAA Link + Intake Summary Display
 
 ## Overview
 
-This plan addresses three requirements:
-1. **Secure Public Intake Form** - Token-based intake without patient login
-2. **Fix Contact Info** - Update wrong address and phone number in emails
-3. **Personalized Email Content** - Tailor welcome emails to patient's service interests
+Two improvements to the public intake system:
+1. Add a clickable link to the full HIPAA Notice in the consent section
+2. Create a visible "Medical Intake Summary" card in the Provider Dashboard showing submitted intake data
 
 ---
 
-## Part 1: Contact Information Fixes
+## Part 1: Add HIPAA Link to Consent Step
 
-### Current (Wrong)
+### Current State
+The consent step shows a brief HIPAA summary but no link to the full document.
 
-| Field | Wrong Value |
-|-------|-------------|
-| Address | 3523 Walton Way Ext, Suite A \| Augusta, GA 30909 |
-| Phone | (706) 426-6862 |
+### Change Required
+Add a link to `/hipaa-notice` that opens in a new tab.
 
-### Correct Values (from SITE_CONFIG)
+**File:** `src/pages/PublicIntake.tsx`
 
-| Field | Correct Value |
-|-------|---------------|
-| Address | 7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809 |
-| Phone | (706) 760-3470 |
+Update the HIPAA section (around line 598-611) to include:
 
----
-
-## Part 2: Service-Specific Email Content
-
-Instead of generic "Hormone Therapy journey", emails will display content tailored to the patient's interests:
-
-### Service Content Map
-
-| Service Interest | Email Heading | Description |
-|------------------|---------------|-------------|
-| **ketamine** | "Mental Wellness & Ketamine Therapy" | Focus on mental health support, breakthrough treatment |
-| **hormone** | "Hormone Optimization" | Focus on energy, vitality, balance |
-| **weight_loss** | "Metabolic Health & Weight Loss" | Focus on GLP-1 therapy, sustainable results |
-| **general** | "Personalized Wellness" | General wellness journey |
-| **Multiple interests** | Combined list | "your Hormone Optimization and Weight Loss journey" |
-
-### Email Personalization Logic
-
-```typescript
-// Build service description from all interests
-const serviceDescriptions: Record<string, { name: string; tagline: string }> = {
-  ketamine: {
-    name: "Mental Wellness & Ketamine Therapy",
-    tagline: "breakthrough mental health support"
-  },
-  hormone: {
-    name: "Hormone Optimization",
-    tagline: "restored energy and vitality"
-  },
-  weight_loss: {
-    name: "Weight Loss & Metabolic Health",
-    tagline: "sustainable, medically-guided weight management"
-  },
-  general: {
-    name: "Personalized Wellness",
-    tagline: "your optimal health goals"
-  }
-};
-
-// Combine multiple interests into readable list
-// e.g., ["hormone", "weight_loss"] → "Hormone Optimization and Weight Loss"
+```tsx
+<p className="text-sm text-slate-600 mb-4">
+  We are committed to protecting your health information. Your personal health information (PHI) will be used only for treatment, payment, and healthcare operations as permitted by HIPAA regulations. We maintain strict security measures to protect your information.{" "}
+  <a 
+    href="/hipaa-notice" 
+    target="_blank" 
+    rel="noopener noreferrer"
+    className="text-teal-600 hover:text-teal-700 underline"
+  >
+    Read full HIPAA Notice
+  </a>
+</p>
 ```
 
 ---
 
-## Part 3: Secure Public Intake Form
+## Part 2: Add Medical Intake Summary Card to Provider Dashboard
 
-### Database Changes
+### Purpose
+Show providers the intake data submitted by patients in an easy-to-read format within the patient profile modal.
 
-Add intake token columns to patients table:
+### New Component: `IntakeSummaryCard`
 
-```sql
-ALTER TABLE public.patients
-ADD COLUMN intake_token UUID DEFAULT gen_random_uuid(),
-ADD COLUMN intake_token_expires_at TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '7 days');
+This component will display:
+- Completed date and time
+- Personal info (DOB, Gender, Address)
+- Allergies (highlighted if present)
+- Current medications
+- Previous surgeries
+- Family history checkboxes
+- Safety screening results (with risk highlighting)
+- Treatment goals
 
-CREATE INDEX idx_patients_intake_token 
-ON public.patients(intake_token) 
-WHERE intake_token IS NOT NULL;
-```
+**New File:** `src/components/provider/IntakeSummaryCard.tsx`
 
-### New Files to Create
+### Provider Dashboard Integration
 
-| File | Purpose |
-|------|---------|
-| `src/pages/PublicIntake.tsx` | Public intake form (no auth required) |
-| `supabase/functions/submit-public-intake/index.ts` | Validate token + save intake data |
+Add the component to the patient profile modal in `ProviderDashboard.tsx`, showing it when:
+- Patient has `intake_completed = true` AND
+- Patient has `medical_history.intake_completed_at` timestamp
 
-### Flow Diagram
+---
+
+## File Changes Summary
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/pages/PublicIntake.tsx` | MODIFY | Add "Read full HIPAA Notice" link to consent section |
+| `src/components/provider/IntakeSummaryCard.tsx` | CREATE | New card component to display intake summary |
+| `src/pages/ProviderDashboard.tsx` | MODIFY | Add IntakeSummaryCard to patient profile modal |
+
+---
+
+## IntakeSummaryCard Design
 
 ```text
-┌─────────────────────────────────────────────────────────────────────┐
-│  1. Staff adds patient with "Send Welcome Email" checked            │
-└─────────────────────────────────────────────────────────────────────┘
-                                ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│  2. Patient record created with:                                    │
-│     • intake_token = UUID                                          │
-│     • intake_token_expires_at = 7 days from now                    │
-└─────────────────────────────────────────────────────────────────────┘
-                                ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│  3. Welcome email sent with personalized content:                   │
-│     • Service-specific messaging (ketamine/hormone/weight loss)    │
-│     • Correct address: 7013 Evans Town Center Blvd, Suite 203      │
-│     • Correct phone: (706) 760-3470                                │
-│     • "Complete Intake" button → /intake?token=abc123              │
-└─────────────────────────────────────────────────────────────────────┘
-                                ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│  4. Patient clicks link → Public intake form (no login)            │
-│     • Token validated via edge function                            │
-│     • Patient name pre-filled                                      │
-│     • Collects: DOB, address, allergies, symptoms, history         │
-└─────────────────────────────────────────────────────────────────────┘
-                                ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│  5. Intake submitted:                                               │
-│     • Data saved to patient's medical_history                      │
-│     • Token invalidated (one-time use)                             │
-│     • onboarding_status → "intake_complete"                        │
-│     • Provider notification sent                                   │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│ 📋 Medical Intake Summary                    Completed: Jan 15  │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Personal Information                                            │
+│  ───────────────────                                             │
+│  DOB: 03/15/1985 (38 years)                                     │
+│  Gender: Female                                                  │
+│  Address: 123 Main St, Augusta, GA 30909                        │
+│                                                                  │
+│  Allergies                                                       │
+│  ───────────                                                     │
+│  ⚠️ Penicillin, Sulfa drugs                                     │
+│                                                                  │
+│  Current Medications                                             │
+│  ────────────────────                                            │
+│  Lisinopril 10mg daily, Vitamin D3                              │
+│                                                                  │
+│  Safety Screening                         Status: ELEVATED       │
+│  ────────────────────                                            │
+│  ⚠️ Cardiac conditions noted                                    │
+│  ✓ Not pregnant/nursing                                         │
+│  ✓ No liver/kidney disease                                      │
+│                                                                  │
+│  Family History                                                  │
+│  ──────────────                                                  │
+│  ✓ Cardiac  ✓ Diabetes  ○ Cancer  ○ Mental Health               │
+│                                                                  │
+│  Treatment Goals                                                 │
+│  ───────────────                                                 │
+│  "Looking to improve energy levels and reduce hot flashes.      │
+│   Have tried other treatments but haven't found relief."        │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Files to Modify/Create
+## Risk Status Badge Logic
 
-### Modified Files
+The intake summary will show risk status with color coding:
 
-| File | Changes |
-|------|---------|
-| `supabase/functions/add-existing-patient/index.ts` | 1. Fix address/phone, 2. Add service-specific content, 3. Generate intake token, 4. Update email CTA link |
-| `src/App.tsx` | Add public `/intake` route |
-
-### New Files
-
-| File | Description |
-|------|-------------|
-| `src/pages/PublicIntake.tsx` | Branded public intake form with token validation |
-| `supabase/functions/submit-public-intake/index.ts` | Token validation + data save + provider notification |
-| Database migration | Add intake_token columns + index |
+| Risk Level | Badge Color | Trigger Conditions |
+|------------|-------------|---------------------|
+| HIGH | Red | Pregnant/nursing |
+| ELEVATED | Orange | Cardiac conditions, liver/kidney disease, substance history (ketamine) |
+| STANDARD | Green | No safety flags |
 
 ---
 
-## Updated Email Template Preview
+## Summary
 
-```html
-<h2>Welcome, {firstName}!</h2>
-
-<p>We're excited to have you as part of the Elevated Health family. 
-Your account has been created and you're ready to begin your 
-<strong>Mental Wellness & Ketamine Therapy</strong> journey with us.</p>
-
-<!-- For ketamine patients: -->
-<p>Our ketamine therapy program offers breakthrough treatment for 
-depression, anxiety, and PTSD. Our medical team will guide you 
-through every step of your healing journey.</p>
-
-<!-- For hormone patients: -->
-<p>Our hormone optimization program is designed to restore your 
-energy, vitality, and overall well-being through personalized 
-bioidentical hormone therapy.</p>
-
-<!-- CTA Button -->
-<a href="https://elevatedhealthaugusta.com/intake?token={token}">
-  Complete Your Medical Intake
-</a>
-
-<!-- Footer with CORRECT info -->
-<p>Elevated Health Augusta</p>
-<p>7013 Evans Town Center Blvd, Suite 203 | Evans, GA 30809</p>
-<p>(706) 760-3470 | booking@elevatedhealthaugusta.com</p>
-```
-
----
-
-## Public Intake Form Sections
-
-The intake form will collect:
-
-1. **Personal Information**
-   - Date of Birth
-   - Preferred Phone (verify/update)
-   - Shipping Address (for medications)
-
-2. **Medical History**
-   - Current medications
-   - Allergies
-   - Previous surgeries
-   - Family history (cardiac, mental health)
-
-3. **Service-Specific Questions**
-   - **Ketamine**: PHQ-9, GAD-7, mental health history, current treatments
-   - **Hormone**: Symptom checklist, energy/libido/sleep scores
-   - **Weight Loss**: Current weight, goal weight, previous attempts, medications
-
-4. **Safety Screening**
-   - Pregnancy status
-   - Cardiac conditions
-   - Substance use history (for ketamine)
-
-5. **Consent & Acknowledgment**
-   - HIPAA acknowledgment
-   - Treatment consent
-
----
-
-## Security Measures
-
-| Measure | Implementation |
-|---------|----------------|
-| **UUID Token** | Cryptographically random, unguessable |
-| **7-Day Expiry** | Token expires if not used within a week |
-| **One-Time Use** | Token invalidated after successful submission |
-| **No PHI in URL** | Only opaque token in URL, no patient data |
-| **Rate Limiting** | Edge function includes abuse prevention |
-| **Input Validation** | Zod schema validation on all form fields |
-
----
-
-## Summary of Changes
-
-| Task | Description |
-|------|-------------|
-| 1 | Fix address to `7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809` |
-| 2 | Fix phone to `(706) 760-3470` |
-| 3 | Add service-specific email content based on interests |
-| 4 | Support multiple interests (e.g., "Hormone and Weight Loss") |
-| 5 | Add intake_token columns to patients table |
-| 6 | Create public intake form page |
-| 7 | Create token validation edge function |
-| 8 | Update email CTA to point to public intake with token |
-| 9 | Send provider notification when intake is completed |
+| Enhancement | Benefit |
+|-------------|---------|
+| HIPAA link | Patients can read full policy before acknowledging |
+| Intake Summary Card | Providers see all intake data at a glance |
+| Risk highlighting | Safety flags prominently displayed |
+| Allergy visibility | Critical medication info immediately visible |
 
