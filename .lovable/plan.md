@@ -142,11 +142,12 @@ The Lab Panel currently uses price ID `price_1Sga6CEOtKRY99puOXGAaRwh` with amou
 ## Verification Checklist
 
 After implementation:
-- [ ] "Elevated for Her" card navigates to `/hormones-women` 
-- [ ] "Elevated for Him" card navigates to `/hormones-men`
-- [ ] Weight Loss section shows Semaglutide $399/mo and Tirzepatide $499/mo separately
-- [ ] Hormone Mapping says "ZRT Saliva Profile III" with no mention of blood spot or thyroid
-- [ ] Concierge Membership section is removed from pricing page
-- [ ] Lab Panel shows $349 in À La Carte section
-- [ ] `stripeConfig.ts` shows Lab Panel at $349
+- [x] "Elevated for Her" card navigates to `/hormones-women` 
+- [x] "Elevated for Him" card navigates to `/hormones-men`
+- [x] Weight Loss section shows Semaglutide $399/mo and Tirzepatide $499/mo separately
+- [x] Hormone Mapping says "ZRT Saliva Profile III" with no mention of blood spot or thyroid
+- [x] Concierge Membership section is removed from pricing page
+- [x] Lab Panel shows $349 in À La Carte section
+- [x] `stripeConfig.ts` shows Lab Panel at $349
+- [x] Edge function `create-alacarte-checkout` updated with $349 lab panel price
 - [ ] Stripe test payment works with test card `4242 4242 4242 4242`
