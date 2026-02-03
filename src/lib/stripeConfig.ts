@@ -260,8 +260,8 @@ export const ALACARTE_PRICES = {
   },
   labPanel: {
     priceId: "price_1Sga6CEOtKRY99puOXGAaRwh",
-    amount: 14900, // $149
-    displayPrice: "$149",
+    amount: 34900, // $349
+    displayPrice: "$349",
     name: "Lab Panel",
     description: "Comprehensive hormone lab panel (non-member pricing)",
     mode: "payment" as const,

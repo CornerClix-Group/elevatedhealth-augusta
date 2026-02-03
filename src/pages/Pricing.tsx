@@ -631,18 +631,36 @@ const Pricing = () => {
                         <Badge className="bg-amber-50 text-amber-700 font-lato text-xs mb-3">
                           Step 3: Treatment
                         </Badge>
-                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                        <div className="flex flex-col gap-4">
                           <div>
                             <h3 className="text-xl font-cormorant text-slate-900 mb-2">
                               Metabolic Reset Membership
                             </h3>
                             <p className="text-slate-600 font-lato text-sm leading-relaxed">
-                              Once medically cleared, you unlock the all-inclusive membership. Includes GLP-1 Medication (Semaglutide), supplies, and 24/7 provider access.
+                              Once medically cleared, you unlock the all-inclusive membership. Choose your GLP-1 medication with 24/7 provider access.
                             </p>
                           </div>
-                          <div className="text-right flex-shrink-0">
-                            <span className="text-3xl font-cormorant text-slate-900">$399</span>
-                            <span className="block text-xs text-slate-500 font-lato">/month</span>
+                          
+                          {/* Medication Options */}
+                          <div className="grid sm:grid-cols-2 gap-3 mt-2">
+                            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                              <div className="flex items-center justify-between">
+                                <span className="font-lato font-medium text-slate-800">Semaglutide</span>
+                                <div className="text-right">
+                                  <span className="text-xl font-cormorant text-slate-900">$399</span>
+                                  <span className="text-xs text-slate-500 font-lato">/mo</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                              <div className="flex items-center justify-between">
+                                <span className="font-lato font-medium text-slate-800">Tirzepatide</span>
+                                <div className="text-right">
+                                  <span className="text-xl font-cormorant text-slate-900">$499</span>
+                                  <span className="text-xs text-slate-500 font-lato">/mo</span>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         
@@ -650,7 +668,7 @@ const Pricing = () => {
                         <ul className="mt-6 space-y-2">
                           <li className="flex items-center gap-2 text-sm font-lato text-slate-700">
                             <Check className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                            <span>GLP-1 medication (Semaglutide or Tirzepatide)</span>
+                            <span>GLP-1 medication, supplies & shipping included</span>
                           </li>
                           <li className="flex items-center gap-2 text-sm font-lato text-slate-700">
                             <Check className="w-4 h-4 text-amber-600 flex-shrink-0" />
@@ -780,7 +798,7 @@ const Pricing = () => {
                               Hormone Mapping Panel
                             </h3>
                             <p className="text-sm text-slate-600 font-lato leading-relaxed">
-                              A comprehensive at-home Saliva & Blood Spot kit. We test Estrogen, Testosterone, Progesterone, Cortisol, and Thyroid to engineer your custom protocol.
+                              ZRT Saliva Profile III — Comprehensive at-home saliva test covering Estradiol, Testosterone, Progesterone, DHEA-S & Cortisol to engineer your custom protocol.
                             </p>
                           </div>
                           <div className="text-right shrink-0">
@@ -841,90 +859,11 @@ const Pricing = () => {
                   </Card>
                 </div>
 
-                {/* Concierge Upgrade */}
-                <div className="mt-8 p-6 bg-slate-50 rounded-2xl border border-slate-200">
-                  <div className="flex flex-col gap-4">
-                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                      <div>
-                        <Badge variant="outline" className="mb-2 border-amber-400 text-amber-700 font-lato text-xs">
-                          All-Inclusive Option
-                        </Badge>
-                        <h4 className="font-cormorant text-lg text-slate-900">Concierge Membership</h4>
-                        <p className="text-sm text-slate-600 font-lato">
-                          Complete metabolic + hormonal optimization in one plan
-                        </p>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <span className="text-2xl font-cormorant text-slate-900">$499</span>
-                        <span className="text-slate-500 font-lato">/month</span>
-                      </div>
-                    </div>
-                    
-                    {/* Expanded Feature List */}
-                    <div className="grid md:grid-cols-3 gap-4 pt-4 border-t border-slate-200">
-                      <div>
-                        <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">Vitality Base</p>
-                        <ul className="space-y-1.5 text-sm text-slate-600 font-lato">
-                          <li className="flex items-start gap-2">
-                            <Check className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
-                            Quarterly ZRT testing
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <Check className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
-                            $50/mo medication credit
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <Check className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
-                            Unlimited provider messaging
-                          </li>
-                        </ul>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">+ GLP-1 Weight Loss</p>
-                        <ul className="space-y-1.5 text-sm text-slate-600 font-lato">
-                          <li className="flex items-start gap-2">
-                            <Check className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
-                            Semaglutide or Tirzepatide
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <Check className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
-                            Monthly dosing adjustments
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <Check className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
-                            B12/Lipotropic support
-                          </li>
-                        </ul>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">+ Adrenal Protocol</p>
-                        <ul className="space-y-1.5 text-sm text-slate-600 font-lato">
-                          <li className="flex items-start gap-2">
-                            <Check className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
-                            DHEA + Pregnenolone
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <Check className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
-                            Adaptogenic herbs (AdreneVive)
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <Check className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
-                            Cortisol rhythm optimization
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    
-                    <p className="text-xs text-slate-500 font-lato italic mt-2">
-                      Addresses HPA-axis dysfunction for patients with chronic fatigue, burnout, or stress-related hormone imbalances.
-                    </p>
-                  </div>
-                </div>
               </div>
 
               {/* Gender-Specific Pages */}
               <div className="mt-12 max-w-2xl mx-auto grid md:grid-cols-2 gap-4">
-                <Card className="border border-feminine/30 bg-feminine/5 hover:border-feminine/50 transition-all cursor-pointer" onClick={() => navigate("/hormones/women")}>
+                <Card className="border border-feminine/30 bg-feminine/5 hover:border-feminine/50 transition-all cursor-pointer" onClick={() => navigate("/hormones-women")}>
                   <CardContent className="p-5 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-feminine/10 flex items-center justify-center">
                       <Heart className="w-6 h-6 text-feminine" />
@@ -939,7 +878,7 @@ const Pricing = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="border border-masculine/30 bg-masculine/5 hover:border-masculine/50 transition-all cursor-pointer" onClick={() => navigate("/hormones/men")}>
+                <Card className="border border-masculine/30 bg-masculine/5 hover:border-masculine/50 transition-all cursor-pointer" onClick={() => navigate("/hormones-men")}>
                   <CardContent className="p-5 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-masculine/10 flex items-center justify-center">
                       <Shield className="w-6 h-6 text-masculine" />
@@ -1642,7 +1581,7 @@ const Pricing = () => {
                     Comprehensive hormone or metabolic panel
                   </p>
                   <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-3xl font-cormorant text-foreground">$149</span>
+                    <span className="text-3xl font-cormorant text-foreground">$349</span>
                     <span className="text-sm text-muted-foreground">one-time</span>
                   </div>
                   <p className="text-xs text-gold font-lato">
