@@ -187,7 +187,7 @@ const TreatmentsPricing = ({ onOpenBooking }: TreatmentsPricingProps) => {
               </AccordionTrigger>
               <AccordionContent className="text-muted-foreground">
                 <p className="mb-4">
-                  Absolutely. Ketamine has been used safely in medical settings for over 50 years. Our clinic follows strict safety protocols, and Lauren Bursey, NP-C, personally monitors every patient throughout their entire infusion.
+                  Absolutely. Ketamine has been used safely in medical settings for over 50 years. Our clinic follows strict safety protocols, and our clinical team personally monitors every patient throughout their entire infusion.
                 </p>
                 <p>
                   Side effects are typically mild and temporary, including light nausea or dizziness during treatment. You'll need a driver to take you home after your session.

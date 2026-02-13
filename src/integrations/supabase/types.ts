@@ -1395,6 +1395,120 @@ export type Database = {
         }
         Relationships: []
       }
+      soap_notes: {
+        Row: {
+          assessment: Json
+          cpt_codes: string[] | null
+          created_at: string
+          encounter_date: string
+          encounter_type: string
+          icd10_codes: string[] | null
+          id: string
+          linked_lab_result_id: string | null
+          objective: Json
+          patient_id: string
+          plan: Json
+          provider_id: string
+          service_line: string
+          signed_at: string | null
+          status: string
+          subjective: Json
+          updated_at: string
+          vitals: Json | null
+        }
+        Insert: {
+          assessment?: Json
+          cpt_codes?: string[] | null
+          created_at?: string
+          encounter_date?: string
+          encounter_type?: string
+          icd10_codes?: string[] | null
+          id?: string
+          linked_lab_result_id?: string | null
+          objective?: Json
+          patient_id: string
+          plan?: Json
+          provider_id: string
+          service_line?: string
+          signed_at?: string | null
+          status?: string
+          subjective?: Json
+          updated_at?: string
+          vitals?: Json | null
+        }
+        Update: {
+          assessment?: Json
+          cpt_codes?: string[] | null
+          created_at?: string
+          encounter_date?: string
+          encounter_type?: string
+          icd10_codes?: string[] | null
+          id?: string
+          linked_lab_result_id?: string | null
+          objective?: Json
+          patient_id?: string
+          plan?: Json
+          provider_id?: string
+          service_line?: string
+          signed_at?: string | null
+          status?: string
+          subjective?: Json
+          updated_at?: string
+          vitals?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "soap_notes_linked_lab_result_id_fkey"
+            columns: ["linked_lab_result_id"]
+            isOneToOne: false
+            referencedRelation: "lab_results"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "soap_notes_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      soap_templates: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          encounter_type: string
+          id: string
+          is_default: boolean | null
+          name: string
+          service_line: string
+          template_data: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          encounter_type?: string
+          id?: string
+          is_default?: boolean | null
+          name: string
+          service_line: string
+          template_data?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          encounter_type?: string
+          id?: string
+          is_default?: boolean | null
+          name?: string
+          service_line?: string
+          template_data?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       superbills: {
         Row: {
           cpt_codes: Json
