@@ -389,7 +389,7 @@ const ProviderNPIManager = () => {
                       id="provider_name"
                       value={formData.name}
                       onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                      placeholder="e.g., Lauren Bursey"
+                      placeholder="e.g., Troy Akers"
                     />
                   </div>
                   <div className="space-y-2">

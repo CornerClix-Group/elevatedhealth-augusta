@@ -157,7 +157,7 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
       return `Hi ${firstName}! 🏥 Please complete your $99 payment to confirm your ${serviceLabel} consultation on ${dateDisplay}. Pay here: [payment link] - Elevated Health Augusta`;
     }
     
-    return `Hi ${firstName}! 🌟 Lauren Bursey, NP-C has invited you to book a $99 Discovery Consultation at Elevated Health Augusta. Book here: [payment link] Questions? Call (706) 821-7354`;
+    return `Hi ${firstName}! 🌟 The clinical team at Elevated Health Augusta has invited you to book a $99 Discovery Consultation. Book here: [payment link] Questions? Call (706) 821-7354`;
   };
 
   const handlePreview = (mode: "email" | "sms") => {

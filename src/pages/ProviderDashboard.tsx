@@ -73,6 +73,7 @@ import MedicalClearanceCard from "@/components/provider/MedicalClearanceCard";
 import EncounterFormModal from "@/components/provider/EncounterFormModal";
 import TodayScheduleWidget from "@/components/provider/TodayScheduleWidget";
 import PatientNotesCard from "@/components/provider/PatientNotesCard";
+import SOAPNotesPanel from "@/components/provider/SOAPNotesPanel";
 import IntakeSummaryCard from "@/components/provider/IntakeSummaryCard";
 import HealthReportPreview from "@/components/provider/HealthReportPreview";
 
@@ -251,8 +252,8 @@ const ProviderDashboard = () => {
   const getProviderInfo = (email: string) => {
     const providers: Record<string, { name: string; credentials: string; role: string }> = {
       // Providers
-      "admin@elevatedhealthaugusta.com": { name: "Lauren Bursey", credentials: "FNP-C", role: "provider" },
-      "lauren@elevatedhealthaugusta.com": { name: "Lauren Bursey", credentials: "FNP-C", role: "provider" },
+      "admin@elevatedhealthaugusta.com": { name: "Clinical Team", credentials: "NP-C", role: "provider" },
+      "lauren@elevatedhealthaugusta.com": { name: "Clinical Team", credentials: "NP-C", role: "provider" },
       "troy.w.akers@gmail.com": { name: "Troy Akers", credentials: "DO", role: "provider" },
       "mmbursey@gmail.com": { name: "Michael Bursey", credentials: "DO", role: "provider" },
       "drdwmd@pmrehab.net": { name: "Dennis Williams", credentials: "MD", role: "provider" },
@@ -2011,6 +2012,18 @@ const ProviderDashboard = () => {
 
               {/* Communication History Log */}
               <CommunicationLog patientId={selectedPatient.patient.id} />
+
+              {/* SOAP Notes - Clinical Encounter Documentation */}
+              <SOAPNotesPanel
+                patientId={selectedPatient.patient.id}
+                patientName={selectedPatient.patient.full_name}
+                serviceLine={
+                  selectedPatient.patient.treatment_request?.includes("ketamine") ? "ketamine" :
+                  selectedPatient.patient.treatment_request?.includes("weight") || selectedPatient.patient.treatment_request === "glp1" ? "weight_loss" :
+                  "hormone"
+                }
+                providerName={providerInfo.name}
+              />
 
               {/* Medical Clearance Card - For Weight Loss patients */}
               {(selectedPatient.patient.treatment_request === "weight_loss" || 
