@@ -18,7 +18,7 @@ const CLINIC_KNOWLEDGE = `
 ## About the Clinic
 Elevated Health Augusta is a hormone optimization and wellness clinic in Augusta, GA. We specialize in bio-identical hormone replacement therapy (BHRT), GLP-1 weight loss, ketamine therapy, peptide therapy, and IV hydration.
 
-**Provider:** Lauren Bursey, NP (Pronounced "BURR-see")
+**Provider:** Our board-certified clinical team
 **Location:** 7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809
 **Phone:** (706) 760-3470
 
@@ -57,9 +57,9 @@ Elevated Health Augusta is a hormone optimization and wellness clinic in Augusta
 ## Initial Consultation - $99 (30 minutes, IN-PERSON)
 **All new patients start here:**
 - First visit is IN-PERSON at our Evans, GA clinic (7013 Evans Town Center Blvd, Suite 203)
-- 30-minute consultation with Lauren
+- 30-minute consultation with your provider
 - $99 fee is CREDITED toward first lab kit or treatment
-- Hormone patients receive their Hormone Mapping Kit directly from Lauren during the visit
+- Hormone patients receive their Hormone Mapping Kit directly from the provider during the visit
 - Follow-up appointments may be conducted via telehealth
 
 ## Concierge Membership - $499/month
@@ -84,7 +84,7 @@ Everything in Vitality PLUS:
 
 **FLEXIBLE LABS SCRIPTING (The 'Soft Sell'):**
 - When discussing weight loss: "Our gold standard is to start with the Metabolic Mapping Kit ($349) to see exactly how your thyroid and insulin are functioning. This helps us engineer your results."
-- If patient hesitates on labs or price: "That is completely okay! You don't strictly need to buy the kit today. The best first step is the $99 Medical Consultation. Lauren can review any past labs you have or discuss starting treatment immediately based on your history."
+- If patient hesitates on labs or price: "That is completely okay! You don't strictly need to buy the kit today. The best first step is the $99 Medical Consultation. Your provider can review any past labs you have or discuss starting treatment immediately based on your history."
 - GOAL: Do not block the booking. If they don't want labs, book the $99 Consult anyway.
 
 ---

@@ -129,13 +129,13 @@ const HormonesWomen = () => {
       step: 1,
       icon: Calendar,
       title: "In-Person Consultation",
-      description: "$99 for a 30-minute visit at our Evans clinic with Lauren (credited toward labs)"
+      description: "$99 for a 30-minute visit at our Evans clinic with your provider (credited toward labs)"
     },
     {
       step: 2,
       icon: TestTube,
       title: "Receive Your Kit",
-      description: "Lauren hands you your ZRT Saliva Panel and explains exactly how to complete it at home"
+      description: "Your provider hands you your ZRT Saliva Panel and explains exactly how to complete it at home"
     },
     {
       step: 3,
@@ -491,7 +491,7 @@ const HormonesWomen = () => {
                           </li>
                           <li className="flex items-start gap-2">
                             <CheckCircle2 className="h-3.5 w-3.5 text-feminine flex-shrink-0 mt-0.5" />
-                            45-Min Clinical Review with Lauren Bursey, NP
+                            45-Min Clinical Review with Your Provider
                           </li>
                           <li className="flex items-start gap-2">
                             <CheckCircle2 className="h-3.5 w-3.5 text-feminine flex-shrink-0 mt-0.5" />
@@ -535,7 +535,7 @@ const HormonesWomen = () => {
                       <ul className="text-xs text-muted-foreground space-y-1.5 mb-4">
                         <li className="flex items-start gap-2">
                           <CheckCircle2 className="h-3.5 w-3.5 text-green-600 flex-shrink-0 mt-0.5" />
-                          <span>Clinical Management with Lauren Bursey, NP</span>
+                          <span>Clinical Management with Your Provider</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <CheckCircle2 className="h-3.5 w-3.5 text-green-600 flex-shrink-0 mt-0.5" />
@@ -605,7 +605,7 @@ const HormonesWomen = () => {
                   <div className="relative h-[500px] rounded-lg overflow-hidden shadow-xl">
                     <img 
                       src={providerPortrait} 
-                      alt="Lauren Bursey, NP-C" 
+                      alt="Elevated Health Augusta provider" 
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -614,7 +614,7 @@ const HormonesWomen = () => {
                       Expert, Compassionate Care for Women
                     </h2>
                     <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                      Our board-certified nurse practitioner, Lauren Bursey, specializes in women's hormone health and understands the unique challenges of hormonal transitions.
+                      Our board-certified providers specialize in women's hormone health and understand the unique challenges of hormonal transitions.
                     </p>
                     <ul className="space-y-4 mb-8">
                       <li className="flex gap-3 items-start">
@@ -636,7 +636,7 @@ const HormonesWomen = () => {
                       className="bg-feminine hover:bg-feminine-light text-feminine-foreground"
                     >
                       <Calendar className="mr-2 h-5 w-5" />
-                      Schedule with Lauren
+                      Schedule Your Consult
                     </Button>
                   </div>
                 </div>

@@ -138,7 +138,7 @@ const handler = async (req: Request): Promise<Response> => {
           </p>
           <div style="margin-top: 30px;">
             <div style="font-size: 12px;">
-              <strong>Lauren Bursey, NP-C</strong><br/>
+              <strong>${data.providerName || 'Provider'}, ${data.providerCredentials || ''}</strong><br/>
               NPI: ${data.clinicSettings.npi}
             </div>
           </div>

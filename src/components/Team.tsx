@@ -1,8 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import providerImage from "@/assets/provider-portrait.jpg";
-import quoteImage from "@/assets/provider-testimonial.jpg";
-import { Award, Heart, GraduationCap, Phone, Calendar, ArrowRight } from "lucide-react";
+import { Award, Heart, GraduationCap, Phone, Calendar, ShieldCheck, Brain, Activity } from "lucide-react";
 import { trackCTAClick } from "@/lib/analytics";
 import { useBooking } from "@/contexts/BookingContext";
 
@@ -16,93 +14,84 @@ const Team = () => {
           {/* Header */}
           <div className="text-center mb-16">
             <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
-              Your Provider
+              Our Team
             </p>
             <h2 className="font-cormorant text-4xl md:text-5xl text-primary mb-6">
-              Meet Your Metabolic Architect
+              A Team Built for Results
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto font-lato font-light">
-              In a healthcare system designed for 15-minute visits and band-aid prescriptions, 
-              Lauren built Elevated Health to do the opposite.
+              Our board-certified providers combine clinical expertise with a concierge approach —
+              because your health deserves more than a 15-minute visit.
             </p>
           </div>
 
-          {/* Lauren Bursey Card - Centered */}
+          {/* Pillars */}
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            <Card className="p-8 bg-card shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+              <div className="w-14 h-14 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-6">
+                <Brain className="h-7 w-7 text-gold" />
+              </div>
+              <h3 className="font-cormorant text-xl text-primary mb-3">Mental Wellness</h3>
+              <p className="text-muted-foreground font-light text-sm leading-relaxed">
+                Ketamine therapy and neurotransmitter analysis for treatment-resistant depression, anxiety, and PTSD.
+              </p>
+            </Card>
+
+            <Card className="p-8 bg-card shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+              <div className="w-14 h-14 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-6">
+                <Activity className="h-7 w-7 text-gold" />
+              </div>
+              <h3 className="font-cormorant text-xl text-primary mb-3">Hormone Optimization</h3>
+              <p className="text-muted-foreground font-light text-sm leading-relaxed">
+                Data-driven hormone protocols using ZRT diagnostics and bioidentical therapies for men and women.
+              </p>
+            </Card>
+
+            <Card className="p-8 bg-card shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+              <div className="w-14 h-14 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-6">
+                <ShieldCheck className="h-7 w-7 text-gold" />
+              </div>
+              <h3 className="font-cormorant text-xl text-primary mb-3">Medical Weight Loss</h3>
+              <p className="text-muted-foreground font-light text-sm leading-relaxed">
+                In-person GLP-1 programs with real medical oversight — not a telehealth prescription mill.
+              </p>
+            </Card>
+          </div>
+
+          {/* Credentials Bar */}
           <div className="max-w-4xl mx-auto mb-12">
-            <Card className="overflow-hidden bg-card shadow-xl hover:shadow-2xl transition-all duration-300">
-              <div className="grid md:grid-cols-2 gap-0">
-                <div className="relative h-[500px] md:h-auto">
-                  <img 
-                    src={providerImage} 
-                    alt="Lauren Bursey, NP-C - Board-Certified Nurse Practitioner at Elevated Health Augusta" 
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    width="800"
-                    height="1000"
-                  />
-                </div>
-                <div className="p-8 md:p-10 flex flex-col justify-center bg-gradient-subtle">
-                  <div className="mb-6">
-                    <p className="text-sm tracking-[0.2em] uppercase text-gold mb-2 font-lato font-light">
-                      Your Metabolic Architect
-                    </p>
-                    <h3 className="font-cormorant text-3xl text-primary mb-2">Lauren Bursey, NP-C</h3>
-                    <p className="text-muted-foreground font-light">Board-Certified Nurse Practitioner</p>
+            <Card className="p-8 bg-gradient-subtle shadow-xl">
+              <div className="grid sm:grid-cols-3 gap-6">
+                <div className="flex items-start gap-4">
+                  <GraduationCap className="h-5 w-5 text-gold flex-shrink-0 mt-1" />
+                  <div>
+                    <div className="font-medium text-foreground mb-1">Board-Certified Providers</div>
+                    <div className="text-sm text-muted-foreground font-light">
+                      Advanced training in ketamine therapy, hormone optimization, and metabolic medicine
+                    </div>
                   </div>
-                  
-                  <p className="text-muted-foreground font-light leading-relaxed mb-6">
-                    Specializing in the intersection of hormonal health and mental wellness, 
-                    Lauren uses clinical data to design personalized roadmaps for longevity. 
-                    She does not just treat patients—she partners with them.
-                  </p>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-4">
-                      <GraduationCap className="h-5 w-5 text-gold flex-shrink-0 mt-1" />
-                      <div>
-                        <div className="font-medium text-foreground mb-1">Advanced Certification</div>
-                        <div className="text-sm text-muted-foreground font-light">
-                          Ketamine therapy, hormone optimization, and metabolic medicine
-                        </div>
-                      </div>
-                    </div>
+                </div>
 
-                    <div className="flex items-start gap-4">
-                      <Heart className="h-5 w-5 text-gold flex-shrink-0 mt-1" />
-                      <div>
-                        <div className="font-medium text-foreground mb-1">Concierge Approach</div>
-                        <div className="text-sm text-muted-foreground font-light">
-                          Extended consultations, direct access, and personalized protocols
-                        </div>
-                      </div>
+                <div className="flex items-start gap-4">
+                  <Heart className="h-5 w-5 text-gold flex-shrink-0 mt-1" />
+                  <div>
+                    <div className="font-medium text-foreground mb-1">Concierge Approach</div>
+                    <div className="text-sm text-muted-foreground font-light">
+                      Extended consultations, direct access, and personalized protocols
                     </div>
+                  </div>
+                </div>
 
-                    <div className="flex items-start gap-4">
-                      <Award className="h-5 w-5 text-gold flex-shrink-0 mt-1" />
-                      <div>
-                        <div className="font-medium text-foreground mb-1">Data-Driven Care</div>
-                        <div className="text-sm text-muted-foreground font-light">
-                          ZRT diagnostics and evidence-based treatment protocols
-                        </div>
-                      </div>
+                <div className="flex items-start gap-4">
+                  <Award className="h-5 w-5 text-gold flex-shrink-0 mt-1" />
+                  <div>
+                    <div className="font-medium text-foreground mb-1">Data-Driven Care</div>
+                    <div className="text-sm text-muted-foreground font-light">
+                      ZRT diagnostics and evidence-based treatment protocols
                     </div>
                   </div>
                 </div>
               </div>
-            </Card>
-          </div>
-
-          {/* Quote Graphic */}
-          <div className="max-w-3xl mx-auto mb-12">
-            <Card className="p-0 overflow-hidden border-0 shadow-lg">
-              <img 
-                src={quoteImage} 
-                alt="Lauren's story about creating Elevated Health - A space for patients to start healing" 
-                className="w-full h-auto"
-                loading="lazy"
-                width="800"
-                height="400"
-              />
             </Card>
           </div>
 

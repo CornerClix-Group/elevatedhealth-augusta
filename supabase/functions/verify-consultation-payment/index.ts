@@ -286,11 +286,11 @@ serve(async (req) => {
                       </div>
                       <div class="step">
                         <span class="step-num">2</span>
-                        <div class="step-content"><strong>Visit our Evans clinic</strong> for your 30-minute in-person consultation with Lauren</div>
+                        <div class="step-content"><strong>Visit our Evans clinic</strong> for your 30-minute in-person consultation with your provider</div>
                       </div>
                       <div class="step">
                         <span class="step-num">3</span>
-                        <div class="step-content"><strong>Receive your diagnostic kit</strong> - Lauren will hand it to you and explain how to use it</div>
+                        <div class="step-content"><strong>Receive your diagnostic kit</strong> - Your provider will hand it to you and explain how to use it</div>
                       </div>
                       <div class="step">
                         <span class="step-num">4</span>

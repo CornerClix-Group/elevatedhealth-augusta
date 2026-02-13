@@ -112,13 +112,13 @@ const HormonesMen = () => {
       step: 1,
       icon: Calendar,
       title: "In-Person Consultation",
-      description: "$99 for a 30-minute visit at our Evans clinic with Lauren (credited toward labs)"
+      description: "$99 for a 30-minute visit at our Evans clinic with your provider (credited toward labs)"
     },
     {
       step: 2,
       icon: TestTube,
       title: "Receive Your Kit",
-      description: "Lauren hands you your ZRT hormone panel and explains exactly how to complete it at home"
+      description: "Your provider hands you your ZRT hormone panel and explains exactly how to complete it at home"
     },
     {
       step: 3,
@@ -578,7 +578,7 @@ const HormonesMen = () => {
                         </li>
                         <li className="flex items-start gap-2">
                           <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                          Clinical Lab Review with Lauren Bursey, NP
+                          Clinical Lab Review with Your Provider
                         </li>
                         <li className="flex items-start gap-2">
                           <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
@@ -681,7 +681,7 @@ const HormonesMen = () => {
                   <div className="relative h-[500px] rounded-lg overflow-hidden shadow-xl">
                     <img 
                       src={providerPortrait} 
-                      alt="Lauren Bursey, NP-C" 
+                      alt="Elevated Health Augusta provider" 
                       className="w-full h-full object-cover"
                     />
                   </div>

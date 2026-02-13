@@ -97,12 +97,12 @@ const WeightLoss = () => {
     {
       step: "01",
       headline: "Book Your $99 Consultation.",
-      body: "Schedule your 30-minute in-person visit at our Evans clinic. Lauren will review your medical history, medications, and determine your GLP-1 eligibility."
+      body: "Schedule your 30-minute in-person visit at our Evans clinic. Your provider will review your medical history, medications, and determine your GLP-1 eligibility."
     },
     {
       step: "02",
       headline: "Get Cleared Same Day.",
-      body: "Most patients are approved immediately during their consultation. If Lauren needs additional information, she'll coordinate with your PCP."
+      body: "Most patients are approved immediately during their consultation. If your provider needs additional information, they'll coordinate with your PCP."
     },
     {
       step: "03",
@@ -152,11 +152,11 @@ const WeightLoss = () => {
   const faqs = [
     {
       q: "How is this different from other online Semaglutide clinics?",
-      a: "Unlike telehealth-only clinics, we meet you in person at our Evans clinic. Lauren reviews your complete medical history, checks for contraindications, and provides ongoing supervision—not just a prescription and a wave goodbye."
+      a: "Unlike telehealth-only clinics, we meet you in person at our Evans clinic. Your provider reviews your complete medical history, checks for contraindications, and provides ongoing supervision—not just a prescription and a wave goodbye."
     },
     {
       q: "Do I need labs to start?",
-      a: "Most patients can start GLP-1 medication after their $99 consultation. If Lauren determines additional lab work would benefit your safety or results, she may request recent labs from your PCP or recommend optional hormone testing."
+      a: "Most patients can start GLP-1 medication after their $99 consultation. If your provider determines additional lab work would benefit your safety or results, they may request recent labs from your PCP or recommend optional hormone testing."
     },
     {
       q: "What if I want hormone testing too?",
@@ -164,7 +164,7 @@ const WeightLoss = () => {
     },
     {
       q: "How quickly can I start medication?",
-      a: "Most patients start within a week of their consultation. Lauren will determine eligibility during your in-person visit and can often authorize treatment the same day."
+      a: "Most patients start within a week of their consultation. Your provider will determine eligibility during your in-person visit and can often authorize treatment the same day."
     }
   ];
 
@@ -555,7 +555,7 @@ const WeightLoss = () => {
                         </td>
                         <td className="p-4 text-center bg-gold/5">
                           <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
-                          <span className="text-xs text-green-600">30-min with Lauren</span>
+                          <span className="text-xs text-green-600">30-min with your provider</span>
                         </td>
                       </tr>
                       <tr className="border-b border-border/50">

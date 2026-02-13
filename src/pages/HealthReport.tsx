@@ -177,7 +177,7 @@ const HealthReport = () => {
                 Report Not Yet Available
               </h2>
               <p className="text-sm text-muted-foreground">
-                Your Health Report will be available once Lauren has reviewed your lab results 
+                Your Health Report will be available once your provider has reviewed your lab results 
                 and designed your personalized protocol.
               </p>
               <p className="text-xs text-muted-foreground">
