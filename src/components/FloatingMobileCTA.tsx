@@ -8,7 +8,7 @@ const STORAGE_KEY = "floatingCTA_dismissed";
 
 export const FloatingMobileCTA = () => {
   const isMobile = useIsMobile();
-  const [isDismissed, setIsDismissed] = useState(true); // Start hidden to prevent flash
+  const [isDismissed, setIsDismissed] = useState(true);
 
   useEffect(() => {
     const dismissed = sessionStorage.getItem(STORAGE_KEY);
@@ -30,11 +30,11 @@ export const FloatingMobileCTA = () => {
   if (!isMobile || isDismissed) return null;
 
   return (
-    <div className="fixed bottom-20 left-4 right-4 z-50 animate-fade-in">
+    <div className="fixed bottom-4 left-4 right-4 z-40 animate-fade-in">
       <div className="relative bg-primary text-primary-foreground rounded-xl shadow-2xl p-4 flex items-center gap-3">
         <button
           onClick={handleDismiss}
-          className="absolute -top-2 -right-2 w-6 h-6 bg-background text-foreground rounded-full flex items-center justify-center shadow-md hover:bg-muted transition-colors"
+          className="absolute -top-2 -right-2 w-6 h-6 bg-card text-foreground rounded-full flex items-center justify-center shadow-md hover:bg-muted transition-colors"
           aria-label="Dismiss"
         >
           <X className="w-4 h-4" />

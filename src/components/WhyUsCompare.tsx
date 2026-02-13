@@ -12,36 +12,12 @@ const WhyUsCompare = () => {
   };
 
   const comparisonPoints = [
-    {
-      feature: "Medication Approach",
-      standard: "Generic GLP-1 Dosing",
-      elevated: "FDA-Approved GLP-1s with Personalized Protocols"
-    },
-    {
-      feature: "Diagnostic Testing",
-      standard: "Basic Weight Check",
-      elevated: "ZRT Saliva Diagnostics + Hormone Panel"
-    },
-    {
-      feature: "Consultations",
-      standard: "15-Minute Med Refills",
-      elevated: "Comprehensive Provider-Led Consultations"
-    },
-    {
-      feature: "Root Cause Analysis",
-      standard: "Symptom Treatment Only",
-      elevated: "Hormone Blockers Identified & Addressed"
-    },
-    {
-      feature: "Biological Approach",
-      standard: "Calories In, Calories Out",
-      elevated: "Cortisol, Estrogen, Testosterone Optimization"
-    },
-    {
-      feature: "Care Model",
-      standard: "Office Hours Only",
-      elevated: "Concierge Access + Weekly Check-ins"
-    }
+    { feature: "Medication Approach", standard: "Generic GLP-1 Dosing", elevated: "FDA-Approved GLP-1s with Personalized Protocols" },
+    { feature: "Diagnostic Testing", standard: "Basic Weight Check", elevated: "ZRT Saliva Diagnostics + Hormone Panel" },
+    { feature: "Consultations", standard: "15-Minute Med Refills", elevated: "Comprehensive Provider-Led Consultations" },
+    { feature: "Root Cause Analysis", standard: "Symptom Treatment Only", elevated: "Hormone Blockers Identified & Addressed" },
+    { feature: "Biological Approach", standard: "Calories In, Calories Out", elevated: "Cortisol, Estrogen, Testosterone Optimization" },
+    { feature: "Care Model", standard: "Office Hours Only", elevated: "Concierge Access + Weekly Check-ins" }
   ];
 
   return (
@@ -61,11 +37,11 @@ const WhyUsCompare = () => {
           </p>
         </div>
 
-        {/* Comparison Table - Elegant Typography Style */}
-        <div className="max-w-4xl mx-auto">
+        {/* Desktop: Comparison Table */}
+        <div className="max-w-4xl mx-auto hidden md:block">
           {/* Table Header */}
           <div className="grid grid-cols-3 gap-4 mb-8 pb-4 border-b border-border">
-            <div className="col-span-1"></div>
+            <div className="col-span-1" />
             <div className="text-center">
               <p className="text-sm font-lato text-muted-foreground uppercase tracking-wide">
                 Standard Clinic
@@ -86,55 +62,58 @@ const WhyUsCompare = () => {
                 className="grid grid-cols-3 gap-4 items-center py-4 border-b border-border/50 animate-fade-in-up"
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
-                {/* Feature Name */}
                 <div className="col-span-1">
-                  <p className="font-cormorant text-lg text-foreground">
-                    {point.feature}
-                  </p>
+                  <p className="font-cormorant text-lg text-foreground">{point.feature}</p>
                 </div>
-                
-                {/* Standard Clinic */}
                 <div className="text-center flex flex-col items-center gap-2">
                   <X className="h-5 w-5 text-muted-foreground/50" />
-                  <p className="text-sm text-muted-foreground font-lato">
-                    {point.standard}
-                  </p>
+                  <p className="text-sm text-muted-foreground font-lato">{point.standard}</p>
                 </div>
-                
-                {/* Elevated Health */}
                 <div className="text-center flex flex-col items-center gap-2">
                   <Check className="h-5 w-5 text-gold" />
-                  <p className="text-sm text-foreground font-lato font-medium">
-                    {point.elevated}
-                  </p>
+                  <p className="text-sm text-foreground font-lato font-medium">{point.elevated}</p>
                 </div>
               </div>
             ))}
           </div>
+        </div>
 
-          {/* Bottom CTA */}
-          <div className="mt-12 text-center">
-            <p className="text-muted-foreground font-lato mb-6">
-              Ready to discover your biological blockers?
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                onClick={openBooking}
-                size="lg"
-                className="font-lato"
-              >
-                Schedule Discovery Call
-              </Button>
-              <Button 
-                onClick={handleLearnMore}
-                variant="outline"
-                size="lg"
-                className="font-lato group"
-              >
-                Learn About Hormonal Weight Reset
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
+        {/* Mobile: Card-based comparison */}
+        <div className="md:hidden space-y-4 max-w-lg mx-auto">
+          {comparisonPoints.map((point, index) => (
+            <div 
+              key={index} 
+              className="bg-card rounded-xl p-5 border border-border/50 shadow-sm animate-fade-in-up"
+              style={{ animationDelay: `${index * 0.05}s` }}
+            >
+              <p className="font-cormorant text-lg text-foreground mb-3">{point.feature}</p>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <X className="h-4 w-4 text-muted-foreground/50 mt-0.5 shrink-0" />
+                  <p className="text-sm text-muted-foreground font-lato">{point.standard}</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="h-4 w-4 text-gold mt-0.5 shrink-0" />
+                  <p className="text-sm text-foreground font-lato font-medium">{point.elevated}</p>
+                </div>
+              </div>
             </div>
+          ))}
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="mt-12 text-center">
+          <p className="text-muted-foreground font-lato mb-6">
+            Ready to discover your biological blockers?
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button onClick={openBooking} size="lg" className="font-lato">
+              Schedule Discovery Call
+            </Button>
+            <Button onClick={handleLearnMore} variant="outline" size="lg" className="font-lato group">
+              Learn About Hormonal Weight Reset
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Button>
           </div>
         </div>
       </div>

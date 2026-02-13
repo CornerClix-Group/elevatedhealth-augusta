@@ -1,59 +1,32 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useBooking } from "@/contexts/BookingContext";
-
-// Thin Stroke Minimalist Icons
-const LotusIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
-  <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2C12 2 8 6 8 10C8 14 12 18 12 18C12 18 16 14 16 10C16 6 12 2 12 2Z" />
-    <path d="M12 18C12 18 6 14 2 14C2 14 4 18 8 20C12 22 12 22 12 22" />
-    <path d="M12 18C12 18 18 14 22 14C22 14 20 18 16 20C12 22 12 22 12 22" />
-  </svg>
-);
-
-const DNAIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
-  <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M2 15C2 15 4 13 7 13C10 13 12 15 12 15C12 15 14 17 17 17C20 17 22 15 22 15" />
-    <path d="M2 9C2 9 4 11 7 11C10 11 12 9 12 9C12 9 14 7 17 7C20 7 22 9 22 9" />
-    <line x1="4" y1="4" x2="4" y2="20" />
-    <line x1="20" y1="4" x2="20" y2="20" />
-  </svg>
-);
-
-const FeminineIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
-  <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="8" r="5" />
-    <line x1="12" y1="13" x2="12" y2="21" />
-    <line x1="9" y1="18" x2="15" y2="18" />
-  </svg>
-);
-
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import mentalWellness from "@/assets/treatment-mental-wellness.jpg";
+import bodyTransformation from "@/assets/treatment-body-transformation.jpg";
+import vitalityRestoration from "@/assets/treatment-vitality-restoration.jpg";
 
 const treatments = [
   {
     id: "ketamine",
     title: "Neural Restoration",
-    tagline: "Reset neural pathways altered by stress",
-    icon: LotusIcon,
+    tagline: "Reset neural pathways altered by chronic stress, anxiety, and depression",
     route: SITE_CONFIG.routes.ketamine,
-    iconColor: "#1a8a9a",
+    image: mentalWellness,
   },
   {
     id: "weight-loss",
     title: "Metabolic Reset",
-    tagline: "GLP-1s optimized by hormone testing",
-    icon: DNAIcon,
+    tagline: "GLP-1 protocols optimized by hormone testing for lasting results",
     route: SITE_CONFIG.routes.weightloss,
-    iconColor: "#D4A017",
+    image: bodyTransformation,
   },
   {
     id: "hormones",
     title: "Biological Reset",
-    tagline: "Precision bio-identical protocols",
-    icon: FeminineIcon,
+    tagline: "Precision bio-identical protocols tailored to your unique biology",
     route: SITE_CONFIG.routes.hormones,
-    iconColor: "#1a8a9a",
+    image: vitalityRestoration,
   },
 ];
 
@@ -62,10 +35,10 @@ const OurTreatments = () => {
   const { openBooking } = useBooking();
 
   return (
-    <section id="treatments" className="py-16 md:py-24 bg-background scroll-mt-20">
+    <section id="treatments" className="py-20 md:py-28 bg-background scroll-mt-20">
       <div className="container mx-auto px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        <div className="text-center max-w-2xl mx-auto mb-16">
           <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
             Our Pathways
           </p>
@@ -77,49 +50,46 @@ const OurTreatments = () => {
           </p>
         </div>
 
-        {/* White Cards Grid - Light Luxury Style */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {treatments.map((treatment, index) => {
-            const Icon = treatment.icon;
-            return (
-              <article 
-                key={treatment.id}
-                className="group cursor-pointer animate-fade-in-up"
-                onClick={() => navigate(treatment.route)}
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                {/* Card Container - White with shadow */}
-                <div className="relative rounded-2xl overflow-hidden bg-white p-8 flex flex-col gap-4 transition-all duration-500 group-hover:scale-[1.02] shadow-md hover:shadow-xl border border-gray-100">
-                  {/* Icon + Content */}
-                  <div className="flex items-start gap-4">
-                    <div 
-                      className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: `${treatment.iconColor}15` }}
-                    >
-                      <Icon className="h-6 w-6" style={{ color: treatment.iconColor }} />
-                    </div>
-                    <div className="space-y-2">
-                      <h3 className="text-xl font-cormorant text-[#2C3E50]">
-                        {treatment.title}
-                      </h3>
-                      <p className="text-[#64748b] font-lato font-light text-sm">
-                        {treatment.tagline}
-                      </p>
-                    </div>
-                  </div>
+        {/* Treatment Cards with Images */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {treatments.map((treatment, index) => (
+            <article 
+              key={treatment.id}
+              className="group cursor-pointer animate-fade-in-up"
+              onClick={() => navigate(treatment.route)}
+              style={{ animationDelay: `${index * 0.15}s` }}
+            >
+              <div className="relative rounded-2xl overflow-hidden bg-card border border-border/50 shadow-sm hover:shadow-lg transition-all duration-500 group-hover:scale-[1.02]">
+                {/* Image */}
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={treatment.image}
+                    alt={treatment.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
 
-                  {/* Hover Arrow */}
-                  <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <ArrowRight className="h-4 w-4" style={{ color: treatment.iconColor }} />
+                {/* Content */}
+                <div className="p-6 lg:p-8">
+                  <h3 className="text-xl lg:text-2xl font-cormorant text-foreground mb-2">
+                    {treatment.title}
+                  </h3>
+                  <p className="text-muted-foreground font-lato font-light text-sm leading-relaxed mb-4">
+                    {treatment.tagline}
+                  </p>
+                  <div className="flex items-center gap-2 text-gold font-lato text-sm font-medium group-hover:gap-3 transition-all duration-300">
+                    <span>Learn More</span>
+                    <ArrowRight className="h-4 w-4" />
                   </div>
                 </div>
-              </article>
-            );
-          })}
+              </div>
+            </article>
+          ))}
         </div>
 
         {/* Bottom CTA */}
-        <div className="text-center mt-14 pt-10 border-t border-border">
+        <div className="text-center mt-16 pt-10 border-t border-border">
           <p className="text-lg text-muted-foreground font-lato font-light mb-6">
             Not sure which reset is right for you?
           </p>
