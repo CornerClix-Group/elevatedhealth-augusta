@@ -87,7 +87,7 @@ serve(async (req) => {
             currency: "usd",
             product_data: {
               name: "Discovery Consultation",
-              description: `30-minute ${serviceLabel} consultation with Lauren Bursey, NP-C.`,
+              description: `30-minute ${serviceLabel} consultation with Elevated Health Augusta.`,
             },
             unit_amount: 9900, // $99
           },
@@ -197,7 +197,7 @@ serve(async (req) => {
               </div>
               <div class="content">
                 <h2 class="greeting">Hi ${firstName}!</h2>
-                <p class="intro">You have a ${serviceLabel} consultation scheduled with Lauren Bursey, NP-C. Please complete your payment to confirm your appointment.</p>
+                <p class="intro">You have a ${serviceLabel} consultation scheduled with Elevated Health Augusta. Please complete your payment to confirm your appointment.</p>
                 
                 ${scheduled_date ? `
                 <div class="appointment-box">
@@ -285,7 +285,7 @@ serve(async (req) => {
               </div>
               <div class="content">
                 <h2 class="greeting">Welcome, ${firstName}!</h2>
-                <p class="intro">Lauren Bursey, NP-C has personally invited you to begin your hormone optimization journey with Elevated Health Augusta. Let's start with a personalized consultation to understand your unique needs.</p>
+                <p class="intro">You've been personally invited to begin your hormone optimization journey with Elevated Health Augusta. Let's start with a personalized consultation to understand your unique needs.</p>
                 
                 <div class="price-box">
                   <p class="price">$99</p>
@@ -295,7 +295,7 @@ serve(async (req) => {
                 <div class="includes">
                   <p class="includes-title">Your Consultation Includes:</p>
                   <ul>
-                    <li><span class="check">✓</span> 30-minute one-on-one with Lauren Bursey, NP-C</li>
+                    <li><span class="check">✓</span> 30-minute one-on-one with your provider</li>
                     <li><span class="check">✓</span> Complete symptom assessment</li>
                     <li><span class="check">✓</span> Personalized treatment path discussion</li>
                     <li><span class="check">✓</span> <strong>$99 credit toward your Hormone Mapping Kit</strong></li>

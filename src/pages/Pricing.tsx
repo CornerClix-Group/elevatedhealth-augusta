@@ -545,7 +545,7 @@ const Pricing = () => {
                               Provider Strategy Session
                             </h3>
                             <p className="text-slate-600 font-lato text-sm leading-relaxed">
-                              Skip the waiting room. Meet directly with Lauren Bursey, NP to review your medical history and determine eligibility. The $99 fee is credited toward your first treatment.
+                              Skip the waiting room. Meet directly with your provider to review your medical history and determine eligibility. The $99 fee is credited toward your first treatment.
                             </p>
                           </div>
                           <div className="text-right flex-shrink-0">
@@ -590,7 +590,7 @@ const Pricing = () => {
                               Provider Review
                             </h3>
                             <p className="text-slate-600 font-lato text-sm leading-relaxed">
-                              Lauren reviews your eligibility and may request recent labs from your PCP if needed. Most patients are cleared to start during their consultation.
+                              Your provider reviews your eligibility and may request recent labs from your PCP if needed. Most patients are cleared to start during their consultation.
                             </p>
                           </div>
                           <div className="text-right flex-shrink-0">
@@ -753,7 +753,7 @@ const Pricing = () => {
                               Provider Strategy Session
                             </h3>
                             <p className="text-sm text-slate-600 font-lato leading-relaxed">
-                              Meet with Lauren Bursey, NP to review your symptoms, medical history, and treatment goals. The $99 fee is fully credited toward your Hormone Mapping.
+                              Meet with your provider to review your symptoms, medical history, and treatment goals. The $99 fee is fully credited toward your Hormone Mapping.
                             </p>
                           </div>
                           <div className="text-right shrink-0">

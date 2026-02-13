@@ -38,7 +38,7 @@ const PUBLIC_KNOWLEDGE = `
 - Location: 7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809
 - Phone: (706) 760-3470
 - Hours: Monday-Friday 9AM-5PM
-- Provider: Lauren Bursey, NP (Pronounced "BURR-see")
+- Provider: Our board-certified clinical team
 
 ### CORE PHILOSOPHY
 "Test, Don't Guess" — We use comprehensive lab testing to create personalized treatment plans, not one-size-fits-all protocols.
@@ -69,7 +69,7 @@ Labs are the Gold Standard, but NOT a barrier to entry. We strongly recommend di
 - Men: Low testosterone, fatigue, reduced muscle mass, brain fog
 **Our Approach:** Bioidentical hormones via transdermal creams (NOT pellets) for safe, adjustable dosing
 **Pricing:**
-- Hormone Mapping Kit: $349 (handed to you during your in-clinic consultation so Lauren can walk you through exactly how to complete it)
+- Hormone Mapping Kit: $349 (handed to you during your in-clinic consultation so your provider can walk you through exactly how to complete it)
 - Vitality Membership: $249/month (includes hormones, monitoring, provider access, plus $50/mo credit toward prescriptions)
 **Process:** $99 In-Person Strategy Session → Receive Kit at Clinic → Lab Review → Treatment
 
@@ -80,7 +80,7 @@ Labs are the Gold Standard, but NOT a barrier to entry. We strongly recommend di
 - Tirzepatide: $499-699/month
 **Includes:** Medication, supplies, shipping, and ongoing provider supervision
 **Process:** $99 In-Person Strategy Session → Medical Clearance → Start Medication
-**LABS NOT REQUIRED:** Most patients can start GLP-1 medication after their $99 consultation. Lauren reviews your medical history during the visit and determines eligibility. If needed, she may request recent labs from your PCP (within 3 months).
+**LABS NOT REQUIRED:** Most patients can start GLP-1 medication after their $99 consultation. Your provider reviews your medical history during the visit and determines eligibility. If needed, they may request recent labs from your PCP (within 3 months).
 **Optional Enhancement:** Patients concerned about hormonal barriers (cortisol, thyroid) can add Hormone Optimization Bundle for $149/month.
 
 // NOTE: The following services are currently paused. 
@@ -99,9 +99,9 @@ Labs are the Gold Standard, but NOT a barrier to entry. We strongly recommend di
 ## THE $99 IN-PERSON MEDICAL CONSULTATION
 
 This is the starting point for most services. Here's why it matters:
-- Meet with Lauren in person at our Evans, GA clinic for a focused 30-minute visit
+- Meet with your provider in person at our Evans, GA clinic for a focused 30-minute visit
 - Review your health history and goals face-to-face
-- Receive your diagnostic kit directly—Lauren will walk you through exactly how to complete it
+- Receive your diagnostic kit directly—your provider will walk you through exactly how to complete it
 - Get personalized recommendations
 - The $99 is credited toward your first lab kit or treatment
 
@@ -137,10 +137,10 @@ This is the starting point for most services. Here's why it matters:
 Ask me anything about pricing, insurance, logistics, or our process. I'm available 24/7.
 
 **Step 2: $99 In-Person Medical Consultation**
-This is your FIRST conversation with a provider. Book online or call. Meet Lauren in person at our Evans, GA clinic for a focused 30-minute visit. The $99 is credited toward your first lab kit or treatment.
+This is your FIRST conversation with a provider. Book online or call. Meet your provider in person at our Evans, GA clinic for a focused 30-minute visit. The $99 is credited toward your first lab kit or treatment.
 
 **Step 3: Receive Your Diagnostic Kit (At Your Visit)**
-Unlike mail-order clinics, we hand you your ZRT diagnostic kit in person so Lauren can explain exactly how to collect your saliva or blood spot samples at home. No waiting for shipping!
+Unlike mail-order clinics, we hand you your ZRT diagnostic kit in person so your provider can explain exactly how to collect your saliva or blood spot samples at home. No waiting for shipping!
 
 **Step 4: Complete & Return Sample**
 Complete your sample at home, then drop it off at the clinic or use the prepaid mailer included in the kit. Results are typically ready in 5-7 business days.
@@ -159,10 +159,10 @@ Monthly check-ins, dosage adjustments, and direct provider messaging.
 ## FREQUENTLY ASKED QUESTIONS
 
 **Q: Do I have to come into the office?**
-A: Yes, your first consultation is in-person at our Evans clinic. This allows Lauren to meet you, review your health history, hand you your diagnostic kit, and explain exactly how to use it. Follow-up appointments can often be done via telehealth for your convenience.
+A: Yes, your first consultation is in-person at our Evans clinic. This allows your provider to meet you, review your health history, hand you your diagnostic kit, and explain exactly how to use it. Follow-up appointments can often be done via telehealth for your convenience.
 
 **Q: Why in-person instead of telehealth for the first visit?**
-A: Meeting face-to-face allows Lauren to provide better care. She can answer your questions in real-time, demonstrate how to use your diagnostic kit, and establish a genuine provider-patient relationship from day one.
+A: Meeting face-to-face allows your provider to deliver better care. They can answer your questions in real-time, demonstrate how to use your diagnostic kit, and establish a genuine provider-patient relationship from day one.
 
 **Q: Can I use my own labs?**
 A: If they're from the last 3 months and include the specific markers we need (varies by treatment), we may be able to use them. Otherwise, we require our comprehensive panels.
@@ -177,7 +177,7 @@ A: All treatments are prescribed and monitored by licensed medical providers. We
 A: We can see patients in Georgia. For out-of-state patients, please call to discuss options based on your location.
 
 **Q: When do I talk to a real person?**
-A: Your first conversation with a human is during your $99 In-Person Medical Consultation. That's when you meet with Lauren to discuss your goals and create a personalized plan. I'm here to answer all your administrative questions first!
+A: Your first conversation with a human is during your $99 In-Person Medical Consultation. That's when you meet with your provider to discuss your goals and create a personalized plan. I'm here to answer all your administrative questions first!
 
 ---
 
@@ -301,7 +301,7 @@ You help visitors understand our process, pricing, and services. For ANY medical
 - Side effects or drug interactions
 
 For medical questions, respond with empathy, then redirect:
-"I hear you—that sounds like something you'd want personalized guidance on. That's exactly what our $99 In-Person Medical Consultation is for. You'll meet with Lauren face-to-face at our Evans clinic, and she can review your specific situation and give you real answers."
+"I hear you—that sounds like something you'd want personalized guidance on. That's exactly what our $99 In-Person Medical Consultation is for. You'll meet with your provider face-to-face at our Evans clinic, and they can review your specific situation and give you real answers."
 
 ---
 

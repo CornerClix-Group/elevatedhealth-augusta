@@ -81,8 +81,8 @@ const SuperbillGenerator = ({
   serviceType = "saliva_profile_iii",
   chargeAmount = 299,
   onGenerated,
-  providerName = "Lauren Bursey",
-  providerCredentials = "NP-C",
+  providerName = "Provider",
+  providerCredentials = "",
 }: SuperbillGeneratorProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

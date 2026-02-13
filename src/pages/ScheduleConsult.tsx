@@ -251,7 +251,7 @@ const ScheduleConsult = () => {
                 </h1>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                   Your Hormone Mapping payment is confirmed. Select a time below for your 
-                  45-minute Clinical Strategy Session with Lauren Bursey.
+                  45-minute Clinical Strategy Session with your provider.
                 </p>
               </div>
 

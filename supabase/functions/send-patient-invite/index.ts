@@ -157,7 +157,7 @@ serve(async (req) => {
             </div>
             <div class="content">
               <h2 class="greeting">Welcome, ${firstName}!</h2>
-              <p class="intro">Lauren Bursey, NP-C has personally invited you to begin your hormone optimization journey with Elevated Health Augusta. We're excited to help you feel your best.</p>
+              <p class="intro">You've been personally invited to begin your hormone optimization journey with Elevated Health Augusta. We're excited to help you feel your best.</p>
               
               <div class="price-box">
                 <p class="price">$299</p>
@@ -169,7 +169,7 @@ serve(async (req) => {
                 <ul>
                   <li><span class="check">✓</span> At-home ZRT Saliva Test Kit shipped directly to you</li>
                   <li><span class="check">✓</span> Comprehensive hormone panel analysis</li>
-                  <li><span class="check">✓</span> 45-minute deep-dive clinical review with Lauren</li>
+                  <li><span class="check">✓</span> 45-minute deep-dive clinical review with your provider</li>
                   <li><span class="check">✓</span> Personalized treatment protocol design</li>
                   <li><span class="check">✓</span> Secure patient portal access for ongoing care</li>
                 </ul>

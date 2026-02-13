@@ -116,7 +116,7 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
           </div>
           <div style="padding: 30px; background: white; border: 1px solid #e2e8f0; border-top: 0; border-radius: 0 0 12px 12px;">
             <h2 style="color: #2C3E50;">Welcome, ${firstName}!</h2>
-            <p style="color: #4a5568;">Lauren Bursey, NP-C has personally invited you to begin your hormone optimization journey with Elevated Health Augusta.</p>
+            <p style="color: #4a5568;">You've been personally invited to begin your hormone optimization journey with Elevated Health Augusta.</p>
             
             <div style="background: #f7f9fb; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">
               <p style="font-size: 36px; font-weight: 700; color: #2C3E50; margin: 0;">$99</p>
@@ -126,7 +126,7 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
             <div style="background: #fafbfc; border-radius: 12px; padding: 20px; margin: 24px 0;">
               <p style="font-weight: 600; color: #2C3E50; margin-bottom: 12px;">Your Consultation Includes:</p>
               <ul style="margin: 0; padding: 0; list-style: none; color: #4a5568;">
-                <li style="margin: 8px 0;">✓ 30-minute one-on-one with Lauren Bursey, NP-C</li>
+                <li style="margin: 8px 0;">✓ 30-minute one-on-one with your provider</li>
                 <li style="margin: 8px 0;">✓ Complete symptom assessment</li>
                 <li style="margin: 8px 0;">✓ Personalized treatment path discussion</li>
                 <li style="margin: 8px 0;">✓ <strong>$99 credit toward your Hormone Mapping Kit</strong></li>

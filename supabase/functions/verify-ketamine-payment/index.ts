@@ -52,7 +52,7 @@ serve(async (req) => {
     
     logStep("Payment verified", { customerEmail, customerName });
 
-    // Send notification email to Lauren
+    // Send notification email to clinic
     const resendKey = Deno.env.get("RESEND_API_KEY");
     if (resendKey) {
       const resend = new Resend(resendKey);
@@ -109,7 +109,7 @@ serve(async (req) => {
             </div>
           `,
         });
-        logStep("Notification email sent to Lauren");
+        logStep("Notification email sent to clinic");
       } catch (emailError) {
         logStep("Failed to send notification email", { error: emailError });
         // Continue anyway - payment was successful
