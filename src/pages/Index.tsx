@@ -5,9 +5,7 @@ import OurTreatments from "@/components/OurTreatments";
 import MissionStatement from "@/components/MissionStatement";
 import NotReadyToBook from "@/components/NotReadyToBook";
 import WhyUsCompare from "@/components/WhyUsCompare";
-import ClinicVideo from "@/components/ClinicVideo";
 import InsuranceLogos from "@/components/InsuranceLogos";
-import MediaFeature from "@/components/MediaFeature";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import SEOSchema from "@/components/SEOSchema";
@@ -32,9 +30,7 @@ const Index = () => {
           <NotReadyToBook />
         </div>
         <WhyUsCompare />
-        <ClinicVideo />
         <InsuranceLogos />
-        <MediaFeature />
         <Contact />
       </main>
       <Footer />
