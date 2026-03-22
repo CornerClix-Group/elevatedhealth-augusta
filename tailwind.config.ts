@@ -14,10 +14,12 @@ export default {
     },
     extend: {
       fontFamily: {
-        'cormorant': ['Cormorant Garamond', 'serif'],
         'playfair': ['Playfair Display', 'serif'],
-        'inter': ['Inter', 'sans-serif'],
-        'lato': ['Lato', 'sans-serif'],
+        'jost': ['Jost', 'sans-serif'],
+        // Legacy aliases for components that still reference these
+        'inter': ['Jost', 'sans-serif'],
+        'lato': ['Jost', 'sans-serif'],
+        'cormorant': ['Playfair Display', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -56,22 +58,6 @@ export default {
           light: "hsl(var(--gold-light))",
           dark: "hsl(var(--gold-dark))",
         },
-        peach: {
-          DEFAULT: "hsl(var(--peach))",
-          light: "hsl(var(--peach-light))",
-          dark: "hsl(var(--peach-dark))",
-        },
-        hope: {
-          DEFAULT: "hsl(var(--hope))",
-          foreground: "hsl(var(--hope-foreground))",
-          light: "hsl(var(--hope-light))",
-        },
-        feminine: {
-          DEFAULT: "hsl(var(--feminine))",
-          foreground: "hsl(var(--feminine-foreground))",
-          light: "hsl(var(--feminine-light))",
-          dark: "hsl(var(--feminine-dark))",
-        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
@@ -81,25 +67,10 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-      backgroundImage: {
-        'gradient-hero': 'var(--gradient-hero)',
-        'gradient-subtle': 'var(--gradient-subtle)',
-        'gradient-overlay': 'var(--gradient-overlay)',
-      },
-      boxShadow: {
-        'sm': 'var(--shadow-sm)',
-        'md': 'var(--shadow-md)',
-        'lg': 'var(--shadow-lg)',
-        'glow': 'var(--shadow-glow)',
-      },
-      transitionTimingFunction: {
-        'smooth': 'var(--transition-smooth)',
-        'bounce': 'var(--transition-bounce)',
-      },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "calc(var(--radius))",
+        sm: "calc(var(--radius))",
       },
       keyframes: {
         "accordion-down": {
@@ -126,10 +97,6 @@ export default {
           "0%": { transform: "translateX(100%)", opacity: "0" },
           "100%": { transform: "translateX(0)", opacity: "1" },
         },
-        "subtle-float": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-5px)" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.3s ease-out",
@@ -138,7 +105,6 @@ export default {
         "fade-in-up": "fade-in-up 1s ease-out",
         "scale-in": "scale-in 0.6s ease-out",
         "slide-in-right": "slide-in-right 0.5s ease-out",
-        "subtle-float": "subtle-float 4s ease-in-out infinite",
       },
     },
   },
