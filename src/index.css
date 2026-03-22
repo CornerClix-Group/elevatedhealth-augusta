@@ -2,87 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Holly Heath–Inspired Design System — Sky Blue, Peach Blobs, Orange Accent */
+/* Réveil Design System — Warm Ivory, Midnight Navy, Gold */
 
 @layer base {
   :root {
-    /* Base — ultra-light sky blue tint */
-    --background: 200 40% 97%;
-    --foreground: 240 18% 20%;
+    /* Base — warm ivory */
+    --background: 37 33% 95%;
+    --foreground: 60 3% 17%;
 
-    /* Card surfaces — pure white */
+    /* Card surfaces — white */
     --card: 0 0% 100%;
-    --card-foreground: 240 18% 20%;
+    --card-foreground: 60 3% 17%;
 
     /* Popover surfaces */
     --popover: 0 0% 100%;
-    --popover-foreground: 240 18% 20%;
+    --popover-foreground: 60 3% 17%;
 
-    /* Primary — warm orange accent (Holly Heath style) */
-    --primary: 25 90% 55%;
-    --primary-foreground: 0 0% 100%;
-    --primary-light: 25 85% 62%;
-    --primary-dark: 25 92% 48%;
+    /* Primary — midnight navy */
+    --primary: 217 61% 15%;
+    --primary-foreground: 37 33% 95%;
+    --primary-light: 217 45% 24%;
+    --primary-dark: 217 70% 10%;
 
-    /* Secondary — very light peach/blush */
-    --secondary: 15 50% 96%;
-    --secondary-foreground: 240 18% 20%;
-    --secondary-light: 15 45% 98%;
-    --secondary-dark: 15 40% 92%;
+    /* Secondary — secondary navy */
+    --secondary: 217 45% 24%;
+    --secondary-foreground: 37 33% 95%;
+    --secondary-light: 217 35% 30%;
+    --secondary-dark: 217 55% 18%;
 
-    /* Accent — same warm orange for consistency */
-    --accent: 25 90% 55%;
-    --accent-foreground: 0 0% 100%;
-    --accent-light: 25 85% 65%;
+    /* Accent — Réveil gold */
+    --accent: 40 56% 58%;
+    --accent-foreground: 217 61% 15%;
+    --accent-light: 40 50% 72%;
 
-    /* Gold accent — visible warm amber for text/icons/buttons */
-    --gold: 30 65% 50%;
-    --gold-foreground: 0 0% 100%;
-    --gold-light: 30 55% 58%;
-    --gold-dark: 30 70% 42%;
+    /* Gold — matching accent for explicit use */
+    --gold: 40 56% 58%;
+    --gold-foreground: 217 61% 15%;
+    --gold-light: 40 50% 72%;
+    --gold-dark: 40 60% 45%;
 
-    /* Peach blobs — decorative only */
-    --peach: 15 60% 92%;
-    --peach-light: 15 50% 94%;
-    --peach-dark: 15 65% 88%;
+    /* Soft gold for subtle highlights */
+    --soft-gold: 40 45% 73%;
 
-    /* Hope — soft sky blue */
-    --hope: 200 45% 60%;
-    --hope-foreground: 0 0% 100%;
-    --hope-light: 200 40% 70%;
-
-    /* Feminine — soft rose */
-    --feminine: 350 30% 55%;
-    --feminine-foreground: 0 0% 100%;
-    --feminine-light: 350 25% 70%;
-    --feminine-dark: 350 25% 45%;
-
-    /* Muted — grey-lavender body text */
-    --muted: 200 20% 96%;
-    --muted-foreground: 230 15% 55%;
+    /* Muted */
+    --muted: 37 20% 92%;
+    --muted-foreground: 220 10% 45%;
 
     /* Destructive */
     --destructive: 0 55% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders — very subtle */
-    --border: 200 15% 92%;
-    --input: 200 15% 96%;
-    --ring: 25 90% 55%;
+    /* Borders */
+    --border: 37 15% 88%;
+    --input: 37 15% 92%;
+    --ring: 40 56% 58%;
 
-    /* Border radius */
-    --radius: 0.75rem;
+    /* Border radius — 3px max per brand rules */
+    --radius: 0.1875rem;
 
-    /* Gradients */
-    --gradient-hero: linear-gradient(180deg, hsl(200 40% 97%) 0%, hsl(200 30% 95%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(200 30% 98%) 100%);
-    --gradient-overlay: linear-gradient(180deg, hsla(200 40% 97% / 0.8) 0%, hsla(200 40% 97% / 0.4) 100%);
-
-    /* Shadows — soft and minimal */
-    --shadow-sm: 0 2px 8px hsla(230 20% 20% / 0.04);
-    --shadow-md: 0 4px 20px hsla(230 20% 20% / 0.06);
-    --shadow-lg: 0 12px 40px hsla(230 20% 20% / 0.08);
-    --shadow-glow: 0 0 60px hsla(25 90% 55% / 0.08);
+    /* Shadows — none per brand rules (flat, no drop shadows) */
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-glow: none;
 
     /* Transitions */
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -90,25 +72,25 @@
   }
 
   .dark {
-    --background: 215 32% 8%;
-    --foreground: 210 10% 95%;
-    --card: 215 32% 10%;
-    --card-foreground: 210 10% 95%;
-    --popover: 215 32% 10%;
-    --popover-foreground: 210 10% 95%;
-    --primary: 43 74% 49%;
-    --primary-foreground: 215 32% 10%;
-    --secondary: 215 20% 18%;
-    --secondary-foreground: 210 10% 95%;
-    --accent: 184 6% 60%;
-    --accent-foreground: 215 32% 10%;
-    --muted: 215 20% 15%;
-    --muted-foreground: 210 10% 60%;
+    --background: 217 61% 15%;
+    --foreground: 37 33% 95%;
+    --card: 217 55% 18%;
+    --card-foreground: 37 33% 95%;
+    --popover: 217 55% 18%;
+    --popover-foreground: 37 33% 95%;
+    --primary: 40 56% 58%;
+    --primary-foreground: 217 61% 15%;
+    --secondary: 217 35% 30%;
+    --secondary-foreground: 37 33% 95%;
+    --accent: 40 56% 58%;
+    --accent-foreground: 217 61% 15%;
+    --muted: 217 30% 22%;
+    --muted-foreground: 37 20% 65%;
     --destructive: 0 55% 45%;
     --destructive-foreground: 0 0% 100%;
-    --border: 215 20% 18%;
-    --input: 215 20% 15%;
-    --ring: 43 74% 49%;
+    --border: 217 25% 25%;
+    --input: 217 25% 22%;
+    --ring: 40 56% 58%;
   }
 }
 
@@ -123,14 +105,17 @@
 
   body {
     @apply bg-background text-foreground;
-    letter-spacing: 0.02em;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.01em;
     line-height: 1.7;
   }
 
-  /* Typography - Playfair Display for Headings (Premium Swiss Watch) */
+  /* Typography — Playfair Display for Headings */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-playfair text-foreground;
-    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    @apply text-foreground;
     letter-spacing: -0.01em;
     line-height: 1.15;
   }
@@ -147,36 +132,27 @@
     @apply text-xl md:text-2xl;
   }
 
-  /* Body text - Inter for clinical precision, readable data */
+  /* Body text — Jost */
   p, span, button, input, textarea, label, li, a {
-    @apply font-inter;
+    font-family: 'Jost', sans-serif;
     letter-spacing: 0.01em;
   }
 
-  /* Cormorant for elegant body text alternatives */
-  .font-serif-body {
-    @apply font-cormorant;
-    letter-spacing: 0.02em;
+  /* Section labels — Jost 500, all caps, tracked, gold */
+  .section-label {
+    font-family: 'Jost', sans-serif;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: hsl(var(--accent));
+    font-size: 0.8125rem;
   }
 }
 
-/* Elegant underline animation for links */
-.elegant-underline {
-  position: relative;
-}
-
-.elegant-underline::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
+/* Section divider — 1px gold at 40% opacity */
+.section-divider {
   height: 1px;
-  background: hsl(var(--primary));
-  transition: width 0.4s ease;
-}
-
-.elegant-underline:hover::after {
+  background: hsla(40, 56%, 58%, 0.4);
   width: 100%;
 }
 
@@ -187,11 +163,6 @@
 
 .section-spacing-sm {
   @apply py-12 lg:py-16 xl:py-20;
-}
-
-/* Fine-line icon styling */
-.icon-fine {
-  stroke-width: 1.25;
 }
 
 /* PWA Install Prompt animation */
@@ -212,11 +183,11 @@
 
 /* Accessibility - Focus indicators */
 *:focus-visible {
-  outline: 2px solid hsl(var(--primary));
+  outline: 2px solid hsl(var(--accent));
   outline-offset: 2px;
 }
 
-/* Input Focus Safeguards - Ensure inputs are always clickable */
+/* Input Focus Safeguards */
 input, 
 textarea, 
 select,
@@ -235,14 +206,12 @@ select:focus {
   z-index: 2;
 }
 
-/* Ensure form containers have proper stacking context */
 form {
   position: relative;
   z-index: 1;
   pointer-events: auto;
 }
 
-/* Card form containers */
 .card form,
 [data-slot="card"] form {
   position: relative;
@@ -250,7 +219,6 @@ form {
   pointer-events: auto;
 }
 
-/* Toast container should not block interactions */
 [data-sonner-toaster] {
   pointer-events: none;
 }
@@ -259,7 +227,6 @@ form {
   pointer-events: auto;
 }
 
-/* Ensure labels don't block input clicks */
 label {
   pointer-events: auto;
   cursor: pointer;
@@ -267,7 +234,12 @@ label {
 
 /* Skip to main content link */
 .skip-to-main {
-  @apply absolute -top-full left-4 z-[100] bg-primary text-primary-foreground px-4 py-2 rounded-md font-lato text-sm;
+  @apply absolute -top-full left-4 z-[100] px-4 py-2 text-sm;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-radius: 3px;
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
   transition: top 0.3s ease;
 }
 
@@ -275,24 +247,25 @@ label {
   top: 1rem;
 }
 
-/* Mobile Navigation Menu - Full Screen Overlay */
+/* Mobile Navigation Menu */
 .mobile-menu-overlay {
   position: fixed !important;
-  top: 112px !important; /* 32px announcement bar + 80px navbar */
+  top: 80px !important;
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
-  background-color: #ffffff !important;
+  background-color: hsl(37, 33%, 95%) !important;
   z-index: 50 !important;
   overflow-y: auto !important;
-  padding-top: 3rem !important;
+  padding-top: 2rem !important;
 }
 
 .mobile-menu-link {
   display: block !important;
-  font-family: 'Cormorant Garamond', serif !important;
-  font-size: 1.5rem !important;
-  color: #2C3E50 !important;
+  font-family: 'Jost', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 1.25rem !important;
+  color: hsl(217, 61%, 15%) !important;
   padding: 0.75rem 0 !important;
   text-align: left !important;
   background: transparent !important;
@@ -302,36 +275,27 @@ label {
 }
 
 .mobile-menu-link:hover {
-  opacity: 0.7 !important;
+  color: hsl(40, 56%, 58%) !important;
 }
 
 .mobile-menu-close {
-  color: #2C3E50 !important;
+  color: hsl(217, 61%, 15%) !important;
   background: transparent !important;
 }
 
-.mobile-menu-close:hover {
-  background-color: rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Mobile menu button text colors */
 .mobile-menu-overlay button {
-  color: #2C3E50 !important;
-}
-
-.mobile-menu-overlay .bg-primary {
-  color: #ffffff !important;
+  color: hsl(217, 61%, 15%) !important;
 }
 
 .mobile-menu-overlay p {
-  color: #64748b !important;
+  color: hsl(220, 10%, 45%) !important;
 }
 
 .mobile-menu-overlay svg {
   color: inherit !important;
 }
 
-/* Mobile-optimized scrollbar hiding */
+/* Mobile scrollbar hiding */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -341,21 +305,21 @@ label {
   display: none;
 }
 
-/* Touch-optimized button feedback */
+/* Touch feedback */
 @layer utilities {
   .touch-feedback {
     @apply active:scale-95 transition-transform duration-100;
   }
 }
 
-/* Safe area handling for mobile devices */
+/* Safe area */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
-/* Reduced motion preferences */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -367,7 +331,7 @@ label {
   }
 }
 
-/* Mobile card entrance animation */
+/* Card entrance animation */
 @keyframes card-entrance {
   from {
     opacity: 0;
@@ -383,17 +347,17 @@ label {
   animation: card-entrance 0.3s ease-out forwards;
 }
 
-/* Stagger animation delays for lists */
 .stagger-1 { animation-delay: 50ms; }
 .stagger-2 { animation-delay: 100ms; }
 .stagger-3 { animation-delay: 150ms; }
 .stagger-4 { animation-delay: 200ms; }
 
-/* Enhanced focus styles for accessibility */
+/* Enhanced focus styles */
 @layer base {
   button:focus-visible,
   a:focus-visible,
   [role="button"]:focus-visible {
-    @apply outline-2 outline-offset-2 outline-primary;
+    @apply outline-2 outline-offset-2;
+    outline-color: hsl(var(--accent));
   }
 }
