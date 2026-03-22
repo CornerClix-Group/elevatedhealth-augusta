@@ -74,7 +74,7 @@ const treatmentOptions = [
     name: "GHK-Cu Peptide Therapy",
     subtitle: "Regenerative Copper Peptide",
     description: "A powerful regenerative peptide that stimulates hair follicle stem cells, increases follicle size, and extends the growth phase of the hair cycle. Can be used alone or combined with other protocols.",
-    price: "$99",
+    price: "$149",
     priceNote: "one-time",
     benefits: [
       "Stimulates hair follicle stem cells",

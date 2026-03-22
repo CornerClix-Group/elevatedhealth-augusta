@@ -324,7 +324,7 @@ const Hormones = () => {
                         ) : (
                           <CreditCard className="mr-2 h-4 w-4" />
                         )}
-                        {isConsultationLoading ? "Processing..." : "Book - $99"}
+                        {isConsultationLoading ? "Processing..." : "Book - $149"}
                       </Button>
                       <p className="text-[10px] text-muted-foreground mt-2">
                         Not ready? Call {SITE_CONFIG.phone}

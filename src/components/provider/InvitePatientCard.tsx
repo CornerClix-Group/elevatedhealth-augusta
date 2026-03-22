@@ -94,7 +94,7 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
                 <p style="font-size: 14px; color: #7F8C8D; margin-top: 4px;">Consultation Fee • 30 Minutes</p>
               </div>
               
-              <p style="color: #4a5568; font-size: 14px;">This $99 becomes a credit toward your Hormone Mapping Kit if you decide to proceed with treatment.</p>
+              <p style="color: #4a5568; font-size: 14px;">This $149 becomes a credit toward your Hormone Mapping Kit if you decide to proceed with treatment.</p>
               
               <div style="text-align: center; margin: 32px 0;">
                 <a href="#" style="display: inline-block; background: linear-gradient(135deg, #2C3E50 0%, #1a252f 100%); color: white; padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 600;">Complete Payment →</a>
@@ -296,7 +296,7 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
               <Label htmlFor="needs_booking" className="text-sm font-medium cursor-pointer">
                 Needs to Book
               </Label>
-              <p className="text-xs text-muted-foreground">Patient pays $99 → then schedules consultation</p>
+              <p className="text-xs text-muted-foreground">Patient pays $149 → then schedules consultation</p>
             </div>
           </div>
           <div className="flex items-start space-x-2">
@@ -305,7 +305,7 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
               <Label htmlFor="already_booked" className="text-sm font-medium cursor-pointer">
                 Already Booked
               </Label>
-              <p className="text-xs text-muted-foreground">Patient already scheduled, just needs to pay $99</p>
+              <p className="text-xs text-muted-foreground">Patient already scheduled, just needs to pay $149</p>
             </div>
           </div>
         </RadioGroup>

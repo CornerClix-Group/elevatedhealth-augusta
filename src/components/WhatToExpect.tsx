@@ -20,7 +20,7 @@ const WhatToExpect = () => {
       icon: ClipboardCheck,
       title: "2. $149 Medical Consultation",
       description: "Your first conversation with a provider. Discuss your goals, review your health history, and get a personalized plan.",
-      duration: "$99 • Credited toward treatment",
+      duration: "$149 • Credited toward treatment",
       color: "text-primary"
     },
     {
@@ -185,7 +185,7 @@ const WhatToExpect = () => {
             Ready to Begin Your Journey?
           </h3>
           <p className="font-inter text-lg text-muted-foreground mb-8">
-            Your first conversation with a provider is just $99—and it's credited toward your treatment.
+            Your first conversation with a provider is just $149—and it's credited toward your treatment.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

@@ -31,7 +31,7 @@ const BookingWidget = () => {
 
               <p className="text-sm text-primary font-medium">
                 <CreditCard className="inline h-4 w-4 mr-1" />
-                $99 applies as a credit toward your first treatment
+                $149 applies as a credit toward your first treatment
               </p>
             </div>
             

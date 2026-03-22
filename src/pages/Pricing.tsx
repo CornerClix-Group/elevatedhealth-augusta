@@ -1061,7 +1061,7 @@ const Pricing = () => {
                     <Badge className="mb-2 bg-green-500/10 text-green-600 border-green-500/30" variant="outline">New</Badge>
                     <h4 className="font-cormorant text-lg text-foreground">GHK-Cu</h4>
                     <p className="text-xs text-muted-foreground mb-2">Regeneration & Repair</p>
-                    <span className="text-xl font-cormorant text-foreground">From $99</span>
+                    <span className="text-xl font-cormorant text-foreground">From $149</span>
                   </CardContent>
                 </Card>
 
