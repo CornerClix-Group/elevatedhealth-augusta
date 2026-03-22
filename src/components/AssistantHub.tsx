@@ -27,7 +27,7 @@ type AssistantMode = "closed" | "menu" | "text" | "voice";
 const QUICK_PROMPTS = [
   { label: "Hormone Therapy", value: "I'm interested in hormone replacement therapy. What symptoms can it help with?" },
   { label: "Weight Loss", value: "Tell me about your medical weight loss program." },
-  { label: "Ketamine Therapy", value: "I'd like to learn about ketamine therapy for mental health." },
+  { label: "Peptide Therapy", value: "Tell me about your peptide protocols and what they can help with." },
   { label: "How to Start", value: "How do I get started as a new patient?" },
 ];
 
@@ -153,7 +153,7 @@ const AssistantHub = () => {
     } else if (conversationText.includes("weight") || conversationText.includes("semaglutide") || conversationText.includes("tirzepatide")) {
       detectedInterest = "weight_loss";
     } else if (conversationText.includes("ketamine") || conversationText.includes("depression") || conversationText.includes("anxiety") || conversationText.includes("mental")) {
-      detectedInterest = "ketamine";
+      detectedInterest = "general";
     }
 
     try {

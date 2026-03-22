@@ -105,9 +105,9 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
   const consultationOptions = [
     {
       icon: NeuralIcon,
-      title: "Ketamine Therapy",
+      title: "Peptide Protocols",
       description: "IV infusions & SPRAVATO® for depression, PTSD, and anxiety",
-      serviceType: "ketamine"
+      serviceType: "peptide"
     },
     {
       icon: DNAIcon,
