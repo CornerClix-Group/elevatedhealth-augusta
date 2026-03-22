@@ -101,12 +101,12 @@ const PricingComparison = () => {
   return (
     <>
       <Helmet>
-        <title>Membership vs À La Carte Pricing | Elevated Health Augusta</title>
+        <title>Membership vs À La Carte Pricing | Réveil</title>
         <meta
           name="description"
-          content="Compare membership vs pay-per-visit pricing for hormone therapy. See how much you can save with a Vitality Membership at Elevated Health Augusta."
+          content="Compare membership vs pay-per-visit pricing for hormone therapy. See how much you can save with a Vitality Membership at Réveil."
         />
-        <link rel="canonical" href="https://elevatedhealthaugusta.com/pricing-comparison" />
+        <link rel="canonical" href="https://reveil.health/pricing-comparison" />
       </Helmet>
 
       <Navbar />

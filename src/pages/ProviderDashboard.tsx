@@ -260,8 +260,8 @@ const ProviderDashboard = () => {
   const getProviderInfo = (email: string) => {
     const providers: Record<string, { name: string; credentials: string; role: string }> = {
       // Providers
-      "admin@elevatedhealthaugusta.com": { name: "Clinical Team", credentials: "NP-C", role: "provider" },
-      "lauren@elevatedhealthaugusta.com": { name: "Clinical Team", credentials: "NP-C", role: "provider" },
+      "admin@reveil.health": { name: "Clinical Team", credentials: "NP-C", role: "provider" },
+      "lauren@reveil.health": { name: "Clinical Team", credentials: "NP-C", role: "provider" },
       "troy.w.akers@gmail.com": { name: "Troy Akers", credentials: "DO", role: "provider" },
       "mmbursey@gmail.com": { name: "Michael Bursey", credentials: "DO", role: "provider" },
       "drdwmd@pmrehab.net": { name: "Dennis Williams", credentials: "MD", role: "provider" },

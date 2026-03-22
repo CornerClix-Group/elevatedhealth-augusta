@@ -81,7 +81,7 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
         body: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #2C3E50 0%, #1a252f 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
-              <h1 style="color: white; font-weight: 300; margin: 0;">Elevated Health</h1>
+              <h1 style="color: white; font-weight: 300; margin: 0;">Réveil</h1>
               <p style="color: rgba(255,255,255,0.7); font-size: 12px; letter-spacing: 2px; margin-top: 8px;">RESTORE · RENEW · REBALANCE</p>
             </div>
             <div style="padding: 30px; background: white; border: 1px solid #e2e8f0; border-top: 0; border-radius: 0 0 12px 12px;">
@@ -107,16 +107,16 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
     
     // Default: needs_booking
     return {
-      subject: `${firstName}, Your Consultation Invitation from Elevated Health`,
+      subject: `${firstName}, Your Consultation Invitation from Réveil`,
       body: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #2C3E50 0%, #1a252f 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
-            <h1 style="color: white; font-weight: 300; margin: 0;">Elevated Health</h1>
+            <h1 style="color: white; font-weight: 300; margin: 0;">Réveil</h1>
             <p style="color: rgba(255,255,255,0.7); font-size: 12px; letter-spacing: 2px; margin-top: 8px;">RESTORE · RENEW · REBALANCE</p>
           </div>
           <div style="padding: 30px; background: white; border: 1px solid #e2e8f0; border-top: 0; border-radius: 0 0 12px 12px;">
             <h2 style="color: #2C3E50;">Welcome, ${firstName}!</h2>
-            <p style="color: #4a5568;">You've been personally invited to begin your hormone optimization journey with Elevated Health Augusta.</p>
+            <p style="color: #4a5568;">You've been personally invited to begin your hormone optimization journey with Réveil.</p>
             
             <div style="background: #f7f9fb; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">
               <p style="font-size: 36px; font-weight: 700; color: #2C3E50; margin: 0;">$99</p>
@@ -154,10 +154,10 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
       const dateDisplay = scheduledDate 
         ? new Date(scheduledDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
         : "your appointment";
-      return `Hi ${firstName}! 🏥 Please complete your $99 payment to confirm your ${serviceLabel} consultation on ${dateDisplay}. Pay here: [payment link] - Elevated Health Augusta`;
+      return `Hi ${firstName}! 🏥 Please complete your $99 payment to confirm your ${serviceLabel} consultation on ${dateDisplay}. Pay here: [payment link] - Réveil`;
     }
     
-    return `Hi ${firstName}! 🌟 The clinical team at Elevated Health Augusta has invited you to book a $99 Discovery Consultation. Book here: [payment link] Questions? Call (706) 821-7354`;
+    return `Hi ${firstName}! 🌟 The clinical team at Réveil has invited you to book a $99 Discovery Consultation. Book here: [payment link] Questions? Call (706) 821-7354`;
   };
 
   const handlePreview = (mode: "email" | "sms") => {

@@ -251,11 +251,11 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
             </button>
             <span className="hidden sm:inline text-muted-foreground">•</span>
             <a
-              href="tel:+17067603470"
+              href="tel:+17064267383"
               className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-accent transition-colors"
             >
               <Phone className="h-4 w-4" />
-              <span>Or Call: (706) 760-3470</span>
+              <span>Or Call: (706) 426-7383</span>
             </a>
           </div>
           <p className="text-[10px] text-muted-foreground text-center mt-3 italic">

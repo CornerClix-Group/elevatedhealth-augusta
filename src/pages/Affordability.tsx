@@ -14,13 +14,13 @@ const Affordability = () => {
   return (
     <>
       <Helmet>
-        <title>Affordable Payment Options | Klarna, Affirm, Insurance | Elevated Health Augusta</title>
+        <title>Affordable Payment Options | Klarna, Affirm, Insurance | Réveil</title>
         <meta
           name="description"
           content="Flexible payment plans with Klarna and Affirm. We accept Blue Cross Blue Shield, TRICARE, and VA insurance. HSA/FSA eligible. $99 consultation credits available."
         />
         <meta name="keywords" content="payment plans Augusta GA, Klarna healthcare, Affirm medical financing, BCBS mental health coverage, TRICARE ketamine therapy, HSA FSA eligible" />
-        <link rel="canonical" href="https://elevatedhealthaugusta.com/affordability" />
+        <link rel="canonical" href="https://reveil.health/affordability" />
       </Helmet>
 
       <Navbar />

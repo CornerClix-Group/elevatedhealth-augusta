@@ -47,7 +47,7 @@ const AssistantHub = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Welcome to Elevated Health Augusta! I can help with questions about our process, pricing, and insurance. What would you like to know?",
+      content: "Welcome to Réveil! I can help with questions about our process, pricing, and insurance. What would you like to know?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -400,7 +400,7 @@ const AssistantHub = () => {
               <span>$99 Consultation</span>
             </button>
             <a
-              href="tel:+17067603470"
+              href="tel:+17064267383"
               className={`flex items-center gap-3 shadow-lg bg-card border border-border text-foreground hover:bg-muted font-medium ${isMobile ? 'w-full justify-start h-12 px-4 rounded-xl' : 'rounded-full px-4 py-2 text-sm'}`}
             >
               <Phone className="h-5 w-5" />

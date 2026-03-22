@@ -50,7 +50,7 @@ const MESSAGE_TYPES = [
   { 
     value: "welcome", 
     label: "Welcome", 
-    description: "Welcome to Elevated Health + portal access",
+    description: "Welcome to Réveil + portal access",
     emailFunction: "send-welcome-email",
     smsFunction: "send-welcome-sms",
   },
@@ -188,7 +188,7 @@ const QuickEmailModal = ({ open, onOpenChange, onSuccess }: QuickEmailModalProps
 
   const getDefaultSubject = (type: string): string => {
     const subjects: Record<string, string> = {
-      welcome: "Welcome to Elevated Health Augusta, {{patient_name}}!",
+      welcome: "Welcome to Réveil, {{patient_name}}!",
       consultation_invite: "Your $99 Discovery Consultation Awaits",
       kit_payment: "Complete Your Lab Kit Payment",
       labs_reviewed: "Your Lab Results Are Ready",
@@ -198,15 +198,15 @@ const QuickEmailModal = ({ open, onOpenChange, onSuccess }: QuickEmailModalProps
       iv_ketamine: "IV Ketamine Therapy Payment",
       intake_reminder: "Complete Your Health Intake",
     };
-    return subjects[type] || "Message from Elevated Health Augusta";
+    return subjects[type] || "Message from Réveil";
   };
 
   const getDefaultBody = (type: string): string => {
-    return `<p>Dear {{patient_name}},</p><p>Thank you for choosing Elevated Health Augusta.</p><p>Questions? Call (706) 922-7454</p>`;
+    return `<p>Dear {{patient_name}},</p><p>Thank you for choosing Réveil.</p><p>Questions? Call (706) 426-7383</p>`;
   };
 
   const getDefaultSms = (type: string): string => {
-    return `Hi {{first_name}}, thank you for choosing Elevated Health Augusta! Questions? Call (706) 922-7454`;
+    return `Hi {{first_name}}, thank you for choosing Réveil! Questions? Call (706) 426-7383`;
   };
 
   const mergePlaceholders = (text: string) => {
@@ -216,7 +216,7 @@ const QuickEmailModal = ({ open, onOpenChange, onSuccess }: QuickEmailModalProps
       .replace(/\{\{first_name\}\}/g, selectedPatient.full_name.split(" ")[0])
       .replace(/\{\{email\}\}/g, selectedPatient.email || "")
       .replace(/\{\{phone\}\}/g, selectedPatient.phone || "")
-      .replace(/\{\{clinic_phone\}\}/g, "(706) 922-7454")
+      .replace(/\{\{clinic_phone\}\}/g, "(706) 426-7383")
       .replace(/\{\{payment_link\}\}/g, "[Payment Link]")
       .replace(/\{\{portal_link\}\}/g, "[Portal Link]");
   };

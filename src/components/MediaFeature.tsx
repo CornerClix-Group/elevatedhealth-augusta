@@ -21,7 +21,7 @@ const MediaFeature = () => {
           <div className="relative aspect-[4/3] lg:aspect-auto">
             <img
               src={mediaImage}
-              alt="Elevated Health Augusta featured on WJBF News"
+              alt="Réveil featured on WJBF News"
               className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
@@ -35,7 +35,7 @@ const MediaFeature = () => {
               Area's First Ketamine Clinic Opens in Evans
             </h3>
             <p className="text-muted-foreground font-lato font-light leading-relaxed mb-8">
-              Elevated Health Augusta was featured on WJBF's "Jennie" show 
+              Réveil was featured on WJBF's "Jennie" show 
               to discuss how the clinic is providing cutting-edge ketamine infusions 
               for patients with treatment-resistant mental health conditions.
             </p>

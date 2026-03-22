@@ -52,7 +52,7 @@ const WhatToExpect = () => {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <h2 className="font-playfair text-4xl md:text-5xl font-bold text-foreground mb-6">
-            What to Expect at Elevated Health
+            What to Expect at Réveil
           </h2>
           <p className="font-inter text-lg text-muted-foreground">
             From your first consultation to ongoing care, we guide you every step of the way 

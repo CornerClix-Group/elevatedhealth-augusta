@@ -102,8 +102,8 @@ const HairRestoration = () => {
   const schema = {
     "@context": "https://schema.org",
     "@type": "MedicalBusiness",
-    "name": "Elevated Health Augusta - Hair Restoration",
-    "image": "https://elevatedhealthaugusta.com/og-image.jpg",
+    "name": "Réveil - Hair Restoration",
+    "image": "https://reveil.health/og-image.jpg",
     "description": "Medical hair restoration in Augusta, GA. Prescription Minoxidil, Finasteride, Dutasteride, and GHK-Cu peptide therapy for hair loss treatment.",
     "address": {
       "@type": "PostalAddress",
@@ -126,18 +126,18 @@ const HairRestoration = () => {
   return (
     <>
       <Helmet>
-        <title>Hair Restoration Augusta | Minoxidil, Finasteride, Dutasteride, GHK-Cu - Elevated Health</title>
+        <title>Hair Restoration Augusta | Minoxidil, Finasteride, Dutasteride, GHK-Cu - Réveil</title>
         <meta name="description" content="Hair restoration in Augusta, GA. $99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Minoxidil, Finasteride, Dutasteride, GHK-Cu protocols." />
         <meta name="keywords" content="hair restoration Augusta, hair loss treatment Augusta GA, Minoxidil Augusta, Finasteride Augusta, Dutasteride hair loss, GHK-Cu hair growth, male pattern baldness treatment Georgia" />
-        <meta property="og:title" content="Hair Restoration Augusta | $99 Consultation Credited | Elevated Health" />
+        <meta property="og:title" content="Hair Restoration Augusta | $99 Consultation Credited | Réveil" />
         <meta property="og:description" content="Hair restoration in Augusta, GA. $99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://elevatedhealthaugusta.com/hair-restoration" />
-        <meta property="og:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
+        <meta property="og:url" content="https://reveil.health/hair-restoration" />
+        <meta property="og:image" content="https://reveil.health/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Hair Restoration Augusta | $99 Consultation" />
         <meta name="twitter:description" content="$99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. FDA-approved protocols." />
-        <meta name="twitter:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
+        <meta name="twitter:image" content="https://reveil.health/og-image.jpg" />
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>
 
@@ -269,7 +269,7 @@ const HairRestoration = () => {
                   variant="compact" 
                   title="Wondering which protocol is right for you?"
                   description="Hair loss treatment depends on your stage and pattern. We can help you understand options before your consultation."
-                  ctaText="Discuss Hair Restoration: (706) 760-3470"
+                  ctaText="Discuss Hair Restoration: (706) 426-7383"
                 />
               </div>
             </div>

@@ -11,7 +11,7 @@ const StaffQuickCard = () => {
   return (
     <>
       <Helmet>
-        <title>Quick Reference Card | Elevated Health Augusta</title>
+        <title>Quick Reference Card | Réveil</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -40,7 +40,7 @@ const StaffQuickCard = () => {
           <div className="border-2 border-foreground rounded-lg p-4 print:border-black">
             {/* Header */}
             <div className="text-center border-b-2 border-foreground pb-3 mb-4 print:border-black">
-              <h1 className="text-xl font-bold tracking-tight">ELEVATED HEALTH QUICK REFERENCE</h1>
+              <h1 className="text-xl font-bold tracking-tight">RÉVEIL QUICK REFERENCE</h1>
               <p className="text-sm font-medium">Front Desk Cheat Sheet • January 2025</p>
             </div>
 
@@ -138,7 +138,7 @@ const StaffQuickCard = () => {
 
             {/* Footer */}
             <div className="text-center border-t-2 border-foreground pt-2 print:border-black">
-              <p className="font-bold text-sm">(706) 760-3470</p>
+              <p className="font-bold text-sm">(706) 426-7383</p>
               <p className="text-xs">7013 Evans Town Center Blvd, Suite 203 • Evans, GA 30809</p>
             </div>
           </div>

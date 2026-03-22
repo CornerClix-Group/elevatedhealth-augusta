@@ -56,7 +56,7 @@ const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Welcome to Elevated Health Augusta! I can help with questions about our process, pricing, and insurance. What would you like to know?",
+      content: "Welcome to Réveil! I can help with questions about our process, pricing, and insurance. What would you like to know?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -211,9 +211,9 @@ const ChatBot = () => {
             </div>
             <div className="flex items-center gap-1">
               <a
-                href="tel:+17067603470"
+                href="tel:+17064267383"
                 className="h-8 w-8 flex items-center justify-center rounded-md text-primary-foreground hover:bg-primary-foreground/20 transition-colors"
-                title="Call (706) 760-3470"
+                title="Call (706) 426-7383"
               >
                 <Phone className="h-4 w-4" />
               </a>

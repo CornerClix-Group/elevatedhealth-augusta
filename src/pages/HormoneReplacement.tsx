@@ -26,7 +26,7 @@ const HormoneReplacement = () => {
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>Hormone Replacement Therapy Augusta | HRT Clinic - Elevated Health</title>
+        <title>Hormone Replacement Therapy Augusta | HRT Clinic - Réveil</title>
         <meta name="description" content="Hormone replacement therapy in Augusta, GA. $99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Personalized HRT for men and women." />
       </Helmet>
       <Navbar />
@@ -82,7 +82,7 @@ const HormoneReplacement = () => {
                 variant="compact" 
                 title="Curious about hormone replacement?"
                 description="Learn how we test, prescribe, and monitor your treatment. No pressure—just honest answers about the process."
-                ctaText="Ask Our Team: (706) 760-3470"
+                ctaText="Ask Our Team: (706) 426-7383"
               />
             </div>
           </div>
