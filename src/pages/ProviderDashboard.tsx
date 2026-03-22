@@ -1651,6 +1651,19 @@ const ProviderDashboard = () => {
             )}
           </TabsContent>
 
+          {/* Labs Queue Tab */}
+          <TabsContent value="labsqueue">
+            <LabResultsQueue
+              onSelectPatient={(patientId) => {
+                const found = pendingPatients.find(p => p.patient.id === patientId);
+                if (found) {
+                  selectPatient(found);
+                  setIsPanelOpen(true);
+                }
+              }}
+            />
+          </TabsContent>
+
           {/* Patient Monitoring Tab */}
           <TabsContent value="monitoring">
             <Card className="bg-card border-border/50">
