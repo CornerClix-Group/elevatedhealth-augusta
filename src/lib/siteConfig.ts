@@ -7,8 +7,8 @@ export const SITE_CONFIG = {
     cityStateZip: "Evans, GA 30809",
     full: "7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809"
   },
-  phone: "(706) 426-7383",
-  phoneRaw: "7064267383",
+  phone: "(706) 760-3470",
+  phoneRaw: "7067603470",
   bookingUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0Bvq4ZKUeVHmDYS8aU45o_2Z0oi4uHvILuZr2wqv6tKLPC71WABKyOSrbCwIjzKPqReipYFqST?gv=true",
   services: {
     primary: "Hormone Optimization, IV Therapy, Peptide Medicine, Medical Weight Loss"
