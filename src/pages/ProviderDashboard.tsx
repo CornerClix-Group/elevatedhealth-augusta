@@ -1100,6 +1100,13 @@ const ProviderDashboard = () => {
                   )}
                 </TabsTrigger>
                 <TabsTrigger 
+                  value="labsqueue" 
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm whitespace-nowrap text-sm"
+                >
+                  <TestTube className="w-4 h-4 flex-shrink-0" />
+                  <span>Labs Queue</span>
+                </TabsTrigger>
+                <TabsTrigger 
                   value="activations" 
                   className="flex items-center gap-2 px-4 py-2.5 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm whitespace-nowrap text-sm"
                 >
