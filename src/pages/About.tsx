@@ -10,7 +10,7 @@ const About = () => {
     <>
       <Helmet>
         <title>About | Réveil</title>
-        <meta name="description" content="Réveil was founded by a board-certified emergency medicine physician. Every protocol is physician-designed, physician-signed, physician-supervised. Evans, GA." />
+        <meta name="description" content="Réveil was built by a team of physicians and nurses with experience across emergency medicine and physical medicine & rehabilitation. Evans, GA." />
         <link rel="canonical" href="https://reveil.health/about" />
       </Helmet>
       <div className="min-h-screen">
@@ -20,21 +20,23 @@ const About = () => {
           <div className="container mx-auto px-6 lg:px-8 max-w-3xl">
             <p className="section-label mb-6">About Réveil</p>
             <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl text-foreground mb-10 leading-tight">
-              Built by a physician who spent years watching patients suffer through what was preventable.
+              Built by a team that spent years watching patients suffer through what was preventable.
             </h1>
             <div className="space-y-6 font-jost font-light text-lg text-muted-foreground leading-relaxed">
               <p>
-                Réveil was founded by a board-certified emergency medicine physician who spent years 
-                watching patients cycle through the ER for conditions that were entirely preventable — 
-                hormonal decline, severe pregnancy nausea, metabolic breakdown with nowhere to go.
+                Réveil was founded by a team of physicians and nurses with deep experience across 
+                emergency medicine and physical medicine &amp; rehabilitation. After years of watching 
+                patients cycle through the ER for conditions that were entirely preventable — 
+                hormonal decline, severe pregnancy nausea, metabolic breakdown — they built 
+                something better.
               </p>
               <p>
-                Réveil is what was built so you never have to end up there.
+                Réveil exists so you never have to end up there.
               </p>
               <p>
                 Every protocol at Réveil is physician-designed. Every prescription is physician-signed. 
-                Every patient is physician-supervised. Your RN is exceptional — and she works directly 
-                under our physician's oversight on your individualized written order.
+                Every patient is physician-supervised. Our clinical team works together — physicians 
+                and nurses — under direct medical oversight on your individualized care plan.
               </p>
               <p>
                 This is the difference between a spa and a clinic. Between an app and a physician. 
@@ -50,11 +52,11 @@ const About = () => {
         <section className="py-12 bg-background">
           <div className="container mx-auto px-6">
             <div className="flex flex-wrap items-center justify-center gap-6 text-muted-foreground text-xs font-jost font-medium tracking-[2.5px] uppercase text-center">
-              <span>Board-Certified Emergency Medicine</span>
+              <span>Board-Certified Physicians</span>
               <span className="text-accent/40">·</span>
               <span>Evans Town Center</span>
               <span className="text-accent/40">·</span>
-              <span>Physician-Owned</span>
+              <span>Physician-Led Team</span>
               <span className="text-accent/40">·</span>
               <span>Physician-Supervised</span>
             </div>
