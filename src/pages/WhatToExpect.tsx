@@ -45,7 +45,7 @@ const WhatToExpectPage = () => {
     },
     {
       icon: ClipboardCheck,
-      title: "2. $99 Medical Consultation",
+      title: "2. $149 Medical Consultation",
       description: "Your first conversation with a provider. Discuss your goals, review your health history, and get a personalized plan.",
       duration: "$99 • Credited toward treatment",
       color: "text-primary"
@@ -81,7 +81,7 @@ const WhatToExpectPage = () => {
         <title>What to Expect from Ketamine Therapy Augusta | Réveil</title>
         <meta 
           name="description" 
-          content="Learn about ketamine infusion cost Augusta, treatment protocol, and what to expect during your visit. 6-8 infusions at $400 each. $99 consultation available." 
+          content="Learn about ketamine infusion cost Augusta, treatment protocol, and what to expect during your visit. 6-8 infusions at $400 each. $149 consultation available." 
         />
         <meta name="keywords" content="ketamine infusion cost Augusta, ketamine therapy protocol, ketamine treatment Augusta GA, IV ketamine price, SPRAVATO cost" />
         <link rel="canonical" href="https://www.reveil.health/what-to-expect" />
@@ -175,7 +175,7 @@ const WhatToExpectPage = () => {
                 onClick={handleBookConsult}
               >
                 <ClipboardCheck className="h-5 w-5" />
-                Book $99 Medical Consultation
+                Book $149 Medical Consultation
               </Button>
             </div>
           </div>
@@ -432,7 +432,7 @@ const WhatToExpectPage = () => {
                   onClick={handleBookConsult}
                 >
                   <ClipboardCheck className="h-5 w-5" />
-                  Book $99 Medical Consultation
+                  Book $149 Medical Consultation
                 </Button>
                 
                 <Button

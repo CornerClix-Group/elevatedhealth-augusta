@@ -99,7 +99,7 @@ Thank you for considering my request.`;
         <title>Veteran Mental Health Augusta | TRICARE & VA Ketamine Therapy | Réveil</title>
         <meta 
           name="description" 
-          content="Ketamine therapy for Veterans in Augusta, GA. $99 consultation with free benefits verification. Chat with our Virtual Care Team 24/7. TRICARE and VA Community Care accepted." 
+          content="Ketamine therapy for Veterans in Augusta, GA. $149 consultation with free benefits verification. Chat with our Virtual Care Team 24/7. TRICARE and VA Community Care accepted." 
         />
         <meta 
           name="keywords" 
@@ -108,8 +108,8 @@ Thank you for considering my request.`;
         <link rel="canonical" href="https://reveil.health/military-veteran" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Veteran Mental Health | $99 Consultation + Free Benefits Verification | Réveil" />
-        <meta property="og:description" content="Ketamine therapy for Veterans in Augusta, GA. $99 consultation with free benefits verification. Chat with our Virtual Care Team 24/7." />
+        <meta property="og:title" content="Veteran Mental Health | $149 Consultation + Free Benefits Verification | Réveil" />
+        <meta property="og:description" content="Ketamine therapy for Veterans in Augusta, GA. $149 consultation with free benefits verification. Chat with our Virtual Care Team 24/7." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://reveil.health/military-veteran" />
         <meta property="og:image" content="https://reveil.health/og-image.jpg" />
@@ -117,7 +117,7 @@ Thank you for considering my request.`;
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Veteran Ketamine Therapy | TRICARE & VA Accepted" />
-        <meta name="twitter:description" content="$99 consultation with free benefits verification. Chat with our Virtual Care Team 24/7." />
+        <meta name="twitter:description" content="$149 consultation with free benefits verification. Chat with our Virtual Care Team 24/7." />
         <meta name="twitter:image" content="https://reveil.health/og-image.jpg" />
         
         {/* Schema */}

@@ -126,7 +126,7 @@ const Insurance = () => {
             <div className="space-y-4 text-muted-foreground">
               <p>
                 <strong className="text-foreground">Coverage varies by plan and diagnosis.</strong> We'll confirm your 
-                eligibility during your $99 consultation – the fee is credited toward treatment. Our team will help you understand 
+                eligibility during your $149 consultation – the fee is credited toward treatment. Our team will help you understand 
                 your benefits and any out-of-pocket costs before beginning treatment.
               </p>
               <p>
@@ -144,7 +144,7 @@ const Insurance = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" onClick={scrollToContact} className="gap-2 bg-accent hover:bg-accent-light">
-                Schedule $99 Consultation
+                Schedule $149 Consultation
               </Button>
               <a href="tel:7064267383">
                 <Button variant="outline" size="lg" className="gap-2 border-2">

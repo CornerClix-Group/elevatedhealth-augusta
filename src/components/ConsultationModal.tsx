@@ -205,7 +205,7 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
 
                 {/* Price & CTA */}
                 <div className="text-right shrink-0">
-                  <span className="text-xl font-cormorant font-semibold text-foreground">$99</span>
+                  <span className="text-xl font-cormorant font-semibold text-foreground">$149</span>
                   <p className="text-[10px] text-primary font-medium">
                     Applied as credit if you proceed
                   </p>
@@ -265,7 +265,7 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
 
         {/* Consultation fee terms */}
         <p className="text-[10px] text-muted-foreground text-center mt-4 max-w-md mx-auto">
-          The $99 consultation fee is non-refundable. If you move forward with treatment, 
+          The $149 consultation fee is non-refundable. If you move forward with treatment, 
           this fee is applied as a credit toward your first service.
         </p>
 

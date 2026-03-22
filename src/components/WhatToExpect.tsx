@@ -18,7 +18,7 @@ const WhatToExpect = () => {
     },
     {
       icon: ClipboardCheck,
-      title: "2. $99 Medical Consultation",
+      title: "2. $149 Medical Consultation",
       description: "Your first conversation with a provider. Discuss your goals, review your health history, and get a personalized plan.",
       duration: "$99 • Credited toward treatment",
       color: "text-primary"
@@ -199,7 +199,7 @@ const WhatToExpect = () => {
               }}
             >
               <ClipboardCheck className="h-5 w-5" />
-              Book $99 Medical Consultation
+              Book $149 Medical Consultation
             </Button>
             
             <Button

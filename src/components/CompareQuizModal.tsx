@@ -222,7 +222,7 @@ export const CompareQuizModal = ({ isOpen, onClose }: CompareQuizModalProps) => 
               size="lg"
             >
               <Calendar className="h-5 w-5" />
-              Book $99 Medical Consultation
+              Book $149 Medical Consultation
             </Button>
             
             <Button

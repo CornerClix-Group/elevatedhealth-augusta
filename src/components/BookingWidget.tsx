@@ -26,7 +26,7 @@ const BookingWidget = () => {
               </h2>
               
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Your $99 Medical Consultation is where it all begins. Meet with a provider, discuss your goals, and get a personalized plan.
+                Your $149 Medical Consultation is where it all begins. Meet with a provider, discuss your goals, and get a personalized plan.
               </p>
 
               <p className="text-sm text-primary font-medium">
@@ -44,7 +44,7 @@ const BookingWidget = () => {
                 }}
                 className="px-8 py-4 h-auto bg-primary text-primary-foreground rounded-full text-lg font-semibold hover:bg-primary-dark transition-colors shadow-lg hover:shadow-xl"
               >
-                Book Your $99 Consultation →
+                Book Your $149 Consultation →
               </Button>
             </div>
 

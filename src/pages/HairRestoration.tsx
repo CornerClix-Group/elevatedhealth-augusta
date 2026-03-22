@@ -127,16 +127,16 @@ const HairRestoration = () => {
     <>
       <Helmet>
         <title>Hair Restoration Augusta | Minoxidil, Finasteride, Dutasteride, GHK-Cu - Réveil</title>
-        <meta name="description" content="Hair restoration in Augusta, GA. $99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Minoxidil, Finasteride, Dutasteride, GHK-Cu protocols." />
+        <meta name="description" content="Hair restoration in Augusta, GA. $149 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Minoxidil, Finasteride, Dutasteride, GHK-Cu protocols." />
         <meta name="keywords" content="hair restoration Augusta, hair loss treatment Augusta GA, Minoxidil Augusta, Finasteride Augusta, Dutasteride hair loss, GHK-Cu hair growth, male pattern baldness treatment Georgia" />
-        <meta property="og:title" content="Hair Restoration Augusta | $99 Consultation Credited | Réveil" />
-        <meta property="og:description" content="Hair restoration in Augusta, GA. $99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7." />
+        <meta property="og:title" content="Hair Restoration Augusta | $149 Consultation Credited | Réveil" />
+        <meta property="og:description" content="Hair restoration in Augusta, GA. $149 consultation credited toward treatment. Chat with our Virtual Care Team 24/7." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://reveil.health/hair-restoration" />
         <meta property="og:image" content="https://reveil.health/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Hair Restoration Augusta | $99 Consultation" />
-        <meta name="twitter:description" content="$99 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. FDA-approved protocols." />
+        <meta name="twitter:title" content="Hair Restoration Augusta | $149 Consultation" />
+        <meta name="twitter:description" content="$149 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. FDA-approved protocols." />
         <meta name="twitter:image" content="https://reveil.health/og-image.jpg" />
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>
@@ -241,12 +241,12 @@ const HairRestoration = () => {
                           Hair Restoration Consultation
                         </h3>
                         <p className="text-sm text-muted-foreground font-lato">
-                          Meet with our provider to assess your hair loss pattern, discuss your goals, and design a personalized protocol. The $99 fee is credited toward your treatment.
+                          Meet with our provider to assess your hair loss pattern, discuss your goals, and design a personalized protocol. The $149 fee is credited toward your treatment.
                         </p>
                       </div>
                     </div>
                     <div className="text-center md:text-right shrink-0">
-                      <span className="text-3xl font-cormorant text-foreground">$99</span>
+                      <span className="text-3xl font-cormorant text-foreground">$149</span>
                       <p className="text-xs text-muted-foreground">credited toward treatment</p>
                       <Button
                         onClick={() => setIsConsultOpen(true)}
@@ -390,7 +390,7 @@ const HairRestoration = () => {
                         <td className="py-4 px-4 text-muted-foreground font-lato">Price</td>
                         <td className="py-4 px-4 text-center text-gold font-cormorant text-lg">$129/mo</td>
                         <td className="py-4 px-4 text-center text-gold font-cormorant text-lg">$149/mo</td>
-                        <td className="py-4 px-4 text-center text-gold font-cormorant text-lg">$99</td>
+                        <td className="py-4 px-4 text-center text-gold font-cormorant text-lg">$149</td>
                       </tr>
                     </tbody>
                   </table>
@@ -470,7 +470,7 @@ const HairRestoration = () => {
                   Ready to Restore Your Hair?
                 </h2>
                 <p className="text-lg font-cormorant text-muted-foreground mb-8">
-                  Book your consultation today. The $99 consultation fee is credited toward your treatment protocol.
+                  Book your consultation today. The $149 consultation fee is credited toward your treatment protocol.
                 </p>
                 <Button
                   onClick={() => setIsConsultOpen(true)}

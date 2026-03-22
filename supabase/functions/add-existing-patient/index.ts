@@ -335,7 +335,7 @@ serve(async (req) => {
               ${creditApplied ? `
               <div style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); padding: 15px 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #28a745;">
                 <p style="margin: 0; font-weight: 600; color: #155724;">
-                  ✓ Your $99 consultation credit has been applied to your account!
+                  ✓ Your $149 consultation credit has been applied to your account!
                 </p>
                 <p style="margin: 5px 0 0 0; font-size: 14px; color: #155724;">
                   This credit will be applied toward your treatment program.

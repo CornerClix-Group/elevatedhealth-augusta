@@ -56,8 +56,8 @@ const MESSAGE_TYPES = [
   },
   { 
     value: "consultation_invite", 
-    label: "$99 Consultation Invite", 
-    description: "Send $99 consultation payment link",
+    label: "$149 Consultation Invite", 
+    description: "Send $149 consultation payment link",
     emailFunction: "send-consultation-invite",
     smsFunction: "send-consultation-invite-sms",
   },
@@ -189,7 +189,7 @@ const QuickEmailModal = ({ open, onOpenChange, onSuccess }: QuickEmailModalProps
   const getDefaultSubject = (type: string): string => {
     const subjects: Record<string, string> = {
       welcome: "Welcome to Réveil, {{patient_name}}!",
-      consultation_invite: "Your $99 Discovery Consultation Awaits",
+      consultation_invite: "Your $149 Discovery Consultation Awaits",
       kit_payment: "Complete Your Lab Kit Payment",
       labs_reviewed: "Your Lab Results Are Ready",
       vitality_activation: "Your Vitality Membership Awaits",

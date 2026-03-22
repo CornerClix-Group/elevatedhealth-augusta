@@ -226,7 +226,7 @@ export const WhyTransdermalCream = ({ onBookConsultation }: WhyTransdermalCreamP
             onClick={onBookConsultation}
             className="bg-accent hover:bg-accent-light text-accent-foreground"
           >
-            Book Your $99 Consultation
+            Book Your $149 Consultation
           </Button>
         </div>
       </div>

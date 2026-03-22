@@ -13,7 +13,7 @@ const logStep = (step: string, details?: any) => {
   console.log(`[VERIFY-CONSULTATION-PAYMENT] ${step}${detailsStr}`);
 };
 
-// Generate a unique credit code for the $99 consultation credit
+// Generate a unique credit code for the $149 consultation credit
 const generateCreditCode = (): string => {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "EH-";

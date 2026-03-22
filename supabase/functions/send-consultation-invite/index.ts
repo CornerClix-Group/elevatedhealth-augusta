@@ -78,7 +78,7 @@ serve(async (req) => {
     };
     const serviceLabel = serviceLabels[service_type] || "Discovery Consultation";
 
-    // Create Stripe Checkout session for $99 Discovery Consultation
+    // Create Stripe Checkout session for $149 Discovery Consultation
     const session = await stripe.checkout.sessions.create({
       customer_email: patient_email,
       line_items: [
@@ -298,7 +298,7 @@ serve(async (req) => {
                     <li><span class="check">✓</span> 30-minute one-on-one with your provider</li>
                     <li><span class="check">✓</span> Complete symptom assessment</li>
                     <li><span class="check">✓</span> Personalized treatment path discussion</li>
-                    <li><span class="check">✓</span> <strong>$99 credit toward your Hormone Mapping Kit</strong></li>
+                    <li><span class="check">✓</span> <strong>$149 credit toward your Hormone Mapping Kit</strong></li>
                   </ul>
                 </div>
                 

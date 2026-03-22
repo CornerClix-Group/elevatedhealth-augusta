@@ -29,8 +29,8 @@ Réveil is a hormone optimization and wellness clinic in Augusta, GA. We special
 - BUT we CAN start patients on medication (including GLP-1s) without our specific kit if:
   * They have recent labs from their PCP (within 3 months), OR
   * The provider deems it appropriate during the consult
-- The $99 consultation fee is credited toward the lab kit purchase
-- GOAL: Never block the booking. If patient hesitates on labs, book the $99 Consult anyway
+- The $149 consultation fee is credited toward the lab kit purchase
+- GOAL: Never block the booking. If patient hesitates on labs, book the $149 Consult anyway
 
 ## The Medical vs. Administrative Boundary
 | ADMIN CAN ANSWER (Free) | REQUIRES PROVIDER (Paid) |
@@ -58,7 +58,7 @@ Réveil is a hormone optimization and wellness clinic in Augusta, GA. We special
 **All new patients start here:**
 - First visit is IN-PERSON at our Evans, GA clinic (7013 Evans Town Center Blvd, Suite 203)
 - 30-minute consultation with your provider
-- $99 fee is CREDITED toward first lab kit or treatment
+- $149 fee is CREDITED toward first lab kit or treatment
 - Hormone patients receive their Hormone Mapping Kit directly from the provider during the visit
 - Follow-up appointments may be conducted via telehealth
 
@@ -84,8 +84,8 @@ Everything in Vitality PLUS:
 
 **FLEXIBLE LABS SCRIPTING (The 'Soft Sell'):**
 - When discussing weight loss: "Our gold standard is to start with the Metabolic Mapping Kit ($349) to see exactly how your thyroid and insulin are functioning. This helps us engineer your results."
-- If patient hesitates on labs or price: "That is completely okay! You don't strictly need to buy the kit today. The best first step is the $99 Medical Consultation. Your provider can review any past labs you have or discuss starting treatment immediately based on your history."
-- GOAL: Do not block the booking. If they don't want labs, book the $99 Consult anyway.
+- If patient hesitates on labs or price: "That is completely okay! You don't strictly need to buy the kit today. The best first step is the $149 Medical Consultation. Your provider can review any past labs you have or discuss starting treatment immediately based on your history."
+- GOAL: Do not block the booking. If they don't want labs, book the $149 Consult anyway.
 
 ---
 
@@ -518,10 +518,10 @@ Before administration, screen for:
 
 ## Step-by-Step Flow
 1. **Lead Capture** → Website, phone, chat, referral
-2. **$99 Consultation** → Book via website/phone
+2. **$149 Consultation** → Book via website/phone
 3. **Intake Forms** → Complete symptom questionnaire
 4. **Consultation** → Telehealth or in-person with provider
-5. **Lab Kit Purchase** → $99 credited toward kit
+5. **Lab Kit Purchase** → $149 credited toward kit
 6. **Kit Shipped** → ZRT ships within 24-48 hours
 7. **Sample Collection** → Patient completes at home
 8. **Sample Returned** → Patient mails back to ZRT

@@ -56,7 +56,7 @@ const handler = async (req: Request): Promise<Response> => {
     logStep("Formatted phone", { formattedPhone });
 
     const kitName = kit_type === "hormone" ? "Hormone Mapping Kit" : "Metabolic Mapping Kit";
-    const creditNote = has_credit ? " (with your $99 credit applied)" : "";
+    const creditNote = has_credit ? " (with your $149 credit applied)" : "";
     
     const message = `Hi ${patient_name || "there"}! Your ${kitName}${creditNote} from Réveil is ready ($${amount}). Complete payment here: ${payment_url}`;
 
