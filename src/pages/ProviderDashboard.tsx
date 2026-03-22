@@ -80,6 +80,7 @@ import AppointmentPanel from "@/components/provider/AppointmentPanel";
 import IntakeSummaryCard from "@/components/provider/IntakeSummaryCard";
 import HealthReportPreview from "@/components/provider/HealthReportPreview";
 import InsuranceReimbursementHub from "@/components/provider/InsuranceReimbursementHub";
+import LabResultsQueue from "@/components/provider/LabResultsQueue";
 
 interface Patient {
   id: string;
