@@ -67,12 +67,26 @@ interface ProtocolRecommendation {
 interface ParsedLabData {
   collectionDate: string | null;
   patientName: string | null;
+  labSource?: 'zrt' | 'labcorp' | 'unknown';
   estradiol: number | null;
   progesterone: number | null;
   testosterone: number | null;
   dheas: number | null;
   cortisol: number | null;
   pgE2Ratio: number | null;
+  hematocrit?: number | null;
+  psa?: number | null;
+  alt?: number | null;
+  ast?: number | null;
+  a1c?: number | null;
+  tsh?: number | null;
+  freeT3?: number | null;
+  freeT4?: number | null;
+  vitaminD?: number | null;
+  fastingInsulin?: number | null;
+  triglycerides?: number | null;
+  hdl?: number | null;
+  ldl?: number | null;
   confidence: {
     overall: number;
     fields: Record<string, number>;
