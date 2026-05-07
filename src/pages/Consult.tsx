@@ -22,11 +22,6 @@ const consultationOptions = [
     serviceType: "weight_loss",
   },
   {
-    title: "IV Therapy",
-    description: "Physician-formulated infusions for recovery, immunity, and performance",
-    serviceType: "iv_therapy",
-  },
-  {
     title: "Peptide Protocols",
     description: "Sermorelin, NAD+, GHK-Cu & more for cellular optimization",
     serviceType: "peptide",

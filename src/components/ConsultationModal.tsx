@@ -81,12 +81,6 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
       serviceType: "weight_loss"
     },
     {
-      icon: IVIcon,
-      title: "IV Therapy",
-      description: "Physician-formulated infusions for recovery, immunity, and performance",
-      serviceType: "iv_therapy"
-    },
-    {
       icon: PeptideIcon,
       title: "Peptide Protocols",
       description: "Sermorelin, NAD+, GHK-Cu & more for cellular optimization",
@@ -207,6 +201,20 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
           <p className="text-[10px] text-muted-foreground text-center mt-3 italic font-jost">
             Admin questions only • No medical advice provided
           </p>
+        </div>
+
+        {/* IV direct-book pointer */}
+        <div className="mt-4 py-3 border-t border-b border-border/30 text-center">
+          <p className="text-sm font-jost text-muted-foreground">
+            Looking for IV therapy? Book directly without a consultation.
+          </p>
+          <a
+            href="/iv-lounge"
+            className="inline-block mt-1 text-sm font-jost text-accent hover:opacity-80 transition-opacity"
+            onClick={onClose}
+          >
+            Book IV →
+          </a>
         </div>
 
         <p className="text-[10px] text-muted-foreground text-center mt-4 max-w-md mx-auto font-jost">
