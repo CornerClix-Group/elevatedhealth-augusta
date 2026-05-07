@@ -23,9 +23,10 @@ interface InvitePatientCardProps {
 }
 
 const SERVICE_TYPES = [
-  { value: "hormone", label: "Hormone Therapy" },
-  { value: "weight_loss", label: "Weight Loss" },
-  { value: "ketamine", label: "Ketamine Therapy" },
+  { value: "hormone", label: "Hormone Optimization" },
+  { value: "weight_loss", label: "Medical Weight Loss" },
+  { value: "iv", label: "IV Therapy" },
+  { value: "peptides", label: "Peptide Therapy" },
   { value: "general", label: "General Consultation" },
 ] as const;
 
