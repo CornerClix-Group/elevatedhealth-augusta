@@ -174,6 +174,12 @@ const PatientIntake = () => {
   const [hormoneDetails, setHormoneDetails] = useState<string>("");
   const [wakeTime, setWakeTime] = useState<string>("");
 
+  // Insurance fields (optional, used for superbill reimbursement)
+  const [insuranceType, setInsuranceType] = useState<string>("self_pay");
+  const [insurancePlanName, setInsurancePlanName] = useState<string>("");
+  const [insuranceMemberId, setInsuranceMemberId] = useState<string>("");
+  const [insuranceGroupNumber, setInsuranceGroupNumber] = useState<string>("");
+
   // Fetch patient's interests on mount
   useEffect(() => {
     const fetchPatientInterests = async () => {
@@ -435,6 +441,10 @@ const PatientIntake = () => {
         state: state.trim() || null,
         zip_code: zipCode.trim() || null,
         allergies: allergies.trim() || "NKDA",
+        insurance_type: insuranceType,
+        insurance_plan_name: insurancePlanName.trim() || null,
+        insurance_member_id: insuranceMemberId.trim() || null,
+        insurance_group_number: insuranceGroupNumber.trim() || null,
       };
 
       // Add consent data if signature provided (hormone/weight loss patients)
