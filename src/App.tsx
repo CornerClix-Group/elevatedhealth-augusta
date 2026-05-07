@@ -46,7 +46,7 @@ import BusinessDashboard from "./pages/BusinessDashboard";
 import ClinicSettings from "./pages/ClinicSettings";
 import SymptomChecker from "./pages/SymptomChecker";
 import PaymentSuccess from "./pages/PaymentSuccess";
-import KetaminePaymentSuccess from "./pages/KetaminePaymentSuccess";
+
 import PatientResources from "./pages/PatientResources";
 import ScheduleConsult from "./pages/ScheduleConsult";
 import CreateAccount from "./pages/CreateAccount";
@@ -126,12 +126,8 @@ const App = () => {
           <Route path="/membership" element={<Membership />} />
           <Route path="/care-membership" element={<CareMembership />} />
           <Route path="/about" element={<About />} />
-          {/* Legacy routes redirect to home */}
-          <Route path="/ketamine" element={<Index />} />
-          <Route path="/iv-ketamine" element={<Index />} />
-          <Route path="/spravato" element={<Index />} />
+          {/* Legacy routes */}
           <Route path="/hormone-replacement" element={<Hormones />} />
-          <Route path="/how-ketamine-works" element={<Index />} />
           <Route path="/hair-restoration" element={<NotFound />} />
           <Route path="/sexual-wellness" element={<NotFound />} />
           <Route path="/military-veteran" element={<MilitaryVeteran />} />
@@ -149,7 +145,7 @@ const App = () => {
             </SecurePatientRoute>
           } />
           <Route path="/payment-success" element={<PaymentSuccess />} />
-          <Route path="/ketamine-payment-success" element={<KetaminePaymentSuccess />} />
+          
           <Route path="/patient-resources" element={<PatientResources />} />
           <Route path="/schedule-consult" element={<ScheduleConsult />} />
           {/* Public intake form (no auth required, token-validated) */}

@@ -1,0 +1,2 @@
+UPDATE public.cpt_codes SET panel_group = 'iv_infusion' WHERE code = '96365' AND panel_group = 'iv_ketamine';
+UPDATE public.cpt_codes SET panel_group = 'em_office' WHERE code = '99205' AND panel_group = 'spravato';

@@ -271,39 +271,7 @@ export const ALACARTE_PRICES = {
   },
 } as const;
 
-// ============================================================================
-// KETAMINE THERAPY (Legacy — service sunsetted from public site)
-// ============================================================================
-
-export const KETAMINE_PRICES = {
-  deposit: {
-    priceId: "price_1Sa5jwEOtKRY99puYK2lpDw5",
-    amount: 15000,
-    displayPrice: "$150",
-    name: "Ketamine Therapy Deposit",
-    description: "Deposit for ketamine therapy assessment",
-    mode: "payment" as const,
-    edgeFunction: "create-ketamine-checkout",
-  },
-  ivInfusion: {
-    priceId: "price_1SaYv3EOtKRY99pulkr4H1At",
-    amount: 40000,
-    displayPrice: "$400",
-    name: "IV Ketamine Infusion",
-    description: "Single IV ketamine infusion session",
-    mode: "payment" as const,
-    edgeFunction: "create-iv-ketamine-checkout",
-  },
-  ivBundle6: {
-    priceId: "price_1SwlYrEOtKRY99puuA7PwoYc",
-    amount: 220000,
-    displayPrice: "$2,200",
-    name: "IV Ketamine 6-Session Bundle",
-    description: "6 IV Ketamine infusion sessions - Save $200",
-    mode: "payment" as const,
-    edgeFunction: "create-iv-ketamine-checkout",
-  },
-} as const;
+// Ketamine therapy sunsetted — pricing config removed.
 
 // ============================================================================
 // WEIGHT LOSS / GLP-1 MEMBERSHIPS
@@ -394,7 +362,7 @@ export type ConsultationPriceKey = keyof typeof CONSULTATION_PRICES;
 export type DiagnosticKitPriceKey = keyof typeof DIAGNOSTIC_KIT_PRICES;
 export type MembershipPriceKey = keyof typeof MEMBERSHIP_PRICES;
 export type AlacartePriceKey = keyof typeof ALACARTE_PRICES;
-export type KetaminePriceKey = keyof typeof KETAMINE_PRICES;
+
 export type WeightLossPriceKey = keyof typeof WEIGHT_LOSS_PRICES;
 export type HairRestorationPriceKey = keyof typeof HAIR_RESTORATION_PRICES;
 export type SexualWellnessPriceKey = keyof typeof SEXUAL_WELLNESS_PRICES;
