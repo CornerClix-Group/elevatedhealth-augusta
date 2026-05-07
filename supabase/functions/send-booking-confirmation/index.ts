@@ -80,7 +80,7 @@ async function sendEmail(to: string, name: string): Promise<{ success: boolean; 
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Réveil <noreply@stripe.reveil.health>",
+        from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
         to: [to],
         subject: "Your Clinical Strategy Session is Confirmed!",
         html: `
@@ -110,7 +110,7 @@ async function sendEmail(to: string, name: string): Promise<{ success: boolean; 
                           Hi ${name || 'there'},
                         </p>
                         <p style="margin: 0 0 20px; font-size: 16px; color: #555555; line-height: 1.8;">
-                          Great news! Your <strong>Clinical Strategy Session</strong> has been scheduled with Réveil.
+                          Great news! Your <strong>Clinical Strategy Session</strong> has been scheduled with Elevated Health Augusta.
                         </p>
                         
                         <!-- Info Box -->
@@ -138,7 +138,7 @@ async function sendEmail(to: string, name: string): Promise<{ success: boolean; 
                         <table role="presentation" cellspacing="0" cellpadding="0" width="100%" style="margin: 30px 0;">
                           <tr>
                             <td style="text-align: center;">
-                              <a href="https://www.reveil.health" style="display: inline-block; padding: 14px 40px; background: linear-gradient(135deg, #c9a961 0%, #d4b87a 100%); color: #1a365d; text-decoration: none; font-weight: 600; font-size: 16px; border-radius: 8px;">
+                              <a href="https://www.elevatedhealthaugusta.com" style="display: inline-block; padding: 14px 40px; background: linear-gradient(135deg, #c9a961 0%, #d4b87a 100%); color: #1a365d; text-decoration: none; font-weight: 600; font-size: 16px; border-radius: 8px;">
                                 Visit Our Website
                               </a>
                             </td>
@@ -155,7 +155,7 @@ async function sendEmail(to: string, name: string): Promise<{ success: boolean; 
                     <tr>
                       <td style="background-color: #f9f9f9; padding: 25px 30px; text-align: center; border-top: 1px solid #eeeeee;">
                         <p style="margin: 0 0 10px; font-size: 14px; color: #666666;">
-                          <strong>Réveil</strong>
+                          <strong>Elevated Health Augusta</strong>
                         </p>
                         <p style="margin: 0; font-size: 12px; color: #999999;">
                           7013 Evans Town Center Blvd, Suite 203 • Evans, GA 30809<br>
@@ -222,7 +222,7 @@ serve(async (req) => {
     // Send confirmation SMS if phone provided
     if (phone) {
       const smsMessage = 
-        `Hi ${name || 'there'}! Your Clinical Strategy Session with Réveil is confirmed. ` +
+        `Hi ${name || 'there'}! Your Clinical Strategy Session with Elevated Health Augusta is confirmed. ` +
         `Please arrive 10 min early. Need to reschedule? Call (706) 760-3470. See you soon!`;
       
       const smsResult = await sendSMS(phone, smsMessage);

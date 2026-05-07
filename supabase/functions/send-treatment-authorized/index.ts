@@ -102,7 +102,7 @@ serve(async (req) => {
               
               <p style="color: #4a5568; font-size: 16px; margin: 20px 0 0; line-height: 1.8;">
                 Warmly,<br>
-                <strong style="color: #2C3E50;">The Réveil Team</strong>
+                <strong style="color: #2C3E50;">The Elevated Health Augusta Team</strong>
               </p>
             </td>
           </tr>
@@ -111,11 +111,11 @@ serve(async (req) => {
           <tr>
             <td style="background-color: #f8f9fa; padding: 25px 40px; text-align: center; border-top: 1px solid #e2e8f0;">
               <p style="color: #718096; font-size: 13px; margin: 0 0 8px;">
-                Réveil<br>
+                Elevated Health Augusta<br>
                 7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809
               </p>
               <p style="color: #a0aec0; font-size: 12px; margin: 0;">
-                © ${new Date().getFullYear()} Réveil. All rights reserved.
+                © ${new Date().getFullYear()} Elevated Health Augusta. All rights reserved.
               </p>
             </td>
           </tr>
@@ -128,7 +128,7 @@ serve(async (req) => {
 `;
 
     const emailResponse = await resend.emails.send({
-      from: "Réveil <noreply@stripe.reveil.health>",
+      from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
       to: [patient_email],
       subject: "Your Treatment Has Been Authorized – Next Steps Inside",
       html: emailHtml,

@@ -53,15 +53,15 @@ async function sendFailureAlert(
       </div>
       
       <p style="font-size: 12px; color: #666; text-align: center; margin-top: 20px;">
-        This is an automated alert from Réveil
+        This is an automated alert from Elevated Health Augusta
       </p>
     </div>
   `;
 
   try {
     await resend.emails.send({
-      from: "Réveil <noreply@stripe.reveil.health>",
-      to: ["booking@reveil.health"],
+      from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
+      to: ["booking@elevatedhealthaugusta.com"],
       subject: `⚠️ Fax Failed: ${patientName} - ${medication}`,
       html,
     });

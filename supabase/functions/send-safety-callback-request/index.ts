@@ -88,8 +88,8 @@ serve(async (req) => {
 
     // Send to clinic
     await resend.emails.send({
-      from: "Réveil <noreply@stripe.reveil.health>",
-      to: ["booking@reveil.health"],
+      from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
+      to: ["booking@elevatedhealthaugusta.com"],
       subject: `Priority Callback Request: ${patient_name}`,
       html: clinicEmailHtml,
     });
@@ -132,13 +132,13 @@ serve(async (req) => {
         
         <p style="color: #4a5568; font-size: 15px; margin-top: 30px;">
           Warmly,<br>
-          <strong style="color: #2C3E50;">The Réveil Team</strong>
+          <strong style="color: #2C3E50;">The Elevated Health Augusta Team</strong>
         </p>
       </div>
       
       <div style="background: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
         <p style="color: #718096; font-size: 13px; margin: 0;">
-          Réveil<br>
+          Elevated Health Augusta<br>
           7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809
         </p>
       </div>
@@ -149,7 +149,7 @@ serve(async (req) => {
 `;
 
       await resend.emails.send({
-        from: "Réveil <noreply@stripe.reveil.health>",
+        from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
         to: [patient_email],
         subject: "Your Callback Request Has Been Received",
         html: patientEmailHtml,

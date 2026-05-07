@@ -121,7 +121,7 @@ serve(async (req) => {
       const time = appointment_time || "";
       
       const message = custom_message || 
-        `Hi ${name}! This is a reminder from Réveil about your ${type} on ${date}${time ? ` at ${time}` : ''}. ` +
+        `Hi ${name}! This is a reminder from Elevated Health Augusta about your ${type} on ${date}${time ? ` at ${time}` : ''}. ` +
         `If you need to reschedule, please call us at (706) 760-3470. We look forward to seeing you!`;
 
       const result = await sendSMS(patient_phone, message);
@@ -160,7 +160,7 @@ serve(async (req) => {
         const programName = programMap[patient.primary_program || "hormone"] || "consultation";
 
         const message = 
-          `Hi ${patient.full_name?.split(" ")[0] || "there"}! This is a reminder from Réveil about your upcoming ${programName}. ` +
+          `Hi ${patient.full_name?.split(" ")[0] || "there"}! This is a reminder from Elevated Health Augusta about your upcoming ${programName}. ` +
           `Please arrive 10 minutes early. If you need to reschedule, call (706) 760-3470. See you soon!`;
 
         const result = await sendSMS(patient.phone, message);

@@ -67,7 +67,7 @@ serve(async (req) => {
         ? 'Peptide Therapy'
         : 'Hormone Replacement Therapy';
 
-    const clinicName = "Réveil";
+    const clinicName = "Elevated Health Augusta";
     const clinicAddress = "7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809";
     const clinicPhone = "(706) 760-3470";
     const signatureDate = new Date(patient.consent_signature_date || patient.consent_completed_at).toLocaleDateString('en-US', {
@@ -287,7 +287,7 @@ serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: 'Réveil <noreply@reveil.health>',
+          from: 'Elevated Health Augusta <noreply@elevatedhealthaugusta.com>',
           to: [patient.email],
           subject: `Your Signed Consent Form - ${clinicName}`,
           html: `

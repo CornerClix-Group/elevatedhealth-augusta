@@ -67,7 +67,7 @@ serve(async (req) => {
     logStep("Request body", { patient_email, patient_name, service_type, invite_type, scheduled_date });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const origin = "https://reveil.health";
+    const origin = "https://elevatedhealthaugusta.com";
 
     // Map service types to display names
     const serviceLabels: Record<string, string> = {
@@ -87,7 +87,7 @@ serve(async (req) => {
             currency: "usd",
             product_data: {
               name: "Discovery Consultation",
-              description: `30-minute ${serviceLabel} consultation with Réveil.`,
+              description: `30-minute ${serviceLabel} consultation with Elevated Health Augusta.`,
             },
             unit_amount: 9900, // $99
           },
@@ -192,12 +192,12 @@ serve(async (req) => {
           <div class="wrapper">
             <div class="container">
               <div class="header">
-                <h1 class="logo">Réveil</h1>
+                <h1 class="logo">Elevated Health Augusta</h1>
                 <p class="tagline">Restore · Renew · Rebalance</p>
               </div>
               <div class="content">
                 <h2 class="greeting">Hi ${firstName}!</h2>
-                <p class="intro">You have a ${serviceLabel} consultation scheduled with Réveil. Please complete your payment to confirm your appointment.</p>
+                <p class="intro">You have a ${serviceLabel} consultation scheduled with Elevated Health Augusta. Please complete your payment to confirm your appointment.</p>
                 
                 ${scheduled_date ? `
                 <div class="appointment-box">
@@ -222,7 +222,7 @@ serve(async (req) => {
               <div class="footer">
                 <p class="footer-text">Questions? Reply to this email or call us at <strong>(706) 760-3470</strong></p>
                 <p class="footer-address">
-                  Réveil<br/>
+                  Elevated Health Augusta<br/>
                   7013 Evans Town Center Blvd, Suite 203<br/>
                   Evans, GA 30809
                 </p>
@@ -234,7 +234,7 @@ serve(async (req) => {
       `;
     } else {
       // Standard invite email - needs to book
-      emailSubject = `${firstName}, Your Consultation Invitation from Réveil`;
+      emailSubject = `${firstName}, Your Consultation Invitation from Elevated Health Augusta`;
       emailHtml = `
         <!DOCTYPE html>
         <html>
@@ -280,12 +280,12 @@ serve(async (req) => {
           <div class="wrapper">
             <div class="container">
               <div class="header">
-                <h1 class="logo">Réveil</h1>
+                <h1 class="logo">Elevated Health Augusta</h1>
                 <p class="tagline">Restore · Renew · Rebalance</p>
               </div>
               <div class="content">
                 <h2 class="greeting">Welcome, ${firstName}!</h2>
-                <p class="intro">You've been personally invited to begin your hormone optimization journey with Réveil. Let's start with a personalized consultation to understand your unique needs.</p>
+                <p class="intro">You've been personally invited to begin your hormone optimization journey with Elevated Health Augusta. Let's start with a personalized consultation to understand your unique needs.</p>
                 
                 <div class="price-box">
                   <p class="price">$99</p>
@@ -313,7 +313,7 @@ serve(async (req) => {
               <div class="footer">
                 <p class="footer-text">Questions? Reply to this email or call us at <strong>(706) 760-3470</strong></p>
                 <p class="footer-address">
-                  Réveil<br/>
+                  Elevated Health Augusta<br/>
                   7013 Evans Town Center Blvd, Suite 203<br/>
                   Evans, GA 30809
                 </p>
@@ -326,7 +326,7 @@ serve(async (req) => {
     }
 
     const emailResponse = await resend.emails.send({
-      from: "Réveil <noreply@stripe.reveil.health>",
+      from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
       to: [patient_email],
       subject: emailSubject,
       html: emailHtml,

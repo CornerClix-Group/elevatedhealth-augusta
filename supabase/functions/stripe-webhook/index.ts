@@ -23,7 +23,7 @@ const generateWelcomeEmail = (patientName: string) => `
           <!-- Header -->
           <tr>
             <td style="background: linear-gradient(135deg, #2C3E50 0%, #3d5166 100%); padding: 40px 40px 30px; text-align: center;">
-              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 300; letter-spacing: 1px;">Welcome to Réveil</h1>
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 300; letter-spacing: 1px;">Welcome to Elevated Health Augusta</h1>
             </td>
           </tr>
           
@@ -35,7 +35,7 @@ const generateWelcomeEmail = (patientName: string) => `
               </p>
               
               <p style="color: #4a5568; font-size: 16px; margin: 0 0 20px; line-height: 1.8;">
-                Your membership is now active! We're honored to welcome you to the Réveil family.
+                Your membership is now active! We're honored to welcome you to the Elevated Health Augusta family.
               </p>
               
               <p style="color: #4a5568; font-size: 16px; margin: 0 0 20px; line-height: 1.8;">
@@ -80,14 +80,14 @@ const generateWelcomeEmail = (patientName: string) => `
               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
                 <tr>
                   <td align="center">
-                    <a href="https://reveil.health/patient/login" style="display: inline-block; background-color: #2C3E50; color: #ffffff; text-decoration: none; padding: 14px 40px; border-radius: 50px; font-size: 16px; font-weight: 500;">Access Patient Portal</a>
+                    <a href="https://elevatedhealthaugusta.com/patient/login" style="display: inline-block; background-color: #2C3E50; color: #ffffff; text-decoration: none; padding: 14px 40px; border-radius: 50px; font-size: 16px; font-weight: 500;">Access Patient Portal</a>
                   </td>
                 </tr>
               </table>
               
               <p style="color: #4a5568; font-size: 16px; margin: 20px 0 0; line-height: 1.8;">
                 To your health,<br>
-                <strong style="color: #2C3E50;">The Réveil Team</strong>
+                <strong style="color: #2C3E50;">The Elevated Health Augusta Team</strong>
               </p>
             </td>
           </tr>
@@ -96,11 +96,11 @@ const generateWelcomeEmail = (patientName: string) => `
           <tr>
             <td style="background-color: #f8f9fa; padding: 25px 40px; text-align: center; border-top: 1px solid #e2e8f0;">
               <p style="color: #718096; font-size: 13px; margin: 0 0 8px;">
-                Réveil<br>
+                Elevated Health Augusta<br>
                 7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809
               </p>
               <p style="color: #a0aec0; font-size: 12px; margin: 0;">
-                © ${new Date().getFullYear()} Réveil. All rights reserved.
+                © ${new Date().getFullYear()} Elevated Health Augusta. All rights reserved.
               </p>
             </td>
           </tr>
@@ -248,9 +248,9 @@ serve(async (req) => {
         
         try {
           const emailResponse = await resend.emails.send({
-            from: "Réveil <noreply@stripe.reveil.health>",
+            from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
             to: [customerEmail],
-            subject: "Welcome to Réveil – Your Membership is Active!",
+            subject: "Welcome to Elevated Health Augusta – Your Membership is Active!",
             html: generateWelcomeEmail(patientName),
           });
           

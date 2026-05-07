@@ -144,7 +144,7 @@ function generatePrescriptionHtml(
 
   <div class="footer">
     <p>This prescription was transmitted electronically via secure fax.</p>
-    <p>For questions, contact Réveil at (706) 760-3470</p>
+    <p>For questions, contact Elevated Health Augusta at (706) 760-3470</p>
   </div>
 </body>
 </html>
@@ -241,7 +241,7 @@ serve(async (req) => {
       body: JSON.stringify({
         to: HOLGATE_FAX_NUMBER,
         contentUrl: `data:text/html;base64,${htmlBase64}`,
-        headerText: "Réveil - Prescription",
+        headerText: "Elevated Health Augusta - Prescription",
       }),
     });
 

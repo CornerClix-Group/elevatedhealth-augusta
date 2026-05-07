@@ -92,7 +92,7 @@ serve(async (req) => {
       }
     }
 
-    const origin = req.headers.get("origin") || "https://reveil.health";
+    const origin = req.headers.get("origin") || "https://elevatedhealthaugusta.com";
 
     // Build line items
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];

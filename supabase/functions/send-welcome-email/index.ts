@@ -56,7 +56,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Generate or retrieve intake token
     let intakeToken = "";
-    let intakeUrl = "https://reveil.health/patient/intake";
+    let intakeUrl = "https://elevatedhealthaugusta.com/patient/intake";
     
     if (patient_id) {
       // Check if patient has an intake token, if not generate one
@@ -77,13 +77,13 @@ const handler = async (req: Request): Promise<Response> => {
           .update({ intake_token: intakeToken, intake_token_expires_at: expiresAt })
           .eq("id", patient_id);
       }
-      intakeUrl = `https://reveil.health/intake?token=${intakeToken}`;
+      intakeUrl = `https://elevatedhealthaugusta.com/intake?token=${intakeToken}`;
     }
 
     const emailResponse = await resend.emails.send({
-      from: "Réveil <noreply@stripe.reveil.health>",
+      from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
       to: [patient_email],
-      subject: `Welcome to Réveil, ${firstName}!`,
+      subject: `Welcome to Elevated Health Augusta, ${firstName}!`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -96,7 +96,7 @@ const handler = async (req: Request): Promise<Response> => {
             <!-- Header -->
             <div style="text-align: center; margin-bottom: 32px;">
               <h1 style="font-family: Georgia, serif; font-size: 28px; color: #2C3E50; margin: 0;">
-                Réveil
+                Elevated Health Augusta
               </h1>
               <p style="color: #D4A017; font-size: 14px; margin-top: 8px; letter-spacing: 2px;">
                 PERSONALIZED WELLNESS
@@ -110,7 +110,7 @@ const handler = async (req: Request): Promise<Response> => {
               </h2>
               
               <p style="color: #5D6D7E; font-size: 16px; line-height: 1.6; margin: 0 0 24px 0;">
-                Thank you for choosing Réveil for your <strong>${service.name}</strong> journey. We're honored to partner with you on your path to optimal wellness.
+                Thank you for choosing Elevated Health Augusta for your <strong>${service.name}</strong> journey. We're honored to partner with you on your path to optimal wellness.
               </p>
 
               <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -145,12 +145,12 @@ const handler = async (req: Request): Promise<Response> => {
             <!-- Footer with CORRECT contact info -->
             <div style="text-align: center; margin-top: 32px; color: #8E9EAB; font-size: 12px;">
               <p style="margin: 0 0 8px 0;">
-                Réveil<br>
+                Elevated Health Augusta<br>
                 7013 Evans Town Center Blvd, Suite 203 | Evans, GA 30809
               </p>
               <p style="margin: 0;">
                 Questions? Call us at (706) 760-3470<br>
-                booking@reveil.health
+                booking@elevatedhealthaugusta.com
               </p>
             </div>
           </div>
@@ -166,7 +166,7 @@ const handler = async (req: Request): Promise<Response> => {
       await supabase.from("communication_logs").insert({
         patient_id,
         template_key: "welcome_email",
-        subject: `Welcome to Réveil, ${firstName}!`,
+        subject: `Welcome to Elevated Health Augusta, ${firstName}!`,
         body_preview: `Welcome email sent for ${service.name}`,
         delivery_method: "email",
         status: "sent",

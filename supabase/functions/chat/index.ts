@@ -34,7 +34,7 @@ const PUBLIC_KNOWLEDGE = `
 ## RÉVEIL — PUBLIC KNOWLEDGE BASE
 
 ### CLINIC IDENTITY
-- Name: Réveil
+- Name: Elevated Health Augusta
 - Location: 7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809
 - Phone: (706) 760-3470
 - Hours: Monday-Friday 9AM-5PM
@@ -279,7 +279,7 @@ serve(async (req) => {
       }
     }
 
-    const systemPrompt = `You are a warm, knowledgeable Care Coordination specialist for Réveil. You handle ADMINISTRATIVE questions only—you cannot provide medical advice.
+    const systemPrompt = `You are a warm, knowledgeable Care Coordination specialist for Elevated Health Augusta. You handle ADMINISTRATIVE questions only—you cannot provide medical advice.
 
 ## YOUR ROLE — CRITICAL RULES
 
