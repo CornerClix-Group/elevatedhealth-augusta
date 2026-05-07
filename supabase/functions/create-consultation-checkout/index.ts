@@ -56,7 +56,7 @@ serve(async (req) => {
     const serviceType = body.serviceType || "hormone";
     logStep("Service type", { serviceType });
 
-    const validServiceTypes = ["hormone", "weight_loss", "iv_therapy", "peptide"];
+    const validServiceTypes = ["hormone", "weight_loss", "peptide"];
     if (!validServiceTypes.includes(serviceType)) {
       throw new Error(`Invalid service type: ${serviceType}`);
     }
