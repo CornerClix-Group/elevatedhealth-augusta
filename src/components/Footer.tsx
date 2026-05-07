@@ -101,17 +101,24 @@ const Footer = () => {
 
           {/* Bottom Bar */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-primary-foreground/50 font-jost">
-              © 2025 {SITE_CONFIG.clinicName}. All rights reserved.
-            </p>
-            <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-primary-foreground/50 font-jost">
-              <button onClick={() => navigate("/patient/login?redirect=consult")} className="hover:text-accent transition-colors">
-                Returning Patient?
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-jost">
+              <p className="text-primary-foreground/50">
+                © 2025 {SITE_CONFIG.clinicName}. All rights reserved.
+              </p>
+              <button
+                onClick={() => navigate("/patient/login?redirect=consult")}
+                className="text-primary-foreground/70 hover:text-accent transition-colors"
+              >
+                Returning Patient? → Patient Portal
               </button>
-              <button onClick={() => navigate("/admin/login")} className="hover:text-accent transition-colors">Provider Login</button>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-primary-foreground/40 font-jost">
               <button onClick={handleClearCache} className="hover:text-accent transition-colors flex items-center gap-1">
                 <RefreshCw className="h-3 w-3" />
                 Clear Cache
+              </button>
+              <button onClick={() => navigate("/admin/login")} className="hover:text-accent transition-colors">
+                Staff Sign-In
               </button>
             </div>
           </div>

@@ -315,14 +315,15 @@ const PatientLogin = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <p className="text-xs uppercase tracking-widest text-gold mb-2">Patient Portal</p>
-          <h1 className="font-cormorant text-3xl text-foreground">Elevated Health Augusta</h1>
+          <p className="text-xs uppercase tracking-[3px] text-gold mb-2 font-jost">Patient Portal</p>
+          <h1 className="font-playfair italic text-4xl text-foreground">Welcome back</h1>
+          <p className="mt-3 text-sm text-muted-foreground font-jost">Sign in to access your wellness dashboard.</p>
         </div>
 
         <Card className="bg-card border-border/50">
           <CardHeader>
-            <CardTitle className="font-cormorant text-xl">Welcome Back</CardTitle>
-            <CardDescription>Sign in to access your wellness dashboard</CardDescription>
+            <CardTitle className="font-playfair italic text-xl">Patient Sign-In</CardTitle>
+            <CardDescription>Continue your care with Elevated Health.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Google OAuth Button */}
@@ -497,10 +498,13 @@ const PatientLogin = () => {
           </p>
         </div>
 
-        {/* Back to Home Link */}
-        <div className="mt-4 text-center">
-          <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+        {/* Back to Home + Staff cross-link */}
+        <div className="mt-4 text-center space-y-2">
+          <Link to="/" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
             ← Back to website
+          </Link>
+          <Link to="/admin/login" className="block text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors">
+            Clinic team member? Staff Sign-In →
           </Link>
         </div>
       </div>
