@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Droplet } from "lucide-react";
 
 const services = [
   {
@@ -9,8 +9,10 @@ const services = [
   },
   {
     title: "IV Therapy",
-    description: "Physician-formulated infusions. Not a spa. Medicine.",
+    description: "Pick your drip, add boosters, pay & schedule online. No consult required.",
     route: "/iv-lounge",
+    badge: "Book Direct",
+    cta: "Book IV Drip Now",
   },
   {
     title: "Peptide Protocols",
