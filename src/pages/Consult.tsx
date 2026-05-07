@@ -99,7 +99,7 @@ const Consult = () => {
                     </p>
 
                     <div className="mb-4">
-                      <span className="font-playfair text-2xl font-semibold text-foreground">$149</span>
+                      <span className="font-playfair text-2xl font-semibold text-foreground">$79</span>
                       <p className="font-jost text-xs text-accent mt-1">Applied as credit if you proceed</p>
                     </div>
 

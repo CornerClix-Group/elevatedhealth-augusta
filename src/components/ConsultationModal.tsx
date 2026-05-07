@@ -153,7 +153,7 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
                 </div>
 
                 <div className="text-right shrink-0">
-                  <span className="text-xl font-playfair font-semibold text-foreground">$149</span>
+                  <span className="text-xl font-playfair font-semibold text-foreground">$79</span>
                   <p className="text-[10px] text-primary font-medium font-jost">
                     Applied as credit if you proceed
                   </p>

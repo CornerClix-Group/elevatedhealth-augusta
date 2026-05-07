@@ -307,9 +307,9 @@ const Hormones = () => {
                       <h3 className="font-cormorant text-xl text-foreground mb-2">
                         Discovery Consultation
                       </h3>
-                      <p className="text-3xl font-cormorant text-foreground mb-2">$149</p>
+                      <p className="text-3xl font-cormorant text-foreground mb-2">$79</p>
                       <p className="text-xs text-green-600 font-medium mb-2">
-                        Includes $79 credit toward Hormone Mapping
+                        Includes $79 credit toward Hormone Mapping Kit
                       </p>
                       <p className="text-sm text-muted-foreground mb-4 font-light">
                         30-minute in-person visit with our physician to discuss symptoms and treatment options.
@@ -324,7 +324,7 @@ const Hormones = () => {
                         ) : (
                           <CreditCard className="mr-2 h-4 w-4" />
                         )}
-                        {isConsultationLoading ? "Processing..." : "Book - $149"}
+                        {isConsultationLoading ? "Processing..." : "Book - $79"}
                       </Button>
                       <p className="text-[10px] text-muted-foreground mt-2">
                         Not ready? Call {SITE_CONFIG.phone}

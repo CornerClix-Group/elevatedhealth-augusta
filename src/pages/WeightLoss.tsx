@@ -779,7 +779,7 @@ const WeightLoss = () => {
                     <h3 className="font-cormorant text-xl text-primary font-bold mb-2">
                       Discovery Consultation
                     </h3>
-                    <p className="text-3xl font-cormorant text-primary mb-2">$149</p>
+                    <p className="text-3xl font-cormorant text-primary mb-2">$79</p>
                     <p className="text-xs text-green-600 font-medium mb-2">
                       Credited toward your first month
                     </p>
