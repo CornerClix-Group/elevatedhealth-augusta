@@ -161,6 +161,7 @@ const FCCPortalModal = ({
   onOrderCreated,
 }: FCCPortalModalProps) => {
   const [isMarking, setIsMarking] = useState(false);
+  const [showFormulary, setShowFormulary] = useState(false);
   const [faxStatus, setFaxStatus] = useState<FaxStatus>('idle');
   const [faxTimestamp, setFaxTimestamp] = useState<string | null>(null);
   const [faxError, setFaxError] = useState<string | null>(null);
