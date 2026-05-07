@@ -124,7 +124,14 @@ const Navbar = () => {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              ) : null}
+              ) : (
+                <button
+                  onClick={() => navigate("/patient/login")}
+                  className="text-sm font-jost text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Patient Portal
+                </button>
+              )}
               <Button 
                 className="font-jost font-medium text-sm tracking-wide px-6 py-2 bg-primary text-accent rounded-sm hover:bg-primary-light"
                 onClick={openBooking}
