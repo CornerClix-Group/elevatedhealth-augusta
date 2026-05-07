@@ -266,12 +266,12 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
             {isSending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Sending...
+                {mode === "create" ? "Creating..." : "Sending..."}
               </>
             ) : (
               <>
-                <Mail className="mr-2 h-4 w-4" />
-                Send Invitation
+                {mode === "create" ? <UserPlus className="mr-2 h-4 w-4" /> : <Mail className="mr-2 h-4 w-4" />}
+                {mode === "create" ? "Create Account" : "Send Invitation"}
               </>
             )}
           </Button>
