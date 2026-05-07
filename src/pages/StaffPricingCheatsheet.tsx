@@ -118,7 +118,7 @@ const StaffPricingCheatsheet = () => {
   return (
     <>
       <Helmet>
-        <title>Staff Quick Reference | Réveil</title>
+        <title>Staff Quick Reference | Elevated Health Augusta</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 

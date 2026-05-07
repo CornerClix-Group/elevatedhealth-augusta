@@ -47,7 +47,7 @@ const AssistantHub = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Welcome to Réveil! I can help with questions about our process, pricing, and insurance. What would you like to know?",
+      content: "Welcome to Elevated Health Augusta! I can help with questions about our process, pricing, and insurance. What would you like to know?",
     },
   ]);
   const [input, setInput] = useState("");

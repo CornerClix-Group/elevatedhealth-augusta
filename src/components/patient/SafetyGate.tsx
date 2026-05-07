@@ -81,7 +81,7 @@ const SafetyGate = ({ patientName, patientEmail, patientPhone, safetyFlags, trea
             
             <p className="text-foreground leading-relaxed">
               Your medical intake flagged a potential contraindication for {treatmentType?.includes("ketamine") ? "ketamine therapy" : treatmentType || "hormone therapy"}. 
-              At Réveil, we prioritize your safety above all else.
+              At Elevated Health Augusta, we prioritize your safety above all else.
             </p>
 
             <div className="bg-white dark:bg-gray-900 rounded-lg p-4 space-y-3">

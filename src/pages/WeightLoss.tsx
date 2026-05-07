@@ -171,18 +171,18 @@ const WeightLoss = () => {
   return (
     <>
       <Helmet>
-        <title>Metabolic Optimization Program - Weight Loss Augusta | Réveil</title>
+        <title>Metabolic Optimization Program - Weight Loss Augusta | Elevated Health Augusta</title>
         <meta name="description" content="Medical weight loss in Augusta, GA. $149 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. GLP-1 therapy + ZRT hormone testing + metabolic analysis." />
         <meta name="keywords" content="metabolic optimization Augusta, semaglutide Augusta GA, tirzepatide Augusta, GLP-1 Augusta, weight loss clinic Georgia, ZRT testing Augusta, metabolic labs" />
-        <meta property="og:title" content="Metabolic Optimization Program - Weight Loss Augusta | Réveil" />
+        <meta property="og:title" content="Metabolic Optimization Program - Weight Loss Augusta | Elevated Health Augusta" />
         <meta property="og:description" content="Medical weight loss in Augusta, GA. $149 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. GLP-1 therapy + hormone testing." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://reveil.health/weight-loss" />
-        <meta property="og:image" content="https://reveil.health/og-image.jpg" />
+        <meta property="og:url" content="https://elevatedhealthaugusta.com/weight-loss" />
+        <meta property="og:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Medical Weight Loss Augusta | Metabolic Optimization" />
         <meta name="twitter:description" content="$149 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. GLP-1 + hormone testing." />
-        <meta name="twitter:image" content="https://reveil.health/og-image.jpg" />
+        <meta name="twitter:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
       </Helmet>
 
       <div className="min-h-screen">
@@ -432,12 +432,12 @@ const WeightLoss = () => {
           {/* How GLP-1 Works - Educational Section */}
           <HowGLP1Works />
 
-          {/* Why Réveil is Different */}
+          {/* Why Elevated Health Augusta is Different */}
           <section className="py-16 md:py-24">
             <div className="container mx-auto px-4 sm:px-6">
               <div className="max-w-4xl mx-auto text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Why Réveil is Different
+                  Why Elevated Health Augusta is Different
                 </h2>
                 <p className="text-lg text-muted-foreground">
                   Augusta has NO program offering this level of comprehensive care
@@ -510,7 +510,7 @@ const WeightLoss = () => {
                           <span className="text-sm font-lato font-normal">(Ro, Hims, etc.)</span>
                         </th>
                         <th className="p-4 text-center font-cormorant text-lg text-gold bg-gold/10">
-                          <span className="block">Réveil</span>
+                          <span className="block">Elevated Health Augusta</span>
                           <span className="text-sm font-lato font-normal">Augusta, GA</span>
                         </th>
                       </tr>
@@ -968,7 +968,7 @@ const WeightLoss = () => {
                   Ready to Start Your Transformation?
                 </h2>
                 <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                  Book your $149 consultation today and discover why Réveil is Augusta's 
+                  Book your $149 consultation today and discover why Elevated Health Augusta is Augusta's 
                   most comprehensive weight loss program. No generic dosing. No rushed appointments. 
                   Just expert support and real results.
                 </p>

@@ -28,14 +28,14 @@ const HowKetamineWorks = () => {
   return (
     <>
       <Helmet>
-        <title>How Ketamine Works | Réveil</title>
+        <title>How Ketamine Works | Elevated Health Augusta</title>
         <meta 
           name="description" 
           content="How ketamine works for depression, PTSD, and anxiety. $149 consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Evidence-based explainers backed by Yale research." 
         />
-        <meta property="og:title" content="How Ketamine Works | Réveil" />
+        <meta property="og:title" content="How Ketamine Works | Elevated Health Augusta" />
         <meta property="og:description" content="Evidence-based ketamine therapy explained with medical illustrations and research-backed data." />
-        <link rel="canonical" href="https://www.reveil.health/how-ketamine-works" />
+        <link rel="canonical" href="https://www.elevatedhealthaugusta.com/how-ketamine-works" />
         
         {/* Schema.org structured data for medical content */}
         <script type="application/ld+json">
@@ -84,7 +84,7 @@ const HowKetamineWorks = () => {
               <div className="aspect-video w-full rounded-xl overflow-hidden shadow-2xl">
                 <iframe
                   src="https://www.youtube.com/embed/nW21-AYY_fs"
-                  title="How Ketamine Works - Réveil"
+                  title="How Ketamine Works - Elevated Health Augusta"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   className="w-full h-full"

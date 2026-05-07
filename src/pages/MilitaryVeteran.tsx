@@ -26,7 +26,7 @@ const MilitaryVeteran = () => {
   };
   const tricareTemplate = `Hello,
 
-I'm requesting a referral to Réveil for ketamine-assisted therapy evaluation.
+I'm requesting a referral to Elevated Health Augusta for ketamine-assisted therapy evaluation.
 
 Clinic Information:
 ${SITE_CONFIG.clinicName}
@@ -40,7 +40,7 @@ I believe this specialized treatment may be beneficial for my case, and I'd like
 Thank you for your assistance.`;
   const vaTemplate = `Hello,
 
-I'm requesting authorization through VA Community Care for ketamine-assisted therapy evaluation at Réveil.
+I'm requesting authorization through VA Community Care for ketamine-assisted therapy evaluation at Elevated Health Augusta.
 
 Clinic Information:
 ${SITE_CONFIG.clinicName}
@@ -80,7 +80,7 @@ Thank you for considering my request.`;
         "name": "Can Veterans get ketamine therapy through the VA?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, Veterans enrolled in VA care may access ketamine therapy through VA Community Care. We help you request authorization and provide all documentation needed for your VA care team to approve treatment at Réveil."
+          "text": "Yes, Veterans enrolled in VA care may access ketamine therapy through VA Community Care. We help you request authorization and provide all documentation needed for your VA care team to approve treatment at Elevated Health Augusta."
         }
       },
       {
@@ -96,7 +96,7 @@ Thank you for considering my request.`;
 
   return <div className="min-h-screen">
       <Helmet>
-        <title>Veteran Mental Health Augusta | TRICARE & VA Ketamine Therapy | Réveil</title>
+        <title>Veteran Mental Health Augusta | TRICARE & VA Ketamine Therapy | Elevated Health Augusta</title>
         <meta 
           name="description" 
           content="Ketamine therapy for Veterans in Augusta, GA. $149 consultation with free benefits verification. Chat with our Virtual Care Team 24/7. TRICARE and VA Community Care accepted." 
@@ -105,20 +105,20 @@ Thank you for considering my request.`;
           name="keywords" 
           content="TRICARE ketamine therapy, VA ketamine Augusta, veteran mental health Georgia, military PTSD treatment, Community Care ketamine" 
         />
-        <link rel="canonical" href="https://reveil.health/military-veteran" />
+        <link rel="canonical" href="https://elevatedhealthaugusta.com/military-veteran" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Veteran Mental Health | $149 Consultation + Free Benefits Verification | Réveil" />
+        <meta property="og:title" content="Veteran Mental Health | $149 Consultation + Free Benefits Verification | Elevated Health Augusta" />
         <meta property="og:description" content="Ketamine therapy for Veterans in Augusta, GA. $149 consultation with free benefits verification. Chat with our Virtual Care Team 24/7." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://reveil.health/military-veteran" />
-        <meta property="og:image" content="https://reveil.health/og-image.jpg" />
+        <meta property="og:url" content="https://elevatedhealthaugusta.com/military-veteran" />
+        <meta property="og:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Veteran Ketamine Therapy | TRICARE & VA Accepted" />
         <meta name="twitter:description" content="$149 consultation with free benefits verification. Chat with our Virtual Care Team 24/7." />
-        <meta name="twitter:image" content="https://reveil.health/og-image.jpg" />
+        <meta name="twitter:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
         
         {/* Schema */}
         <script type="application/ld+json">

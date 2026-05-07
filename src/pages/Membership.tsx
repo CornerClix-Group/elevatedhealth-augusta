@@ -53,9 +53,9 @@ const Membership = () => {
   return (
     <>
       <Helmet>
-        <title>Membership | Réveil</title>
-        <meta name="description" content="Réveil founding membership — lock in your rate forever. Wellness Pass $149/mo, Longevity Protocol $299/mo, Executive Concierge $549/mo. 25 spots per tier." />
-        <link rel="canonical" href="https://reveil.health/membership" />
+        <title>Membership | Elevated Health Augusta</title>
+        <meta name="description" content="Elevated Health Augusta founding membership — lock in your rate forever. Wellness Pass $149/mo, Longevity Protocol $299/mo, Executive Concierge $549/mo. 25 spots per tier." />
+        <link rel="canonical" href="https://elevatedhealthaugusta.com/membership" />
       </Helmet>
       <div className="min-h-screen">
         <Navbar />

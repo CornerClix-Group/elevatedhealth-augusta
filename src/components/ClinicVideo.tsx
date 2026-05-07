@@ -101,7 +101,7 @@ const ClinicVideo = () => {
                   Tour Our Space
                 </p>
                 <h3 className="text-3xl md:text-4xl font-playfair font-light text-background mb-8">
-                  Réveil
+                  Elevated Health Augusta
                 </h3>
 
                 {/* Play Button */}
