@@ -172,14 +172,33 @@ const Contact = () => {
                       </ul>
                     </div>
                     
-                    <Button 
-                      onClick={handleBooking}
-                      size="lg"
-                      className="w-full font-lato tracking-wide text-base py-6"
-                    >
-                      Skip Ahead — Book Now
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Button
+                          onClick={handleBooking}
+                          size="lg"
+                          className="w-full rounded-sm font-lato tracking-wide"
+                        >
+                          Book a $79 consultation
+                        </Button>
+                        <p className="text-xs font-jost text-muted-foreground leading-snug">
+                          For hormone therapy, peptides, weight loss, or sexual wellness.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <Button
+                          onClick={goToIV}
+                          size="lg"
+                          variant="outline"
+                          className="w-full rounded-sm font-lato tracking-wide"
+                        >
+                          <Droplet className="mr-2 h-4 w-4" /> Book IV therapy
+                        </Button>
+                        <p className="text-xs font-jost text-muted-foreground leading-snug">
+                          Walk-in friendly. No consult required. Pick your drip and schedule online.
+                        </p>
+                      </div>
+                    </div>
                     
                     <button
                       onClick={() => {
