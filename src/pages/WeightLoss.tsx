@@ -214,7 +214,7 @@ const WeightLoss = () => {
             <div className="container mx-auto px-3 sm:px-4 md:px-6 relative z-10">
               <div className="max-w-5xl mx-auto text-center">
                 <div className="inline-block mb-6 animate-fade-in-up">
-                  <span className="px-4 py-2 bg-primary/10 text-primary border border-gold/30 rounded-full text-sm font-semibold">
+                  <span className="px-4 py-2 bg-primary/10 text-primary border border-accent/30 rounded-full text-sm font-semibold">
                     Hormonal Weight Reset
                   </span>
                 </div>
@@ -225,13 +225,13 @@ const WeightLoss = () => {
                     💳 As low as $100/month with Klarna
                   </span>
                 </div>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 animate-fade-in-up text-primary font-cormorant" style={{ animationDelay: "0.1s" }}>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 animate-fade-in-up text-primary font-playfair" style={{ animationDelay: "0.1s" }}>
                   Hormonal Weight Reset
                 </h1>
-                <p className="text-xl md:text-2xl text-gold mb-6 animate-fade-in-up font-lato font-medium" style={{ animationDelay: "0.15s" }}>
+                <p className="text-xl md:text-2xl text-accent mb-6 animate-fade-in-up font-jost font-medium" style={{ animationDelay: "0.15s" }}>
                   FDA-Approved GLP-1s. Optimized by Your Biology.
                 </p>
-                <p className="text-lg md:text-xl text-primary/70 leading-relaxed mb-10 max-w-3xl mx-auto animate-fade-in-up font-lato" style={{ animationDelay: "0.2s" }}>
+                <p className="text-lg md:text-xl text-primary/70 leading-relaxed mb-10 max-w-3xl mx-auto animate-fade-in-up font-jost" style={{ animationDelay: "0.2s" }}>
                   Weight loss isn't just about calories—it's about hormones. We combine state-of-the-art GLP-1 therapy 
                   with advanced saliva diagnostics to identify and treat the hidden blockers (like High Cortisol 
                   or Estrogen Dominance) that stall your progress.
@@ -241,29 +241,29 @@ const WeightLoss = () => {
                 <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto mb-10 animate-fade-in-up" style={{ animationDelay: "0.25s" }}>
                   {/* Saliva Diagnostics */}
                   <div className="flex flex-col items-center gap-2">
-                    <div className="p-3 rounded-full border border-gold/30">
-                      <svg className="w-8 h-8 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <div className="p-3 rounded-full border border-accent/30">
+                      <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M12 2v6" />
                         <path d="M12 8a4 4 0 0 1 4 4c0 3-4 10-4 10s-4-7-4-10a4 4 0 0 1 4-4z" />
                       </svg>
                     </div>
-                    <span className="text-sm font-lato text-primary font-medium">Saliva Diagnostics</span>
+                    <span className="text-sm font-jost text-primary font-medium">Saliva Diagnostics</span>
                   </div>
                   {/* Fat vs Muscle Targeting */}
                   <div className="flex flex-col items-center gap-2">
-                    <div className="p-3 rounded-full border border-gold/30">
-                      <svg className="w-8 h-8 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <div className="p-3 rounded-full border border-accent/30">
+                      <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="12" cy="12" r="10" />
                         <circle cx="12" cy="12" r="6" />
                         <circle cx="12" cy="12" r="2" />
                       </svg>
                     </div>
-                    <span className="text-sm font-lato text-primary font-medium">Fat vs. Muscle Targeting</span>
+                    <span className="text-sm font-jost text-primary font-medium">Fat vs. Muscle Targeting</span>
                   </div>
                   {/* Adrenal Support */}
                   <div className="flex flex-col items-center gap-2">
-                    <div className="p-3 rounded-full border border-gold/30">
-                      <svg className="w-8 h-8 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <div className="p-3 rounded-full border border-accent/30">
+                      <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="12" cy="12" r="4" />
                         <path d="M12 2v2" />
                         <path d="M12 20v2" />
@@ -275,7 +275,7 @@ const WeightLoss = () => {
                         <path d="m19.07 4.93-1.41 1.41" />
                       </svg>
                     </div>
-                    <span className="text-sm font-lato text-primary font-medium">Adrenal Support</span>
+                    <span className="text-sm font-jost text-primary font-medium">Adrenal Support</span>
                   </div>
                 </div>
 
@@ -303,15 +303,15 @@ const WeightLoss = () => {
 
                 <div className="mt-10 flex flex-wrap justify-center gap-6 text-sm text-primary/60 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-gold" />
+                    <CheckCircle2 className="h-5 w-5 text-accent" />
                     <span>Powered by ZRT Diagnostics</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-gold" />
+                    <CheckCircle2 className="h-5 w-5 text-accent" />
                     <span>FDA-Approved GLP-1s</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-gold" />
+                    <CheckCircle2 className="h-5 w-5 text-accent" />
                     <span>Hormone Blocker Analysis</span>
                   </div>
                 </div>
@@ -337,13 +337,13 @@ const WeightLoss = () => {
           <section className="py-16 md:py-24 bg-background">
             <div className="container mx-auto px-4 sm:px-6">
               <div className="max-w-4xl mx-auto text-center mb-16">
-                <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
+                <p className="text-sm tracking-[0.3em] uppercase text-accent mb-4 font-jost font-light">
                   The Process
                 </p>
-                <h2 className="font-cormorant text-primary text-3xl md:text-4xl font-bold mb-4">
+                <h2 className="font-playfair text-primary text-3xl md:text-4xl font-bold mb-4">
                   Your Concierge Weight Loss Journey
                 </h2>
-                <p className="text-lg text-muted-foreground font-lato">
+                <p className="text-lg text-muted-foreground font-jost">
                   A medically-guided pathway designed around your biology
                 </p>
               </div>
@@ -356,19 +356,19 @@ const WeightLoss = () => {
                     style={{ animationDelay: `${index * 0.15}s` }}
                   >
                     {/* Step Number */}
-                    <div className="text-6xl font-cormorant text-gold/30 font-bold mb-4">
+                    <div className="text-6xl font-playfair text-accent/30 font-bold mb-4">
                       {step.step}
                     </div>
                     {/* Content */}
-                    <h3 className="text-xl font-cormorant text-primary font-bold mb-3">
+                    <h3 className="text-xl font-playfair text-primary font-bold mb-3">
                       {step.headline}
                     </h3>
-                    <p className="text-muted-foreground font-lato leading-relaxed">
+                    <p className="text-muted-foreground font-jost leading-relaxed">
                       {step.body}
                     </p>
                     {/* Connector line (except last) */}
                     {index < processSteps.length - 1 && (
-                      <div className="hidden md:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-gold/30 to-transparent -translate-x-8" />
+                      <div className="hidden md:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-accent/30 to-transparent -translate-x-8" />
                     )}
                   </div>
                 ))}
@@ -380,13 +380,13 @@ const WeightLoss = () => {
           <section className="py-16 md:py-24 bg-gradient-to-br from-[#f5f0e8] via-[#faf7f2] to-[#f0ebe3]">
             <div className="container mx-auto px-4 sm:px-6">
               <div className="max-w-4xl mx-auto text-center mb-12">
-                <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
+                <p className="text-sm tracking-[0.3em] uppercase text-accent mb-4 font-jost font-light">
                   What You Get
                 </p>
-                <h2 className="font-cormorant text-primary text-3xl md:text-4xl font-bold mb-4">
+                <h2 className="font-playfair text-primary text-3xl md:text-4xl font-bold mb-4">
                   Hormonal Weight Reset Includes
                 </h2>
-                <p className="text-lg text-primary/70 font-lato">
+                <p className="text-lg text-primary/70 font-jost">
                   Everything you need for sustainable, biology-based weight loss
                 </p>
               </div>
@@ -398,13 +398,13 @@ const WeightLoss = () => {
                     return (
                       <div 
                         key={index} 
-                        className="flex items-center gap-4 p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-gold/20 animate-fade-in-up"
+                        className="flex items-center gap-4 p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-accent/20 animate-fade-in-up"
                         style={{ animationDelay: `${index * 0.08}s` }}
                       >
                         <div className="shrink-0">
-                          <CheckCircle2 className="h-6 w-6 text-gold" />
+                          <CheckCircle2 className="h-6 w-6 text-accent" />
                         </div>
-                        <p className="text-primary font-lato font-medium">{item.text}</p>
+                        <p className="text-primary font-jost font-medium">{item.text}</p>
                       </div>
                     );
                   })}
@@ -415,7 +415,7 @@ const WeightLoss = () => {
                     onClick={handleConsultationCheckout} 
                     disabled={isConsultationLoading}
                     size="lg" 
-                    className="font-lato bg-primary hover:bg-primary/90 text-white"
+                    className="font-jost bg-primary hover:bg-primary/90 text-white"
                   >
                     {isConsultationLoading ? (
                       <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -475,13 +475,13 @@ const WeightLoss = () => {
             <div className="container mx-auto px-4 sm:px-6">
               <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-12">
-                  <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
+                  <p className="text-sm tracking-[0.3em] uppercase text-accent mb-4 font-jost font-light">
                     The Real Cost
                   </p>
-                  <h2 className="font-cormorant text-primary text-3xl md:text-4xl font-bold mb-4">
+                  <h2 className="font-playfair text-primary text-3xl md:text-4xl font-bold mb-4">
                     Stop Overpaying for Less Care
                   </h2>
-                  <p className="text-lg text-muted-foreground font-lato max-w-2xl mx-auto">
+                  <p className="text-lg text-muted-foreground font-jost max-w-2xl mx-auto">
                     Telehealth apps split charges to hide the real cost. We include everything in one transparent price.
                   </p>
                 </div>
@@ -493,8 +493,8 @@ const WeightLoss = () => {
                       <TrendingDown className="h-5 w-5 text-white" />
                     </div>
                     <div className="text-left">
-                      <p className="text-sm text-green-600 font-medium font-lato">Save up to</p>
-                      <p className="text-2xl font-bold text-green-700 font-cormorant">$1,140/year</p>
+                      <p className="text-sm text-green-600 font-medium font-jost">Save up to</p>
+                      <p className="text-2xl font-bold text-green-700 font-playfair">$1,140/year</p>
                     </div>
                   </div>
                 </div>
@@ -504,96 +504,96 @@ const WeightLoss = () => {
                   <table className="w-full border-collapse bg-white rounded-xl shadow-sm overflow-hidden">
                     <thead>
                       <tr className="bg-primary/5">
-                        <th className="p-4 text-left font-cormorant text-lg text-primary"></th>
-                        <th className="p-4 text-center font-cormorant text-lg text-muted-foreground">
+                        <th className="p-4 text-left font-playfair text-lg text-primary"></th>
+                        <th className="p-4 text-center font-playfair text-lg text-muted-foreground">
                           <span className="block">Telehealth Apps</span>
-                          <span className="text-sm font-lato font-normal">(Ro, Hims, etc.)</span>
+                          <span className="text-sm font-jost font-normal">(Ro, Hims, etc.)</span>
                         </th>
-                        <th className="p-4 text-center font-cormorant text-lg text-gold bg-gold/10">
+                        <th className="p-4 text-center font-playfair text-lg text-accent bg-accent/10">
                           <span className="block">Elevated Health Augusta</span>
-                          <span className="text-sm font-lato font-normal">Augusta, GA</span>
+                          <span className="text-sm font-jost font-normal">Augusta, GA</span>
                         </th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr className="border-b border-border/50">
-                        <td className="p-4 font-lato text-primary font-medium">Real Cost (Semaglutide)</td>
+                        <td className="p-4 font-jost text-primary font-medium">Real Cost (Semaglutide)</td>
                         <td className="p-4 text-center">
                           <span className="text-lg font-bold text-muted-foreground line-through">$494/mo</span>
                           <p className="text-xs text-muted-foreground">$145 membership + $250 lab + medication</p>
                         </td>
-                        <td className="p-4 text-center bg-gold/5">
-                          <span className="text-xl font-bold text-gold">$399/mo</span>
+                        <td className="p-4 text-center bg-accent/5">
+                          <span className="text-xl font-bold text-accent">$399/mo</span>
                           <p className="text-xs text-green-600 font-medium">All-inclusive</p>
                         </td>
                       </tr>
                       <tr className="border-b border-border/50">
-                        <td className="p-4 font-lato text-primary font-medium">Real Cost (Tirzepatide)</td>
+                        <td className="p-4 font-jost text-primary font-medium">Real Cost (Tirzepatide)</td>
                         <td className="p-4 text-center">
                           <span className="text-lg font-bold text-muted-foreground line-through">$594/mo</span>
                           <p className="text-xs text-muted-foreground">$145 membership + $449 medication</p>
                         </td>
-                        <td className="p-4 text-center bg-gold/5">
-                          <span className="text-xl font-bold text-gold">$499/mo</span>
+                        <td className="p-4 text-center bg-accent/5">
+                          <span className="text-xl font-bold text-accent">$499/mo</span>
                           <p className="text-xs text-green-600 font-medium">All-inclusive</p>
                         </td>
                       </tr>
                       <tr className="border-b border-border/50">
-                        <td className="p-4 font-lato text-primary font-medium">Hidden Membership Fees</td>
+                        <td className="p-4 font-jost text-primary font-medium">Hidden Membership Fees</td>
                         <td className="p-4 text-center">
                           <span className="text-red-500 font-medium">Yes — $145/month ongoing</span>
                         </td>
-                        <td className="p-4 text-center bg-gold/5">
+                        <td className="p-4 text-center bg-accent/5">
                           <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
                           <span className="text-xs text-green-600">No hidden fees</span>
                         </td>
                       </tr>
                       <tr className="border-b border-border/50">
-                        <td className="p-4 font-lato text-primary font-medium">In-Person Medical Exam</td>
+                        <td className="p-4 font-jost text-primary font-medium">In-Person Medical Exam</td>
                         <td className="p-4 text-center">
                           <span className="text-muted-foreground">Video call or questionnaire</span>
                         </td>
-                        <td className="p-4 text-center bg-gold/5">
+                        <td className="p-4 text-center bg-accent/5">
                           <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
                           <span className="text-xs text-green-600">30-min with your provider</span>
                         </td>
                       </tr>
                       <tr className="border-b border-border/50">
-                        <td className="p-4 font-lato text-primary font-medium">Same-Day Approval</td>
+                        <td className="p-4 font-jost text-primary font-medium">Same-Day Approval</td>
                         <td className="p-4 text-center">
                           <span className="text-muted-foreground">2-5 business days</span>
                         </td>
-                        <td className="p-4 text-center bg-gold/5">
+                        <td className="p-4 text-center bg-accent/5">
                           <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
                           <span className="text-xs text-green-600">Most patients</span>
                         </td>
                       </tr>
                       <tr className="border-b border-border/50">
-                        <td className="p-4 font-lato text-primary font-medium">Local Provider Access</td>
+                        <td className="p-4 font-jost text-primary font-medium">Local Provider Access</td>
                         <td className="p-4 text-center">
                           <span className="text-muted-foreground">Call center support</span>
                         </td>
-                        <td className="p-4 text-center bg-gold/5">
+                        <td className="p-4 text-center bg-accent/5">
                           <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
                           <span className="text-xs text-green-600">Direct messaging</span>
                         </td>
                       </tr>
                       <tr className="border-b border-border/50">
-                        <td className="p-4 font-lato text-primary font-medium">Hormone Integration</td>
+                        <td className="p-4 font-jost text-primary font-medium">Hormone Integration</td>
                         <td className="p-4 text-center">
                           <span className="text-muted-foreground">Not offered</span>
                         </td>
-                        <td className="p-4 text-center bg-gold/5">
+                        <td className="p-4 text-center bg-accent/5">
                           <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
                           <span className="text-xs text-green-600">$149/mo add-on</span>
                         </td>
                       </tr>
                       <tr>
-                        <td className="p-4 font-lato text-primary font-medium">Mental Health Support</td>
+                        <td className="p-4 font-jost text-primary font-medium">Mental Health Support</td>
                         <td className="p-4 text-center">
                           <span className="text-muted-foreground">Not offered</span>
                         </td>
-                        <td className="p-4 text-center bg-gold/5">
+                        <td className="p-4 text-center bg-accent/5">
                           <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
                           <span className="text-xs text-green-600">Ketamine-certified provider</span>
                         </td>
@@ -602,7 +602,7 @@ const WeightLoss = () => {
                   </table>
                 </div>
 
-                <p className="text-center text-xs text-muted-foreground mt-6 font-lato">
+                <p className="text-center text-xs text-muted-foreground mt-6 font-jost">
                   Comparison based on publicly available Ro pricing as of January 2025. Membership: $45 first month, then $145/mo. 
                   Medication costs are additional and vary by dosage.
                 </p>
@@ -612,7 +612,7 @@ const WeightLoss = () => {
                     onClick={handleConsultationCheckout}
                     disabled={isConsultationLoading}
                     size="lg"
-                    className="bg-primary hover:bg-primary/90 text-white font-lato"
+                    className="bg-primary hover:bg-primary/90 text-white font-jost"
                   >
                     {isConsultationLoading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -632,13 +632,13 @@ const WeightLoss = () => {
             <div className="container mx-auto px-4 sm:px-6">
               <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-12">
-                  <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
+                  <p className="text-sm tracking-[0.3em] uppercase text-accent mb-4 font-jost font-light">
                     Compare Your Options
                   </p>
-                  <h2 className="font-cormorant text-primary text-3xl md:text-4xl font-bold mb-4">
+                  <h2 className="font-playfair text-primary text-3xl md:text-4xl font-bold mb-4">
                     Semaglutide vs. Tirzepatide
                   </h2>
-                  <p className="text-lg text-muted-foreground font-lato max-w-2xl mx-auto">
+                  <p className="text-lg text-muted-foreground font-jost max-w-2xl mx-auto">
                     Both are FDA-approved GLP-1 medications. Choose based on your goals and budget.
                   </p>
                 </div>
@@ -648,47 +648,47 @@ const WeightLoss = () => {
                   <table className="w-full border-collapse">
                     <thead>
                       <tr>
-                        <th className="p-4 text-left font-cormorant text-lg text-primary bg-white/50 border-b border-gold/20 rounded-tl-xl"></th>
-                        <th className="p-4 text-center font-cormorant text-xl text-primary bg-white/50 border-b border-gold/20">
+                        <th className="p-4 text-left font-playfair text-lg text-primary bg-white/50 border-b border-accent/20 rounded-tl-xl"></th>
+                        <th className="p-4 text-center font-playfair text-xl text-primary bg-white/50 border-b border-accent/20">
                           <div className="flex flex-col items-center gap-1">
                             <span className="font-bold">Semaglutide</span>
-                            <span className="text-gold text-lg font-lato">$399/mo</span>
+                            <span className="text-accent text-lg font-jost">$399/mo</span>
                           </div>
                         </th>
-                        <th className="p-4 text-center font-cormorant text-xl text-primary bg-gold/10 border-b border-gold/30 rounded-tr-xl">
+                        <th className="p-4 text-center font-playfair text-xl text-primary bg-accent/10 border-b border-accent/30 rounded-tr-xl">
                           <div className="flex flex-col items-center gap-1">
-                            <span className="inline-block px-2 py-0.5 bg-gold text-white text-xs rounded-full mb-1 font-lato">Premium</span>
+                            <span className="inline-block px-2 py-0.5 bg-accent text-white text-xs rounded-full mb-1 font-jost">Premium</span>
                             <span className="font-bold">Tirzepatide</span>
-                            <span className="text-gold text-lg font-lato">$499/mo</span>
+                            <span className="text-accent text-lg font-jost">$499/mo</span>
                           </div>
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white/70">
-                      <tr className="border-b border-gold/10">
-                        <td className="p-4 font-lato text-primary font-medium">Mechanism</td>
-                        <td className="p-4 text-center font-lato text-primary/70">GLP-1 receptor agonist</td>
-                        <td className="p-4 text-center font-lato text-primary/70 bg-gold/5">Dual GLP-1 + GIP agonist</td>
+                      <tr className="border-b border-accent/10">
+                        <td className="p-4 font-jost text-primary font-medium">Mechanism</td>
+                        <td className="p-4 text-center font-jost text-primary/70">GLP-1 receptor agonist</td>
+                        <td className="p-4 text-center font-jost text-primary/70 bg-accent/5">Dual GLP-1 + GIP agonist</td>
                       </tr>
-                      <tr className="border-b border-gold/10">
-                        <td className="p-4 font-lato text-primary font-medium">Avg. Weight Loss (Clinical Trials)</td>
-                        <td className="p-4 text-center font-lato text-primary/70">
+                      <tr className="border-b border-accent/10">
+                        <td className="p-4 font-jost text-primary font-medium">Avg. Weight Loss (Clinical Trials)</td>
+                        <td className="p-4 text-center font-jost text-primary/70">
                           <span className="text-lg font-bold text-primary">~15%</span>
                           <br />
                           <span className="text-xs text-muted-foreground">of body weight</span>
                         </td>
-                        <td className="p-4 text-center font-lato bg-gold/5">
-                          <span className="text-lg font-bold text-gold">~22.5%</span>
+                        <td className="p-4 text-center font-jost bg-accent/5">
+                          <span className="text-lg font-bold text-accent">~22.5%</span>
                           <br />
                           <span className="text-xs text-muted-foreground">of body weight</span>
                         </td>
                       </tr>
-                      <tr className="border-b border-gold/10">
-                        <td className="p-4 font-lato text-primary font-medium">Blood Sugar Control</td>
+                      <tr className="border-b border-accent/10">
+                        <td className="p-4 font-jost text-primary font-medium">Blood Sugar Control</td>
                         <td className="p-4 text-center">
                           <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
                         </td>
-                        <td className="p-4 text-center bg-gold/5">
+                        <td className="p-4 text-center bg-accent/5">
                           <div className="flex items-center justify-center gap-1">
                             <CheckCircle2 className="h-5 w-5 text-green-500" />
                             <CheckCircle2 className="h-5 w-5 text-green-500" />
@@ -696,32 +696,32 @@ const WeightLoss = () => {
                           <span className="text-xs text-muted-foreground">Superior A1C reduction</span>
                         </td>
                       </tr>
-                      <tr className="border-b border-gold/10">
-                        <td className="p-4 font-lato text-primary font-medium">Appetite Suppression</td>
-                        <td className="p-4 text-center font-lato text-primary/70">Strong</td>
-                        <td className="p-4 text-center font-lato text-gold bg-gold/5 font-medium">Very Strong</td>
+                      <tr className="border-b border-accent/10">
+                        <td className="p-4 font-jost text-primary font-medium">Appetite Suppression</td>
+                        <td className="p-4 text-center font-jost text-primary/70">Strong</td>
+                        <td className="p-4 text-center font-jost text-accent bg-accent/5 font-medium">Very Strong</td>
                       </tr>
-                      <tr className="border-b border-gold/10">
-                        <td className="p-4 font-lato text-primary font-medium">FDA Approved For</td>
-                        <td className="p-4 text-center font-lato text-primary/70 text-sm">Diabetes (Ozempic) & Weight Loss (Wegovy)</td>
-                        <td className="p-4 text-center font-lato text-primary/70 text-sm bg-gold/5">Diabetes (Mounjaro) & Weight Loss (Zepbound)</td>
+                      <tr className="border-b border-accent/10">
+                        <td className="p-4 font-jost text-primary font-medium">FDA Approved For</td>
+                        <td className="p-4 text-center font-jost text-primary/70 text-sm">Diabetes (Ozempic) & Weight Loss (Wegovy)</td>
+                        <td className="p-4 text-center font-jost text-primary/70 text-sm bg-accent/5">Diabetes (Mounjaro) & Weight Loss (Zepbound)</td>
                       </tr>
-                      <tr className="border-b border-gold/10">
-                        <td className="p-4 font-lato text-primary font-medium">Injection Frequency</td>
-                        <td className="p-4 text-center font-lato text-primary/70">Once weekly</td>
-                        <td className="p-4 text-center font-lato text-primary/70 bg-gold/5">Once weekly</td>
+                      <tr className="border-b border-accent/10">
+                        <td className="p-4 font-jost text-primary font-medium">Injection Frequency</td>
+                        <td className="p-4 text-center font-jost text-primary/70">Once weekly</td>
+                        <td className="p-4 text-center font-jost text-primary/70 bg-accent/5">Once weekly</td>
                       </tr>
-                      <tr className="border-b border-gold/10">
-                        <td className="p-4 font-lato text-primary font-medium">Time on Market</td>
-                        <td className="p-4 text-center font-lato text-primary/70">Since 2017</td>
-                        <td className="p-4 text-center font-lato text-primary/70 bg-gold/5">Since 2022</td>
+                      <tr className="border-b border-accent/10">
+                        <td className="p-4 font-jost text-primary font-medium">Time on Market</td>
+                        <td className="p-4 text-center font-jost text-primary/70">Since 2017</td>
+                        <td className="p-4 text-center font-jost text-primary/70 bg-accent/5">Since 2022</td>
                       </tr>
                       <tr>
-                        <td className="p-4 font-lato text-primary font-medium">Best For</td>
-                        <td className="p-4 text-center font-lato text-primary/70 text-sm">
+                        <td className="p-4 font-jost text-primary font-medium">Best For</td>
+                        <td className="p-4 text-center font-jost text-primary/70 text-sm">
                           Steady, sustainable weight loss with proven long-term data
                         </td>
-                        <td className="p-4 text-center font-lato text-primary/70 text-sm bg-gold/5">
+                        <td className="p-4 text-center font-jost text-primary/70 text-sm bg-accent/5">
                           Maximum weight loss, insulin resistance, or plateau breakers
                         </td>
                       </tr>
@@ -729,7 +729,7 @@ const WeightLoss = () => {
                   </table>
                 </div>
 
-                <p className="text-center text-xs text-muted-foreground mt-6 font-lato">
+                <p className="text-center text-xs text-muted-foreground mt-6 font-jost">
                   Clinical trial data from STEP (Semaglutide) and SURMOUNT (Tirzepatide) studies. Individual results may vary.
                 </p>
 
@@ -737,7 +737,7 @@ const WeightLoss = () => {
                   <Button 
                     onClick={handleConsultationCheckout}
                     disabled={isConsultationLoading}
-                    className="bg-gold hover:bg-gold-dark text-white font-lato"
+                    className="bg-accent hover:bg-accent text-white font-jost"
                   >
                     {isConsultationLoading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -756,13 +756,13 @@ const WeightLoss = () => {
             
             <div className="container mx-auto px-4 sm:px-6 relative z-10">
               <div className="max-w-4xl mx-auto text-center mb-12">
-                <p className="text-sm tracking-[0.3em] uppercase text-gold mb-4 font-lato font-light">
+                <p className="text-sm tracking-[0.3em] uppercase text-accent mb-4 font-jost font-light">
                   Simple Pricing
                 </p>
-                <h2 className="font-cormorant text-primary text-3xl md:text-4xl font-bold mb-4">
+                <h2 className="font-playfair text-primary text-3xl md:text-4xl font-bold mb-4">
                   Start Your Journey
                 </h2>
-                <p className="text-lg text-muted-foreground font-lato">
+                <p className="text-lg text-muted-foreground font-jost">
                   $79 Wellness Assessment credited toward your first month of treatment
                 </p>
               </div>
@@ -771,25 +771,25 @@ const WeightLoss = () => {
               <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
                 
                 {/* Discovery Consultation */}
-                <Card className="border border-gold/30 hover:border-gold/50 transition-all">
+                <Card className="border border-accent/30 hover:border-accent/50 transition-all">
                   <CardContent className="p-6 text-center">
-                    <div className="inline-flex p-3 bg-gold/10 rounded-full mb-4">
-                      <MessageCircle className="h-6 w-6 text-gold" />
+                    <div className="inline-flex p-3 bg-accent/10 rounded-full mb-4">
+                      <MessageCircle className="h-6 w-6 text-accent" />
                     </div>
-                    <h3 className="font-cormorant text-xl text-primary font-bold mb-2">
+                    <h3 className="font-playfair text-xl text-primary font-bold mb-2">
                       Discovery Consultation
                     </h3>
-                    <p className="text-3xl font-cormorant text-primary mb-2">$79</p>
+                    <p className="text-3xl font-playfair text-primary mb-2">$79</p>
                     <p className="text-xs text-green-600 font-medium mb-2">
                       Credited toward your first month
                     </p>
-                    <p className="text-sm text-muted-foreground mb-4 font-lato">
+                    <p className="text-sm text-muted-foreground mb-4 font-jost">
                       30-minute in-person session to assess eligibility and create your personalized plan.
                     </p>
                     <Button 
                       onClick={handleConsultationCheckout}
                       disabled={isConsultationLoading}
-                      className="w-full bg-gold hover:bg-gold-dark text-white"
+                      className="w-full bg-accent hover:bg-accent text-white"
                     >
                       {isConsultationLoading ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -803,7 +803,7 @@ const WeightLoss = () => {
 
                 {/* Semaglutide Membership */}
                 <div 
-                  className="relative p-6 rounded-2xl border border-gold/30 animate-fade-in-up"
+                  className="relative p-6 rounded-2xl border border-accent/30 animate-fade-in-up"
                   style={{
                     background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 50%, rgba(250,247,242,0.8) 100%)',
                     backdropFilter: 'blur(20px)',
@@ -811,33 +811,33 @@ const WeightLoss = () => {
                   }}
                 >
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="bg-gold text-white text-xs px-3 py-1 rounded-full font-lato">
+                    <span className="bg-accent text-white text-xs px-3 py-1 rounded-full font-jost">
                       Most Popular
                     </span>
                   </div>
                   <div className="relative z-10 text-center pt-2">
-                    <div className="inline-flex p-3 bg-gold/10 rounded-full mb-4">
-                      <Pill className="h-6 w-6 text-gold" />
+                    <div className="inline-flex p-3 bg-accent/10 rounded-full mb-4">
+                      <Pill className="h-6 w-6 text-accent" />
                     </div>
-                    <h3 className="font-cormorant text-xl text-primary font-bold mb-2">
+                    <h3 className="font-playfair text-xl text-primary font-bold mb-2">
                       Semaglutide Membership
                     </h3>
                     <div className="flex items-baseline justify-center gap-1 mb-1">
-                      <span className="font-cormorant text-3xl text-primary font-light">$399</span>
-                      <span className="text-primary/60 font-lato text-sm">/ month</span>
+                      <span className="font-playfair text-3xl text-primary font-light">$399</span>
+                      <span className="text-primary/60 font-jost text-sm">/ month</span>
                     </div>
                     <p className="text-xs text-green-600 font-medium mb-3">
                       First month $300 with consultation credit
                     </p>
-                    <p className="text-sm text-muted-foreground mb-4 font-lato">
+                    <p className="text-sm text-muted-foreground mb-4 font-jost">
                       FDA-approved GLP-1 for steady, sustainable weight loss with full provider support.
                     </p>
                     
                     <ul className="space-y-2 mb-4 text-sm text-left">
                       {membershipInclusions.slice(0, 4).map((inclusion, index) => (
                         <li key={index} className="flex items-start gap-2">
-                          <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                          <span className="text-primary/70 font-lato text-xs">{inclusion}</span>
+                          <CheckCircle2 className="h-4 w-4 text-accent shrink-0 mt-0.5" />
+                          <span className="text-primary/70 font-jost text-xs">{inclusion}</span>
                         </li>
                       ))}
                     </ul>
@@ -846,7 +846,7 @@ const WeightLoss = () => {
                       onClick={handleSemaglutideCheckout}
                       disabled={isSemaglutideLoading}
                       size="lg" 
-                      className="w-full bg-primary hover:bg-primary/90 text-white font-lato"
+                      className="w-full bg-primary hover:bg-primary/90 text-white font-jost"
                     >
                       {isSemaglutideLoading ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -858,7 +858,7 @@ const WeightLoss = () => {
 
                 {/* Tirzepatide Membership - Premium */}
                 <div 
-                  className="relative p-6 rounded-2xl border-2 border-gold/60 animate-fade-in-up"
+                  className="relative p-6 rounded-2xl border-2 border-accent/60 animate-fade-in-up"
                   style={{
                     animationDelay: "0.1s",
                     background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(250,247,242,0.9) 50%, rgba(212,160,23,0.05) 100%)',
@@ -868,45 +868,45 @@ const WeightLoss = () => {
                 >
                   {/* Premium Badge */}
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-gold to-gold-dark text-white text-xs px-4 py-1 rounded-full font-lato font-medium shadow-lg">
+                    <span className="bg-gradient-to-r from-accent to-accent-dark text-white text-xs px-4 py-1 rounded-full font-jost font-medium shadow-lg">
                       Premium Tier
                     </span>
                   </div>
 
                   <div className="relative z-10 text-center pt-2">
-                    <div className="inline-flex p-3 bg-gold/10 rounded-full mb-4">
-                      <Sparkles className="h-6 w-6 text-gold" />
+                    <div className="inline-flex p-3 bg-accent/10 rounded-full mb-4">
+                      <Sparkles className="h-6 w-6 text-accent" />
                     </div>
-                    <h3 className="font-cormorant text-xl text-primary font-bold mb-2">
+                    <h3 className="font-playfair text-xl text-primary font-bold mb-2">
                       Tirzepatide Membership
                     </h3>
                     <div className="flex items-baseline justify-center gap-1 mb-1">
-                      <span className="font-cormorant text-3xl text-gold font-light">$499</span>
-                      <span className="text-primary/60 font-lato text-sm">/ month</span>
+                      <span className="font-playfair text-3xl text-accent font-light">$499</span>
+                      <span className="text-primary/60 font-jost text-sm">/ month</span>
                     </div>
                     <p className="text-xs text-green-600 font-medium mb-3">
                       First month $400 with consultation credit
                     </p>
-                    <p className="text-sm text-muted-foreground mb-4 font-lato">
+                    <p className="text-sm text-muted-foreground mb-4 font-jost">
                       Dual-action GLP-1/GIP for accelerated results — up to 22.5% weight loss.
                     </p>
 
                     <ul className="space-y-2 mb-4 text-sm text-left">
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-lato text-xs">FDA-Approved Tirzepatide (dual GLP-1/GIP)</span>
+                        <CheckCircle2 className="h-4 w-4 text-accent shrink-0 mt-0.5" />
+                        <span className="text-primary/70 font-jost text-xs">FDA-Approved Tirzepatide (dual GLP-1/GIP)</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-lato text-xs">Medical eligibility screening included</span>
+                        <CheckCircle2 className="h-4 w-4 text-accent shrink-0 mt-0.5" />
+                        <span className="text-primary/70 font-jost text-xs">Medical eligibility screening included</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-lato text-xs">Unlimited provider messaging & support</span>
+                        <CheckCircle2 className="h-4 w-4 text-accent shrink-0 mt-0.5" />
+                        <span className="text-primary/70 font-jost text-xs">Unlimited provider messaging & support</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-lato text-xs">Priority shipping from our partner</span>
+                        <CheckCircle2 className="h-4 w-4 text-accent shrink-0 mt-0.5" />
+                        <span className="text-primary/70 font-jost text-xs">Priority shipping from our partner</span>
                       </li>
                     </ul>
 
@@ -914,7 +914,7 @@ const WeightLoss = () => {
                       onClick={handleTirzepatideCheckout}
                       disabled={isTirzepatideLoading}
                       size="lg" 
-                      className="w-full bg-gold hover:bg-gold-dark text-white font-lato"
+                      className="w-full bg-accent hover:bg-accent text-white font-jost"
                     >
                       {isTirzepatideLoading ? (
                         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -925,7 +925,7 @@ const WeightLoss = () => {
                 </div>
               </div>
 
-              <p className="mt-8 text-center text-xs text-primary/50 font-lato">
+              <p className="mt-8 text-center text-xs text-primary/50 font-jost">
                 Cancel anytime. Most patients see results within the first month.
               </p>
             </div>
