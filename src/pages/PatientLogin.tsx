@@ -498,10 +498,13 @@ const PatientLogin = () => {
           </p>
         </div>
 
-        {/* Back to Home Link */}
-        <div className="mt-4 text-center">
-          <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+        {/* Back to Home + Staff cross-link */}
+        <div className="mt-4 text-center space-y-2">
+          <Link to="/" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
             ← Back to website
+          </Link>
+          <Link to="/admin/login" className="block text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors">
+            Clinic team member? Staff Sign-In →
           </Link>
         </div>
       </div>
