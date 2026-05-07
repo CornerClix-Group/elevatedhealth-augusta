@@ -173,6 +173,15 @@ const Navbar = () => {
                 >
                   Book Now
                 </Button>
+
+                {!isCheckingAuth && !isLoggedIn && (
+                  <button
+                    onClick={() => { navigate("/patient/login"); setIsMobileMenuOpen(false); }}
+                    className="w-full text-sm font-jost text-muted-foreground hover:text-foreground transition-colors py-2"
+                  >
+                    Patient Portal
+                  </button>
+                )}
                 
                 {!isCheckingAuth && isLoggedIn && (
                   <>
