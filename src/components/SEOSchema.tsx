@@ -22,7 +22,7 @@ const SEOSchema = () => {
     },
     "url": "https://elevatedhealthaugusta.com",
     "telephone": `+1${SITE_CONFIG.phoneRaw}`,
-    "priceRange": "$149-$699",
+    "priceRange": "$79-$699",
     "openingHoursSpecification": [
       {
         "@type": "OpeningHoursSpecification",
@@ -75,7 +75,7 @@ const SEOSchema = () => {
         "name": "How much is a consultation at Elevated Health Augusta?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Initial consultations are $149 and are credited toward your first treatment."
+          "text": "Initial RN Wellness Assessment is $79 and is credited toward your first treatment."
         }
       }
     ]

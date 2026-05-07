@@ -218,15 +218,49 @@ const StaffPricingCheatsheet = () => {
                   <div className="space-y-3 pb-4">
                     <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <div>
-                        <p className="font-medium">Discovery Consultation</p>
-                        <p className="text-sm text-muted-foreground">30-minute, IN-PERSON at Evans clinic • Credited toward treatment</p>
+                        <p className="font-medium">RN Wellness Assessment <span className="text-xs text-accent">(NEW — primary entry point)</span></p>
+                        <p className="text-sm text-muted-foreground">30 min with Caroline (RN) • Vitals, history, goal-setting • Credits 100% toward any treatment within 30 days</p>
+                      </div>
+                      <Badge variant="secondary" className="font-mono">$79</Badge>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <div>
+                        <p className="font-medium">MD Physician Evaluation</p>
+                        <p className="text-sm text-muted-foreground">30 min • Required for new Rx (hormones, peptides, GLP-1, ketamine) • Internal escalation from RN assessment</p>
                       </div>
                       <Badge variant="secondary" className="font-mono">$149</Badge>
                     </div>
-                    <div className="bg-muted/50 rounded-lg p-3 text-sm">
-                      <p className="font-medium mb-1">💡 Pro Tip:</p>
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <div>
+                        <p className="font-medium">RN Follow-Up / Coaching</p>
+                        <p className="text-sm text-muted-foreground">15 min check-in between visits</p>
+                      </div>
+                      <Badge variant="secondary" className="font-mono">$49</Badge>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <div>
+                        <p className="font-medium">Injection Admin Fee</p>
+                        <p className="text-sm text-muted-foreground">B12, lipo, peptide teach-and-inject (separate from medication)</p>
+                      </div>
+                      <Badge variant="secondary" className="font-mono">$20</Badge>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <div>
+                        <p className="font-medium">IV Start & Monitoring Fee</p>
+                        <p className="text-sm text-muted-foreground">Bundled into displayed IV menu prices — do NOT add as separate line</p>
+                      </div>
+                      <Badge variant="secondary" className="font-mono">$35</Badge>
+                    </div>
+                    <div className="bg-amber-500/10 rounded-lg p-3 text-sm">
+                      <p className="font-medium text-amber-700 dark:text-amber-400 mb-1">⚠️ RN Scope of Practice (GA)</p>
                       <p className="text-muted-foreground">
-                        Patients who already have labs from another provider can still book a $99 consult to have our providers review their existing labs.
+                        Caroline (RN) <strong>cannot</strong> diagnose, prescribe, or modify medications. Use words like <em>"wellness assessment,"</em> <em>"goal-setting,"</em> and <em>"protocol education"</em> — never <em>"medical evaluation"</em> or <em>"diagnosis."</em> If patient requests a Rx or has a complex medical question, escalate to MD evaluation ($149).
+                      </p>
+                    </div>
+                    <div className="bg-muted/50 rounded-lg p-3 text-sm">
+                      <p className="font-medium mb-1">💡 Credit Logic</p>
+                      <p className="text-muted-foreground">
+                        $79 RN Assessment fee credits 100% toward any treatment (IV, membership, injection, peptide, hormone) when redeemed within 30 days. No MD consult required to redeem.
                       </p>
                     </div>
                   </div>
@@ -252,7 +286,7 @@ const StaffPricingCheatsheet = () => {
                       </div>
                       <div className="text-right">
                         <Badge variant="secondary" className="font-mono">$349</Badge>
-                        <p className="text-xs text-muted-foreground mt-1">or $250 with $149 credit</p>
+                        <p className="text-xs text-muted-foreground mt-1">or $250 with $79 credit</p>
                       </div>
                     </div>
                     <div className="bg-muted/50 rounded-lg p-3 text-sm">
@@ -364,7 +398,7 @@ const StaffPricingCheatsheet = () => {
                     <div className="bg-green-500/10 rounded-lg p-3 text-sm">
                       <p className="font-medium text-green-700 dark:text-green-400 mb-1">✓ Labs NOT Required to Start</p>
                       <p className="text-muted-foreground">
-                        Most weight loss patients start GLP-1 medication after their $149 consultation—no mandatory lab kit. Our physician reviews eligibility in-person.
+                        Most weight loss patients start GLP-1 medication after their $79 RN Wellness Assessment—no mandatory lab kit. Our physician reviews eligibility in-person.
                       </p>
                     </div>
                     <div className="bg-muted/50 rounded-lg p-3 text-sm">
@@ -821,7 +855,7 @@ const StaffPricingCheatsheet = () => {
                 <div className="border-l-2 border-primary pl-4">
                   <p className="font-medium text-sm">"What's the cheapest way to start?"</p>
                   <p className="text-sm text-muted-foreground">
-                    $149 Discovery Consultation — it's credited toward any treatment plan.
+                    $79 RN Wellness Assessment — it's credited toward any treatment plan.
                   </p>
                 </div>
 

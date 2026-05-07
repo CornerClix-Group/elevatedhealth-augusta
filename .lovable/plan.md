@@ -1,116 +1,53 @@
+## Goal
 
+Pivot the top-of-funnel offer from a $149 MD consult to a **$79 RN Wellness Assessment** (Caroline-led, scope-of-practice safe) and add three additional RN-billable services. Keep the MD physician evaluation available as a downstream upgrade, not the entry point.
 
-## Analysis: Booking, Communication, and Stripe Consolidation
+## New service offerings
 
-### Current State (Problems Found)
+| Service | Price | Provider | Duration | Notes |
+|---|---|---|---|---|
+| RN Wellness Assessment | **$79** | Caroline (RN) | 30 min | New top-of-funnel; replaces $149 consult as default |
+| IV Start & Monitoring Fee | **$35** | RN | per drip | **Bundled into displayed IV menu prices** — no line-item at checkout |
+| Injection Admin Fee | **$20** | RN | per inj. | Separate line on B12, lipo, peptide teach-and-inject |
+| RN Follow-Up / Coaching | **$49** | Caroline (RN) | 15 min | Between-visit check-ins |
+| MD Physician Evaluation | $149 | MD | 30 min | Now an internal escalation, not public entry point |
 
-**1. Booking Flow Issues**
-- The Google Calendar link in `siteConfig.ts` still says "Elevated Health Augusta" when patients see it
-- The `ConsultationModal` still lists "Peptide Protocols" with a description mentioning "SPRAVATO® for depression, PTSD, and anxiety" — completely wrong for the rebrand
-- The `Consult.tsx` page has a service card labeled "Ketamine Therapy" with the old description
-- The consultation checkout edge function (`create-consultation-checkout`) still has service configs for "ketamine", "hair", and "sexual" with old descriptions referencing Elevated Health
+**Credit logic:** $79 RN assessment credits 100% toward any treatment (IV, membership, injection, peptide, hormone) when redeemed within 30 days. No MD consult required.
 
-**2. Stripe Pricing Mismatches**
-- `CONSULTATION_PRICES.discovery` still shows `$99` / `$9900` — should be `$149` / `$14900`
-- `CONSULTATION_CREDIT` still references `$99` — should be `$149`
-- The summary table at the bottom of `stripeConfig.ts` is completely stale (references $99 consultations, $349 kits, "Elevated Architecture Protocol", etc.)
-- The `create-consultation-checkout` edge function uses `price_data` with `unit_amount: 14900` (correct) but the config file says 9900
-- `KETAMINE_PRICES` section is still fully defined — should be deprecated/hidden
-- Old hormone membership tiers (Access $99/Vitality $149/Concierge $249) don't match the new founding member tiers (Wellness Pass $149→$199, Longevity $299→$399, Executive Concierge $549→$699)
+## Marketing/public-site changes (frontend only)
 
-**3. Membership Model Conflict**
-- Two completely different membership models coexist:
-  - **Old model** (in `HORMONE_MEMBERSHIP_TIERS`): Access/Vitality/Concierge at $99/$149/$249 — hormone-specific
-  - **New model** (on Membership page): Wellness Pass/Longevity Protocol/Executive Concierge at $149/$299/$549 founding → $199/$399/$699 standard — comprehensive longevity bundles
-- The Membership page has no Stripe checkout integration — the "Claim your founding rate" button calls `openBooking()` which opens the old consultation modal
-- No Stripe products exist for the new membership tiers
+1. **Replace primary CTA copy site-wide** — wherever the site currently says "Book a $149 Consultation" / "$149 Strategy Session" → "Book a $79 RN Wellness Assessment." Affected files include (non-exhaustive):
+   - `src/components/BookingWidget.tsx`, `ConsultationModal.tsx`, `FloatingMobileCTA.tsx`, `FoundingMemberBanner.tsx`, `Insurance.tsx`, `KetamineTherapy.tsx`, `TreatmentsPricing.tsx`, `HowGLP1Works.tsx`, `WhyTransdermalCream.tsx`, `WhatToExpect.tsx`
+   - `src/pages/Consult.tsx` (primary), `Affordability.tsx`, `WeightLoss.tsx`, `Hormones*.tsx`, `IVKetamine.tsx`, `IVLounge.tsx`, `PeptideTherapy.tsx`, `HairRestoration.tsx`, `MilitaryVeteran.tsx`, `Spravato.tsx`, `SexualWellness.tsx`, `WhatToExpect.tsx`, `HowKetamineWorks.tsx`
+   - SEO: `SEOSchema.tsx` price/offer schema → $79
+   - Chat: `ChatBot.tsx`, `AssistantHub.tsx` knowledge base
+2. **`src/pages/Consult.tsx`** becomes the RN Assessment booking page. Add a small secondary line: *"Need a physician evaluation for prescription therapies? We'll schedule the MD visit ($149) after your assessment if clinically appropriate."*
+3. **`PricingComparison.tsx` / `CompareQuizModal.tsx`** — recompute the value calculator with $79 entry point.
+4. **`CreditCodeInput.tsx`** — credit code copy says "$79 RN Assessment credit applied" instead of $149.
+5. **IV menu pages (`IVLounge.tsx`, `IVKetamine.tsx`)** — add $35 to each displayed drip price (math only, no "+$35 fee" disclaimer).
+6. **Founding Member banner** — remove or rewrite the $149 reference.
 
-### Recommendation
+## Internal staff-facing changes (frontend)
 
-Rather than patching the Google Calendar (which still shows old branding), I recommend a **Stripe-gated booking flow** that you already partially have:
+1. **`StaffPricingCheatsheet.tsx` / `StaffQuickCard.tsx`** — add the four new RN line items, scope-of-practice notes ("RN cannot diagnose / prescribe; escalate to MD for Rx requests"), and the credit redemption rule.
+2. **Provider dashboard quick-pay (`QuickPaymentModal.tsx`)** — add the four new services to the quick-charge picker.
+3. **`AddPatientModal.tsx` / `InvitePatientCard.tsx`** — service-type dropdowns include "RN Wellness Assessment."
 
-```text
-Patient Journey:
-┌─────────────────────────────────────────┐
-│  1. Patient clicks "Book Now"           │
-│  2. Consultation Modal opens            │
-│     → 4 service cards (Hormones,        │
-│       Weight Loss, IV Therapy, Peptides)│
-│  3. Stripe checkout → $149 payment      │
-│  4. Payment success page embeds         │
-│     Google Calendar for scheduling      │
-│  5. Patient picks a time slot           │
-└─────────────────────────────────────────┘
-```
+## Booking/calendar
 
-This is already mostly built — we just need to fix the content and pricing.
+The current public booking flow points to a single Calendly-style URL for the $149 consult. Add a **second calendar URL** for the RN Assessment (Caroline's calendar) and route the public CTA there. The MD calendar URL stays available for internal escalations from the provider dashboard.
 
-### Implementation Plan
+## Backend (minimal)
 
-**Step 1: Fix `stripeConfig.ts` — Single Source of Truth**
-- Update `CONSULTATION_PRICES.discovery` to $149
-- Update `CONSULTATION_CREDIT` to $149
-- Create new `FOUNDING_MEMBERSHIP_PRICES` section with 3 tiers matching the Membership page
-- Comment out or deprecate `KETAMINE_PRICES`
-- Update the summary table
-- Clean up stale references to "Elevated"
+No schema changes required — existing `consultation_bookings` and `service_interests` cover this. We'll just add `'rn_assessment'`, `'rn_followup'`, `'iv_admin_fee'`, `'injection_admin'` as recognized service slugs in:
+- `src/lib/services.ts` or equivalent service catalog (read first before editing)
+- The credit-code edge function logic (lookup table for valid credit-bearing services)
 
-**Step 2: Fix `ConsultationModal.tsx` — Service Selection**
-- Replace the 3 current options with 4 aligned to active services:
-  - Hormone Optimization (replaces "Hormone Replacement")
-  - Medical Weight Loss (keep, fix description)
-  - IV Therapy (new)
-  - Peptide Protocols (fix description — remove SPRAVATO reference)
-- All point to `create-consultation-checkout` with correct service types
+## Out of scope for this prompt
 
-**Step 3: Fix `create-consultation-checkout` Edge Function**
-- Remove ketamine/hair/sexual service configs
-- Add IV therapy service config
-- Update all descriptions to Réveil branding
-- Ensure `unit_amount: 14900` ($149) is used
-- Change credit code prefix from `EH-` to `RV-`
+- Stripe products: I'll **not** auto-create new Stripe price IDs in this build — you'll want to create them in your Stripe dashboard and paste the IDs back, or I can use the Stripe MCP to create them in a follow-up.
+- Practice-management schema migration from the uploaded `schema.sql` — that's a separate, much larger build (Prompts 1–8 from your `lovable-prompts-pms.md`). Flag this for a dedicated session.
 
-**Step 4: Create Stripe Products for New Membership Tiers**
-- Create 3 new Stripe products + prices:
-  - Wellness Pass: $149/mo (founding) 
-  - Longevity Protocol: $299/mo (founding)
-  - Executive Concierge: $549/mo (founding)
+## Verification
 
-**Step 5: Create `create-founding-membership-checkout` Edge Function**
-- New edge function that accepts tier selection and creates Stripe subscription checkout
-- No auth required (guest checkout supported for new patients)
-
-**Step 6: Wire Membership Page to Stripe**
-- Replace `openBooking()` on "Claim your founding rate" buttons with actual Stripe checkout calls per tier
-
-**Step 7: Fix Remaining Booking Links**
-- `Consult.tsx` — remove ketamine card, add IV and Peptide cards
-- `BookingWidget.tsx` — verify $149 pricing text
-- `FoundingMemberBanner.tsx` — wire "Claim your founding rate" to Membership page or checkout
-- Update `PaymentSuccess.tsx`, `ConsultationConfirmed.tsx` to use Réveil branding in post-payment flow
-
-**Step 8: Clean Up Edge Functions**
-- Update product descriptions in `create-semaglutide-checkout` and `create-tirzepatide-checkout` to remove "Elevated Health" refs (already done in prior pass, verify)
-- Ensure all success/cancel URLs point to correct Réveil routes
-
-### Technical Details
-
-**New Stripe products needed:**
-| Tier | Founding Price | Standard Price | Mode |
-|------|---------------|----------------|------|
-| Wellness Pass | $149/mo | $199/mo | subscription |
-| Longevity Protocol | $299/mo | $399/mo | subscription |
-| Executive Concierge | $549/mo | $699/mo | subscription |
-
-We'll create founding prices first (launch pricing). Standard prices can be created later when founding slots fill.
-
-**Files to modify:**
-- `src/lib/stripeConfig.ts` — pricing constants
-- `src/components/ConsultationModal.tsx` — service cards
-- `src/pages/Consult.tsx` — standalone consult page
-- `src/pages/Membership.tsx` — wire to Stripe
-- `src/components/FoundingMemberBanner.tsx` — CTA link
-- `supabase/functions/create-consultation-checkout/index.ts` — service configs
-- New: `supabase/functions/create-founding-membership-checkout/index.ts`
-- `src/pages/PaymentSuccess.tsx` — post-payment branding
-
+After implementation: load `/consult`, homepage, `/affordability`, `/iv-lounge`, `/hormones`, `/staff-quick-card` and confirm $149 is gone from public-facing copy and $79 RN Wellness Assessment is the consistent CTA. Staff cheatsheet shows all four new RN services with scope-of-practice notes.

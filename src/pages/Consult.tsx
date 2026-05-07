@@ -63,8 +63,8 @@ const Consult = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
-        <title>Book Your Consultation | Elevated Health Augusta</title>
-        <meta name="description" content="Book your $149 Clinical Strategy Session at Elevated Health Augusta. Hormone optimization, medical weight loss, IV therapy, and peptide protocols." />
+        <title>Book Your $79 RN Wellness Assessment | Elevated Health Augusta</title>
+        <meta name="description" content="Book your $79 RN Wellness Assessment at Elevated Health Augusta. Hormone optimization, medical weight loss, IV therapy, and peptide protocols." />
       </Helmet>
       <Navbar />
       
@@ -76,7 +76,10 @@ const Consult = () => {
               Your awakening starts with a conversation.
             </h1>
             <p className="font-jost font-light text-lg text-muted-foreground max-w-2xl mx-auto mb-2">
-              Select a service below to book your $149 consultation — credited toward your first treatment.
+              Select a service below to book your $79 RN Wellness Assessment — credited toward your first treatment.
+            </p>
+            <p className="font-jost text-xs text-muted-foreground/80 max-w-2xl mx-auto mt-3">
+              Need a physician evaluation for prescription therapies? We'll schedule the MD visit ($149) after your assessment if clinically appropriate.
             </p>
           </div>
 
@@ -99,7 +102,7 @@ const Consult = () => {
                     </p>
 
                     <div className="mb-4">
-                      <span className="font-playfair text-2xl font-semibold text-foreground">$149</span>
+                      <span className="font-playfair text-2xl font-semibold text-foreground">$79</span>
                       <p className="font-jost text-xs text-accent mt-1">Applied as credit if you proceed</p>
                     </div>
 
