@@ -63,7 +63,7 @@ const Consult = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
-        <title>Book Your Consultation | Elevated Health Augusta</title>
+        <title>Book Your $79 RN Wellness Assessment | Elevated Health Augusta</title>
         <meta name="description" content="Book your $79 RN Wellness Assessment at Elevated Health Augusta. Hormone optimization, medical weight loss, IV therapy, and peptide protocols." />
       </Helmet>
       <Navbar />
