@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -189,6 +190,25 @@ const IVLounge = () => {
               <div className="flex items-center gap-2"><Check className="h-4 w-4 text-accent" /> 45–60 minute sessions</div>
               <div className="flex items-center gap-2"><Check className="h-4 w-4 text-accent" /> Same-day availability</div>
               <div className="flex items-center gap-2"><Check className="h-4 w-4 text-accent" /> Memberships save 20%</div>
+            </div>
+          </div>
+        </section>
+
+        {/* PRICING STRIP (Pattern B) */}
+        <section className="py-16 md:py-20 bg-background border-y border-border">
+          <div className="container mx-auto px-6 lg:px-8 max-w-5xl">
+            <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
+              {[
+                { l: "Walk-In Pricing", p: "$95–$185", sub: "per drip · no consult required" },
+                { l: "Premium Drips", p: "$450–$750", sub: "NAD+ infusions · longevity protocols" },
+                { l: "Member Discount", p: "15% off", sub: "all add-ons · priority booking" },
+              ].map((c) => (
+                <div key={c.l} className="px-6 py-8 md:py-4 text-center">
+                  <p className="section-label mb-3">{c.l}</p>
+                  <p className="font-playfair text-3xl md:text-4xl text-foreground mb-2">{c.p}</p>
+                  <p className="font-jost text-xs text-muted-foreground">{c.sub}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -445,6 +465,30 @@ const IVLounge = () => {
                 </Button>
               </a>
             </div>
+          </div>
+        </section>
+
+        {/* FAQ (Pattern F) */}
+        <section className="py-20 md:py-24 bg-background">
+          <div className="container mx-auto px-6 lg:px-8 max-w-3xl">
+            <p className="section-label mb-4">FAQ</p>
+            <h2 className="font-playfair text-3xl md:text-4xl text-foreground mb-10">
+              Questions, <span className="italic">answered</span>.
+            </h2>
+            <Accordion type="single" collapsible className="w-full">
+              {[
+                { q: "Do I need a consultation first?", a: "No — IV therapy is direct-book. Our RN screens for contraindications at the visit." },
+                { q: "How long does an IV take?", a: "Most drips take 30–45 minutes. NAD+ runs longer — typically 1–2 hours depending on the dose." },
+                { q: "Can I add boosters at the visit?", a: "Yes. Let your RN know when you arrive — add-ons are charged at checkout after." },
+                { q: "Are members charged differently?", a: "Members get 15% off all add-ons and priority booking. Base IV pricing is the same." },
+                { q: "What if I'm not feeling well after?", a: "Reach out. We follow up with every patient. Reactions are rare, but we take every concern seriously." },
+              ].map((f, i) => (
+                <AccordionItem key={i} value={`faq-${i}`}>
+                  <AccordionTrigger className="text-left font-playfair text-lg text-foreground">{f.q}</AccordionTrigger>
+                  <AccordionContent className="font-jost font-light text-muted-foreground text-base leading-relaxed">{f.a}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         </section>
 
