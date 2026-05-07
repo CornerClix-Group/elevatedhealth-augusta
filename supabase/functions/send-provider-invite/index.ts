@@ -10,6 +10,9 @@ interface InviteRequest {
   email: string;
   full_name: string;
   roles: string[];
+  // "invite" (default) sends magic-link email; "create" provisions account directly with provided password
+  mode?: "invite" | "create";
+  password?: string;
   // Legacy support
   role?: string;
 }
