@@ -18,6 +18,13 @@ import { toast } from "sonner";
 import NotReadyToBook from "@/components/NotReadyToBook";
 import HowGLP1Works from "@/components/HowGLP1Works";
 
+// Display values — actual charges flow through Stripe
+// (create-consultation-checkout, semaglutide/tirzepatide checkouts).
+const PRICE_CONSULT = "$79";
+const PRICE_PANEL_WEIGHT = "$345";
+const PRICE_PANEL_WEIGHT_MEMBER = "$295";
+const PRICE_MEMBERSHIP = "$199";
+
 const WeightLoss = () => {
   const [isConsultationLoading, setIsConsultationLoading] = useState(false);
   const [isSemaglutideLoading, setIsSemaglutideLoading] = useState(false);
