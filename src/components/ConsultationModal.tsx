@@ -81,12 +81,6 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
       serviceType: "weight_loss"
     },
     {
-      icon: IVIcon,
-      title: "IV Therapy",
-      description: "Physician-formulated infusions for recovery, immunity, and performance",
-      serviceType: "iv_therapy"
-    },
-    {
       icon: PeptideIcon,
       title: "Peptide Protocols",
       description: "Sermorelin, NAD+, GHK-Cu & more for cellular optimization",
