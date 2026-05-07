@@ -156,6 +156,34 @@ const IVLounge = () => {
               Physician-formulated IV therapy, administered by a registered nurse in our private Augusta lounge.
               Choose your drip, add boosters, pay online — schedule instantly after checkout.
             </p>
+
+            {/* How it works mini-strip */}
+            <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 text-xs md:text-sm font-jost text-foreground/80 mb-6">
+              <span className="inline-flex items-center gap-2"><span className="w-6 h-6 rounded-full bg-accent text-accent-foreground text-[11px] font-semibold flex items-center justify-center">1</span> Pick your drip</span>
+              <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="inline-flex items-center gap-2"><span className="w-6 h-6 rounded-full bg-accent text-accent-foreground text-[11px] font-semibold flex items-center justify-center">2</span> Add boosters</span>
+              <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="inline-flex items-center gap-2"><span className="w-6 h-6 rounded-full bg-accent text-accent-foreground text-[11px] font-semibold flex items-center justify-center">3</span> Pay & schedule</span>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-3 mb-6">
+              <Button
+                size="lg"
+                className="rounded-full"
+                onClick={() => document.getElementById("the-menu")?.scrollIntoView({ behavior: "smooth" })}
+              >
+                Browse the menu <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-full"
+                onClick={() => document.dispatchEvent(new CustomEvent("open-assistant-chat"))}
+              >
+                Not sure? Chat with us
+              </Button>
+            </div>
+
             <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2"><Check className="h-4 w-4 text-accent" /> RN-administered</div>
               <div className="flex items-center gap-2"><Check className="h-4 w-4 text-accent" /> 45–60 minute sessions</div>
