@@ -75,6 +75,16 @@ const AssistantHub = () => {
   useEffect(() => {
     // Check voice support on mount
     setVoiceSupported(VoiceAgent.isSupported());
+
+    // Allow other components to open the chat assistant
+    const openText = () => setMode("text");
+    const openMenuEvt = () => setMode("menu");
+    document.addEventListener("open-assistant-chat", openText);
+    document.addEventListener("open-assistant-menu", openMenuEvt);
+    return () => {
+      document.removeEventListener("open-assistant-chat", openText);
+      document.removeEventListener("open-assistant-menu", openMenuEvt);
+    };
   }, []);
 
   useEffect(() => {
