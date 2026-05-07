@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, MapPin, Phone, Clock, CheckCircle2, Sparkles } from "lucide-react";
+import { ArrowRight, MapPin, Phone, Clock, CheckCircle2, Sparkles, Droplet } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { trackCTAClick } from "@/lib/analytics";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { toast } from "sonner";
@@ -28,6 +29,12 @@ const formatPhoneNumber = (value: string): string => {
 
 const Contact = () => {
   const { openBooking } = useBooking();
+  const navigate = useNavigate();
+
+  const goToIV = () => {
+    trackCTAClick('cta_iv_lounge', 'contact_section');
+    navigate('/iv-lounge');
+  };
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submittedName, setSubmittedName] = useState("");
@@ -165,14 +172,33 @@ const Contact = () => {
                       </ul>
                     </div>
                     
-                    <Button 
-                      onClick={handleBooking}
-                      size="lg"
-                      className="w-full font-lato tracking-wide text-base py-6"
-                    >
-                      Skip Ahead — Book Now
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Button
+                          onClick={handleBooking}
+                          size="lg"
+                          className="w-full rounded-sm font-lato tracking-wide"
+                        >
+                          Book a $79 consultation
+                        </Button>
+                        <p className="text-xs font-jost text-muted-foreground leading-snug">
+                          For hormone therapy, peptides, weight loss, or sexual wellness.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <Button
+                          onClick={goToIV}
+                          size="lg"
+                          variant="outline"
+                          className="w-full rounded-sm font-lato tracking-wide"
+                        >
+                          <Droplet className="mr-2 h-4 w-4" /> Book IV therapy
+                        </Button>
+                        <p className="text-xs font-jost text-muted-foreground leading-snug">
+                          Walk-in friendly. No consult required. Pick your drip and schedule online.
+                        </p>
+                      </div>
+                    </div>
                     
                     <button
                       onClick={() => {
@@ -273,15 +299,36 @@ const Contact = () => {
                   </form>
 
                   <div className="mt-6 pt-6 border-t border-border/30">
-                    <p className="text-sm text-muted-foreground font-lato text-center">
-                      Prefer to schedule directly?{" "}
-                      <button 
-                        onClick={handleBooking}
-                        className="text-primary hover:underline font-medium"
-                      >
-                        Book a consultation
-                      </button>
+                    <p className="text-xs font-jost tracking-[0.2em] uppercase text-muted-foreground text-center mb-4">
+                      Or book directly
                     </p>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Button
+                          onClick={handleBooking}
+                          size="lg"
+                          className="w-full rounded-sm font-lato tracking-wide"
+                        >
+                          Book a $79 consultation
+                        </Button>
+                        <p className="text-xs font-jost text-muted-foreground leading-snug">
+                          For hormone therapy, peptides, weight loss, or sexual wellness.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <Button
+                          onClick={goToIV}
+                          size="lg"
+                          variant="outline"
+                          className="w-full rounded-sm font-lato tracking-wide"
+                        >
+                          <Droplet className="mr-2 h-4 w-4" /> Book IV therapy
+                        </Button>
+                        <p className="text-xs font-jost text-muted-foreground leading-snug">
+                          Walk-in friendly. No consult required. Pick your drip and schedule online.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
@@ -356,16 +403,33 @@ const Contact = () => {
                 />
               </div>
 
-              {/* Quick CTA */}
-              <div className="text-center">
-                <Button 
-                  size="lg"
-                  onClick={handleBooking}
-                  className="font-lato tracking-wide text-base px-10 py-6"
-                >
-                  Book Your Consultation
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
+              {/* Quick CTA — bifurcated */}
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Button
+                    onClick={handleBooking}
+                    size="lg"
+                    className="w-full rounded-sm font-lato tracking-wide"
+                  >
+                    Book a $79 consultation
+                  </Button>
+                  <p className="text-xs font-jost text-muted-foreground leading-snug text-center">
+                    Hormones, peptides, weight loss, sexual wellness.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Button
+                    onClick={goToIV}
+                    size="lg"
+                    variant="outline"
+                    className="w-full rounded-sm font-lato tracking-wide"
+                  >
+                    <Droplet className="mr-2 h-4 w-4" /> Book IV therapy
+                  </Button>
+                  <p className="text-xs font-jost text-muted-foreground leading-snug text-center">
+                    Walk-in friendly. No consult required.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
