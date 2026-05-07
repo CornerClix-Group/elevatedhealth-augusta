@@ -189,7 +189,7 @@ const InsuranceReimbursementHub = ({
       <strong>Insurance:</strong> ${coverageInfo.label}<br/>
       <strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
       
-      <p>Réveil is committed to helping you maximize your insurance benefits. 
+      <p>Elevated Health Augusta is committed to helping you maximize your insurance benefits. 
       Below is a summary of what your plan may cover and how to submit for reimbursement.</p>
 
       ${coverageInfo.coveredServices.length > 0 ? `
@@ -236,10 +236,10 @@ const InsuranceReimbursementHub = ({
       </ol>
 
       <div class="footer">
-        <p><strong>Réveil</strong><br/>
+        <p><strong>Elevated Health Augusta</strong><br/>
         1258 Broad St, Augusta, GA 30901 · (706) 760-3470<br/>
         NPI: 1578971552 · Tax ID: 99-0830253<br/>
-        www.reveil.health</p>
+        www.elevatedhealthaugusta.com</p>
       </div>
       </body></html>
     `);

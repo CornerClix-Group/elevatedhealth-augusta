@@ -6,9 +6,9 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Réveil Clinic Knowledge Base - Enhanced Clinical Protocol Edition
+// Elevated Health Augusta Clinic Knowledge Base - Enhanced Clinical Protocol Edition
 const CLINIC_KNOWLEDGE = `
-# RÉVEIL - INTERNAL CLINICAL OPERATIONS GUIDE
+# ELEVATED HEALTH AUGUSTA - INTERNAL CLINICAL OPERATIONS GUIDE
 ## Version 2.0 - Provider & Staff Reference
 
 ---
@@ -16,7 +16,7 @@ const CLINIC_KNOWLEDGE = `
 # SECTION 1: CLINIC IDENTITY & CORE PHILOSOPHY
 
 ## About the Clinic
-Réveil is a hormone optimization and wellness clinic in Augusta, GA. We specialize in bio-identical hormone replacement therapy (BHRT), GLP-1 weight loss, ketamine therapy, peptide therapy, and IV hydration.
+Elevated Health Augusta is a hormone optimization and wellness clinic in Augusta, GA. We specialize in bio-identical hormone replacement therapy (BHRT), GLP-1 weight loss, ketamine therapy, peptide therapy, and IV hydration.
 
 **Provider:** Our board-certified clinical team
 **Location:** 7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809
@@ -747,8 +747,8 @@ Every superbill must include:
 ## Clinic Information
 - **Address:** 7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809
 - **Phone:** (706) 760-3470
-- **Email:** admin@reveil.health
-- **Website:** reveil.health
+- **Email:** admin@elevatedhealthaugusta.com
+- **Website:** elevatedhealthaugusta.com
 
 ## Pharmacy Contacts
 - **FCC Compounding Pharmacy:** 404-555-0199
@@ -844,7 +844,7 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are the Réveil Clinical Assistant, an internal AI helper for clinic staff and providers at Réveil. You have access to the clinic's complete clinical operations guide including protocols, lab interpretation guidelines, and internal workflows.
+    const systemPrompt = `You are the Elevated Health Augusta Clinical Assistant, an internal AI helper for clinic staff and providers at Elevated Health Augusta. You have access to the clinic's complete clinical operations guide including protocols, lab interpretation guidelines, and internal workflows.
 
 IMPORTANT RULES:
 1. You are ONLY accessible to authenticated staff and admin users

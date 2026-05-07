@@ -63,8 +63,8 @@ const Consult = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
-        <title>Book Your Consultation | Réveil</title>
-        <meta name="description" content="Book your $149 Clinical Strategy Session at Réveil. Hormone optimization, medical weight loss, IV therapy, and peptide protocols." />
+        <title>Book Your Consultation | Elevated Health Augusta</title>
+        <meta name="description" content="Book your $149 Clinical Strategy Session at Elevated Health Augusta. Hormone optimization, medical weight loss, IV therapy, and peptide protocols." />
       </Helmet>
       <Navbar />
       

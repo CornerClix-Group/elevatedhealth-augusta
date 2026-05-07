@@ -191,7 +191,7 @@ serve(async (req) => {
     const totalMonthly = basePrice + addonPrice;
 
     // Create Stripe Checkout session for subscription
-    const origin = req.headers.get("origin") || "https://reveil.health";
+    const origin = req.headers.get("origin") || "https://elevatedhealthaugusta.com";
     
     const session = await stripe.checkout.sessions.create({
       customer_email: patient_email || undefined,
@@ -242,7 +242,7 @@ serve(async (req) => {
           <body>
             <div class="container">
               <div class="header">
-                <div class="logo">Réveil</div>
+                <div class="logo">Elevated Health Augusta</div>
               </div>
               <div class="content">
                 <h2>Hi ${first_name},</h2>
@@ -262,7 +262,7 @@ serve(async (req) => {
               </div>
               <div class="footer">
                 <p>Questions? Call us at (706) 760-3470</p>
-                <p>Réveil<br/>7013 Evans Town Center Blvd, Suite 203<br/>Evans, GA 30809</p>
+                <p>Elevated Health Augusta<br/>7013 Evans Town Center Blvd, Suite 203<br/>Evans, GA 30809</p>
               </div>
             </div>
           </body>
@@ -270,9 +270,9 @@ serve(async (req) => {
         `;
 
         const emailResponse = await resend.emails.send({
-          from: "Réveil <noreply@stripe.reveil.health>",
+          from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
           to: [patient_email],
-          subject: "Réveil: Your Membership is Ready to Activate",
+          subject: "Elevated Health Augusta: Your Membership is Ready to Activate",
           html: emailHtml,
         });
 

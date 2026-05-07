@@ -48,7 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
         port: 465,
         tls: true,
         auth: {
-          username: "care@reveil.health",
+          username: "care@elevatedhealthaugusta.com",
           password: PAUBOX_SMTP_PASSWORD!,
         },
       },
@@ -80,7 +80,7 @@ const handler = async (req: Request): Promise<Response> => {
         <body>
           <div class="container">
             <h1>Referral Request from ${patientName}</h1>
-            <p>You have received a referral request for ketamine-assisted therapy at Réveil.</p>
+            <p>You have received a referral request for ketamine-assisted therapy at Elevated Health Augusta.</p>
             
             <h2>Patient Information:</h2>
             <ul>
@@ -98,11 +98,11 @@ const handler = async (req: Request): Promise<Response> => {
 
             <h2>Clinic Information:</h2>
             <p>
-              <strong>Réveil</strong><br>
+              <strong>Elevated Health Augusta</strong><br>
               7013 Evans Town Center Blvd, Suite 203<br>
               Evans, GA 30809<br>
               Phone: (706) 550-9202<br>
-              Email: care@reveil.health
+              Email: care@elevatedhealthaugusta.com
             </p>
 
             <p>Please contact the clinic or patient to coordinate this referral.</p>
@@ -138,7 +138,7 @@ const handler = async (req: Request): Promise<Response> => {
             <h1>Your Referral Request Has Been Submitted</h1>
             <p>Dear ${patientName},</p>
             
-            <p>Thank you for requesting a referral to Réveil for ketamine-assisted therapy.</p>
+            <p>Thank you for requesting a referral to Elevated Health Augusta for ketamine-assisted therapy.</p>
 
             <p>We have sent your referral request to:</p>
             <ul>
@@ -156,12 +156,12 @@ const handler = async (req: Request): Promise<Response> => {
             <h2>What's Next?</h2>
             <p>You can expect to hear from us soon. In the meantime, if you have any questions, please contact us:</p>
             <p>
-              <strong>Réveil</strong><br>
+              <strong>Elevated Health Augusta</strong><br>
               Phone: (706) 550-9202<br>
-              Email: care@reveil.health
+              Email: care@elevatedhealthaugusta.com
             </p>
 
-            <p>Thank you for choosing Réveil.</p>
+            <p>Thank you for choosing Elevated Health Augusta.</p>
 
             <div class="footer">
               <p>Submitted: ${timestamp}</p>
@@ -179,9 +179,9 @@ const handler = async (req: Request): Promise<Response> => {
     if (providerEmail && providerEmail !== "unknown" && providerEmail !== "custom") {
       console.log("Sending referral to provider:", providerEmail);
       await client.send({
-        from: "care@reveil.health",
+        from: "care@elevatedhealthaugusta.com",
         to: providerEmail,
-        cc: "care@reveil.health",
+        cc: "care@elevatedhealthaugusta.com",
         replyTo: patientEmail,
         subject: `Referral Request for ${patientName} - ${benefitType.toUpperCase()}`,
         content: "auto",
@@ -193,8 +193,8 @@ const handler = async (req: Request): Promise<Response> => {
       // Send only to clinic if no valid provider email
       console.log("No valid provider email, sending to clinic only");
       await client.send({
-        from: "care@reveil.health",
-        to: "care@reveil.health",
+        from: "care@elevatedhealthaugusta.com",
+        to: "care@elevatedhealthaugusta.com",
         replyTo: patientEmail,
         subject: `Referral Request for ${patientName} - ${benefitType.toUpperCase()} (No Provider Contact)`,
         content: "auto",
@@ -207,10 +207,10 @@ const handler = async (req: Request): Promise<Response> => {
     // Send confirmation email to patient
     console.log("Sending confirmation to patient:", patientEmail);
     await client.send({
-      from: "care@reveil.health",
+      from: "care@elevatedhealthaugusta.com",
       to: patientEmail,
-      replyTo: "care@reveil.health",
-      subject: "Your Referral Request - Réveil",
+      replyTo: "care@elevatedhealthaugusta.com",
+      subject: "Your Referral Request - Elevated Health Augusta",
       content: "auto",
       html: patientEmailHtml,
     });

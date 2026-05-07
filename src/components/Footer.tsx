@@ -19,11 +19,11 @@ const Footer = () => {
         <div className="max-w-5xl mx-auto">
           {/* Centered Wordmark & Tagline */}
           <div className="text-center mb-16">
-            <h3 className="font-playfair text-3xl text-primary-foreground mb-3">
-              Réveil
+            <h3 className="font-playfair italic text-3xl text-primary-foreground mb-2">
+              elevated
             </h3>
-            <p className="font-jost text-xs font-medium uppercase tracking-[2.5px] text-accent">
-              Restore · Repair · Réveil
+            <p className="font-jost text-xs font-medium uppercase tracking-[3px] text-primary-foreground/80">
+              Health · Augusta · Georgia
             </p>
           </div>
 
@@ -71,7 +71,7 @@ const Footer = () => {
                     {SITE_CONFIG.phone}
                   </a>
                 </div>
-                <p className="text-primary-foreground/60">@reveil · reveil.health</p>
+                <p className="text-primary-foreground/60">elevatedhealthaugusta.com</p>
               </div>
             </div>
 

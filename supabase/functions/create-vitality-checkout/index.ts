@@ -56,7 +56,7 @@ serve(async (req) => {
       }
     }
 
-    const origin = req.headers.get("origin") || "https://reveil.health";
+    const origin = req.headers.get("origin") || "https://elevatedhealthaugusta.com";
 
     // Create checkout session for Vitality Membership ($249/mo)
     const session = await stripe.checkout.sessions.create({

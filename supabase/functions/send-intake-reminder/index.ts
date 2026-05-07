@@ -55,7 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
           : 'wellness transformation';
 
         await resend.emails.send({
-          from: "Réveil <noreply@stripe.reveil.health>",
+          from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
           to: [patient.email],
           subject: "Don't forget to complete your health profile!",
           html: `
@@ -70,7 +70,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <!-- Header -->
                 <div style="text-align: center; margin-bottom: 32px;">
                   <h1 style="font-family: Georgia, serif; font-size: 28px; color: #2C3E50; margin: 0;">
-                    Réveil
+                    Elevated Health Augusta
                   </h1>
                 </div>
 
@@ -88,7 +88,7 @@ const handler = async (req: Request): Promise<Response> => {
                     <p style="color: white; font-size: 16px; margin: 0 0 16px 0;">
                       Complete your intake in just 5-10 minutes
                     </p>
-                    <a href="https://reveil.health/patient/intake" 
+                    <a href="https://elevatedhealthaugusta.com/patient/intake" 
                        style="display: inline-block; background: white; color: #D4A017; padding: 12px 32px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 14px;">
                       Continue My Intake →
                     </a>
@@ -110,7 +110,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <!-- Footer -->
                 <div style="text-align: center; margin-top: 32px; color: #8E9EAB; font-size: 12px;">
                   <p style="margin: 0;">
-                    Réveil<br>
+                    Elevated Health Augusta<br>
                     7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809
                   </p>
                 </div>

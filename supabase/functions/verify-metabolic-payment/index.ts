@@ -68,8 +68,8 @@ serve(async (req) => {
               Authorization: `Bearer ${resendKey}`,
             },
             body: JSON.stringify({
-              from: "Réveil <noreply@stripe.reveil.health>",
-              to: ["booking@reveil.health"],
+              from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
+              to: ["booking@elevatedhealthaugusta.com"],
               subject: "🧬 New Metabolic Architecture Kit Ordered - $599",
               html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

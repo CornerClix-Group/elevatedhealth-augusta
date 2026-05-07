@@ -11,7 +11,7 @@ const StaffQuickCard = () => {
   return (
     <>
       <Helmet>
-        <title>Quick Reference Card | Réveil</title>
+        <title>Quick Reference Card | Elevated Health Augusta</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -40,7 +40,7 @@ const StaffQuickCard = () => {
           <div className="border-2 border-foreground rounded-lg p-4 print:border-black">
             {/* Header */}
             <div className="text-center border-b-2 border-foreground pb-3 mb-4 print:border-black">
-              <h1 className="text-xl font-bold tracking-tight">RÉVEIL QUICK REFERENCE</h1>
+              <h1 className="text-xl font-bold tracking-tight">ELEVATED HEALTH AUGUSTA QUICK REFERENCE</h1>
               <p className="text-sm font-medium">Front Desk Cheat Sheet • January 2025</p>
             </div>
 

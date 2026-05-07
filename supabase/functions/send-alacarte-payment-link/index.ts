@@ -40,9 +40,9 @@ const handler = async (req: Request): Promise<Response> => {
     const firstName = patient_name?.split(" ")[0] || "there";
 
     const emailResponse = await resend.emails.send({
-      from: "Réveil <noreply@stripe.reveil.health>",
+      from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
       to: [patient_email],
-      subject: `Your ${product_name} Payment Link - Réveil`,
+      subject: `Your ${product_name} Payment Link - Elevated Health Augusta`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -55,7 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
             <!-- Header -->
             <tr>
               <td style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 40px 30px; text-align: center;">
-                <h1 style="color: #c5a572; font-size: 28px; font-family: Georgia, serif; margin: 0;">Réveil</h1>
+                <h1 style="color: #c5a572; font-size: 28px; font-family: Georgia, serif; margin: 0;">Elevated Health Augusta</h1>
                 <p style="color: #ffffff; font-size: 14px; margin: 10px 0 0 0; opacity: 0.9;">Personalized Wellness Solutions</p>
               </td>
             </tr>
@@ -132,7 +132,7 @@ const handler = async (req: Request): Promise<Response> => {
                   Questions? Call us at <a href="tel:+17067603470" style="color: #c5a572;">(706) 760-3470</a>
                 </p>
                 <p style="color: #888; font-size: 12px; margin: 0;">
-                  Réveil | 7013 Evans Town Center Blvd, Evans, GA 30809
+                  Elevated Health Augusta | 7013 Evans Town Center Blvd, Evans, GA 30809
                 </p>
               </td>
             </tr>

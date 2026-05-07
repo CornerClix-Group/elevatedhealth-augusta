@@ -117,7 +117,7 @@ const handler = async (req: Request): Promise<Response> => {
           <tr>
             <td style="background-color: #2d3436; padding: 25px; text-align: center;">
               <p style="color: #a0a0a0; font-size: 12px; margin: 0 0 8px;">
-                Réveil
+                Elevated Health Augusta
               </p>
               <p style="color: #a0a0a0; font-size: 12px; margin: 0;">
                 7013 Evans Town Center Blvd, Suite 203 · Evans, GA 30809
@@ -133,7 +133,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "Réveil <noreply@stripe.reveil.health>",
+      from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
       to: [patient_email],
       subject: "Add Hormone Optimization to Your Weight Loss Journey",
       html: emailHtml,

@@ -56,7 +56,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Generate checkout URL
     const checkoutUrl = patient_id 
       ? `${supabaseUrl}/functions/v1/create-hormone-addon-checkout?patient_id=${patient_id}`
-      : "https://reveil.health";
+      : "https://elevatedhealthaugusta.com";
     
     const message = `Hi ${firstName}! As a GLP-1 member, you qualify for our $149/mo Hormone Add-On. Optimize your results with hormone therapy. Add it here: ${checkoutUrl} Questions? (706) 760-3470`;
 

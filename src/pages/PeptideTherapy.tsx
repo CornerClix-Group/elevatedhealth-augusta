@@ -22,9 +22,9 @@ const PeptideTherapy = () => {
   return (
     <>
       <Helmet>
-        <title>Peptide Therapy | Réveil</title>
+        <title>Peptide Therapy | Elevated Health Augusta</title>
         <meta name="description" content="The first physician-supervised peptide program in the Augusta area. Sermorelin, CJC/Ipamorelin, NAD+, GHK-Cu & more." />
-        <link rel="canonical" href="https://reveil.health/peptides" />
+        <link rel="canonical" href="https://elevatedhealthaugusta.com/peptides" />
       </Helmet>
       <div className="min-h-screen">
         <Navbar />
@@ -35,7 +35,7 @@ const PeptideTherapy = () => {
               Physician-prescribed. Precision-compounded.<br /><span className="italic">The first peptide program in the Augusta area.</span>
             </h1>
             <p className="font-jost font-light text-lg text-muted-foreground leading-relaxed">
-              Peptides are short chains of amino acids that signal your body to perform specific functions — stimulate growth hormone, accelerate tissue repair, enhance fat metabolism, sharpen cognition. No Augusta-area clinic is offering this under physician oversight. Réveil is first.
+              Peptides are short chains of amino acids that signal your body to perform specific functions — stimulate growth hormone, accelerate tissue repair, enhance fat metabolism, sharpen cognition. No Augusta-area clinic is offering this under physician oversight. Elevated Health Augusta is first.
             </p>
           </div>
         </section>

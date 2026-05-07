@@ -22,9 +22,9 @@ const IVLounge = () => {
   return (
     <>
       <Helmet>
-        <title>IV Therapy | Réveil</title>
+        <title>IV Therapy | Elevated Health Augusta</title>
         <meta name="description" content="Physician-formulated IV therapy in Evans, GA. Myers Cocktail, NAD+, Immune Boost & more. Same-day pregnancy IV available." />
-        <link rel="canonical" href="https://reveil.health/iv-lounge" />
+        <link rel="canonical" href="https://elevatedhealthaugusta.com/iv-lounge" />
       </Helmet>
       <div className="min-h-screen">
         <Navbar />
@@ -35,7 +35,7 @@ const IVLounge = () => {
               What a hospital charges thousands for.<br /><span className="italic">We charge hundreds.</span>
             </h1>
             <p className="font-jost font-light text-lg text-muted-foreground leading-relaxed">
-              IV therapy delivers nutrients, hydration, and medication directly into your bloodstream — 100% absorption, immediate effect. At Réveil, every infusion is physician-formulated and administered by a trained RN under direct medical supervision. Not a wellness bar. Not a hangover spa. Medicine.
+              IV therapy delivers nutrients, hydration, and medication directly into your bloodstream — 100% absorption, immediate effect. At Elevated Health Augusta, every infusion is physician-formulated and administered by a trained RN under direct medical supervision. Not a wellness bar. Not a hangover spa. Medicine.
             </p>
           </div>
         </section>
@@ -59,7 +59,7 @@ const IVLounge = () => {
             <div className="border border-accent/40 p-8 md:p-10">
               <h2 className="font-playfair text-2xl md:text-3xl text-foreground mb-4">Suffering through morning sickness? You don't have to.</h2>
               <p className="font-jost font-light text-muted-foreground leading-relaxed mb-4">
-                Hyperemesis gravidarum is one of the most common reasons pregnant women end up in the ER. At Réveil, we offer physician-supervised pregnancy IV therapy — same-day appointments reserved for HG patients. Safe. Clinically appropriate. OB-referred welcome.
+                Hyperemesis gravidarum is one of the most common reasons pregnant women end up in the ER. At Elevated Health Augusta, we offer physician-supervised pregnancy IV therapy — same-day appointments reserved for HG patients. Safe. Clinically appropriate. OB-referred welcome.
               </p>
               <p className="font-jost font-medium text-foreground mb-6">Lactated Ringer's + B6 + Zofran (physician discretion) — $185</p>
               <Button onClick={openBooking} className="bg-primary text-accent font-jost font-medium tracking-wide text-sm px-8 py-5 rounded-sm hover:bg-primary-light">

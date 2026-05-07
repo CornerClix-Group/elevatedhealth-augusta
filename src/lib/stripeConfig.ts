@@ -1,5 +1,5 @@
 /**
- * Central Stripe Price & Product Configuration — Réveil
+ * Central Stripe Price & Product Configuration — Elevated Health Augusta
  * 
  * Single source of truth for all Stripe price IDs.
  * Last audited: 2026-03-22
@@ -15,7 +15,7 @@ export const CONSULTATION_PRICES = {
     amount: 14900, // $149
     displayPrice: "$149",
     name: "Clinical Strategy Session",
-    description: "30-minute in-person consultation at Réveil. Non-refundable. Applied as credit toward treatment if you proceed.",
+    description: "30-minute in-person consultation at Elevated Health Augusta. Non-refundable. Applied as credit toward treatment if you proceed.",
     mode: "payment" as const,
     edgeFunction: "create-consultation-checkout",
   },

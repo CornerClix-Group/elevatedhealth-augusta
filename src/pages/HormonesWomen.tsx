@@ -32,9 +32,9 @@ const HormonesWomen = () => {
   return (
     <>
       <Helmet>
-        <title>Women's Hormone Therapy | Réveil</title>
+        <title>Women's Hormone Therapy | Elevated Health Augusta</title>
         <meta name="description" content="BHRT, estrogen, progesterone & testosterone optimization for women. Physician-supervised hormone therapy in Evans, GA." />
-        <link rel="canonical" href="https://reveil.health/hormones-women" />
+        <link rel="canonical" href="https://elevatedhealthaugusta.com/hormones-women" />
       </Helmet>
       <div className="min-h-screen">
         <Navbar />
@@ -48,7 +48,7 @@ const HormonesWomen = () => {
               Hot flashes. Night sweats. The weight that won't move. The mood that isn't yours. You've been told this is just aging. It isn't. It's hormones — and they're fixable.
             </p>
             <p className="font-jost font-light text-lg text-muted-foreground leading-relaxed">
-              At Réveil, our physician evaluates your labs, your symptoms, and your goals. Then we build a protocol designed specifically for you. Not a template. Not a starter pack. Yours.
+              At Elevated Health Augusta, our physician evaluates your labs, your symptoms, and your goals. Then we build a protocol designed specifically for you. Not a template. Not a starter pack. Yours.
             </p>
           </div>
         </section>

@@ -43,7 +43,7 @@ const handler = async (req: Request): Promise<Response> => {
     const resend = new Resend(resendApiKey);
 
     const emailResponse = await resend.emails.send({
-      from: "Réveil <noreply@stripe.reveil.health>",
+      from: "Elevated Health Augusta <noreply@stripe.elevatedhealthaugusta.com>",
       to: [patient_email],
       subject: `Your IV Ketamine Infusion Payment - Session #${session_number}`,
       html: `
@@ -59,7 +59,7 @@ const handler = async (req: Request): Promise<Response> => {
               
               <!-- Header -->
               <div style="padding: 40px 40px 20px; text-align: center;">
-                <h1 style="color: #d4af37; margin: 0; font-size: 28px; font-weight: 600;">Réveil</h1>
+                <h1 style="color: #d4af37; margin: 0; font-size: 28px; font-weight: 600;">Elevated Health Augusta</h1>
                 <p style="color: #a0a0a0; margin: 10px 0 0; font-size: 14px;">IV Ketamine Therapy</p>
               </div>
               
@@ -90,7 +90,7 @@ const handler = async (req: Request): Promise<Response> => {
               <!-- Footer -->
               <div style="background: rgba(0, 0, 0, 0.2); padding: 24px 40px; text-align: center;">
                 <p style="color: #a0a0a0; font-size: 12px; margin: 0;">
-                  Réveil<br>
+                  Elevated Health Augusta<br>
                   4182 Washington Rd, Evans, GA 30809
                 </p>
               </div>

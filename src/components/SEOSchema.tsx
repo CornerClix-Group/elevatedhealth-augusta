@@ -6,7 +6,7 @@ const SEOSchema = () => {
     "@context": "https://schema.org",
     "@type": "MedicalClinic",
     "name": SITE_CONFIG.clinicName,
-    "description": "Réveil is Evans' first physician-owned longevity clinic. Hormone optimization, IV therapy, peptide medicine & medical weight loss under direct physician supervision.",
+    "description": "Elevated Health Augusta is Evans' first physician-owned and operated wellness clinic. Hormone optimization, IV therapy, peptide medicine & medical weight loss under direct physician supervision.",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": SITE_CONFIG.address.line1,
@@ -20,7 +20,7 @@ const SEOSchema = () => {
       "latitude": 33.5343,
       "longitude": -82.1285
     },
-    "url": "https://reveil.health",
+    "url": "https://elevatedhealthaugusta.com",
     "telephone": `+1${SITE_CONFIG.phoneRaw}`,
     "priceRange": "$149-$699",
     "openingHoursSpecification": [
@@ -46,7 +46,7 @@ const SEOSchema = () => {
       "geoRadius": "50"
     },
     "sameAs": [
-      "https://www.instagram.com/reveil"
+      "https://www.instagram.com/elevated-health-augusta"
     ]
   };
 
@@ -56,10 +56,10 @@ const SEOSchema = () => {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "What services does Réveil offer?",
+        "name": "What services does Elevated Health Augusta offer?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Réveil offers physician-supervised hormone optimization (BHRT, TRT), IV therapy, peptide protocols, and medical weight loss (GLP-1 medications) in Evans, GA."
+          "text": "Elevated Health Augusta offers physician-supervised hormone optimization (BHRT, TRT), IV therapy, peptide protocols, and medical weight loss (GLP-1 medications) in Evans, GA."
         }
       },
       {
@@ -72,7 +72,7 @@ const SEOSchema = () => {
       },
       {
         "@type": "Question",
-        "name": "How much is a consultation at Réveil?",
+        "name": "How much is a consultation at Elevated Health Augusta?",
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "Initial consultations are $149 and are credited toward your first treatment."

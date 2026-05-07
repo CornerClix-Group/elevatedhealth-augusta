@@ -91,7 +91,7 @@ serve(async (req) => {
       }
     }
 
-    const origin = req.headers.get("origin") || "https://reveil.health";
+    const origin = req.headers.get("origin") || "https://elevatedhealthaugusta.com";
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,

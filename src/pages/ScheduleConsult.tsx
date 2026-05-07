@@ -146,7 +146,7 @@ const ScheduleConsult = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Schedule Your Strategy Call | Réveil</title>
+        <title>Schedule Your Strategy Call | Elevated Health Augusta</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <Navbar />

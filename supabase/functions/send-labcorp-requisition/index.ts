@@ -109,7 +109,7 @@ const handler = async (req: Request): Promise<Response> => {
       </head>
       <body>
         <div class="header">
-          <div class="logo">Réveil</div>
+          <div class="logo">Elevated Health Augusta</div>
           <div class="subtitle">7013 Evans Town Center Blvd, Suite 203 | Evans, GA 30809 | (706) 760-3470</div>
         </div>
 
@@ -178,15 +178,15 @@ const handler = async (req: Request): Promise<Response> => {
         port: 465,
         tls: true,
         auth: {
-          username: "care@reveil.health",
+          username: "care@elevatedhealthaugusta.com",
           password: PAUBOX_SMTP_PASSWORD!,
         },
       },
     });
 
     await client.send({
-      from: "care@reveil.health",
-      to: "booking@reveil.health",
+      from: "care@elevatedhealthaugusta.com",
+      to: "booking@elevatedhealthaugusta.com",
       subject: `LabCorp Requisition Required - ${patientName} (${panel.title})`,
       content: "auto",
       html: emailHtml,

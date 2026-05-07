@@ -23,9 +23,9 @@ const HormonesMen = () => {
   return (
     <>
       <Helmet>
-        <title>Men's Health & TRT | Réveil</title>
+        <title>Men's Health & TRT | Elevated Health Augusta</title>
         <meta name="description" content="Testosterone replacement therapy, peptide protocols & GLP-1 weight loss for men. Physician-supervised in Evans, GA." />
-        <link rel="canonical" href="https://reveil.health/hormones-men" />
+        <link rel="canonical" href="https://elevatedhealthaugusta.com/hormones-men" />
       </Helmet>
       <div className="min-h-screen">
         <Navbar />
@@ -39,7 +39,7 @@ const HormonesMen = () => {
               Low energy. Stubborn weight. A libido that's gone quiet. These aren't signs of getting older — they're signs your testosterone has declined.
             </p>
             <p className="font-jost font-light text-lg text-muted-foreground leading-relaxed">
-              At Réveil, we test your levels, confirm the diagnosis, and prescribe a physician-supervised protocol that actually works. In-clinic injections. Monitored quarterly. Not shipped to your door and forgotten.
+              At Elevated Health Augusta, we test your levels, confirm the diagnosis, and prescribe a physician-supervised protocol that actually works. In-clinic injections. Monitored quarterly. Not shipped to your door and forgotten.
             </p>
           </div>
         </section>
