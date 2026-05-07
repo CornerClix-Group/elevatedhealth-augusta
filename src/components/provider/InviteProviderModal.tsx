@@ -39,12 +39,13 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [selectedRoles, setSelectedRoles] = useState<string[]>(["staff"]);
+  const [mode, setMode] = useState<"invite" | "create">("create");
+  const [password, setPassword] = useState("");
   const [isSending, setIsSending] = useState(false);
 
   const toggleRole = (roleId: string) => {
     setSelectedRoles(prev => {
       if (prev.includes(roleId)) {
-        // Don't allow removing the last role
         if (prev.length === 1) {
           toast.error("At least one role must be selected");
           return prev;
@@ -55,19 +56,28 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
     });
   };
 
+  const generatePassword = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%";
+    let p = "";
+    for (let i = 0; i < 14; i++) p += chars[Math.floor(Math.random() * chars.length)];
+    setPassword(p);
+  };
+
   const handleSendInvite = async () => {
     if (!email || !fullName) {
       toast.error("Please fill in all fields");
       return;
     }
-
     if (!email.includes("@")) {
       toast.error("Please enter a valid email address");
       return;
     }
-
     if (selectedRoles.length === 0) {
       toast.error("Please select at least one role");
+      return;
+    }
+    if (mode === "create" && password.length < 8) {
+      toast.error("Password must be at least 8 characters");
       return;
     }
 
@@ -75,24 +85,37 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
 
     try {
       const { data, error } = await supabase.functions.invoke("send-provider-invite", {
-        body: { email, full_name: fullName, roles: selectedRoles },
+        body: {
+          email,
+          full_name: fullName,
+          roles: selectedRoles,
+          mode,
+          ...(mode === "create" ? { password } : {}),
+        },
       });
 
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
-      toast.success(`Invitation sent to ${email}`, {
-        description: `Roles: ${selectedRoles.map(r => AVAILABLE_ROLES.find(ar => ar.id === r)?.label).join(", ")}`,
-      });
+      if (mode === "create") {
+        toast.success(`Account created for ${email}`, {
+          description: `They can sign in immediately with the password you set. Share it securely.`,
+        });
+      } else {
+        toast.success(`Invitation sent to ${email}`, {
+          description: `Roles: ${selectedRoles.map(r => AVAILABLE_ROLES.find(ar => ar.id === r)?.label).join(", ")}`,
+        });
+      }
 
       setEmail("");
       setFullName("");
       setSelectedRoles(["staff"]);
+      setPassword("");
       onOpenChange(false);
       onInviteSent?.();
     } catch (error: any) {
       console.error("Invite error:", error);
-      toast.error("Failed to send invitation", {
+      toast.error(mode === "create" ? "Failed to create account" : "Failed to send invitation", {
         description: error.message || "Please try again",
       });
     } finally {
@@ -109,7 +132,7 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
             Invite Team Member
           </DialogTitle>
           <DialogDescription>
-            Send an email invitation to set up a new provider or staff account.
+            Create a provider/staff account directly with a password, or send an email invite.
           </DialogDescription>
         </DialogHeader>
 
@@ -136,6 +159,67 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
               disabled={isSending}
             />
           </div>
+
+          {/* Mode toggle */}
+          <div className="space-y-2">
+            <Label>Account creation method</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setMode("create")}
+                disabled={isSending}
+                className={`p-3 rounded-lg border text-left transition-colors ${
+                  mode === "create"
+                    ? "bg-primary/5 border-primary/40"
+                    : "bg-muted/30 border-border/50 hover:bg-muted/50"
+                }`}
+              >
+                <div className="text-sm font-medium">Create now</div>
+                <div className="text-xs text-muted-foreground mt-0.5">Set password, no email sent</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("invite")}
+                disabled={isSending}
+                className={`p-3 rounded-lg border text-left transition-colors ${
+                  mode === "invite"
+                    ? "bg-primary/5 border-primary/40"
+                    : "bg-muted/30 border-border/50 hover:bg-muted/50"
+                }`}
+              >
+                <div className="text-sm font-medium">Send email invite</div>
+                <div className="text-xs text-muted-foreground mt-0.5">They set their own password</div>
+              </button>
+            </div>
+          </div>
+
+          {mode === "create" && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Initial Password</Label>
+                <button
+                  type="button"
+                  onClick={generatePassword}
+                  disabled={isSending}
+                  className="text-xs text-primary hover:underline"
+                >
+                  Generate
+                </button>
+              </div>
+              <Input
+                id="password"
+                type="text"
+                placeholder="At least 8 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isSending}
+                className="font-mono"
+              />
+              <p className="text-xs text-muted-foreground">
+                Share this password securely with the team member. They can change it after first login.
+              </p>
+            </div>
+          )}
 
           <div className="space-y-3">
             <Label>Roles (select one or more)</Label>
@@ -182,12 +266,12 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
             {isSending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Sending...
+                {mode === "create" ? "Creating..." : "Sending..."}
               </>
             ) : (
               <>
-                <Mail className="mr-2 h-4 w-4" />
-                Send Invitation
+                {mode === "create" ? <UserPlus className="mr-2 h-4 w-4" /> : <Mail className="mr-2 h-4 w-4" />}
+                {mode === "create" ? "Create Account" : "Send Invitation"}
               </>
             )}
           </Button>
