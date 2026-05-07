@@ -2,95 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Réveil Design System — Warm Ivory, Midnight Navy, Gold */
+/* Elevated Health Augusta — Bone, Charcoal, Camel */
 
 @layer base {
   :root {
-    /* Base — warm ivory */
-    --background: 37 33% 95%;
-    --foreground: 60 3% 17%;
-
-    /* Card surfaces — white */
+    --background: 36 47% 90%;
+    --foreground: 24 7% 16%;
     --card: 0 0% 100%;
-    --card-foreground: 60 3% 17%;
-
-    /* Popover surfaces */
+    --card-foreground: 24 7% 16%;
     --popover: 0 0% 100%;
-    --popover-foreground: 60 3% 17%;
-
-    /* Primary — midnight navy */
-    --primary: 217 61% 15%;
-    --primary-foreground: 37 33% 95%;
-    --primary-light: 217 45% 24%;
-    --primary-dark: 217 70% 10%;
-
-    /* Secondary — secondary navy */
-    --secondary: 217 45% 24%;
-    --secondary-foreground: 37 33% 95%;
-    --secondary-light: 217 35% 30%;
-    --secondary-dark: 217 55% 18%;
-
-    /* Accent — Réveil gold */
-    --accent: 40 56% 58%;
-    --accent-foreground: 217 61% 15%;
-    --accent-light: 40 50% 72%;
-
-    /* Gold — matching accent for explicit use */
-    --gold: 40 56% 58%;
-    --gold-foreground: 217 61% 15%;
-    --gold-light: 40 50% 72%;
-    --gold-dark: 40 60% 45%;
-
-    /* Soft gold for subtle highlights */
-    --soft-gold: 40 45% 73%;
-
-    /* Muted */
-    --muted: 37 20% 92%;
-    --muted-foreground: 220 10% 45%;
-
-    /* Destructive */
+    --popover-foreground: 24 7% 16%;
+    --primary: 24 7% 16%;
+    --primary-foreground: 36 47% 90%;
+    --primary-light: 24 7% 24%;
+    --primary-dark: 30 9% 10%;
+    --secondary: 24 7% 24%;
+    --secondary-foreground: 36 47% 90%;
+    --secondary-light: 24 7% 32%;
+    --secondary-dark: 24 7% 18%;
+    --accent: 32 36% 56%;
+    --accent-foreground: 24 7% 16%;
+    --accent-light: 32 36% 70%;
+    --gold: 32 36% 56%;
+    --gold-foreground: 24 7% 16%;
+    --gold-light: 32 36% 70%;
+    --gold-dark: 32 36% 42%;
+    --soft-gold: 32 30% 76%;
+    --muted: 36 30% 87%;
+    --muted-foreground: 30 5% 40%;
     --destructive: 0 55% 50%;
     --destructive-foreground: 0 0% 100%;
-
-    /* Borders */
-    --border: 37 15% 88%;
-    --input: 37 15% 92%;
-    --ring: 40 56% 58%;
-
-    /* Border radius — 3px max per brand rules */
+    --border: 36 20% 82%;
+    --input: 36 20% 87%;
+    --ring: 32 36% 56%;
     --radius: 0.1875rem;
-
-    /* Shadows — none per brand rules (flat, no drop shadows) */
     --shadow-sm: none;
     --shadow-md: none;
     --shadow-lg: none;
     --shadow-glow: none;
-
-    /* Transitions */
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
   .dark {
-    --background: 217 61% 15%;
-    --foreground: 37 33% 95%;
-    --card: 217 55% 18%;
-    --card-foreground: 37 33% 95%;
-    --popover: 217 55% 18%;
-    --popover-foreground: 37 33% 95%;
-    --primary: 40 56% 58%;
-    --primary-foreground: 217 61% 15%;
-    --secondary: 217 35% 30%;
-    --secondary-foreground: 37 33% 95%;
-    --accent: 40 56% 58%;
-    --accent-foreground: 217 61% 15%;
-    --muted: 217 30% 22%;
-    --muted-foreground: 37 20% 65%;
+    --background: 30 9% 10%;
+    --foreground: 36 47% 90%;
+    --card: 24 7% 16%;
+    --card-foreground: 36 47% 90%;
+    --popover: 24 7% 16%;
+    --popover-foreground: 36 47% 90%;
+    --primary: 32 36% 56%;
+    --primary-foreground: 24 7% 16%;
+    --secondary: 24 7% 24%;
+    --secondary-foreground: 36 47% 90%;
+    --accent: 32 36% 56%;
+    --accent-foreground: 24 7% 16%;
+    --muted: 24 7% 22%;
+    --muted-foreground: 36 30% 70%;
     --destructive: 0 55% 45%;
     --destructive-foreground: 0 0% 100%;
-    --border: 217 25% 25%;
-    --input: 217 25% 22%;
-    --ring: 40 56% 58%;
+    --border: 24 7% 26%;
+    --input: 24 7% 22%;
+    --ring: 32 36% 56%;
   }
 }
 
