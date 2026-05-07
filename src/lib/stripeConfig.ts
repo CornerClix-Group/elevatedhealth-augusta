@@ -362,7 +362,7 @@ export type ConsultationPriceKey = keyof typeof CONSULTATION_PRICES;
 export type DiagnosticKitPriceKey = keyof typeof DIAGNOSTIC_KIT_PRICES;
 export type MembershipPriceKey = keyof typeof MEMBERSHIP_PRICES;
 export type AlacartePriceKey = keyof typeof ALACARTE_PRICES;
-export type KetaminePriceKey = keyof typeof KETAMINE_PRICES;
+
 export type WeightLossPriceKey = keyof typeof WEIGHT_LOSS_PRICES;
 export type HairRestorationPriceKey = keyof typeof HAIR_RESTORATION_PRICES;
 export type SexualWellnessPriceKey = keyof typeof SEXUAL_WELLNESS_PRICES;
