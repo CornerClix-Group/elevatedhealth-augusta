@@ -194,7 +194,7 @@ const IVLounge = () => {
         </section>
 
         {/* MENU */}
-        <section className="py-12 md:py-16">
+        <section id="the-menu" className="py-12 md:py-16 scroll-mt-24">
           <div className="container mx-auto px-6 lg:px-8 max-w-7xl">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
               <div>
