@@ -160,8 +160,66 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
             />
           </div>
 
-          <div className="space-y-3">
-            <Label>Roles (select one or more)</Label>
+          {/* Mode toggle */}
+          <div className="space-y-2">
+            <Label>Account creation method</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setMode("create")}
+                disabled={isSending}
+                className={`p-3 rounded-lg border text-left transition-colors ${
+                  mode === "create"
+                    ? "bg-primary/5 border-primary/40"
+                    : "bg-muted/30 border-border/50 hover:bg-muted/50"
+                }`}
+              >
+                <div className="text-sm font-medium">Create now</div>
+                <div className="text-xs text-muted-foreground mt-0.5">Set password, no email sent</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("invite")}
+                disabled={isSending}
+                className={`p-3 rounded-lg border text-left transition-colors ${
+                  mode === "invite"
+                    ? "bg-primary/5 border-primary/40"
+                    : "bg-muted/30 border-border/50 hover:bg-muted/50"
+                }`}
+              >
+                <div className="text-sm font-medium">Send email invite</div>
+                <div className="text-xs text-muted-foreground mt-0.5">They set their own password</div>
+              </button>
+            </div>
+          </div>
+
+          {mode === "create" && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Initial Password</Label>
+                <button
+                  type="button"
+                  onClick={generatePassword}
+                  disabled={isSending}
+                  className="text-xs text-primary hover:underline"
+                >
+                  Generate
+                </button>
+              </div>
+              <Input
+                id="password"
+                type="text"
+                placeholder="At least 8 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isSending}
+                className="font-mono"
+              />
+              <p className="text-xs text-muted-foreground">
+                Share this password securely with the team member. They can change it after first login.
+              </p>
+            </div>
+          )}
             <div className="space-y-3">
               {AVAILABLE_ROLES.map((role) => {
                 const Icon = role.icon;
