@@ -91,8 +91,16 @@ const StaffQuickCard = () => {
                   <span className="font-mono font-bold">$349</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-border">
-                  <span className="italic">↳ With $149 credit</span>
-                  <span className="font-mono font-bold">$250</span>
+                  <span className="italic">↳ With $79 credit</span>
+                  <span className="font-mono font-bold">$270</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-border">
+                  <span>RN Follow-Up (15min)</span>
+                  <span className="font-mono font-bold">$49</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-border">
+                  <span>Injection Admin</span>
+                  <span className="font-mono font-bold">$20</span>
                 </div>
               </div>
             </div>
