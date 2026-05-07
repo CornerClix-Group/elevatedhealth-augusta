@@ -103,7 +103,7 @@ serve(async (req) => {
               name: config.name,
               description: config.description,
             },
-            unit_amount: 14900, // $149
+            unit_amount: 7900, // $79
           },
           quantity: 1,
         },
