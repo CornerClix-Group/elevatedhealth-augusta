@@ -78,6 +78,9 @@ const Consult = () => {
             <p className="font-jost font-light text-lg text-muted-foreground max-w-2xl mx-auto mb-2">
               Select a service below to book your $79 RN Wellness Assessment — credited toward your first treatment.
             </p>
+            <p className="font-jost text-xs text-muted-foreground/80 max-w-2xl mx-auto mt-3">
+              Need a physician evaluation for prescription therapies? We'll schedule the MD visit ($149) after your assessment if clinically appropriate.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 mt-8 max-w-4xl mx-auto">
