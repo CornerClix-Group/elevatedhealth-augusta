@@ -1159,6 +1159,47 @@ export type Database = {
           },
         ]
       }
+      membership_visit_log: {
+        Row: {
+          administered_by: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          patient_id: string
+          service: string
+          supplies_used: Json | null
+          visit_date: string
+        }
+        Insert: {
+          administered_by?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          patient_id: string
+          service: string
+          supplies_used?: Json | null
+          visit_date?: string
+        }
+        Update: {
+          administered_by?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          service?: string
+          supplies_used?: Json | null
+          visit_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_visit_log_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
@@ -1452,6 +1493,9 @@ export type Database = {
         Row: {
           allergies: string | null
           avatar_url: string | null
+          care_membership_started_at: string | null
+          care_membership_status: string | null
+          care_membership_tier: string | null
           city: string | null
           consent_completed_at: string | null
           consent_method: string | null
@@ -1492,6 +1536,7 @@ export type Database = {
           service_interests: Json | null
           state: string | null
           street_address: string | null
+          stripe_subscription_id: string | null
           treatment_request: string | null
           updated_at: string | null
           user_id: string | null
@@ -1500,6 +1545,9 @@ export type Database = {
         Insert: {
           allergies?: string | null
           avatar_url?: string | null
+          care_membership_started_at?: string | null
+          care_membership_status?: string | null
+          care_membership_tier?: string | null
           city?: string | null
           consent_completed_at?: string | null
           consent_method?: string | null
@@ -1540,6 +1588,7 @@ export type Database = {
           service_interests?: Json | null
           state?: string | null
           street_address?: string | null
+          stripe_subscription_id?: string | null
           treatment_request?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -1548,6 +1597,9 @@ export type Database = {
         Update: {
           allergies?: string | null
           avatar_url?: string | null
+          care_membership_started_at?: string | null
+          care_membership_status?: string | null
+          care_membership_tier?: string | null
           city?: string | null
           consent_completed_at?: string | null
           consent_method?: string | null
@@ -1588,6 +1640,7 @@ export type Database = {
           service_interests?: Json | null
           state?: string | null
           street_address?: string | null
+          stripe_subscription_id?: string | null
           treatment_request?: string | null
           updated_at?: string | null
           user_id?: string | null
