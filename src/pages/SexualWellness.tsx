@@ -246,7 +246,7 @@ const SexualWellness = () => {
                       </div>
                     </div>
                     <div className="text-center md:text-right shrink-0">
-                      <span className="text-3xl font-cormorant text-foreground">$149</span>
+                      <span className="text-3xl font-cormorant text-foreground">$79</span>
                       <p className="text-xs text-muted-foreground">credited toward treatment</p>
                       <Button
                         onClick={() => setIsConsultOpen(true)}

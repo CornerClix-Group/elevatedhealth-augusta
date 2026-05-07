@@ -49,7 +49,7 @@ const StaffQuickCard = () => {
               <h2 className="font-bold text-sm uppercase tracking-wide mb-1">Entry Point</h2>
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="font-bold text-lg">$149 Medical Consultation</p>
+                  <p className="font-bold text-lg">$79 RN Wellness Assessment</p>
                   <p className="text-sm">30 min • IN-PERSON at Evans clinic</p>
                   <p className="text-sm italic">Fee credited toward first treatment</p>
                 </div>
@@ -105,7 +105,7 @@ const StaffQuickCard = () => {
               <ul className="text-sm space-y-1">
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">✓</span>
-                  <span>"The $149 consultation fee is credited toward your treatment."</span>
+                  <span>"The $79 fee is credited toward your treatment."</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">✓</span>

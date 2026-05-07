@@ -290,7 +290,7 @@ const Ketamine = () => {
                             </p>
                           </div>
                           <div className="text-right shrink-0">
-                            <span className="text-3xl font-cormorant text-foreground">$149</span>
+                            <span className="text-3xl font-cormorant text-foreground">$79</span>
                             <p className="text-xs text-muted-foreground">one-time</p>
                           </div>
                         </div>
