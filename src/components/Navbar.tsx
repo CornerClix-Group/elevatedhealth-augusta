@@ -68,9 +68,9 @@ const Navbar = () => {
               onClick={() => { navigate("/"); scrollToSection("hero"); }}
               className="flex flex-col items-start"
             >
-              <span className="font-playfair text-2xl text-foreground tracking-tight">Réveil</span>
-              <span className="font-jost text-[9px] font-medium uppercase tracking-[2.5px] text-accent hidden sm:block">
-                Restore · Repair · Réveil
+              <span className="font-playfair italic text-2xl text-foreground tracking-tight leading-none">elevated</span>
+              <span className="font-jost text-[9px] font-medium uppercase tracking-[3px] text-foreground hidden sm:block mt-0.5">
+                Health · Augusta
               </span>
             </button>
 

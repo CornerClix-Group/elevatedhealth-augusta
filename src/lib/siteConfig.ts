@@ -1,7 +1,7 @@
 export const SITE_CONFIG = {
-  clinicName: "Réveil",
-  tagline: "Restore. Repair. Réveil.",
-  website: "reveil.health",
+  clinicName: "Elevated Health Augusta",
+  tagline: "Wellness, the way it should have always been.",
+  website: "elevatedhealthaugusta.com",
   address: {
     line1: "7013 Evans Town Center Blvd, Suite 203",
     cityStateZip: "Evans, GA 30809",

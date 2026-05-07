@@ -18,8 +18,8 @@ const Hero = () => {
 
         {/* Sub-headline */}
         <p className="text-base sm:text-lg md:text-xl text-muted-foreground font-jost font-light leading-relaxed mb-12 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-          Réveil is Evans' first physician-owned longevity clinic — combining hormone optimization, 
-          IV therapy, and peptide medicine under the direct supervision of a board-certified physician. 
+          Elevated Health Augusta is a physician-owned and operated wellness clinic — combining hormone optimization, 
+          IV therapy, and peptide medicine under the direct supervision of board-certified physicians. 
           This isn't a spa. This isn't an app. This is medicine done right.
         </p>
 
@@ -28,9 +28,9 @@ const Hero = () => {
           <Button 
             size="lg"
             onClick={openBooking}
-            className="bg-primary text-accent font-jost font-medium tracking-wide text-sm px-10 py-6 rounded-sm transition-all duration-300 hover:bg-primary-light"
+            className="bg-primary text-primary-foreground font-jost font-medium tracking-wide text-sm px-10 py-6 rounded-sm transition-all duration-300 hover:bg-primary-light"
           >
-            Begin your awakening
+            Book a consultation
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
