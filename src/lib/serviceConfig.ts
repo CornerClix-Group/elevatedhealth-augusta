@@ -16,10 +16,10 @@ export const ACTIVE_SERVICES = {
   ivLounge: true,      // IV Therapy
   peptides: true,      // Peptide Therapy
 
-  // SUNSETTED SERVICES - hidden across app
+  // SUNSETTED / NOT-YET-LAUNCHED SERVICES - hidden across app
   ketamine: false,        // Ketamine / Spravato — not offered
-  hairRestoration: false, // Hair Restoration
-  sexualWellness: false,  // Sexual Wellness
+  hairRestoration: false, // Hair Restoration — post-launch
+  sexualWellness: false,  // Sexual Wellness — post-launch
 } as const;
 
 // Type for service keys

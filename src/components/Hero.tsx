@@ -1,48 +1,82 @@
 import { Button } from "@/components/ui/button";
 import { useBooking } from "@/contexts/BookingContext";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
   const { openBooking } = useBooking();
-  
+  const navigate = useNavigate();
+
   return (
-    <section id="hero" className="relative min-h-[90vh] md:min-h-screen flex items-center justify-center overflow-hidden bg-background">
+    <section
+      id="hero"
+      className="relative min-h-[90vh] md:min-h-screen flex items-center justify-center overflow-hidden bg-foreground"
+    >
+      {/* Background video — TODO: Real ambient clinic loop video (15-30s, 1920x1080, compressed to <5MB).
+          Until /hero-video.mp4 and /hero-poster.jpg exist in /public, the section's bg-foreground keeps
+          a clean dark wash instead of a flash of white. */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        poster="/hero-poster.jpg"
+        className="absolute inset-0 w-full h-full object-cover"
+        aria-hidden="true"
+      >
+        <source src="/hero-video.mp4" type="video/mp4" />
+      </video>
+
+      {/* Dim overlay for text readability */}
+      <div className="absolute inset-0 bg-foreground/50" aria-hidden="true" />
+
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto pt-32 pb-20">
-        {/* Main Headline */}
-        <h1 className="font-playfair text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-foreground leading-[1.08] mb-8 animate-fade-in-up">
+        <h1 className="font-playfair text-4xl sm:text-5xl md:text-6xl lg:text-8xl text-background leading-[1.08] mb-8 animate-fade-in-up">
           You remember what it felt like
           <br />
-          <span className="italic">to wake up ready.</span>
+          <span className="italic" style={{ letterSpacing: "-0.02em" }}>
+            to wake up ready.
+          </span>
         </h1>
 
-        {/* Sub-headline */}
-        <p className="text-base sm:text-lg md:text-xl text-muted-foreground font-jost font-light leading-relaxed mb-12 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-          Elevated Health Augusta is a physician-owned and operated wellness clinic — combining hormone optimization, 
-          IV therapy, and peptide medicine under the direct supervision of board-certified physicians. 
-          This isn't a spa. This isn't an app. This is medicine done right.
+        <p
+          className="text-base sm:text-lg md:text-xl text-background/80 font-jost font-light leading-relaxed mb-12 max-w-2xl mx-auto animate-fade-in-up"
+          style={{ animationDelay: "0.2s" }}
+        >
+          Physician-owned wellness for hormone optimization, peptide therapy, and IV care.
+          One place for everything that helps you feel like yourself again.
         </p>
 
-        {/* CTA Button */}
-        <div className="animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-          <Button 
+        <div
+          className="flex flex-col items-center gap-5 animate-fade-in-up"
+          style={{ animationDelay: "0.4s" }}
+        >
+          <Button
             size="lg"
             onClick={openBooking}
-            className="bg-primary text-primary-foreground font-jost font-medium tracking-wide text-sm px-10 py-6 rounded-sm transition-all duration-300 hover:bg-primary-light"
+            className="bg-background text-foreground font-jost font-medium tracking-wide text-sm px-10 py-6 rounded-sm transition-all duration-300 hover:bg-background/90"
           >
             Book a consultation
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
-        </div>
 
-        {/* Credibility Bar */}
-        <div className="mt-20 flex flex-wrap items-center justify-center gap-6 text-muted-foreground text-xs font-jost font-medium tracking-[2.5px] uppercase animate-fade-in" style={{ animationDelay: "0.8s" }}>
-          <span>Board-Certified Physician Direction</span>
-          <span className="hidden sm:inline text-accent/40">·</span>
-          <span>Evans Town Center</span>
-          <span className="hidden sm:inline text-accent/40">·</span>
-          <span>BCBS · TRICARE · VA Accepted</span>
+          <button
+            onClick={() => navigate("/iv-lounge")}
+            className="text-background/80 font-jost text-sm underline-offset-4 hover:underline"
+          >
+            Or book an IV walk-in →
+          </button>
         </div>
+      </div>
+
+      {/* Scroll indicator */}
+      <div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce"
+        aria-hidden="true"
+        style={{ animationDuration: "2s" }}
+      >
+        <ChevronDown className="h-6 w-6 text-background/60" />
       </div>
     </section>
   );
