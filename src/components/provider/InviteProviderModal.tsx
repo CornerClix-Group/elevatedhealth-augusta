@@ -220,6 +220,9 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
               </p>
             </div>
           )}
+
+          <div className="space-y-3">
+            <Label>Roles (select one or more)</Label>
             <div className="space-y-3">
               {AVAILABLE_ROLES.map((role) => {
                 const Icon = role.icon;
