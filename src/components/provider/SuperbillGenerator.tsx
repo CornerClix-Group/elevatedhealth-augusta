@@ -438,6 +438,9 @@ const SuperbillGenerator = ({
           </div>
         </div>
       </div>
+
+      <div class="section">
+        <div class="section-title">DIAGNOSIS CODES (ICD-10)</div>
         <div class="diagnosis-list">
           ${selectedDiagnoses.map(d => `<span class="diagnosis-badge"><strong>${d.code}</strong> - ${d.description}</span>`).join("")}
         </div>
