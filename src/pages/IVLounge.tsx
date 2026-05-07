@@ -193,6 +193,25 @@ const IVLounge = () => {
           </div>
         </section>
 
+        {/* PRICING STRIP (Pattern B) */}
+        <section className="py-16 md:py-20 bg-background border-y border-border">
+          <div className="container mx-auto px-6 lg:px-8 max-w-5xl">
+            <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
+              {[
+                { l: "Walk-In Pricing", p: "$95–$185", sub: "per drip · no consult required" },
+                { l: "Premium Drips", p: "$450–$750", sub: "NAD+ infusions · longevity protocols" },
+                { l: "Member Discount", p: "15% off", sub: "all add-ons · priority booking" },
+              ].map((c) => (
+                <div key={c.l} className="px-6 py-8 md:py-4 text-center">
+                  <p className="section-label mb-3">{c.l}</p>
+                  <p className="font-playfair text-3xl md:text-4xl text-foreground mb-2">{c.p}</p>
+                  <p className="font-jost text-xs text-muted-foreground">{c.sub}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* MENU */}
         <section id="the-menu" className="py-12 md:py-16 scroll-mt-24">
           <div className="container mx-auto px-6 lg:px-8 max-w-7xl">
