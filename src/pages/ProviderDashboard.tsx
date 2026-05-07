@@ -1906,6 +1906,11 @@ const ProviderDashboard = () => {
             <ResourceManager />
           </TabsContent>
 
+          {/* My Schedule Tab */}
+          <TabsContent value="schedule">
+            <MyScheduleManager />
+          </TabsContent>
+
           {/* Fax History Tab */}
           <TabsContent value="fax">
             <FaxHistoryLog />
