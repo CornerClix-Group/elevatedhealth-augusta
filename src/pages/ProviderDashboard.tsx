@@ -46,7 +46,7 @@ import AdminNavbar from "@/components/admin/AdminNavbar";
 import ProviderInbox from "@/components/chat/ProviderInbox";
 import KitStatusAdmin from "@/components/provider/KitStatusAdmin";
 import ResourceManager from "@/components/provider/ResourceManager";
-import IVKetamineBilling from "@/components/provider/IVKetamineBilling";
+
 import { InviteProviderModal } from "@/components/provider/InviteProviderModal";
 import LabcorpOrderModal from "@/components/provider/LabcorpOrderModal";
 import BloodWorkHistory from "@/components/provider/BloodWorkHistory";
@@ -61,7 +61,7 @@ import PatientStatusCard from "@/components/provider/PatientStatusCard";
 import { SendKitLinkCard } from "@/components/provider/SendKitLinkCard";
 import MembershipAssignmentCard from "@/components/provider/MembershipAssignmentCard";
 import ProviderAssistant from "@/components/provider/ProviderAssistant";
-import OsmindInviteCard from "@/components/provider/OsmindInviteCard";
+
 import ConsentPDFCard from "@/components/provider/ConsentPDFCard";
 import CreditCodeLookup from "@/components/provider/CreditCodeLookup";
 import ResendWelcomeEmailButton from "@/components/provider/ResendWelcomeEmailButton";
@@ -2463,39 +2463,15 @@ const ProviderDashboard = () => {
                 hasMembership={!!selectedPatient.patient.membership_tier}
               />
 
-              {/* IV Ketamine Billing - Show for ketamine patients or always visible */}
-              <IVKetamineBilling
+              {/* Consent PDF Card */}
+              <ConsentPDFCard
                 patientId={selectedPatient.patient.id}
                 patientName={selectedPatient.patient.full_name}
-                patientEmail={selectedPatient.patient.email || ""}
-                patientPhone={selectedPatient.patient.phone || ""}
+                patientEmail={selectedPatient.patient.email || null}
+                consentSignature={selectedPatient.patient.consent_signature || null}
+                consentCompletedAt={selectedPatient.patient.consent_completed_at || null}
+                consentMethod={selectedPatient.patient.consent_method || null}
               />
-
-              {/* Osmind Invite Card - For Ketamine Patients */}
-              {selectedPatient.patient.treatment_request?.includes("ketamine") && (
-                <OsmindInviteCard
-                  patientId={selectedPatient.patient.id}
-                  patientName={selectedPatient.patient.full_name}
-                  patientEmail={selectedPatient.patient.email || ""}
-                  consentSentAt={selectedPatient.patient.consent_sent_at || null}
-                  consentCompletedAt={selectedPatient.patient.consent_completed_at || null}
-                  consentMethod={selectedPatient.patient.consent_method || null}
-                  onUpdate={() => loadData()}
-                />
-              )}
-
-              {/* Consent PDF Card - For non-ketamine patients with consent */}
-              {!selectedPatient.patient.treatment_request?.includes("ketamine") && (
-                <ConsentPDFCard
-                  patientId={selectedPatient.patient.id}
-                  patientName={selectedPatient.patient.full_name}
-                  patientEmail={selectedPatient.patient.email || null}
-                  consentSignature={selectedPatient.patient.consent_signature || null}
-                  consentCompletedAt={selectedPatient.patient.consent_completed_at || null}
-                  consentMethod={selectedPatient.patient.consent_method || null}
-                />
-              )}
-
               {/* Pharmacy Order Card */}
               <div ref={pharmacyCardRef}>
                 <PharmacyOrderCard

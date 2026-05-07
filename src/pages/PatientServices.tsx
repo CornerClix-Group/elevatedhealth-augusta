@@ -47,17 +47,7 @@ const SERVICES: Service[] = [
     journeyPage: "/patient/hormone-journey",
     actionLabel: "Track Progress",
   },
-  {
-    id: "ketamine",
-    name: "Ketamine Therapy",
-    description: "IV ketamine therapy for treatment-resistant depression, anxiety, and PTSD.",
-    icon: <Brain className="w-6 h-6" />,
-    treatmentKey: "ketamine",
-    publicPage: "/ketamine",
-    color: "purple",
-    journeyPage: "/patient/mental-wellness",
-    actionLabel: "Access Mind Care",
-  },
+  // Ketamine therapy sunsetted — service no longer offered.
   // SUNSETTED SERVICES - Hidden but code preserved for future reactivation
   // {
   //   id: "peptides",
