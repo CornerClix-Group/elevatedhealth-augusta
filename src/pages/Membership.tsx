@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ELEVATED_MEMBERSHIP, SITE_CONFIG } from "@/lib/siteConfigCompat";
+import { SITE_CONFIG } from "@/lib/siteConfig";
 
 // Pricing constants — keep in lock-step with stripeConfig.ts and the storefronts.
 const PRICE_CONSULT = "$79";
