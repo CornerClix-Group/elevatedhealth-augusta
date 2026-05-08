@@ -53,7 +53,7 @@ export const ELEVATED_MEMBERSHIP = {
   priceId:
     (typeof import.meta !== "undefined" &&
       (import.meta as any).env?.VITE_STRIPE_ELEVATED_MEMBERSHIP_PRICE_ID) ||
-    "price_TODO_ELEVATED_MEMBERSHIP_199",
+    "price_1TUs3LEOtKRY99puWfQy8pHj",
   amount: 19900, // $199/mo
   displayPrice: "$199/mo",
   name: "Elevated Membership",
@@ -139,24 +139,24 @@ export const ALACARTE_PRICES = {
 export const GLP1_MEDICATION_PRICES = {
   semaglutide: {
     member: {
-      priceId: "price_TODO_SEMA_MEMBER_199",
+      priceId: "price_1TUs38EOtKRY99puPpc6SFMs",
       amount: 19900,
       displayPrice: "$199/mo",
     },
     nonmember: {
-      priceId: "price_TODO_SEMA_NONMEMBER_249",
+      priceId: "price_1TUs3AEOtKRY99puDOseqLDZ",
       amount: 24900,
       displayPrice: "$249/mo",
     },
   },
   tirzepatide: {
     member: {
-      priceId: "price_TODO_TIRZ_MEMBER_399",
+      priceId: "price_1TUs39EOtKRY99puWAF4oZT7",
       amount: 39900,
       displayPrice: "$399/mo",
     },
     nonmember: {
-      priceId: "price_1SlZnyEOtKRY99puE9JNOrTR", // existing $499/mo "Tirzepatide Membership"
+      priceId: "price_1SlZnyEOtKRY99puE9JNOrTR",
       amount: 49900,
       displayPrice: "$499/mo",
     },
