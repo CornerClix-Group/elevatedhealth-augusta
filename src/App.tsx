@@ -22,7 +22,7 @@ import HormonesMen from "./pages/HormonesMen";
 import IVLounge from "./pages/IVLounge";
 import PeptideTherapy from "./pages/PeptideTherapy";
 import Membership from "./pages/Membership";
-import CareMembership from "./pages/CareMembership";
+
 import About from "./pages/About";
 import MilitaryVeteran from "./pages/MilitaryVeteran";
 import Pricing from "./pages/Pricing";
@@ -125,7 +125,7 @@ const App = () => {
           <Route path="/iv-lounge" element={<IVLounge />} />
           <Route path="/peptides" element={<PeptideTherapy />} />
           <Route path="/membership" element={<Membership />} />
-          <Route path="/care-membership" element={<CareMembership />} />
+          <Route path="/care-membership" element={<Navigate to="/membership" replace />} />
           <Route path="/about" element={<About />} />
           {/* Legacy routes */}
           <Route path="/hormone-replacement" element={<Hormones />} />
