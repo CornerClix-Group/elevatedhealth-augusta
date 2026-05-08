@@ -806,14 +806,14 @@ const WeightLoss = () => {
               {/* Three Cards: Consultation + Two Memberships */}
               <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
                 
-                {/* Discovery Consultation */}
+                {/* Wellness Assessment */}
                 <Card className="border border-accent/30 hover:border-accent/50 transition-all">
                   <CardContent className="p-6 text-center">
                     <div className="inline-flex p-3 bg-accent/10 rounded-full mb-4">
                       <MessageCircle className="h-6 w-6 text-accent" />
                     </div>
                     <h3 className="font-playfair text-xl text-primary font-bold mb-2">
-                      Discovery Consultation
+                      Wellness Assessment
                     </h3>
                     <p className="text-3xl font-playfair text-primary mb-2">$79</p>
                     <p className="text-xs text-green-600 font-medium mb-2">
