@@ -3,6 +3,8 @@ import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { Resend } from "https://esm.sh/resend@2.0.0";
 
+const ELEVATED_MEMBERSHIP_PRICE_ID = "price_1TUs3LEOtKRY99puWfQy8pHj";
+
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
   console.log(`[STRIPE-WEBHOOK] ${step}${detailsStr}`);
@@ -197,6 +199,24 @@ serve(async (req) => {
 
     // Handle subscription payments (membership activations)
     if (session.mode === "subscription") {
+      // Detect Elevated Membership ($199/mo) by inspecting line items
+      let isElevatedMembership = false;
+      try {
+        const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 5 });
+        isElevatedMembership = lineItems.data.some(li => li.price?.id === ELEVATED_MEMBERSHIP_PRICE_ID);
+      } catch (e) {
+        logStep("listLineItems failed", { error: String(e) });
+      }
+
+      if (isElevatedMembership && customerEmail) {
+        const { error: emErr } = await supabaseClient
+          .from("patients")
+          .update({ elevated_membership_status: "active" })
+          .eq("email", customerEmail);
+        if (emErr) logStep("Error setting elevated_membership_status=active", { error: emErr.message });
+        else logStep("Elevated membership ACTIVATED", { email: customerEmail });
+      }
+
       // Prefer 'tier' metadata (from hormone membership checkout), fallback to 'base_membership'
       const tierFromMetadata = metadata.tier || metadata.base_membership || "metabolic";
       
@@ -303,15 +323,26 @@ serve(async (req) => {
     if (subscription.status === "canceled" || subscription.status === "unpaid") {
       const customer = await stripe.customers.retrieve(subscription.customer as string);
       if (customer && !customer.deleted && customer.email) {
+        // Check if this subscription was the Elevated Membership
+        const isElevated = subscription.items.data.some(
+          (it) => it.price?.id === ELEVATED_MEMBERSHIP_PRICE_ID
+        );
+
+        const updates: Record<string, unknown> = { onboarding_status: "subscription_canceled" };
+        if (isElevated) updates.elevated_membership_status = "cancelled";
+
         const { error } = await supabaseClient
           .from("patients")
-          .update({ onboarding_status: "subscription_canceled" })
+          .update(updates)
           .eq("email", customer.email);
 
         if (error) {
           logStep("Error updating patient for canceled subscription", { error: error.message });
         } else {
-          logStep("Patient status updated for canceled subscription", { email: customer.email });
+          logStep("Patient status updated for canceled subscription", {
+            email: customer.email,
+            elevatedCancelled: isElevated,
+          });
         }
       }
     }
