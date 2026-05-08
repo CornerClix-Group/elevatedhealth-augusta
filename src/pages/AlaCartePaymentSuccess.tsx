@@ -17,7 +17,7 @@ import {
   Shield,
 } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
-import { ALACARTE_PRICES, MEMBERSHIP_PRICES } from "@/lib/stripeConfig";
+import { ALACARTE_PRICES, ELEVATED_MEMBERSHIP } from "@/lib/stripeConfig";
 import confetti from "canvas-confetti";
 
 // Product display names and categories
@@ -53,7 +53,7 @@ const AlaCartePaymentSuccess = () => {
 
   // Calculate annual comparison
   const alaCarteAnnual = productPrice ? productPrice.amount / 100 * 12 : 0;
-  const membershipAnnual = MEMBERSHIP_PRICES.vitality.amount / 100 * 12;
+  const membershipAnnual = ELEVATED_MEMBERSHIP.amount / 100 * 12;
   const potentialSavings = Math.max(0, alaCarteAnnual - membershipAnnual);
 
   return (

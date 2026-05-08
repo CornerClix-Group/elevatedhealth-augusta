@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { ALACARTE_PRICES, MEMBERSHIP_PRICES, CONSULTATION_PRICES, DIAGNOSTIC_KIT_PRICES } from "@/lib/stripeConfig";
+import { ALACARTE_PRICES, ELEVATED_MEMBERSHIP, CONSULTATION_PRICES, DIAGNOSTIC_KIT_PRICES } from "@/lib/stripeConfig";
 import {
   Check,
   X,
@@ -71,7 +71,7 @@ const PricingComparison = () => {
     const consultationCredit = consultation; // $79 credit applied to kit
     const netKitCost = labKit - consultationCredit; // $250 net
     
-    const monthlyRate = MEMBERSHIP_PRICES.vitality.amount / 100;
+    const monthlyRate = ELEVATED_MEMBERSHIP.amount / 100;
     const membershipTotal = monthlyRate * monthsPlanned;
 
     // Initial cost: consultation + kit, but credit makes net initial $250 + $99 = $349 total
@@ -149,7 +149,7 @@ const PricingComparison = () => {
                   </p>
                   <div className="mt-4">
                     <span className="text-4xl font-cormorant text-foreground">
-                      {MEMBERSHIP_PRICES.vitality.displayPrice}
+                      {ELEVATED_MEMBERSHIP.displayPrice}
                     </span>
                   </div>
                 </CardHeader>
