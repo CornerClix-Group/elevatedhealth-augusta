@@ -230,6 +230,11 @@ const App = () => {
               <OfficeManagerDashboard />
             </ProviderLayout>
           } />
+          <Route path="/office/schedule" element={
+            <ProviderLayout title="Schedule" subtitle="Office-wide schedule" showNavbar={false}>
+              <OfficeSchedule />
+            </ProviderLayout>
+          } />
           <Route path="/admin/business" element={
             <ProviderLayout title="Business Dashboard" subtitle="Revenue & Operations" showNavbar={false}>
               <BusinessDashboard />
