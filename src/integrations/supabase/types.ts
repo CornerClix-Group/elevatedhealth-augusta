@@ -666,6 +666,78 @@ export type Database = {
           },
         ]
       }
+      eligibility_review_requests: {
+        Row: {
+          created_at: string
+          flag_reasons: Json
+          id: string
+          intake_id: string | null
+          notes: string | null
+          patient_email: string | null
+          patient_id: string | null
+          patient_name: string
+          preferred_callback_window: Database["public"]["Enums"]["callback_window"]
+          preferred_phone: string
+          resolved_booking_id: string | null
+          reviewed_at: string | null
+          reviewed_by_user_id: string | null
+          status: Database["public"]["Enums"]["eligibility_review_status"]
+          treatment_type: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          flag_reasons?: Json
+          id?: string
+          intake_id?: string | null
+          notes?: string | null
+          patient_email?: string | null
+          patient_id?: string | null
+          patient_name: string
+          preferred_callback_window?: Database["public"]["Enums"]["callback_window"]
+          preferred_phone: string
+          resolved_booking_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by_user_id?: string | null
+          status?: Database["public"]["Enums"]["eligibility_review_status"]
+          treatment_type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          flag_reasons?: Json
+          id?: string
+          intake_id?: string | null
+          notes?: string | null
+          patient_email?: string | null
+          patient_id?: string | null
+          patient_name?: string
+          preferred_callback_window?: Database["public"]["Enums"]["callback_window"]
+          preferred_phone?: string
+          resolved_booking_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by_user_id?: string | null
+          status?: Database["public"]["Enums"]["eligibility_review_status"]
+          treatment_type?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eligibility_review_requests_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eligibility_review_requests_resolved_booking_id_fkey"
+            columns: ["resolved_booking_id"]
+            isOneToOne: false
+            referencedRelation: "consultation_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_templates: {
         Row: {
           body_html: string
@@ -2700,6 +2772,13 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "staff" | "user" | "business_admin" | "provider"
+      callback_window: "morning" | "afternoon" | "evening" | "no_preference"
+      eligibility_review_status:
+        | "pending"
+        | "contacted"
+        | "scheduled"
+        | "declined"
+        | "referred_out"
       order_status:
         | "pending_review"
         | "authorized"
@@ -2834,6 +2913,14 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "staff", "user", "business_admin", "provider"],
+      callback_window: ["morning", "afternoon", "evening", "no_preference"],
+      eligibility_review_status: [
+        "pending",
+        "contacted",
+        "scheduled",
+        "declined",
+        "referred_out",
+      ],
       order_status: [
         "pending_review",
         "authorized",
