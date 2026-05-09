@@ -1,0 +1,367 @@
+# Elevated Health Augusta — Cursor Operating Context
+
+You are working on the codebase for Elevated Health Augusta (EHA),
+a physician-owned, cash-pay concierge wellness clinic launching in
+Evans, Georgia (suburb of Augusta). This file gives you the
+architectural, regulatory, and operational context you need to
+make good decisions without re-deriving them every session.
+
+If anything in a user request conflicts with this file, surface
+the conflict before acting. Do not silently override.
+
+═══════════════════════════════════════════════════════════════════
+HISTORICAL CONTEXT — IMPORTANT
+═══════════════════════════════════════════════════════════════════
+
+This clinic was previously called "Réveil Ketamine" and offered
+ketamine and Spravato (esketamine) therapy. We rebranded to
+"Elevated Health Augusta" and removed ketamine from the public-
+facing product. Ketamine and Spravato are NO LONGER OFFERED.
+
+If you find references to "ketamine," "spravato," "esketamine,"
+"reveil," or "réveil" in the codebase, they are LEGACY ARTIFACTS
+to be cleaned up — not active features. Treat them the same way
+you'd treat dead code from a previous architecture.
+
+The repo name (elevated-ketra-augusta) and some database/file
+names still reflect the old era. Do not rename the repo (it
+breaks Lovable's GitHub sync). Internal renames in code are fine
+when called out explicitly.
+
+LAUNCH_CHECKLIST.md (if present) is a stale planning document
+from the old era. Do not treat it as a source of truth.
+
+═══════════════════════════════════════════════════════════════════
+THE BUSINESS — WHAT EHA IS TODAY
+═══════════════════════════════════════════════════════════════════
+
+Physician-owned, cash-pay concierge wellness clinic.
+Address: 7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809
+Phone: (706) 760-3470
+Domain: elevatedhealthaugusta.com
+
+Four service lines, all under one membership:
+1. IV Therapy (walk-in, direct booking)
+2. Hormone Optimization (men's TRT, women's BHRT)
+3. Peptide Therapy (3 named stacks + à la carte)
+4. Medical Weight Loss (compounded GLP-1s)
+
+Two booking lanes:
+- Lane A — IV Therapy: open booking at /iv-lounge. Walk-up,
+  cash-and-carry. No consult required.
+- Lane B — Consult-Gated: hormones, peptides, weight loss all
+  start with $79 wellness assessment. Lab panel at the visit.
+  Membership offered after results review.
+
+Hidden from launch (do NOT make these prominent on the public
+storefront): Sexual Wellness storefront, Hair Restoration. They
+exist as ACTIVE_SERVICES flags in code; flag is OFF.
+
+═══════════════════════════════════════════════════════════════════
+PRICING — SOURCE OF TRUTH
+═══════════════════════════════════════════════════════════════════
+
+These are the canonical prices. They appear consistently across
+all storefronts via constants pattern (PRICE_CONSULT, etc.) at
+the top of each storefront file. Stripe Price IDs in
+src/lib/stripeConfig.ts are the actual charging mechanism — the
+display constants in storefronts must match what Stripe charges.
+
+ONE-TIME / À LA CARTE
+  Initial Consultation: $79 (credited toward protocol if patient
+    enrolls in a program)
+
+LAB PANELS (Non-Member / Member)
+  Foundation Wellness: $295 / $245
+  Hormone — Female: $395 / $345
+  Hormone — Male: $395 / $345
+  Weight Optimization: $345 / $295
+  Sexual Wellness: $245 / $195
+
+MEMBERSHIP
+  Elevated Membership: $199/month, single tier, recurring via
+    Stripe subscription. NO multi-tier system. References to
+    "Care Membership," "Founding Member," "Wellness Pass,"
+    "Longevity Protocol," "Executive Concierge," "Vitality" or
+    "Concierge" tiers are LEGACY and should be cleaned up.
+
+PEPTIDE STACKS (Member / Non-Member, monthly)
+  Restore (PT-141 weekly): $129 / $179
+  Healing (PDA daily + TB-500 weekly): $249 / $329
+  Vitality (Sermorelin + NAD+ subQ): $299 / $399
+  Vitality IV (Sermorelin + NAD+ IV at IV Lounge): $449 / $599
+
+GLP-1 WEIGHT LOSS (Member / Non-Member, monthly)
+  Compounded Semaglutide: $199 / $249
+  Compounded Tirzepatide: $399 / $499
+
+IV THERAPY (walk-in pricing, members get 15% off add-ons)
+  Myers Cocktail: $185
+  Glutathione IV Push: $95
+  NAD+ Infusion 250mg: $450
+  NAD+ Infusion 500mg: $750
+  Custom IV Build: from $145
+
+NEVER hardcode prices in component logic. Always use display
+constants at top of file with the comment pattern:
+  // Display value — actual charge from Stripe Price ID via
+  // create-X-checkout edge function
+
+═══════════════════════════════════════════════════════════════════
+SUPPLY CHAIN & VENDORS
+═══════════════════════════════════════════════════════════════════
+
+PRIMARY 503A COMPOUNDING PHARMACY: FCC (Formulation Compounding
+  Center, Lewisville TX). Fax-based ordering via the
+  send-rx-fax edge function (Sinch fax service). Ships
+  refrigerated direct to clinic or patient.
+
+SECONDARY 503A: Empower Pharmacy (Houston, TX). Backup for
+  FCC supply issues. Account in process.
+
+LAB PARTNER: LabCorp via client billing. Account application
+  in flight. 2-3 week approval. Critical path for launch.
+
+E-PRESCRIBING: DrFirst Rcopia / iPrescribe for retail pharmacy
+  Rx (FDA-approved transdermal HRT alternatives, ancillaries).
+  EPCS upgrade for Schedule III is deferred — fax-to-FCC handles
+  compounded TRT in Georgia (legally compliant for cash-pay).
+
+MEDICAL-SURGICAL: Henry Schein.
+SHARPS DISPOSAL: Stericycle.
+PAYMENTS: Stripe (test → live mode transition needed pre-launch).
+SMS: Twilio.
+FAX: Sinch.
+TELEHEALTH: Doxy.me.
+
+VENDORS WE DO NOT USE (and why):
+- Tailor Made Compounding — DOJ prosecution, $1.79M forfeiture
+  for distributing unapproved peptides. Do not recommend or
+  refer to in code.
+- Verified RX / PATH Peptides — gray-market "physician-use only"
+  branding. Not pharmacy-grade. Pending verification of their
+  503B partner before any engagement.
+- Any "research-grade" or "physician use only" peptide vendor
+  not operating under 503A or 503B authority.
+
+═══════════════════════════════════════════════════════════════════
+REGULATORY POSTURE
+═══════════════════════════════════════════════════════════════════
+
+We are deliberately the "responsibly sourced" alternative in
+the Augusta wellness market. This is a competitive moat AND a
+liability shield. Code, copy, and protocols must reflect it.
+
+PEPTIDES — Cat 2 LIST AS OF MAY 2026:
+  NOT OFFERED (FDA prohibition on compounding):
+    BPC-157 — replaced with Pentadeca Arginate (PDA), the
+      regulatory-cleared successor with similar mechanism
+    CJC-1295 / Ipamorelin — on Cat 2, FCC may pull anytime
+    Thymosin Alpha-1 — on Cat 2
+    Selank — on Cat 2
+    GHK-Cu (injectable form only) — Cat 2; topical cream OK
+
+  YELLOW LIGHT (verify with FCC before promoting):
+    TB-500 (Thymosin Beta-4) — on Cat 2 but FCC currently
+      compounds. Verify FCC's compliance position before
+      featuring prominently. The Healing stack depends on this.
+
+  GREEN LIGHT (clearly legal):
+    PT-141 (Bremelanotide) — FDA-approved as Vyleesi
+    Pentadeca Arginate (PDA) — not on Cat 2
+    Sermorelin — not on Cat 2
+    NAD+ — not on Cat 2 (any delivery method)
+
+RETATRUTIDE — DO NOT OFFER. Not FDA-approved, FDA explicitly
+  prohibits compounding under federal law, Eli Lilly patent
+  protection. Multiple FDA warning letters issued Sept 2025
+  to compounders selling it. We are building a "Retatrutide
+  Early Access Registry" instead — email capture, day-one
+  prescribing when approved (estimated 2027). Do not add
+  retatrutide to any storefront menu.
+
+KETAMINE — NOT OFFERED. Legacy artifact only.
+
+HORMONE THERAPY:
+  - Schedule III testosterone via FCC compounding (cash-pay,
+    Georgia fax-Rx is legally compliant; no EPCS required)
+  - Compounded transdermal HRT cream is the LEAD product
+    (FDA-approved patches in nationwide shortage through 2026)
+  - FDA-approved alternatives (gels, sprays, patches when
+    available) prescribed via DrFirst Rcopia for patients who
+    prefer them
+
+GLP-1 COMPOUNDING:
+  - Semaglutide and tirzepatide via FCC under 503A patient-
+    specific authority. Legally compoundable under specific
+    conditions. Watch for FDA shortage list status changes.
+
+═══════════════════════════════════════════════════════════════════
+TECHNICAL ARCHITECTURE
+═══════════════════════════════════════════════════════════════════
+
+STACK
+  Frontend: Vite + React + TypeScript + shadcn/ui + Tailwind
+  Backend: Supabase (Postgres + Auth + Edge Functions)
+  Hosting: Lovable Cloud (auto-deploys on push to main)
+  Payments: Stripe Checkout + Webhooks + Customer Portal
+  GitHub repo: github.com/CornerClix-Group/elevated-ketra-augusta
+
+DESIGN SYSTEM
+  Colors: Charcoal #2A2826, Camel #B8956A, Bone #F2EBDC
+  Type display: Playfair Display (italic mixed with regular)
+  Type body: Jost (light/regular)
+  Typography tokens: font-playfair, font-jost
+  Color tokens: bg-primary, bg-accent, bg-background, bg-muted,
+    text-primary-foreground, text-accent-foreground, etc.
+  RÉVEIL-ERA TOKENS to clean up if found:
+    font-cormorant → font-playfair
+    font-lato → font-jost
+    text-gold → text-accent
+    bg-gold → bg-accent
+    navy gradients → bg-secondary/30 or bg-muted/30
+
+STOREFRONT TEMPLATE (Pattern A through G)
+Established in Prompt 3 of the build sequence. All storefronts
+follow this structure. Reference src/pages/HormonesWomen.tsx
+as the canonical implementation.
+
+  PATTERN A: Storefront Hero (min-h-[70vh], section label,
+    Playfair italic mixed headline, Jost subhead, primary +
+    secondary CTAs)
+  PATTERN B: Pricing Strip (3 columns: consult/labs/membership)
+  PATTERN C: "What it is" editorial 2-column split
+  PATTERN D: "How it works" 4-step (numbered 01-04, Playfair
+    italic numbers)
+  PATTERN E: Pricing transparency table
+  PATTERN F: FAQ Accordion (shadcn/ui)
+  PATTERN G: Closing CTA section
+
+STRIPE PRINCIPLES
+  - NEVER hardcode prices in component logic. Display constants
+    only at top of file.
+  - Stripe Price IDs are the source of truth for actual charges.
+  - All webhook events feed back into Supabase to update patient
+    state (elevated_membership_status, etc.)
+  - Never use HTML <form> tags in React (Lovable convention).
+    Use button onClick handlers.
+
+KEY DATABASE TABLES (do not modify schema without surfacing)
+  patients — patient records with elevated_membership_status,
+    stripe_customer_id, etc.
+  iv_drip_bookings — IV appointments
+  consultation_bookings — consult-gated appointments
+  provider_schedules — recurring weekly availability
+  schedule_blocks — one-off time off
+  schedule_exceptions — per-week availability changes
+  user_roles — admin / staff / user role assignments
+
+KEY EDGE FUNCTIONS
+  create-consultation-checkout — $79 consult Stripe checkout
+  create-membership-checkout — $199 Elevated Membership
+  create-semaglutide-checkout — member/non-member SKU routing
+  create-tirzepatide-checkout — member/non-member SKU routing
+  send-rx-fax — Sinch fax to FCC for compounded Rx
+  stripe-webhook — receives Stripe events, updates patient state
+  book-iv-appointment — IV booking flow
+  book-consult-appointment — consult-gated booking flow
+  get-available-slots — reads schedules + exceptions + blocks
+
+ROLES
+  app_role enum: admin, staff, user
+  - admin: physician (medical director), Dennis (business partner)
+  - staff: Kristen (office manager), Caroline (RN/BSN)
+  - user: patients
+
+═══════════════════════════════════════════════════════════════════
+KEY PEOPLE
+═══════════════════════════════════════════════════════════════════
+
+  Dennis Williams — business partner. Strategic decisions,
+    capital, vendor approvals over threshold.
+  Kristen — office manager (staff role). Schedule, patient
+    coordination, vendor follow-up. Primary user of OfficeSchedule
+    and OfficeManagerDashboard.
+  Caroline — RN/BSN. Intake, IV admin, member visits, phlebotomy.
+    Operates under signed standing orders (staff role). Primary
+    user of MyScheduleManager.
+  Medical Director — physician (TBD/being onboarded). DEA-
+    registered. Signs all protocols. Owns clinical responsibility.
+    Primary user of ProviderDashboard.
+
+═══════════════════════════════════════════════════════════════════
+WORKING WITH THIS CODEBASE
+═══════════════════════════════════════════════════════════════════
+
+LOVABLE COEXISTENCE
+  This codebase is connected to Lovable.dev with bidirectional
+  GitHub sync. Lovable changes flow to GitHub; GitHub changes
+  flow to Lovable. Be careful not to fight Lovable mid-edit.
+
+  Before substantive work:
+    1. git pull origin main
+    2. Verify the user has confirmed Lovable isn't running
+       a prompt
+    3. Make changes
+    4. Commit with descriptive message
+    5. Push
+
+  If you find files that look mid-edit (unfinished functions,
+  syntax errors, half-done refactors), STOP and ask the user.
+  Lovable might be in the middle of writing them.
+
+CHANGES TO BE EXTRA CAREFUL ABOUT
+  - Stripe Price IDs and stripeConfig.ts (real money)
+  - Edge functions that send communications (Twilio, Sinch)
+  - Database migrations (RLS policies in particular — this app
+    handles PHI)
+  - Any file Lovable claimed to have just modified (potential
+    merge conflict zone)
+
+WHEN UNSURE, ASK
+  Default to surfacing concerns over silently making changes.
+  This is a regulated, payment-processing application.
+  Mistakes have real consequences (FDA exposure, money lost,
+  patient harm). The user has explicitly requested radical
+  candor and pushback when something looks wrong.
+
+WHAT NOT TO TOUCH WITHOUT EXPLICIT REQUEST
+  - Brand colors or design system tokens
+  - Pricing values (the constants pattern is the source of truth)
+  - The bidirectional sync configuration with Lovable
+  - The patients table schema (PHI, RLS-protected)
+  - Any edge function that talks to Stripe webhooks
+
+═══════════════════════════════════════════════════════════════════
+PROMPT HISTORY (for reference only)
+═══════════════════════════════════════════════════════════════════
+
+Built so far via Lovable prompts:
+  Prompt 1: Foundation cleanup, ketamine removal
+  Prompt 2: Homepage transformation
+  Prompt 2.5/2.6/2.7/2.8: Homepage hero, auth separation,
+    CTA bifurcation, ConsultationModal IV removal + $79 sync
+  Prompt 3: Hormones architecture (gateway + women + men)
+  Prompt 4: Storefront unification (peptides + weight loss
+    + IV polish)
+  Prompt 5: Caroline's visual scheduler
+    (src/components/provider/MyScheduleManager.tsx)
+  Prompt 6: Kristen's office-wide scheduler
+    (src/pages/OfficeSchedule.tsx)
+  Prompt 7: Membership architecture cleanup + cross-codebase
+    pricing audit (single $199 Elevated Membership consolidation)
+
+Remaining work:
+  - Lab catalog seeding (5 named panels into lab_panels table)
+  - Protocol library + 13 starter protocol drafts with physician
+    sign-off workflow
+  - Inventory tracking with FEFO + FCC catalog seed
+  - Provider onboarding workflow (NPI, DEA, license,
+    Schedule III privilege)
+  - End-to-end dry runs for both booking lanes
+  - Pre-launch Stripe live-mode setup
+  - Photography (real, not placeholder)
+
+═══════════════════════════════════════════════════════════════════
+
+End of context. Make good decisions.
