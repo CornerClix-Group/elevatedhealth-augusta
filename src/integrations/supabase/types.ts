@@ -2801,7 +2801,6 @@ export type Database = {
           isSetofReturn: false
         }
       }
-      trigger_cron_job_manual: { Args: { _jobid: number }; Returns: number }
     }
     Enums: {
       app_role: "admin" | "staff" | "user" | "business_admin" | "provider"
