@@ -236,3 +236,6 @@ verify_jwt = true
 # inserts the orders row server-side via service role.
 [functions.request-hormone-review]
 verify_jwt = true
+
+[functions.bootstrap-cron-secret-vault]
+verify_jwt = false
