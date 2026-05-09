@@ -259,7 +259,7 @@ export default function ClinicalProtocolDetail() {
       toast.error(error.message);
       return;
     }
-    setPatientHits((data ?? []) as Array<Pick<Tables<"patients">, "id" | "full_name">>>);
+    setPatientHits((data ?? []) as Array<Pick<Tables<"patients">, "id" | "full_name">>);
   };
 
   const logExecution = async () => {
