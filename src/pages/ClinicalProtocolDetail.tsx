@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import type { Json, Tables } from "@/integrations/supabase/types";
+import type { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,16 +23,17 @@ import {
 } from "@/components/ui/collapsible";
 import { ChevronDown, Loader2, Pencil, ShieldCheck, ClipboardList } from "lucide-react";
 import { toast } from "sonner";
+import {
+  allReviewerEntriesResolved,
+  parseReviewerList,
+  serializeReviewerListForDb,
+  updateDecisionFlagAt,
+  updateLegacyAt,
+  type ReviewerListItem,
+} from "@/lib/clinicalProtocolDecisionFlags";
 
 type ClinicalProtocol = Tables<"clinical_protocols">;
 type ClinicalProtocolVersion = Tables<"clinical_protocol_versions">;
-
-type ReviewerItem = {
-  note: string;
-  resolved: boolean;
-  resolved_at?: string | null;
-  resolved_by?: string | null;
-};
 
 type StructuredBody = {
   indication?: string;
@@ -53,24 +54,6 @@ type StructuredBody = {
   };
 };
 
-function parseReviewerItems(raw: Json | null): ReviewerItem[] {
-  if (!raw || !Array.isArray(raw)) return [];
-  return raw
-    .map((row) => {
-      if (row && typeof row === "object" && "note" in row) {
-        const o = row as Record<string, unknown>;
-        return {
-          note: String(o.note ?? ""),
-          resolved: Boolean(o.resolved),
-          resolved_at: (o.resolved_at as string | null | undefined) ?? null,
-          resolved_by: (o.resolved_by as string | null | undefined) ?? null,
-        };
-      }
-      return null;
-    })
-    .filter((x): x is NonNullable<typeof x> => !!x && !!x.note);
-}
-
 export default function ClinicalProtocolDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -79,7 +62,7 @@ export default function ClinicalProtocolDetail() {
   const [version, setVersion] = useState<ClinicalProtocolVersion | null>(null);
   const [history, setHistory] = useState<ClinicalProtocolVersion[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [reviewerItems, setReviewerItems] = useState<ReviewerItem[]>([]);
+  const [reviewerList, setReviewerList] = useState<ReviewerListItem[]>([]);
   const [execOpen, setExecOpen] = useState(false);
   const [patientQuery, setPatientQuery] = useState("");
   const [patientHits, setPatientHits] = useState<Array<Pick<Tables<"patients">, "id" | "full_name">>>([]);
@@ -137,7 +120,7 @@ export default function ClinicalProtocolDetail() {
         .maybeSingle();
       if (vErr) throw vErr;
       setVersion(v as ClinicalProtocolVersion);
-      setReviewerItems(parseReviewerItems(v?.notes_for_reviewer ?? null));
+      setReviewerList(parseReviewerList(v?.notes_for_reviewer ?? null));
 
       const { data: hist, error: hErr } = await supabase
         .from("clinical_protocol_versions")
@@ -158,30 +141,24 @@ export default function ClinicalProtocolDetail() {
     void load();
   }, [load]);
 
-  const allReviewerResolved =
-    reviewerItems.length > 0 && reviewerItems.every((i) => i.resolved);
+  const allReviewerResolved = allReviewerEntriesResolved(reviewerList);
 
-  const persistReviewerItems = async (items: ReviewerItem[]) => {
+  const persistReviewerList = async (items: ReviewerListItem[]) => {
     if (!version) return;
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) return;
-    const payload = items.map((it) => ({
-      note: it.note,
-      resolved: it.resolved,
-      resolved_at: it.resolved ? it.resolved_at ?? new Date().toISOString() : null,
-      resolved_by: it.resolved ? it.resolved_by ?? user.id : null,
-    }));
+    const payload = serializeReviewerListForDb(items, user.id);
     const { error } = await supabase
       .from("clinical_protocol_versions")
-      .update({ notes_for_reviewer: payload as unknown as Json })
+      .update({ notes_for_reviewer: payload })
       .eq("id", version.id);
     if (error) {
       toast.error(error.message);
       return;
     }
-    setReviewerItems(items);
+    setReviewerList(items);
     toast.success("Reviewer checklist updated");
   };
 
@@ -189,17 +166,25 @@ export default function ClinicalProtocolDetail() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    const next = reviewerItems.map((it, i) =>
-      i === index
-        ? {
-            ...it,
-            resolved: checked,
-            resolved_at: checked ? new Date().toISOString() : null,
-            resolved_by: checked ? user?.id ?? null : null,
-          }
-        : it
-    );
-    await persistReviewerItems(next);
+    if (!user) return;
+    const item = reviewerList[index];
+    let next: ReviewerListItem[];
+    if (item.kind === "legacy") {
+      next = updateLegacyAt(reviewerList, index, checked, user.id);
+    } else {
+      next = updateDecisionFlagAt(
+        reviewerList,
+        index,
+        checked
+          ? {
+              resolved: true,
+              resolution: item.data.resolution ?? "approved",
+            }
+          : { resolved: false, resolution: null },
+        user.id,
+      );
+    }
+    await persistReviewerList(next);
   };
 
   const handleSign = async () => {
@@ -353,7 +338,7 @@ export default function ClinicalProtocolDetail() {
         </div>
       </div>
 
-      {isAdmin && reviewerItems.length > 0 && (
+      {isAdmin && reviewerList.length > 0 && (
         <Card className="border-amber-500/60 bg-amber-500/5">
           <CardHeader className="pb-2">
             <CardTitle className="font-playfair text-lg text-amber-900 dark:text-amber-100 flex items-center gap-2">
@@ -361,22 +346,69 @@ export default function ClinicalProtocolDetail() {
               Awaiting your review
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              Check each item after you have verified it in practice. Signing unlocks only when every item is checked.
+              Resolve every decision flag (or legacy checklist item) before signing. High-stakes items are listed first
+              in the editor; here you can mark each item reviewed once verified.
             </p>
           </CardHeader>
           <CardContent className="space-y-3">
-            {reviewerItems.map((item, idx) => (
-              <div key={idx} className="flex items-start gap-3 rounded-md border border-border/60 bg-background/80 p-3">
-                <Checkbox
-                  id={`rev-${idx}`}
-                  checked={item.resolved}
-                  onCheckedChange={(c) => void toggleReviewer(idx, c === true)}
-                />
-                <Label htmlFor={`rev-${idx}`} className="text-sm leading-relaxed cursor-pointer">
-                  {item.note}
-                </Label>
-              </div>
-            ))}
+            {reviewerList.map((item, idx) =>
+              item.kind === "legacy" ? (
+                <div key={idx} className="flex items-start gap-3 rounded-md border border-border/60 bg-background/80 p-3">
+                  <Checkbox
+                    id={`rev-${idx}`}
+                    checked={item.data.resolved}
+                    onCheckedChange={(c) => void toggleReviewer(idx, c === true)}
+                  />
+                  <Label htmlFor={`rev-${idx}`} className="text-sm leading-relaxed cursor-pointer">
+                    {item.data.note}
+                  </Label>
+                </div>
+              ) : (
+                <div
+                  key={idx}
+                  className={`rounded-md border border-border/60 bg-background/80 p-4 space-y-2 ${
+                    item.data.resolved ? "opacity-60" : ""
+                  }`}
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {item.data.confidence === "high_stakes" ? (
+                        <Badge className="bg-destructive text-destructive-foreground hover:bg-destructive">
+                          Deserves attention
+                        </Badge>
+                      ) : item.data.confidence === "variable" ? (
+                        <Badge className="bg-accent text-accent-foreground hover:bg-accent">Variation exists</Badge>
+                      ) : (
+                        <Badge variant="secondary">Standard of care</Badge>
+                      )}
+                      <span className="text-sm font-medium font-mono text-foreground">{item.data.field}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id={`rev-${idx}`}
+                        checked={item.data.resolved}
+                        onCheckedChange={(c) => void toggleReviewer(idx, c === true)}
+                      />
+                      <Label htmlFor={`rev-${idx}`} className="text-sm cursor-pointer whitespace-nowrap">
+                        Reviewed
+                      </Label>
+                    </div>
+                  </div>
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Current value: </span>
+                    <span className="whitespace-pre-wrap">{item.data.current_value}</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">Why: </span>
+                    {item.data.rationale}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">Alternatives: </span>
+                    {item.data.alternatives}
+                  </div>
+                </div>
+              ),
+            )}
             <div className="flex flex-wrap gap-2 pt-2">
               <Button
                 size="sm"

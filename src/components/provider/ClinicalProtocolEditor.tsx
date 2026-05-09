@@ -24,8 +24,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowDown, ArrowUp, Loader2, Plus, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Loader2, Plus, ShieldCheck, X } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import {
+  allReviewerEntriesResolved,
+  fieldToAccordionSection,
+  fieldToDomId,
+  parseReviewerList,
+  serializeReviewerListForDb,
+  sortDecisionFlagEntries,
+  updateDecisionFlagAt,
+  type DecisionFlagRow,
+  type ReviewerListItem,
+} from "@/lib/clinicalProtocolDecisionFlags";
 
 type ClinicalProtocol = Tables<"clinical_protocols">;
 type ClinicalProtocolVersion = Tables<"clinical_protocol_versions">;
@@ -57,13 +69,6 @@ type StructuredBody = {
   escalation_criteria: string[];
   documentation_required: string[];
   adverse_event_response: AdverseEventResponse;
-};
-
-type ReviewerItem = {
-  note: string;
-  resolved: boolean;
-  resolved_at?: string | null;
-  resolved_by?: string | null;
 };
 
 const EMPTY_DOSING: DosingFields = {
@@ -146,24 +151,6 @@ function normalizeStructured(raw: Json | null | undefined): StructuredBody {
   };
 }
 
-function parseReviewerItems(raw: Json | null | undefined): ReviewerItem[] {
-  if (!raw || !Array.isArray(raw)) return [];
-  return raw
-    .map((row) => {
-      if (row && typeof row === "object" && "note" in row) {
-        const o = row as Record<string, unknown>;
-        return {
-          note: String(o.note ?? ""),
-          resolved: Boolean(o.resolved),
-          resolved_at: (o.resolved_at as string | null | undefined) ?? null,
-          resolved_by: (o.resolved_by as string | null | undefined) ?? null,
-        };
-      }
-      return null;
-    })
-    .filter((x): x is ReviewerItem => !!x && !!x.note);
-}
-
 type DynamicListProps = {
   label?: string;
   helper?: string;
@@ -171,9 +158,11 @@ type DynamicListProps = {
   onChange: (next: string[]) => void;
   placeholder?: string;
   disabled?: boolean;
+  containerId?: string;
+  highlight?: boolean;
 };
 
-function DynamicList({ label, helper, values, onChange, placeholder, disabled }: DynamicListProps) {
+function DynamicList({ label, helper, values, onChange, placeholder, disabled, containerId, highlight }: DynamicListProps) {
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const focusIndexRef = useRef<number | null>(null);
 
@@ -235,7 +224,13 @@ function DynamicList({ label, helper, values, onChange, placeholder, disabled }:
   };
 
   return (
-    <div className="space-y-2">
+    <div
+      id={containerId}
+      className={cn(
+        "space-y-2 rounded-md transition-[box-shadow]",
+        highlight ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "",
+      )}
+    >
       {label ? <Label className="text-sm">{label}</Label> : null}
       {helper ? <p className="text-xs text-muted-foreground">{helper}</p> : null}
       {values.length === 0 ? (
@@ -313,7 +308,9 @@ export default function ClinicalProtocolEditor() {
   const [version, setVersion] = useState<ClinicalProtocolVersion | null>(null);
   const [markdown, setMarkdown] = useState("");
   const [structured, setStructured] = useState<StructuredBody>(EMPTY_BODY);
-  const [reviewerItems, setReviewerItems] = useState<ReviewerItem[]>([]);
+  const [reviewerList, setReviewerList] = useState<ReviewerListItem[]>([]);
+  const [openAccordion, setOpenAccordion] = useState<string[]>(ALL_SECTIONS);
+  const [highlightedField, setHighlightedField] = useState<string | null>(null);
   const [savedSnapshot, setSavedSnapshot] = useState<{ markdown: string; structured: string }>({
     markdown: "",
     structured: JSON.stringify(EMPTY_BODY),
@@ -333,6 +330,15 @@ export default function ClinicalProtocolEditor() {
   dirtyRef.current = dirty;
   const savingRef = useRef(saving);
   savingRef.current = saving;
+
+  const sortedDecisionEntries = useMemo(() => {
+    const entries = reviewerList
+      .map((it, originalIndex) => (it.kind === "decision" ? { originalIndex, row: it.data } : null))
+      .filter((x): x is { originalIndex: number; row: DecisionFlagRow } => x !== null);
+    return sortDecisionFlagEntries(entries);
+  }, [reviewerList]);
+
+  const allFlagsResolved = allReviewerEntriesResolved(reviewerList);
 
   useEffect(() => {
     if (!dirty) return;
@@ -392,7 +398,8 @@ export default function ClinicalProtocolEditor() {
       const body = normalizeStructured(v.body_structured);
       setMarkdown(md);
       setStructured(body);
-      setReviewerItems(parseReviewerItems(v.notes_for_reviewer));
+      setReviewerList(parseReviewerList(v.notes_for_reviewer));
+      setOpenAccordion(ALL_SECTIONS);
       setSavedSnapshot({ markdown: md, structured: JSON.stringify(body) });
       setLastSavedAt(null);
     } catch (e) {
@@ -406,6 +413,77 @@ export default function ClinicalProtocolEditor() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  const persistReviewerList = useCallback(
+    async (next: ReviewerListItem[]) => {
+      if (!version || isLocked) return false;
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Not signed in");
+        return false;
+      }
+      try {
+        const { error } = await supabase
+          .from("clinical_protocol_versions")
+          .update({ notes_for_reviewer: serializeReviewerListForDb(next, user.id) })
+          .eq("id", version.id);
+        if (error) throw error;
+        setReviewerList(next);
+        return true;
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "Failed to save decision flags";
+        toast.error(msg);
+        return false;
+      }
+    },
+    [version, isLocked],
+  );
+
+  const handleApproveFlag = async (originalIndex: number) => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+    const next = updateDecisionFlagAt(reviewerList, originalIndex, { resolved: true, resolution: "approved" }, user.id);
+    const ok = await persistReviewerList(next);
+    if (ok) toast.success("Approved as drafted");
+  };
+
+  const handleOverrideFlag = async (originalIndex: number, field: string) => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+    const next = updateDecisionFlagAt(reviewerList, originalIndex, { resolved: true, resolution: "overridden" }, user.id);
+    const ok = await persistReviewerList(next);
+    if (!ok) return;
+    const section = fieldToAccordionSection(field);
+    setOpenAccordion((prev) => [...new Set([...prev, section])]);
+    setHighlightedField(field);
+    window.setTimeout(() => {
+      document.getElementById(fieldToDomId(field))?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 50);
+    window.setTimeout(() => setHighlightedField(null), 5000);
+  };
+
+  const handleSignVersion = async () => {
+    if (!version) return;
+    if (!allFlagsResolved) {
+      toast.error("Resolve every decision flag before signing");
+      return;
+    }
+    const { data, error } = await supabase
+      .rpc("sign_clinical_protocol_version", { version_id: version.id })
+      .maybeSingle();
+    if (error || !data) {
+      toast.error(error?.message ?? "Sign failed");
+      return;
+    }
+    toast.success("Protocol version signed");
+    navigate(`/clinical-protocols/${slug}`);
+  };
 
   const persist = useCallback(
     async (nextStatus: "draft" | "pending_signature", silent: boolean) => {
@@ -530,8 +608,8 @@ export default function ClinicalProtocolEditor() {
           </Button>
           <h1 className="font-playfair text-2xl text-foreground">Edit {protocol.title}</h1>
           <p className="text-sm text-muted-foreground">
-            Version {version.version_number} — {version.status}. Resolve the reviewer checklist on the detail page before
-            signing.
+            Version {version.version_number} — {version.status}. Resolve every decision flag below before signing; you
+            can also sign from the detail page after the same checklist is complete.
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs">
@@ -549,32 +627,89 @@ export default function ClinicalProtocolEditor() {
         </Card>
       ) : null}
 
-      {reviewerItems.length > 0 ? (
+      {sortedDecisionEntries.length > 0 ? (
         <Card className="border-amber-200 bg-amber-50/60">
           <CardHeader>
-            <CardTitle className="font-playfair text-base text-amber-900">Notes from drafter</CardTitle>
+            <CardTitle className="font-playfair text-base text-amber-900 flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 shrink-0" />
+              Decision flags
+            </CardTitle>
+            <p className="text-xs text-amber-900/80">
+              High-stakes items appear first. Approve as drafted or override to jump to the matching structured field.
+              Signing stays disabled until every flag is resolved.
+            </p>
           </CardHeader>
-          <CardContent>
-            <ul className="space-y-1.5 text-sm text-amber-900">
-              {reviewerItems.map((item, idx) => (
-                <li key={idx} className="flex items-start gap-2">
-                  <span className="mt-0.5">•</span>
-                  <span className="flex-1">{item.note}</span>
-                  {item.resolved ? (
-                    <Badge variant="secondary" className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">
-                      Resolved
-                    </Badge>
+          <CardContent className="space-y-4">
+            {sortedDecisionEntries.map(({ originalIndex, row }) => (
+              <div
+                key={`${originalIndex}-${row.field}`}
+                className={`rounded-md border border-amber-900/15 bg-background/90 p-4 space-y-2 ${
+                  row.resolved ? "opacity-55" : ""
+                }`}
+              >
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-2 min-w-0">
+                    {row.confidence === "high_stakes" ? (
+                      <Badge className="shrink-0 bg-destructive text-destructive-foreground hover:bg-destructive">
+                        Deserves attention
+                      </Badge>
+                    ) : row.confidence === "variable" ? (
+                      <Badge className="shrink-0 bg-accent text-accent-foreground hover:bg-accent">Variation exists</Badge>
+                    ) : (
+                      <Badge variant="secondary" className="shrink-0">
+                        Standard of care
+                      </Badge>
+                    )}
+                    <span className="text-sm font-medium font-mono text-foreground break-all">{row.field}</span>
+                  </div>
+                  {!row.resolved ? (
+                    <div className="flex flex-wrap gap-2 shrink-0">
+                      <Button type="button" size="sm" variant="secondary" onClick={() => void handleApproveFlag(originalIndex)}>
+                        Approve as drafted
+                      </Button>
+                      <Button type="button" size="sm" variant="outline" onClick={() => void handleOverrideFlag(originalIndex, row.field)}>
+                        Override and edit
+                      </Button>
+                    </div>
                   ) : (
-                    <Badge variant="secondary" className="bg-amber-100 text-amber-900 hover:bg-amber-100">
-                      Open
+                    <Badge variant="outline" className="shrink-0 border-emerald-600/50 text-emerald-800 bg-emerald-50">
+                      {row.resolution === "overridden" ? "Overridden — edit field as needed" : "Approved as drafted"}
                     </Badge>
                   )}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-3 text-xs text-amber-900/80">
-              Read-only here. Check off items on the detail page once they're addressed.
-            </p>
+                </div>
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Current value: </span>
+                  <span className="whitespace-pre-wrap">{row.current_value}</span>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Why: </span>
+                  {row.rationale}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Alternatives: </span>
+                  {row.alternatives}
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {reviewerList.some((it) => it.kind === "legacy") ? (
+        <Card className="border-amber-200 bg-amber-50/60">
+          <CardHeader>
+            <CardTitle className="font-playfair text-base text-amber-900">Reviewer checklist (legacy)</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm text-amber-900">
+            {reviewerList.map((it, idx) =>
+              it.kind === "legacy" ? (
+                <div key={idx} className="flex gap-2">
+                  <span className="text-muted-foreground">•</span>
+                  <span>{it.data.note}</span>
+                </div>
+              ) : null,
+            )}
+            <p className="text-xs text-amber-900/80 mt-2">Resolve these on the detail page.</p>
           </CardContent>
         </Card>
       ) : null}
@@ -584,7 +719,7 @@ export default function ClinicalProtocolEditor() {
           <CardTitle className="font-playfair text-lg">Structured protocol fields</CardTitle>
         </CardHeader>
         <CardContent>
-          <Accordion type="multiple" defaultValue={ALL_SECTIONS} className="w-full">
+          <Accordion type="multiple" value={openAccordion} onValueChange={setOpenAccordion} className="w-full">
             <AccordionItem value="sec-indication">
               <AccordionTrigger>Clinical Indication</AccordionTrigger>
               <AccordionContent className="space-y-3">
@@ -595,6 +730,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(e) => updateField("indication", e.target.value)}
                   placeholder="e.g. Restoration of micronutrient status in fatigued adults presenting at the IV lounge…"
                   disabled={isLocked}
+                  id={fieldToDomId("indication")}
+                  className={cn(highlightedField === "indication" && "ring-2 ring-primary ring-offset-2")}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -609,6 +746,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(v) => updateField("contraindications", v)}
                   placeholder="e.g. Active sepsis"
                   disabled={isLocked}
+                  containerId={fieldToDomId("contraindications")}
+                  highlight={highlightedField === "contraindications"}
                 />
                 <DynamicList
                   label="Exclusion criteria"
@@ -617,6 +756,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(v) => updateField("exclusion_criteria", v)}
                   placeholder="e.g. Pregnancy"
                   disabled={isLocked}
+                  containerId={fieldToDomId("exclusion_criteria")}
+                  highlight={highlightedField === "exclusion_criteria"}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -631,6 +772,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(v) => updateField("pre_administration_checks", v)}
                   placeholder="e.g. Confirm consent on file"
                   disabled={isLocked}
+                  containerId={fieldToDomId("pre_administration_checks")}
+                  highlight={highlightedField === "pre_administration_checks"}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -639,7 +782,13 @@ export default function ClinicalProtocolEditor() {
               <AccordionTrigger>Dosing</AccordionTrigger>
               <AccordionContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
+                  <div
+                    id={fieldToDomId("dosing.medication")}
+                    className={cn(
+                      "space-y-1.5 rounded-md p-1 -m-1",
+                      highlightedField === "dosing.medication" && "ring-2 ring-primary ring-offset-2 ring-offset-background",
+                    )}
+                  >
                     <Label htmlFor="dose-medication" className="text-sm">
                       Medication
                     </Label>
@@ -651,7 +800,13 @@ export default function ClinicalProtocolEditor() {
                       disabled={isLocked}
                     />
                   </div>
-                  <div className="space-y-1.5">
+                  <div
+                    id={fieldToDomId("dosing.dose")}
+                    className={cn(
+                      "space-y-1.5 rounded-md p-1 -m-1",
+                      highlightedField === "dosing.dose" && "ring-2 ring-primary ring-offset-2 ring-offset-background",
+                    )}
+                  >
                     <Label htmlFor="dose-dose" className="text-sm">
                       Dose
                     </Label>
@@ -663,7 +818,13 @@ export default function ClinicalProtocolEditor() {
                       disabled={isLocked}
                     />
                   </div>
-                  <div className="space-y-1.5">
+                  <div
+                    id={fieldToDomId("dosing.route")}
+                    className={cn(
+                      "space-y-1.5 rounded-md p-1 -m-1",
+                      highlightedField === "dosing.route" && "ring-2 ring-primary ring-offset-2 ring-offset-background",
+                    )}
+                  >
                     <Label htmlFor="dose-route" className="text-sm">
                       Route
                     </Label>
@@ -675,7 +836,13 @@ export default function ClinicalProtocolEditor() {
                       disabled={isLocked}
                     />
                   </div>
-                  <div className="space-y-1.5">
+                  <div
+                    id={fieldToDomId("dosing.frequency")}
+                    className={cn(
+                      "space-y-1.5 rounded-md p-1 -m-1",
+                      highlightedField === "dosing.frequency" && "ring-2 ring-primary ring-offset-2 ring-offset-background",
+                    )}
+                  >
                     <Label htmlFor="dose-frequency" className="text-sm">
                       Frequency
                     </Label>
@@ -687,7 +854,13 @@ export default function ClinicalProtocolEditor() {
                       disabled={isLocked}
                     />
                   </div>
-                  <div className="space-y-1.5 md:col-span-2">
+                  <div
+                    id={fieldToDomId("dosing.duration")}
+                    className={cn(
+                      "space-y-1.5 md:col-span-2 rounded-md p-1 -m-1",
+                      highlightedField === "dosing.duration" && "ring-2 ring-primary ring-offset-2 ring-offset-background",
+                    )}
+                  >
                     <Label htmlFor="dose-duration" className="text-sm">
                       Duration
                     </Label>
@@ -713,6 +886,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(v) => updateField("administration", v)}
                   placeholder="e.g. Confirm bag label and patient identity (two identifiers)"
                   disabled={isLocked}
+                  containerId={fieldToDomId("administration")}
+                  highlight={highlightedField === "administration"}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -727,6 +902,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(v) => updateField("monitoring_during", v)}
                   placeholder="e.g. Q15-min vitals during NAD+ infusion"
                   disabled={isLocked}
+                  containerId={fieldToDomId("monitoring_during")}
+                  highlight={highlightedField === "monitoring_during"}
                 />
                 <DynamicList
                   label="Monitoring post-administration"
@@ -735,6 +912,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(v) => updateField("monitoring_post", v)}
                   placeholder="e.g. Repeat hormone panel at 12 weeks"
                   disabled={isLocked}
+                  containerId={fieldToDomId("monitoring_post")}
+                  highlight={highlightedField === "monitoring_post"}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -749,6 +928,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(v) => updateField("patient_education", v)}
                   placeholder="e.g. Hydrate well for 24 hours after infusion"
                   disabled={isLocked}
+                  containerId={fieldToDomId("patient_education")}
+                  highlight={highlightedField === "patient_education"}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -763,6 +944,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(v) => updateField("escalation_criteria", v)}
                   placeholder="e.g. SBP drops below 90 mmHg"
                   disabled={isLocked}
+                  containerId={fieldToDomId("escalation_criteria")}
+                  highlight={highlightedField === "escalation_criteria"}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -777,6 +960,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(v) => updateField("documentation_required", v)}
                   placeholder="e.g. Lot number, expiry, site of injection"
                   disabled={isLocked}
+                  containerId={fieldToDomId("documentation_required")}
+                  highlight={highlightedField === "documentation_required"}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -791,6 +976,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(v) => updateAer("mild", v)}
                   placeholder="Action for a mild reaction"
                   disabled={isLocked}
+                  containerId={fieldToDomId("adverse_event_response.mild")}
+                  highlight={highlightedField === "adverse_event_response.mild"}
                 />
                 <DynamicList
                   label="Moderate reactions"
@@ -799,6 +986,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(v) => updateAer("moderate", v)}
                   placeholder="Action for a moderate reaction"
                   disabled={isLocked}
+                  containerId={fieldToDomId("adverse_event_response.moderate")}
+                  highlight={highlightedField === "adverse_event_response.moderate"}
                 />
                 <DynamicList
                   label="Severe reactions"
@@ -807,6 +996,8 @@ export default function ClinicalProtocolEditor() {
                   onChange={(v) => updateAer("severe", v)}
                   placeholder="Action for a severe reaction"
                   disabled={isLocked}
+                  containerId={fieldToDomId("adverse_event_response.severe")}
+                  highlight={highlightedField === "adverse_event_response.severe"}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -847,6 +1038,14 @@ export default function ClinicalProtocolEditor() {
           </Button>
           <Button onClick={() => void handleSubmitForSignature()} disabled={isLocked || saving}>
             Submit for signature
+          </Button>
+          <Button
+            variant="default"
+            className="bg-primary"
+            onClick={() => void handleSignVersion()}
+            disabled={isLocked || saving || !allFlagsResolved || version.status === "signed"}
+          >
+            Sign this version
           </Button>
         </div>
       </div>
