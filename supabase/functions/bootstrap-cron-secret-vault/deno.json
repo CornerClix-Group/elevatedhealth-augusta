@@ -1,0 +1,2 @@
+[functions.bootstrap-cron-secret-vault]
+verify_jwt = false
