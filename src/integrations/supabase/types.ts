@@ -909,6 +909,48 @@ export type Database = {
         }
         Relationships: []
       }
+      lab_panels: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          member_price_cents: number
+          name: string
+          non_member_price_cents: number
+          sex_specific: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          member_price_cents: number
+          name: string
+          non_member_price_cents: number
+          sex_specific?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          member_price_cents?: number
+          name?: string
+          non_member_price_cents?: number
+          sex_specific?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lab_results: {
         Row: {
           a1c: number | null
@@ -1078,6 +1120,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      lab_tests: {
+        Row: {
+          category: string | null
+          code: string
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          member_price_cents: number
+          name: string
+          non_member_price_cents: number
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          code: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          member_price_cents: number
+          name: string
+          non_member_price_cents: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          code?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          member_price_cents?: number
+          name?: string
+          non_member_price_cents?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       medications: {
         Row: {
@@ -1405,6 +1489,45 @@ export type Database = {
             columns: ["patient_id"]
             isOneToOne: false
             referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      panel_tests: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          panel_id: string
+          test_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          panel_id: string
+          test_id: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          panel_id?: string
+          test_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "panel_tests_panel_id_fkey"
+            columns: ["panel_id"]
+            isOneToOne: false
+            referencedRelation: "lab_panels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "panel_tests_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "lab_tests"
             referencedColumns: ["id"]
           },
         ]
