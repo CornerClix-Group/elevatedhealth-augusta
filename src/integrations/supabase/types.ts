@@ -76,8 +76,7 @@ export type Database = {
       appointments: {
         Row: {
           appointment_type: string
-          booked_by_user_id: string | null
-          booking_source: string
+          booking_source: string | null
           check_in_at: string | null
           check_out_at: string | null
           consultation_booking_id: string | null
@@ -91,7 +90,6 @@ export type Database = {
           pre_visit_summary: string | null
           provider_id: string | null
           reason: string | null
-          reminder_2h_sent_at: string | null
           reminder_sent_at: string | null
           room: string | null
           scheduled_at: string
@@ -102,8 +100,7 @@ export type Database = {
         }
         Insert: {
           appointment_type?: string
-          booked_by_user_id?: string | null
-          booking_source?: string
+          booking_source?: string | null
           check_in_at?: string | null
           check_out_at?: string | null
           consultation_booking_id?: string | null
@@ -117,7 +114,6 @@ export type Database = {
           pre_visit_summary?: string | null
           provider_id?: string | null
           reason?: string | null
-          reminder_2h_sent_at?: string | null
           reminder_sent_at?: string | null
           room?: string | null
           scheduled_at: string
@@ -128,8 +124,7 @@ export type Database = {
         }
         Update: {
           appointment_type?: string
-          booked_by_user_id?: string | null
-          booking_source?: string
+          booking_source?: string | null
           check_in_at?: string | null
           check_out_at?: string | null
           consultation_booking_id?: string | null
@@ -143,7 +138,6 @@ export type Database = {
           pre_visit_summary?: string | null
           provider_id?: string | null
           reason?: string | null
-          reminder_2h_sent_at?: string | null
           reminder_sent_at?: string | null
           room?: string | null
           scheduled_at?: string
@@ -470,10 +464,8 @@ export type Database = {
       consultation_bookings: {
         Row: {
           amount_paid: number | null
-          booked_by_user_id: string | null
           booked_for: string | null
           booking_reminder_sent_at: string | null
-          booking_source: string
           calendar_booked_at: string | null
           created_at: string
           credit_code: string | null
@@ -493,10 +485,8 @@ export type Database = {
         }
         Insert: {
           amount_paid?: number | null
-          booked_by_user_id?: string | null
           booked_for?: string | null
           booking_reminder_sent_at?: string | null
-          booking_source?: string
           calendar_booked_at?: string | null
           created_at?: string
           credit_code?: string | null
@@ -516,10 +506,8 @@ export type Database = {
         }
         Update: {
           amount_paid?: number | null
-          booked_by_user_id?: string | null
           booked_for?: string | null
           booking_reminder_sent_at?: string | null
-          booking_source?: string
           calendar_booked_at?: string | null
           created_at?: string
           credit_code?: string | null
@@ -1173,8 +1161,6 @@ export type Database = {
           addon_ids: string[] | null
           amount_paid: number | null
           appointment_id: string | null
-          booked_by_user_id: string | null
-          booking_source: string
           created_at: string
           customer_email: string
           customer_name: string | null
@@ -1191,8 +1177,6 @@ export type Database = {
           addon_ids?: string[] | null
           amount_paid?: number | null
           appointment_id?: string | null
-          booked_by_user_id?: string | null
-          booking_source?: string
           created_at?: string
           customer_email: string
           customer_name?: string | null
@@ -1209,8 +1193,6 @@ export type Database = {
           addon_ids?: string[] | null
           amount_paid?: number | null
           appointment_id?: string | null
-          booked_by_user_id?: string | null
-          booking_source?: string
           created_at?: string
           customer_email?: string
           customer_name?: string | null
