@@ -249,6 +249,9 @@ STRIPE PRINCIPLES
 KEY DATABASE TABLES (do not modify schema without surfacing)
   patients — patient records with elevated_membership_status,
     stripe_customer_id, etc.
+  eligibility_review_requests — safety-gate callback queue; see
+    INTENTIONAL ACCESS PATTERN DECISIONS (staff-only; no patient
+    portal read)
   iv_drip_bookings — IV appointments
   consultation_bookings — consult-gated appointments
   provider_schedules — recurring weekly availability
@@ -288,6 +291,52 @@ KEY PEOPLE
   Medical Director — physician (TBD/being onboarded). DEA-
     registered. Signs all protocols. Owns clinical responsibility.
     Primary user of ProviderDashboard.
+
+═══════════════════════════════════════════════════════════════════
+INTENTIONAL ACCESS PATTERN DECISIONS
+═══════════════════════════════════════════════════════════════════
+
+Some tables deliberately diverge from the default posture
+("patients see their own data; staff see all patient data").
+Document those decisions here so future sessions and engineers
+do not "fix" them as bugs or reopen them without clinical review.
+
+eligibility_review_requests (safety-gate / eligibility queue)
+
+  Table: eligibility_review_requests
+  Pattern: staff-only read and write, service-role inserts only
+  Rationale: clinical triage queue, patient-facing communication
+    happens via email and phone, not portal
+  Approved by: Troy Akers MD
+  Date: 2026-05-08
+  Do not add patient self-read policy without explicit clinical
+    sign-off
+
+  Context: Migration 20260510020000_eligibility_review_requests.sql
+    includes a SQL comment block that mentions allowing a logged-in
+    patient to read a limited view of their own submission. No
+    such patient SELECT policy was implemented. That omission is
+    intentional, not a bug. Do not add a patient self-read policy.
+    Do not edit the applied migration file to "align" comments with
+    policies — the live schema is correct.
+
+  Clinical rationale (detail):
+    1. flag_reasons (jsonb) captures clinical triage reasoning and
+       must remain staff-internal.
+    2. notes will hold candid clinical observations about patient
+       appropriateness; patient-readable rows would invite
+       self-censorship and harm candid documentation.
+    3. Status values such as declined or referred_out are clinical
+       decisions communicated by phone with human context, not
+       via a real-time portal status field.
+    4. HIPAA right of access is satisfied through email confirmation
+       plus formal records request on reasonable timelines — not
+       through real-time portal visibility into internal triage
+       queues.
+
+  Add future intentional RLS or schema deviations below using the
+  same structured block (Table / Pattern / Rationale / Approved by /
+  Date / guardrail line).
 
 ═══════════════════════════════════════════════════════════════════
 WORKING WITH THIS CODEBASE
