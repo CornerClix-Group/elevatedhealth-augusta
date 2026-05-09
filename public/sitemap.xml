@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!--
+    Sitemap is the source of truth Google crawls. Only list URLs that
+    actually serve real content. When a service is sunsetted (e.g. ketamine)
+    or pre-launch (hair restoration, sexual wellness), its URL must be
+    removed here even if a stub route exists in App.tsx, otherwise Google
+    sees soft-404s and the site quality score takes a hit.
+  -->
+
   <!-- Homepage -->
   <url>
     <loc>https://elevatedhealthaugusta.com/</loc>
@@ -7,26 +15,8 @@
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-  
-  <!-- Core Service Pages -->
-  <url>
-    <loc>https://elevatedhealthaugusta.com/ketamine</loc>
-    <lastmod>2024-12-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://elevatedhealthaugusta.com/iv-ketamine</loc>
-    <lastmod>2024-12-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://elevatedhealthaugusta.com/spravato</loc>
-    <lastmod>2024-12-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+
+  <!-- Core Service Pages (the four active pillars) -->
   <url>
     <loc>https://elevatedhealthaugusta.com/hormones</loc>
     <lastmod>2024-12-18</lastmod>
@@ -63,19 +53,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  <url>
-    <loc>https://elevatedhealthaugusta.com/hair-restoration</loc>
-    <lastmod>2024-12-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://elevatedhealthaugusta.com/sexual-wellness</loc>
-    <lastmod>2024-12-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
+
   <!-- Pricing & Information -->
   <url>
     <loc>https://elevatedhealthaugusta.com/pricing</loc>
@@ -95,7 +73,13 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
+  <url>
+    <loc>https://elevatedhealthaugusta.com/membership</loc>
+    <lastmod>2024-12-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <!-- Military & Veteran -->
   <url>
     <loc>https://elevatedhealthaugusta.com/military-veteran</loc>
@@ -103,7 +87,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- Consultation -->
   <url>
     <loc>https://elevatedhealthaugusta.com/consult</loc>
@@ -117,15 +101,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
-  <!-- Deep Content Pages -->
-  <url>
-    <loc>https://elevatedhealthaugusta.com/how-ketamine-works</loc>
-    <lastmod>2024-12-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
+
   <!-- Legal Pages -->
   <url>
     <loc>https://elevatedhealthaugusta.com/privacy-policy</loc>

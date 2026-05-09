@@ -131,6 +131,11 @@ const App = () => {
           <Route path="/hormone-replacement" element={<Hormones />} />
           <Route path="/hair-restoration" element={<NotFound />} />
           <Route path="/sexual-wellness" element={<NotFound />} />
+          {/* Sunsetted ketamine/SPRAVATO routes — redirect old SEO links and bookmarks to home */}
+          <Route path="/ketamine" element={<Navigate to="/" replace />} />
+          <Route path="/iv-ketamine" element={<Navigate to="/" replace />} />
+          <Route path="/spravato" element={<Navigate to="/" replace />} />
+          <Route path="/how-ketamine-works" element={<Navigate to="/" replace />} />
           <Route path="/military-veteran" element={<MilitaryVeteran />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/pricing-comparison" element={<PricingComparison />} />
