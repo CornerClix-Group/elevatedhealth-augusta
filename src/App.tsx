@@ -45,7 +45,7 @@ import OfficeManagerDashboard from "./pages/OfficeManagerDashboard";
 import BusinessDashboard from "./pages/BusinessDashboard";
 import ClinicSettings from "./pages/ClinicSettings";
 import SymptomChecker from "./pages/SymptomChecker";
-import PaymentSuccess from "./pages/PaymentSuccess";
+import MedicationConfirmed from "./pages/MedicationConfirmed";
 
 import PatientResources from "./pages/PatientResources";
 import ScheduleConsult from "./pages/ScheduleConsult";
@@ -69,6 +69,7 @@ import ClinicalProtocolLibrary from "./pages/ClinicalProtocolLibrary";
 import ClinicalProtocolDetail from "./pages/ClinicalProtocolDetail";
 import ClinicalProtocolEditor from "./components/provider/ClinicalProtocolEditor";
 import InventoryDashboard from "./pages/InventoryDashboard";
+import EligibilityReviewQueue from "./pages/EligibilityReviewQueue";
 
 const queryClient = new QueryClient();
 
@@ -154,7 +155,10 @@ const App = () => {
               <Consult />
             </SecurePatientRoute>
           } />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
+          {/* Per-flow medication confirmation (replaces legacy /payment-success which served 6 flows) */}
+          <Route path="/medication-confirmed" element={<MedicationConfirmed />} />
+          {/* Legacy /payment-success — preserved as redirect so old emails / bookmarks don't 404 */}
+          <Route path="/payment-success" element={<Navigate to="/patient/dashboard" replace />} />
           
           <Route path="/patient-resources" element={<PatientResources />} />
           <Route path="/schedule-consult" element={<ScheduleConsult />} />
@@ -272,6 +276,11 @@ const App = () => {
           <Route path="/inventory" element={
             <ProviderLayout title="Inventory" subtitle="Lot tracking · FEFO" showNavbar={true}>
               <InventoryDashboard />
+            </ProviderLayout>
+          } />
+          <Route path="/admin/eligibility-reviews" element={
+            <ProviderLayout title="Eligibility Reviews" subtitle="Safety-flagged patients" showNavbar={false}>
+              <EligibilityReviewQueue />
             </ProviderLayout>
           } />
           

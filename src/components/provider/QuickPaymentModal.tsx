@@ -33,29 +33,34 @@ interface QuickPaymentModalProps {
   onSuccess?: () => void;
 }
 
+// Current taxonomy. Aligned with stripeConfig.ts:
+//   - $199/mo Elevated Membership (single tier)
+//   - $79 Wellness Assessment (consultation)
+//   - GLP-1 weight loss (member/non-member; modal sends non-member link
+//     by default; staff can route a member through their dashboard)
+//   - À la carte: testosterone / biEst / progesterone / follow-up / lab panel
+//
+// Removed: Hormone tiers (access/vitality/concierge), Vitality, hormone
+// add-on, IV ketamine, "Discovery Consultation $149". All Réveil-era.
 const PRODUCTS = [
-  // Hormone Memberships
-  { value: "hormone_access", label: "Hormone ACCESS", price: "$99/mo", category: "Hormone" },
-  { value: "hormone_vitality", label: "Hormone VITALITY", price: "$149/mo", category: "Hormone" },
-  { value: "hormone_concierge", label: "Hormone CONCIERGE", price: "$249/mo", category: "Hormone" },
-  // Weight Loss
-  { value: "semaglutide", label: "Semaglutide Membership", price: "$399/mo", category: "Weight Loss" },
-  { value: "tirzepatide", label: "Tirzepatide Membership", price: "$499/mo", category: "Weight Loss" },
-  { value: "hormoneAddon", label: "Hormone Add-On (GLP-1)", price: "+$149/mo", category: "Weight Loss" },
-  // Ketamine
-  { value: "ivKetamine", label: "IV Ketamine Infusion", price: "$400", category: "Ketamine" },
-  { value: "ivKetamineBundle", label: "IV Ketamine 6-Session Bundle", price: "$2,200", category: "Ketamine" },
-  // Consultation
-  { value: "consultation", label: "Discovery Consultation", price: "$149", category: "Consultation" },
+  { value: "elevated_membership", label: "Elevated Membership", price: "$199/mo", category: "Membership" },
+  { value: "consultation", label: "Wellness Assessment", price: "$79", category: "Consultation" },
+  { value: "semaglutide", label: "Semaglutide (non-member)", price: "$249/mo", category: "Weight Loss" },
+  { value: "tirzepatide", label: "Tirzepatide (non-member)", price: "$499/mo", category: "Weight Loss" },
+  { value: "alacarte_testosterone", label: "Testosterone Cream", price: "$149", category: "À la carte HRT" },
+  { value: "alacarte_biEst", label: "Bi-Est Cream", price: "$89", category: "À la carte HRT" },
+  { value: "alacarte_progesterone", label: "Progesterone", price: "$79", category: "À la carte HRT" },
+  { value: "alacarte_followUp", label: "Follow-up Visit", price: "$99", category: "À la carte" },
+  { value: "alacarte_labPanel", label: "Lab Panel", price: "$250", category: "À la carte" },
 ];
 
 const getProductDisplayName = (product: string): string => {
-  const found = PRODUCTS.find(p => p.value === product);
+  const found = PRODUCTS.find((p) => p.value === product);
   return found?.label || product;
 };
 
 const getProductDisplayPrice = (product: string): string => {
-  const found = PRODUCTS.find(p => p.value === product);
+  const found = PRODUCTS.find((p) => p.value === product);
   return found?.price || "";
 };
 
@@ -94,31 +99,37 @@ const QuickPaymentModal = ({ open, onOpenChange, onSuccess }: QuickPaymentModalP
 
   const getEdgeFunction = (product: string) => {
     switch (product) {
-      case "hormone_access": return "create-hormone-membership-checkout";
-      case "hormone_vitality": return "create-hormone-membership-checkout";
-      case "hormone_concierge": return "create-hormone-membership-checkout";
-      case "vitality": return "create-vitality-checkout";
-      case "semaglutide": return "create-semaglutide-checkout";
-      case "tirzepatide": return "create-tirzepatide-checkout";
-      case "hormoneAddon": return "create-hormone-addon-checkout";
-      case "consultation": return "create-consultation-checkout";
-      case "ivKetamine": return "create-iv-ketamine-checkout";
-      case "ivKetamineBundle": return "create-iv-ketamine-checkout";
-      default: return "create-alacarte-checkout";
+      case "elevated_membership":
+        return "create-membership-checkout";
+      case "consultation":
+        return "create-consultation-checkout";
+      case "semaglutide":
+        return "create-semaglutide-checkout";
+      case "tirzepatide":
+        return "create-tirzepatide-checkout";
+      default:
+        // alacarte_* keys
+        return "create-alacarte-checkout";
     }
   };
 
   const getCheckoutBody = (product: string, patient: Patient) => {
-    if (product.startsWith("hormone_")) {
-      const tier = product.replace("hormone_", "") as "access" | "vitality" | "concierge";
-      return { tier, patientId: patient.id };
+    if (product.startsWith("alacarte_")) {
+      return {
+        product_key: product.replace("alacarte_", ""),
+        patient_email: patient.email,
+        patient_name: patient.full_name,
+        patient_id: patient.id,
+      };
     }
-    if (product === "ivKetamineBundle") {
+    if (product === "consultation") {
       return {
         email: patient.email,
         name: patient.full_name,
-        patientId: patient.id,
-        bundle: true,
+        patient_id: patient.id,
+        // Default to the hormone consult lane; staff can route to a
+        // different storefront from the patient detail panel if needed.
+        service_type: "hormone",
       };
     }
     return {

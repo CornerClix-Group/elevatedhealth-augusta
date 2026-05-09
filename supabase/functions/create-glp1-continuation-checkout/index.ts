@@ -51,7 +51,7 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/payment-success?type=glp1-continuation`,
+      success_url: `${req.headers.get("origin")}/medication-confirmed?med=glp1-continuation`,
       cancel_url: `${req.headers.get("origin")}/weight-loss`,
       metadata: {
         service_type: "glp1_continuation",

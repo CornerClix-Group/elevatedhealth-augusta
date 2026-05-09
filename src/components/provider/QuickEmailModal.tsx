@@ -46,66 +46,51 @@ interface EmailTemplate {
   merge_fields: string[];
 }
 
+// Current taxonomy. Removed Réveil-era flows:
+//   - kit_payment (legacy ZRT $250 mapping kit)
+//   - vitality_activation (legacy $249/mo tier; replaced by single
+//     $199/mo Elevated Membership)
+//   - hormone_addon ($149/mo GLP-1 add-on, no longer a SKU)
+//   - iv_ketamine (we no longer offer ketamine)
 const MESSAGE_TYPES = [
-  { 
-    value: "welcome", 
-    label: "Welcome", 
+  {
+    value: "welcome",
+    label: "Welcome",
     description: "Welcome to Elevated Health Augusta + portal access",
     emailFunction: "send-welcome-email",
     smsFunction: "send-welcome-sms",
   },
-  { 
-    value: "consultation_invite", 
-    label: "$79 RN Assessment Invite", 
-    description: "Send $79 Wellness Assessment payment link",
+  {
+    value: "consultation_invite",
+    label: "$79 Wellness Assessment Invite",
+    description: "Send $79 wellness assessment payment link",
     emailFunction: "send-consultation-invite",
     smsFunction: "send-consultation-invite-sms",
   },
-  { 
-    value: "kit_payment", 
-    label: "Kit Payment Request", 
-    description: "Request payment for hormone mapping kit",
-    emailFunction: "send-kit-payment-link",
-    smsFunction: "send-kit-payment-sms",
-  },
-  { 
-    value: "labs_reviewed", 
-    label: "Labs Reviewed", 
+  {
+    value: "labs_reviewed",
+    label: "Labs Reviewed",
     description: "Notify patient their labs are ready",
     emailFunction: "send-labs-reviewed-notification",
     smsFunction: "send-labs-reviewed-sms",
   },
-  { 
-    value: "vitality_activation", 
-    label: "Vitality Activation", 
-    description: "Send $249/mo Vitality membership link",
-    emailFunction: "send-vitality-activation",
-    smsFunction: "send-vitality-activation-sms",
+  {
+    value: "membership_activation",
+    label: "Elevated Membership Activation",
+    description: "Send $199/mo Elevated Membership signup link",
+    emailFunction: "send-membership-activation",
+    smsFunction: "send-membership-activation-sms",
   },
-  { 
-    value: "glp1_activation", 
-    label: "GLP-1 Activation", 
+  {
+    value: "glp1_activation",
+    label: "GLP-1 Activation",
     description: "Send Semaglutide/Tirzepatide payment link",
     emailFunction: "send-glp1-activation",
     smsFunction: "send-glp1-activation-sms",
   },
-  { 
-    value: "hormone_addon", 
-    label: "Hormone Add-On", 
-    description: "Send $149/mo hormone add-on link (GLP-1 members)",
-    emailFunction: "send-hormone-addon-activation",
-    smsFunction: "send-hormone-addon-sms",
-  },
-  { 
-    value: "iv_ketamine", 
-    label: "IV Ketamine Payment", 
-    description: "Send $400 IV ketamine payment link",
-    emailFunction: "send-iv-ketamine-payment-email",
-    smsFunction: "send-iv-ketamine-payment-sms",
-  },
-  { 
-    value: "intake_reminder", 
-    label: "Intake Reminder", 
+  {
+    value: "intake_reminder",
+    label: "Intake Reminder",
     description: "Remind patient to complete intake forms",
     emailFunction: "send-intake-reminder",
     smsFunction: null,
@@ -190,12 +175,9 @@ const QuickEmailModal = ({ open, onOpenChange, onSuccess }: QuickEmailModalProps
     const subjects: Record<string, string> = {
       welcome: "Welcome to Elevated Health Augusta, {{patient_name}}!",
       consultation_invite: "Your $79 Wellness Assessment Awaits",
-      kit_payment: "Complete Your Lab Kit Payment",
       labs_reviewed: "Your Lab Results Are Ready",
-      vitality_activation: "Your Vitality Membership Awaits",
+      membership_activation: "Activate Your Elevated Membership",
       glp1_activation: "Start Your Weight Loss Journey",
-      hormone_addon: "Add Hormone Therapy to Your Plan",
-      iv_ketamine: "IV Ketamine Therapy Payment",
       intake_reminder: "Complete Your Health Intake",
     };
     return subjects[type] || "Message from Elevated Health Augusta";

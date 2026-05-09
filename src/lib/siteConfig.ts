@@ -9,7 +9,9 @@ export const SITE_CONFIG = {
   },
   phone: "(706) 760-3470",
   phoneRaw: "7067603470",
-  bookingUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0Bvq4ZKUeVHmDYS8aU45o_2Z0oi4uHvILuZr2wqv6tKLPC71WABKyOSrbCwIjzKPqReipYFqST?gv=true",
+  // bookingUrl removed: legacy Google Calendar iframe is no longer the
+  // booking surface. All booking now flows through native SlotPicker
+  // backed by book-iv-appointment / book-consult-appointment.
   services: {
     primary: "Hormone Optimization, IV Therapy, Peptide Medicine, Medical Weight Loss"
   },
@@ -25,9 +27,10 @@ export const SITE_CONFIG = {
     weightloss: "/weightloss",
     membership: "/membership",
     about: "/about",
-    // Legacy routes
+    // Legacy route aliases — kept so any in-flight outbound link from a
+    // pre-rebrand email or print piece bounces home rather than 404.
     ketamine: "/",
-    ivKetamine: "/",
+    ivKetamineLegacy: "/",
     spravato: "/",
     hormoneReplacement: "/hormones",
     weightLoss: "/weightloss"

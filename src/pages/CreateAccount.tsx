@@ -1,4 +1,18 @@
-import { useState, useEffect } from "react";
+/**
+ * /patient/create-account
+ *
+ * Standalone account-creation surface. Patients land here from
+ * post-payment / post-intake email links that include ?email and ?name
+ * query params. The page no longer requires a Stripe session_id
+ * verification — that path used to bind to the legacy ZRT $250 kit
+ * payment, which we no longer sell.
+ *
+ * If a session_id is present in the URL (legacy invite emails), we
+ * silently ignore it. The page focuses on the one job that matters:
+ * stand up the patient's portal credentials and link them to the
+ * patient row keyed off their email.
+ */
+import { useEffect, useState, FormEvent } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +25,6 @@ import { Loader2, CheckCircle, Lock, Mail, User, Eye, EyeOff, Phone } from "luci
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-// Phone number formatting helper
 const formatPhoneNumber = (value: string) => {
   const digits = value.replace(/\D/g, "");
   if (digits.length <= 3) return digits;
@@ -22,13 +35,10 @@ const formatPhoneNumber = (value: string) => {
 const CreateAccount = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  
-  const sessionId = searchParams.get("session_id");
+
   const emailParam = searchParams.get("email");
   const nameParam = searchParams.get("name");
 
-  const [verifying, setVerifying] = useState(true);
-  const [verified, setVerified] = useState(false);
   const [email, setEmail] = useState(emailParam || "");
   const [name, setName] = useState(nameParam || "");
   const [phone, setPhone] = useState("");
@@ -38,72 +48,53 @@ const CreateAccount = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [hydrating, setHydrating] = useState(true);
 
+  // Hydrate from any existing patient row keyed off email.
   useEffect(() => {
-    const verifyPayment = async () => {
-      if (!sessionId) {
-        setError("No payment session found. Please complete payment first.");
-        setVerifying(false);
+    let cancelled = false;
+    (async () => {
+      if (!emailParam) {
+        setHydrating(false);
         return;
       }
-
       try {
-        const { data, error } = await supabase.functions.invoke("verify-hormone-payment", {
-          body: { session_id: sessionId },
-        });
-
-        if (error) throw error;
-        if (data?.verified) {
-          setVerified(true);
-          if (data?.email) {
-            setEmail(data.email);
-            // Fetch existing patient data to get phone number
-            const { data: patientData } = await supabase
-              .from("patients")
-              .select("phone, full_name")
-              .eq("email", data.email)
-              .maybeSingle();
-            
-            if (patientData?.phone) {
-              setExistingPhone(patientData.phone);
-              setPhone(formatPhoneNumber(patientData.phone.replace(/\D/g, "")));
-            }
-            if (patientData?.full_name && !nameParam) {
-              setName(patientData.full_name);
-            }
-          }
-        } else {
-          setError("Payment verification failed. Please contact support.");
+        const { data: patient } = await supabase
+          .from("patients")
+          .select("phone, full_name")
+          .eq("email", emailParam)
+          .maybeSingle();
+        if (cancelled) return;
+        if (patient?.phone) {
+          setExistingPhone(patient.phone);
+          setPhone(formatPhoneNumber(patient.phone.replace(/\D/g, "")));
         }
-      } catch (err) {
-        console.error("Verification error:", err);
-        setError("Unable to verify payment. Please contact support.");
+        if (patient?.full_name && !nameParam) setName(patient.full_name);
+      } catch (e) {
+        console.warn("CreateAccount hydrate error", e);
       } finally {
-        setVerifying(false);
+        if (!cancelled) setHydrating(false);
       }
+    })();
+    return () => {
+      cancelled = true;
     };
+  }, [emailParam, nameParam]);
 
-    verifyPayment();
-  }, [sessionId]);
-
-  const handleCreateAccount = async (e: React.FormEvent) => {
+  const handleCreateAccount = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters");
       return;
     }
-
     if (password !== confirmPassword) {
       toast.error("Passwords do not match");
       return;
     }
 
     setIsCreating(true);
-
     try {
-      // Sign up the user
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -115,14 +106,12 @@ const CreateAccount = () => {
       if (signUpError) throw signUpError;
 
       if (signUpData.user) {
-        // Clean phone number for storage
         const cleanPhone = phone.replace(/\D/g, "");
         const formattedPhoneForStorage = cleanPhone.length === 10 ? cleanPhone : null;
 
-        // Update the existing patient record to link to this user
         const { data: patientData, error: updateError } = await supabase
           .from("patients")
-          .update({ 
+          .update({
             user_id: signUpData.user.id,
             onboarding_status: "account_created",
             full_name: name || email.split("@")[0],
@@ -132,15 +121,14 @@ const CreateAccount = () => {
           .select("primary_program, phone")
           .single();
 
-        let primaryProgram = patientData?.primary_program;
-        let patientPhone = formattedPhoneForStorage || patientData?.phone;
+        const primaryProgram = patientData?.primary_program;
+        let patientPhone = formattedPhoneForStorage || patientData?.phone || null;
 
         if (updateError) {
-          console.error("Patient update error:", updateError);
-          // Create patient record if it doesn't exist
+          // No existing patient row — create one.
           await supabase.from("patients").insert({
             user_id: signUpData.user.id,
-            email: email,
+            email,
             full_name: name || email.split("@")[0],
             onboarding_status: "account_created",
             ...(formattedPhoneForStorage && { phone: formattedPhoneForStorage }),
@@ -148,16 +136,14 @@ const CreateAccount = () => {
           patientPhone = formattedPhoneForStorage;
         }
 
-        // Send welcome email (fire and forget - don't block account creation)
         supabase.functions.invoke("send-welcome-email", {
           body: {
             patient_name: name || email.split("@")[0],
             patient_email: email,
             primary_program: primaryProgram,
           },
-        }).catch(err => console.error("Welcome email error:", err));
+        }).catch((err) => console.error("Welcome email error", err));
 
-        // Send welcome SMS if phone number is available
         if (patientPhone) {
           supabase.functions.invoke("send-welcome-sms", {
             body: {
@@ -166,59 +152,35 @@ const CreateAccount = () => {
               first_name: name?.split(" ")[0],
               primary_program: primaryProgram,
             },
-          }).catch(err => console.error("Welcome SMS error:", err));
+          }).catch((err) => console.error("Welcome SMS error", err));
         }
 
-        toast.success("Account created! Redirecting to intake form...");
-        
-        // Auto sign in
+        toast.success("Account created! Let's finish your intake.");
         await supabase.auth.signInWithPassword({ email, password });
-        
-        // Navigate to intake
         navigate("/patient/intake");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to create account";
       console.error("Account creation error:", err);
-      if (err.message?.includes("already registered")) {
+      if (msg.includes("already registered")) {
         toast.error("An account with this email already exists. Please log in.");
         navigate("/patient/login");
       } else {
-        toast.error(err.message || "Failed to create account");
+        toast.error(msg);
       }
     } finally {
       setIsCreating(false);
     }
   };
 
-  if (verifying) {
+  if (hydrating) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
         <main className="pt-32 pb-20 flex items-center justify-center">
           <div className="text-center">
-            <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-            <p className="text-muted-foreground">Verifying your payment...</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <main className="pt-32 pb-20">
-          <div className="container mx-auto px-4 max-w-md text-center">
-            <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-6">
-              <span className="text-destructive text-2xl">!</span>
-            </div>
-            <h1 className="text-2xl font-cormorant font-semibold text-foreground mb-4">
-              Verification Issue
-            </h1>
-            <p className="text-muted-foreground mb-6">{error}</p>
-            <Button onClick={() => navigate("/")}>Return Home</Button>
+            <Loader2 className="w-12 h-12 animate-spin text-accent mx-auto mb-4" />
+            <p className="font-jost text-muted-foreground">Setting up your portal&hellip;</p>
           </div>
         </main>
         <Footer />
@@ -236,32 +198,30 @@ const CreateAccount = () => {
 
       <main className="pt-32 pb-20">
         <div className="container mx-auto px-4 max-w-md">
-          {/* Success Header */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="w-8 h-8 text-green-600" />
+            <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-8 h-8 text-accent" />
             </div>
-            <h1 className="text-2xl md:text-3xl font-cormorant font-semibold text-foreground mb-2">
-              Payment Confirmed!
+            <h1 className="font-playfair text-3xl text-foreground mb-2">
+              Create your portal account
             </h1>
-            <p className="text-muted-foreground">
-              Create your patient portal account to continue
+            <p className="font-jost text-muted-foreground">
+              Quick &mdash; less than a minute. After this you'll see intake.
             </p>
           </div>
 
-          <Card className="border-border/50">
+          <Card className="border-border/60">
             <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Lock className="w-5 h-5 text-primary" />
-                Secure Account Setup
+              <CardTitle className="text-lg flex items-center gap-2 font-jost">
+                <Lock className="w-5 h-5 text-accent" />
+                Secure account setup
               </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCreateAccount} className="space-y-4">
                 <div>
                   <Label htmlFor="name" className="flex items-center gap-2">
-                    <User className="w-4 h-4" />
-                    Full Name
+                    <User className="w-4 h-4" /> Full name
                   </Label>
                   <Input
                     id="name"
@@ -276,8 +236,7 @@ const CreateAccount = () => {
 
                 <div>
                   <Label htmlFor="email" className="flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
-                    Email Address
+                    <Mail className="w-4 h-4" /> Email address
                   </Label>
                   <Input
                     id="email"
@@ -293,29 +252,27 @@ const CreateAccount = () => {
 
                 <div>
                   <Label htmlFor="phone" className="flex items-center gap-2">
-                    <Phone className="w-4 h-4" />
-                    Phone Number
-                    <span className="text-xs text-muted-foreground font-normal">(for SMS reminders)</span>
+                    <Phone className="w-4 h-4" /> Phone number
+                    <span className="text-xs text-muted-foreground font-normal">(SMS reminders)</span>
                   </Label>
                   <Input
                     id="phone"
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
-                    placeholder="(555) 123-4567"
+                    placeholder="(706) 555-0142"
                     className="mt-1"
                   />
                   {!existingPhone && (
                     <p className="text-xs text-muted-foreground mt-1">
-                      Optional but recommended for appointment reminders
+                      Optional but recommended for visit reminders.
                     </p>
                   )}
                 </div>
 
                 <div>
                   <Label htmlFor="password" className="flex items-center gap-2">
-                    <Lock className="w-4 h-4" />
-                    Create Password
+                    <Lock className="w-4 h-4" /> Create password
                   </Label>
                   <div className="relative mt-1">
                     <Input
@@ -340,7 +297,7 @@ const CreateAccount = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Label htmlFor="confirmPassword">Confirm password</Label>
                   <div className="relative mt-1">
                     <Input
                       id="confirmPassword"
@@ -362,26 +319,20 @@ const CreateAccount = () => {
                   </div>
                 </div>
 
-                <Button
-                  type="submit"
-                  disabled={isCreating}
-                  className="w-full"
-                  size="lg"
-                >
+                <Button type="submit" disabled={isCreating} className="w-full" size="lg">
                   {isCreating ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Creating Account...
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Creating account&hellip;
                     </>
                   ) : (
-                    "Create Account & Continue"
+                    "Create account & continue"
                   )}
                 </Button>
               </form>
 
               <p className="text-xs text-muted-foreground text-center mt-4">
                 Already have an account?{" "}
-                <a href="/patient/login" className="text-primary hover:underline">
+                <a href="/patient/login" className="text-accent hover:underline">
                   Log in here
                 </a>
               </p>

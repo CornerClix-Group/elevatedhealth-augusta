@@ -29,6 +29,10 @@ const SERVICE_LABEL: Record<string, string> = {
   hormone: "Hormone Optimization Consultation",
   weight_loss: "Medical Weight Loss Consultation",
   peptide: "Peptide Protocols Consultation",
+  follow_up: "Follow-up Visit",
+  lab_draw: "Lab Draw",
+  alacarte_followUp: "Follow-up Visit",
+  alacarte_labPanel: "Lab Draw",
 };
 
 const CONSULT_FEE_USD = 79;
@@ -42,11 +46,19 @@ interface RequestBody {
   // Staff attribution
   booked_by_user_id?: string;
   booking_source?: string;
+  // Optional overrides that let non-default consults (lab_draw,
+  // follow_up_visit, alacarte follow-ups) reuse this edge function without
+  // forcing them to be tagged as 'rn_wellness_assessment' or 30-minute
+  // visits. Defaults below preserve the original behaviour for the $79
+  // wellness-assessment path.
+  appointment_type?: string;
+  duration_minutes?: number;
+  service_line_override?: string;
   // Staff-mode payload. When present we create a consultation_bookings row
   // ourselves (no Stripe pre-pay) and create the appointment.
   staff_booking?: {
     patient_id: string;
-    service_type: string; // hormone | weight_loss | peptide
+    service_type: string; // hormone | weight_loss | peptide | follow_up | lab_draw
     payment_status: string; // see STAFF_PAYMENT_STATUS
     customer_email?: string;
     customer_name?: string;
@@ -101,7 +113,12 @@ serve(async (req) => {
       booked_by_user_id: rawBookedBy,
       booking_source: rawSource,
       staff_booking,
+      appointment_type: requestedApptType,
+      duration_minutes: requestedDuration,
+      service_line_override: requestedServiceLine,
     } = body;
+    const apptType = requestedApptType || "rn_wellness_assessment";
+    const apptDuration = typeof requestedDuration === "number" && requestedDuration > 0 ? requestedDuration : 30;
 
     if (!slot_start || !provider_id) {
       return new Response(
@@ -181,7 +198,7 @@ serve(async (req) => {
       }
 
       const slotStart = new Date(slot_start);
-      const slotEnd = new Date(slotStart.getTime() + 30 * 60_000);
+      const slotEnd = new Date(slotStart.getTime() + apptDuration * 60_000);
 
       const { data: conflicts } = await supabase
         .from("appointments")
@@ -240,10 +257,10 @@ serve(async (req) => {
         .insert({
           patient_id: patient.id,
           provider_id,
-          service_line: staff_booking.service_type || "consult",
-          appointment_type: "rn_wellness_assessment",
+          service_line: requestedServiceLine || staff_booking.service_type || "consult",
+          appointment_type: apptType,
           scheduled_at: slotStart.toISOString(),
-          duration_minutes: 30,
+          duration_minutes: apptDuration,
           status: "scheduled",
           reason: serviceLabel,
           consultation_booking_id: created.id,
@@ -261,9 +278,9 @@ serve(async (req) => {
             phone: staff_booking.customer_phone || patient.phone,
             name: staff_booking.customer_name || patient.full_name,
             service_label: serviceLabel,
-            service_line: staff_booking.service_type || "consult",
+            service_line: requestedServiceLine || staff_booking.service_type || "consult",
             scheduled_at: slotStart.toISOString(),
-            duration_minutes: 30,
+            duration_minutes: apptDuration,
             confirmation_number: appt.id.slice(0, 8).toUpperCase(),
           },
         });
@@ -294,7 +311,7 @@ serve(async (req) => {
     }
 
     const slotStart = new Date(slot_start);
-    const slotEnd = new Date(slotStart.getTime() + 30 * 60_000);
+    const slotEnd = new Date(slotStart.getTime() + apptDuration * 60_000);
 
     const { data: conflicts } = await supabase
       .from("appointments")
@@ -340,14 +357,21 @@ serve(async (req) => {
 
     const serviceLabel =
       SERVICE_LABEL[booking.service_type as string] || "Wellness Assessment";
+    const resolvedServiceLine =
+      requestedServiceLine ||
+      (booking.service_type === "alacarte_followUp"
+        ? "follow_up"
+        : booking.service_type === "alacarte_labPanel"
+          ? "consult"
+          : booking.service_type || "consult");
 
     const { data: appt, error: aErr } = await supabase.from("appointments").insert({
       patient_id: patientId,
       provider_id,
-      service_line: booking.service_type || "consult",
-      appointment_type: "rn_wellness_assessment",
+      service_line: resolvedServiceLine,
+      appointment_type: apptType,
       scheduled_at: slotStart.toISOString(),
-      duration_minutes: 30,
+      duration_minutes: apptDuration,
       status: "scheduled",
       reason: serviceLabel,
       consultation_booking_id: booking.id,
@@ -370,9 +394,9 @@ serve(async (req) => {
           phone: booking.customer_phone,
           name: booking.customer_name,
           service_label: serviceLabel,
-          service_line: booking.service_type || "consult",
+          service_line: resolvedServiceLine,
           scheduled_at: slotStart.toISOString(),
-          duration_minutes: 30,
+          duration_minutes: apptDuration,
           confirmation_number: appt.id.slice(0, 8).toUpperCase(),
         },
       });

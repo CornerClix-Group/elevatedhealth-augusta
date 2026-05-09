@@ -110,6 +110,11 @@ interface StaffBookingModalProps {
   initialPatient?: PatientLite | null;
   // Whether the caller currently signed in is admin (controls cash/check override).
   isAdmin?: boolean;
+  // Fires once a booking is successfully created. Lets callers (like the
+  // eligibility-review queue) update their own state — for example,
+  // flipping a flagged-patient row from 'pending' to 'scheduled' and
+  // linking the resulting consultation_bookings row.
+  onBookingComplete?: (result: { appointmentId: string; bookingId?: string | null }) => void;
 }
 
 const StaffBookingModal = ({
@@ -117,6 +122,7 @@ const StaffBookingModal = ({
   onOpenChange,
   initialPatient,
   isAdmin = false,
+  onBookingComplete,
 }: StaffBookingModalProps) => {
   const [step, setStep] = useState<Step>("patient");
 
@@ -313,6 +319,7 @@ const StaffBookingModal = ({
           serviceLabel: therapy?.name || "IV Therapy",
           scheduledAt: data.appointment.scheduled_at,
         });
+        onBookingComplete?.({ appointmentId: data.appointment.id, bookingId: data.booking_id ?? null });
       } else if (serviceLine === "follow_up") {
         // Follow-ups reuse consult lane with its own service_type marker.
         const { data, error } = await supabase.functions.invoke("book-consult-appointment", {
@@ -340,6 +347,7 @@ const StaffBookingModal = ({
           serviceLabel: "Follow-up visit",
           scheduledAt: data.appointment.scheduled_at,
         });
+        onBookingComplete?.({ appointmentId: data.appointment.id, bookingId: data.booking_id ?? null });
       } else {
         const consultServiceType = CONSULT_SERVICE_TYPE[serviceLine]!;
         const paymentStatus: ConsultPaymentMethod = isMember ? "member_no_charge" as ConsultPaymentMethod : consultPayment;
@@ -369,6 +377,7 @@ const StaffBookingModal = ({
           serviceLabel: label,
           scheduledAt: data.appointment.scheduled_at,
         });
+        onBookingComplete?.({ appointmentId: data.appointment.id, bookingId: data.booking_id ?? null });
       }
       setStep("confirm");
       toast.success("Booking created. Confirmation on its way to the patient.");

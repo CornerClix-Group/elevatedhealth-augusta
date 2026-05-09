@@ -23,17 +23,23 @@ interface CommunicationLogProps {
   onResend?: (entry: CommunicationLogEntry) => void;
 }
 
+// Includes both current and legacy template keys. Legacy keys remain
+// labeled here so historical communication-log rows render meaningfully
+// in the patient timeline. Do not surface legacy keys in NEW send paths
+// (see QuickEmailModal MESSAGE_TYPES for the live list).
 const TEMPLATE_LABELS: Record<string, string> = {
   welcome: "Welcome Email",
-  consultation_invite: "Consultation Invite",
-  kit_payment: "Kit Payment Request",
+  consultation_invite: "Wellness Assessment Invite",
   labs_reviewed: "Labs Reviewed",
   treatment_authorized: "Treatment Authorized",
   intake_reminder: "Intake Reminder",
   appointment_reminder: "Appointment Reminder",
-  vitality_activation: "Vitality Activation",
+  membership_activation: "Elevated Membership Activation",
   glp1_activation: "GLP-1 Activation",
-  hormone_addon: "Hormone Add-On",
+  // Legacy (Réveil-era) template keys — historical rows only:
+  kit_payment: "Kit Payment Request (legacy)",
+  vitality_activation: "Vitality Activation (legacy)",
+  hormone_addon: "Hormone Add-On (legacy)",
 };
 
 const CommunicationLog = ({ patientId, onResend }: CommunicationLogProps) => {

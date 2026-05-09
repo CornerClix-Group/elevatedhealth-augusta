@@ -1,13 +1,13 @@
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check, CheckCircle2, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { ArrowRight, Check, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import ConsultationModal from "@/components/ConsultationModal";
 
 // Pricing constants — keep in lock-step with stripeConfig.ts and the storefronts.
 const PRICE_CONSULT = "$79";
@@ -50,9 +50,8 @@ const HOW_IT_WORKS = [
 ];
 
 const Membership = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isConsultModalOpen, setIsConsultModalOpen] = useState(false);
   const isSuccess = searchParams.get("success") === "true";
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
@@ -60,20 +59,7 @@ const Membership = () => {
     if (isSuccess) toast.success("Welcome to Elevated Membership! Watch your inbox for scheduling instructions.");
   }, [isSuccess]);
 
-  const handleEnroll = async () => {
-    setIsCheckingOut(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-elevated-membership-checkout");
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-      else throw new Error("No checkout URL returned");
-    } catch (err) {
-      console.error(err);
-      toast.error("Could not start checkout. Members enroll after their consultation — please book your $79 consult and Caroline will set you up.");
-    } finally {
-      setIsCheckingOut(false);
-    }
-  };
+  const openConsult = () => setIsConsultModalOpen(true);
 
   return (
     <>
@@ -110,22 +96,24 @@ const Membership = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button
-                onClick={() => window.open(SITE_CONFIG.bookingUrl, "_blank")}
+                onClick={openConsult}
                 className="bg-primary text-accent font-jost font-medium tracking-wide text-sm px-8 py-6 rounded-sm hover:bg-primary-light"
               >
-                Become a member
+                Start with a consultation
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               <Button
-                onClick={() => window.open(SITE_CONFIG.bookingUrl, "_blank")}
+                onClick={openConsult}
                 variant="outline"
                 className="font-jost font-medium tracking-wide text-sm px-8 py-6 rounded-sm"
               >
-                Schedule your {PRICE_CONSULT} consultation
+                Schedule your {PRICE_CONSULT} consult
               </Button>
             </div>
-            <p className="font-jost text-xs text-muted-foreground mt-6 italic">
-              Members enroll after their consultation and lab review — your physician confirms fit before billing starts.
+            <p className="font-jost text-xs text-muted-foreground mt-6 italic max-w-xl mx-auto">
+              Membership enrollment happens during or after your initial consult once your physician
+              has evaluated fit. Membership is medically gated &mdash; there is no shortcut, and that is
+              intentional.
             </p>
           </div>
         </section>
@@ -265,10 +253,10 @@ const Membership = () => {
             <h2 className="font-playfair text-3xl md:text-4xl text-foreground mb-8">Ready to start?</h2>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button
-                onClick={() => window.open(SITE_CONFIG.bookingUrl, "_blank")}
+                onClick={openConsult}
                 className="bg-primary text-accent font-jost font-medium tracking-wide text-sm px-10 py-6 rounded-sm hover:bg-primary-light"
               >
-                Schedule your {PRICE_CONSULT} consultation
+                Schedule your {PRICE_CONSULT} consult
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               <Button
@@ -279,18 +267,19 @@ const Membership = () => {
                 {SITE_CONFIG.phone}
               </Button>
             </div>
-            {/* Existing-patient direct enroll path (post-consult) */}
-            <button
-              onClick={handleEnroll}
-              disabled={isCheckingOut}
-              className="mt-8 font-jost text-xs text-muted-foreground underline underline-offset-4 hover:text-accent disabled:opacity-50"
-            >
-              {isCheckingOut ? <Loader2 className="h-3 w-3 animate-spin inline" /> : "Already a patient? Enroll now →"}
-            </button>
+            <p className="mt-6 font-jost text-xs text-muted-foreground max-w-md mx-auto">
+              Already a patient? Talk to Caroline at your next visit &mdash; she will confirm the
+              right time to enroll based on your protocol.
+            </p>
           </div>
         </section>
 
         <Footer />
+
+        <ConsultationModal
+          isOpen={isConsultModalOpen}
+          onClose={() => setIsConsultModalOpen(false)}
+        />
       </div>
     </>
   );

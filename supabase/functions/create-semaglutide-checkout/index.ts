@@ -60,7 +60,7 @@ serve(async (req) => {
       customer_email: customerId ? undefined : email,
       line_items: [{ price: priceConfig.priceId, quantity: 1 }],
       mode: "subscription",
-      success_url: `${origin}/payment-success?type=semaglutide`,
+      success_url: `${origin}/medication-confirmed?med=semaglutide`,
       cancel_url: `${origin}/weight-loss`,
       metadata: {
         service_type: "semaglutide_membership",

@@ -61,7 +61,7 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/payment-success?type=glp1_starter`,
+      success_url: `${origin}/medication-confirmed?med=glp1_starter`,
       cancel_url: `${origin}/weight-loss`,
       payment_method_types: ["card", "klarna", "affirm"],
       metadata: {

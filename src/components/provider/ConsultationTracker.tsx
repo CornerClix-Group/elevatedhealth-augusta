@@ -197,8 +197,11 @@ const ConsultationTracker = () => {
     try {
       const serviceType = consult.service_type?.toLowerCase() || '';
       const isWeightLoss = serviceType.includes('weight') || serviceType.includes('glp') || serviceType.includes('semaglutide') || serviceType.includes('tirzepatide');
-      const isKetamine = serviceType.includes('ketamine') || serviceType.includes('mental');
-      
+      const isPeptide = serviceType.includes('peptide');
+      // Ketamine path removed — service is no longer offered (per .cursorrules).
+      // ZRT $250 hormone-mapping kit path removed — labs now drawn on-site at the
+      // consult via LabCorp client billing; no separate kit payment.
+
       if (isWeightLoss) {
         // Weight Loss flow: Create patient directly, no kit needed
         const { data: existingPatient } = await supabase
@@ -239,65 +242,50 @@ const ConsultationTracker = () => {
           .eq("id", consult.id);
           
         toast.success(`${consult.customer_name} added as Weight Loss patient - ready for medical clearance`);
-      } else if (isKetamine) {
-        // Ketamine flow: Create patient with ketamine screening status
+      } else {
+        // Hormone / peptide / general consult conversion. No external kit
+        // payment — labs are drawn on-site at the consult via LabCorp.
+        const program = isPeptide ? "peptide" : "hormone";
         const { data: existingPatient } = await supabase
           .from("patients")
           .select("id")
           .eq("email", consult.customer_email)
           .maybeSingle();
-          
+
+        const patch = {
+          onboarding_status: "consultation_pending",
+          primary_program: program,
+          treatment_request: program,
+          consultation_booking_id: consult.id,
+        };
+
         if (existingPatient) {
-          await supabase
-            .from("patients")
-            .update({ 
-              onboarding_status: "ketamine_screening",
-              primary_program: "ketamine",
-              treatment_request: "ketamine",
-              consultation_booking_id: consult.id,
-            })
-            .eq("id", existingPatient.id);
+          await supabase.from("patients").update(patch).eq("id", existingPatient.id);
         } else {
-          await supabase
-            .from("patients")
-            .insert({
-              full_name: consult.customer_name,
-              email: consult.customer_email,
-              phone: consult.customer_phone,
-              onboarding_status: "ketamine_screening",
-              primary_program: "ketamine",
-              treatment_request: "ketamine",
-              consultation_booking_id: consult.id,
-            });
+          await supabase.from("patients").insert({
+            full_name: consult.customer_name,
+            email: consult.customer_email,
+            phone: consult.customer_phone,
+            ...patch,
+          });
         }
-        
+
         await supabase
           .from("consultation_bookings")
-          .update({ status: "converted_to_ketamine" })
+          .update({ status: program === "peptide" ? "converted_to_peptide" : "converted_to_hormone" })
           .eq("id", consult.id);
-          
-        toast.success(`${consult.customer_name} added as Ketamine patient - ready for screening`);
-      } else {
-        // Hormone flow: Send kit payment link (existing behavior)
-        const { data, error } = await supabase.functions.invoke("send-patient-invite", {
+
+        // Fire-and-forget welcome email so the patient knows what to expect
+        // before the visit.
+        supabase.functions.invoke("send-welcome-email", {
           body: {
-            patient_email: consult.customer_email,
             patient_name: consult.customer_name,
+            patient_email: consult.customer_email,
+            primary_program: program,
           },
-        });
+        }).catch((err) => console.error("send-welcome-email error", err));
 
-        if (error) throw error;
-
-        if (data?.success) {
-          await supabase
-            .from("consultation_bookings")
-            .update({ status: "converted_to_mapping" })
-            .eq("id", consult.id);
-
-          toast.success(`Kit payment link sent to ${consult.customer_email} ($250 with credit)`);
-        } else {
-          throw new Error(data?.error || "Failed to send invite");
-        }
+        toast.success(`${consult.customer_name} added as ${program === "peptide" ? "Peptide" : "Hormone"} patient`);
       }
       
       loadConsultations();
@@ -318,12 +306,17 @@ const ConsultationTracker = () => {
         return <Badge variant="outline" className="text-blue-600 border-blue-400">Scheduled</Badge>;
       case "completed":
         return <Badge variant="outline" className="text-green-600 border-green-400">Completed</Badge>;
-      case "converted_to_mapping":
-        return <Badge className="bg-green-600">Converted to Mapping</Badge>;
+      case "converted_to_hormone":
+        return <Badge className="bg-green-600">Converted to Hormone</Badge>;
+      case "converted_to_peptide":
+        return <Badge className="bg-green-600">Converted to Peptide</Badge>;
       case "converted_to_glp1":
         return <Badge className="bg-green-600">Converted to GLP-1</Badge>;
+      // Legacy statuses, still possible on historical rows.
+      case "converted_to_mapping":
+        return <Badge className="bg-green-600">Converted (legacy)</Badge>;
       case "converted_to_ketamine":
-        return <Badge className="bg-green-600">Converted to Ketamine</Badge>;
+        return <Badge className="bg-green-600">Converted (legacy)</Badge>;
       case "nurture":
         return <Badge variant="outline" className="text-purple-600 border-purple-400">In Nurture</Badge>;
       case "lost":
@@ -354,9 +347,12 @@ const ConsultationTracker = () => {
     pending: consultations.filter(c => c.status === "pending").length,
     scheduled: consultations.filter(c => c.status === "scheduled").length,
     completed: consultations.filter(c => c.status === "completed").length,
-    converted: consultations.filter(c => 
-      c.status === "converted_to_mapping" || 
-      c.status === "converted_to_glp1" || 
+    converted: consultations.filter(c =>
+      c.status === "converted_to_hormone" ||
+      c.status === "converted_to_peptide" ||
+      c.status === "converted_to_glp1" ||
+      // historical statuses for backward compatibility
+      c.status === "converted_to_mapping" ||
       c.status === "converted_to_ketamine"
     ).length,
     archived: consultations.filter(c => c.status === "archived").length,
@@ -440,9 +436,9 @@ const ConsultationTracker = () => {
             <SelectItem value="pending">Pending Booking</SelectItem>
             <SelectItem value="scheduled">Scheduled</SelectItem>
             <SelectItem value="completed">Completed</SelectItem>
-            <SelectItem value="converted_to_mapping">Converted (Hormone)</SelectItem>
+            <SelectItem value="converted_to_hormone">Converted (Hormone)</SelectItem>
+            <SelectItem value="converted_to_peptide">Converted (Peptide)</SelectItem>
             <SelectItem value="converted_to_glp1">Converted (GLP-1)</SelectItem>
-            <SelectItem value="converted_to_ketamine">Converted (Ketamine)</SelectItem>
             <SelectItem value="nurture">In Nurture</SelectItem>
             <SelectItem value="lost">Lost</SelectItem>
           </SelectContent>
@@ -644,9 +640,9 @@ const ConsultationTracker = () => {
                   <SelectItem value="pending">Pending Booking</SelectItem>
                   <SelectItem value="scheduled">Scheduled</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="converted_to_mapping">Converted to Mapping</SelectItem>
+                  <SelectItem value="converted_to_hormone">Converted to Hormone</SelectItem>
+                  <SelectItem value="converted_to_peptide">Converted to Peptide</SelectItem>
                   <SelectItem value="converted_to_glp1">Converted to GLP-1</SelectItem>
-                  <SelectItem value="converted_to_ketamine">Converted to Ketamine</SelectItem>
                   <SelectItem value="nurture">In Nurture</SelectItem>
                   <SelectItem value="lost">Lost</SelectItem>
                   <SelectItem value="archived">Archived</SelectItem>
