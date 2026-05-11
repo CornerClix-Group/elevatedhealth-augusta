@@ -1,268 +1,336 @@
-/**
- * get-available-slots
- *
- * Returns bookable time slots for the SlotPicker. Reads provider_schedules,
- * schedule_blocks, schedule_exceptions, and appointments to compute live
- * availability across the next N days.
- *
- * AUTH POSTURE (security audit R-5, 2026-05-08):
- *   - verify_jwt = true in supabase/config.toml (existing — unchanged)
- *   - No additional role check: any authenticated user can compute slots,
- *     because both anonymous storefront flows (post-payment confirmation)
- *     and patient-portal flows need this.
- *
- * KNOWN LEAK (deferred to a follow-up):
- *   The response shape currently includes the raw `provider_id` per slot
- *   so the SlotPicker can pass it back to book-iv-appointment /
- *   book-consult-appointment. This exposes provider identity to any
- *   caller, including unauthenticated flows that reach this fn through
- *   the post-payment confirmation surfaces.
- *
- *   The right fix is an opaque slot_token (HMAC of provider_id + start
- *   time, signed with a server secret). Booking edge fns would decode
- *   the token and validate the HMAC. That requires:
- *     1. New shared secret (SLOT_SIGNING_KEY env var)
- *     2. Token issuance here, validation in book-iv-appointment and
- *        book-consult-appointment
- *     3. SlotPicker + ScheduleConsult.tsx + IVPaymentSuccess.tsx update
- *        to pass slot_token instead of {provider_id, start}
- *   That's a coordinated change across ~5 files. Tracked as audit doc
- *   follow-up under R-5 / get-available-slots.
- */
+// ============================================================================
+// Edge Function: get-available-slots
+// Purpose:    Returns available booking slots for a given service + date,
+//             accounting for room availability, blackouts, concurrent caps,
+//             and provider availability windows.
+// Endpoint:   POST /functions/v1/get-available-slots
+// Body:       { service_id: string, date: 'YYYY-MM-DD', provider_id?: string }
+// Returns:    { service: {...}, slots: [{ start_at, end_at }, ...] }
+// ============================================================================
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
+const CLINIC_TIMEZONE = "America/New_York";
+const CLINIC_TZ_OFFSET = "-05:00"; // EST. For DST handling switch to a library; manual is fine for v1.
+const SLOT_GRANULARITY_MINUTES = 15;
+
+const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "authorization, content-type, x-client-info, apikey",
 };
 
-interface Schedule {
-  id: string;
-  provider_id: string;
-  day_of_week: number;
-  start_time: string; // HH:MM:SS
-  end_time: string;
-  service_lines: string[];
-  slot_minutes: number;
-  is_active: boolean;
+interface RequestBody {
+  service_id: string;
+  date: string; // YYYY-MM-DD
+  provider_id?: string;
 }
 
-interface Block {
-  provider_id: string;
+interface SlotInternal {
   start_at: string;
   end_at: string;
-}
-
-interface Appt {
-  provider_id: string;
-  scheduled_at: string;
-  duration_minutes: number;
-}
-
-interface Exception {
-  provider_id: string;
-  exception_date: string; // YYYY-MM-DD
-  start_time: string;     // HH:MM:SS
-  end_time: string;
-  type: "addition" | "removal" | string;
-  service_lines: string[];
-  slot_minutes: number;
-}
-
-function timeToMinutes(t: string) {
-  const [h, m] = t.split(":").map(Number);
-  return h * 60 + m;
-}
-
-function dateKey(d: Date) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
+  available: boolean;
+  reason?: string;
+  provider_id?: string;
 }
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: CORS_HEADERS });
+  }
 
   try {
-    const url = new URL(req.url);
-    let body: any = {};
-    if (req.method === "POST") body = await req.json().catch(() => ({}));
-    const service_line: string = body.service_line || url.searchParams.get("service_line") || "iv";
-    const duration_minutes: number = Number(body.duration_minutes || url.searchParams.get("duration_minutes") || 60);
-    const provider_id: string | null = body.provider_id || url.searchParams.get("provider_id") || null;
-    const days: number = Number(body.days || url.searchParams.get("days") || 14);
+    const { service_id, date, provider_id } = (await req.json()) as RequestBody;
+
+    if (!service_id || !date) {
+      return json({ error: "service_id and date required" }, 400);
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return json({ error: "date must be YYYY-MM-DD" }, 400);
+    }
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    let schedQ = supabase.from("provider_schedules").select("*").eq("is_active", true).contains("service_lines", [service_line]);
-    if (provider_id) schedQ = schedQ.eq("provider_id", provider_id);
-    const { data: schedules, error: schedErr } = await schedQ;
-    if (schedErr) throw schedErr;
+    // ----- Service -----
+    const { data: service, error: svcErr } = await supabase
+      .from("services")
+      .select("id, slug, name, category, duration_minutes, buffer_before_minutes, buffer_after_minutes, requires_room, room_type_required, allow_flex_room, min_advance_booking_hours, max_advance_booking_days, allow_same_day_booking, online_bookable, active")
+      .eq("id", service_id)
+      .single();
 
+    if (svcErr || !service) return json({ error: "Service not found" }, 404);
+    if (!service.active || !service.online_bookable) return json({ slots: [], service });
+
+    // Enforce max-advance booking window
+    const requestDate = new Date(`${date}T00:00:00${CLINIC_TZ_OFFSET}`);
+    const maxAdvanceDays = service.max_advance_booking_days ?? 90;
+    const maxAdvanceDate = new Date(Date.now() + maxAdvanceDays * 86400 * 1000);
+    if (requestDate > maxAdvanceDate) return json({ slots: [], service });
+
+    // ----- Provider availability windows for that DOW -----
+    const dow = requestDate.getDay();
+
+    let availQuery = supabase
+      .from("provider_availability")
+      .select("id, provider_id, day_of_week, start_time, end_time, service_categories, effective_from, effective_until")
+      .eq("day_of_week", dow)
+      .lte("effective_from", date)
+      .or(`effective_until.is.null,effective_until.gte.${date}`);
+
+    if (provider_id) availQuery = availQuery.eq("provider_id", provider_id);
+
+    const { data: rawAvailability } = await availQuery;
+    const availability = (rawAvailability || []).filter((a: any) =>
+      !a.service_categories || a.service_categories.includes(service.category)
+    );
+
+    if (availability.length === 0) return json({ slots: [], service });
+
+    // ----- Day-bounded data fetches -----
+    const startOfDayISO = `${date}T00:00:00${CLINIC_TZ_OFFSET}`;
+    const endOfDayISO = `${date}T23:59:59${CLINIC_TZ_OFFSET}`;
+
+    const [{ data: appointments }, { data: rooms }, { data: blackouts }, { data: limits }, { data: serviceRooms }, { data: timeOff }] = await Promise.all([
+      supabase
+        .from("appointments")
+        .select("id, start_at, end_at, room_id, service_id, status, provider_id, services!inner(category)")
+        .gte("start_at", startOfDayISO)
+        .lte("end_at", endOfDayISO)
+        .not("status", "in", "(cancelled,no_show,rescheduled)"),
+      supabase.from("rooms").select("*").eq("active", true),
+      supabase
+        .from("room_blackouts")
+        .select("*")
+        .gte("end_at", startOfDayISO)
+        .lte("start_at", endOfDayISO),
+      supabase
+        .from("booking_limits")
+        .select("*")
+        .eq("active", true)
+        .lte("effective_from", date)
+        .or(`effective_until.is.null,effective_until.gte.${date}`),
+      supabase.from("service_rooms").select("*").eq("service_id", service_id),
+      supabase
+        .from("provider_time_off")
+        .select("*")
+        .gte("end_at", startOfDayISO)
+        .lte("start_at", endOfDayISO),
+    ]);
+
+    // ----- Build slot grid -----
     const now = new Date();
-    const startWindow = new Date(now.getTime());
-    const endWindow = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+    const minAdvanceMs = (service.min_advance_booking_hours ?? 2) * 3600 * 1000;
+    const earliestBookable = new Date(now.getTime() + minAdvanceMs);
+    const durationMs = service.duration_minutes * 60_000;
 
-    const providerIds = [...new Set((schedules || []).map((s: Schedule) => s.provider_id))];
+    const candidateSlots: SlotInternal[] = [];
 
-    const { data: blocks } = providerIds.length
-      ? await supabase
-          .from("schedule_blocks")
-          .select("provider_id,start_at,end_at")
-          .in("provider_id", providerIds)
-          .gte("end_at", startWindow.toISOString())
-          .lte("start_at", endWindow.toISOString())
-      : { data: [] as Block[] };
+    for (const window of availability) {
+      const winStart = parseLocalTime(date, window.start_time);
+      const winEnd = parseLocalTime(date, window.end_time);
 
-    const { data: appts } = providerIds.length
-      ? await supabase
-          .from("appointments")
-          .select("provider_id,scheduled_at,duration_minutes,status")
-          .in("provider_id", providerIds)
-          .neq("status", "cancelled")
-          .gte("scheduled_at", startWindow.toISOString())
-          .lte("scheduled_at", endWindow.toISOString())
-      : { data: [] as Appt[] };
+      for (
+        let cursor = new Date(winStart.getTime());
+        cursor.getTime() + durationMs <= winEnd.getTime();
+        cursor = new Date(cursor.getTime() + SLOT_GRANULARITY_MINUTES * 60_000)
+      ) {
+        const slotStart = new Date(cursor.getTime());
+        const slotEnd = new Date(cursor.getTime() + durationMs);
 
-    // schedule_exceptions overrides the base provider_schedules pattern on
-    // specific dates. Two flavours:
-    //   - 'removal'  → suppress all base/addition slots inside that window
-    //   - 'addition' → expose extra slots outside the base pattern (e.g. a
-    //                  one-off Saturday clinic). Treated as if it were a
-    //                  matching provider_schedules row for that date only.
-    const exceptionStartDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const exceptionEndDate = new Date(exceptionStartDate.getTime() + days * 24 * 60 * 60 * 1000);
-    const { data: exceptions } = providerIds.length
-      ? await supabase
-          .from("schedule_exceptions")
-          .select(
-            "provider_id,exception_date,start_time,end_time,type,service_lines,slot_minutes",
-          )
-          .in("provider_id", providerIds)
-          .contains("service_lines", [service_line])
-          .gte("exception_date", dateKey(exceptionStartDate))
-          .lte("exception_date", dateKey(exceptionEndDate))
-      : { data: [] as Exception[] };
+        if (slotStart < earliestBookable) continue;
 
-    const slots: { provider_id: string; start: string; end: string }[] = [];
-    // Track unique (provider_id, slotStartIso) to avoid duplicates when an
-    // addition window overlaps the base schedule.
-    const seen = new Set<string>();
+        const result = checkSlot(
+          slotStart,
+          slotEnd,
+          service,
+          rooms || [],
+          appointments || [],
+          blackouts || [],
+          limits || [],
+          serviceRooms || [],
+          timeOff || [],
+          window.provider_id,
+        );
 
-    for (let d = 0; d < days; d++) {
-      const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
-      const dow = day.getDay();
-      const dayKeyStr = dateKey(day);
-
-      // Build the per-provider, per-day window list to iterate. Start with
-      // base schedule rows that match this day-of-week, then append addition
-      // exception rows for this exact date.
-      const windowsByProvider = new Map<
-        string,
-        { startMin: number; endMin: number; step: number }[]
-      >();
-
-      for (const s of (schedules || []) as Schedule[]) {
-        if (s.day_of_week !== dow) continue;
-        const list = windowsByProvider.get(s.provider_id) || [];
-        list.push({
-          startMin: timeToMinutes(s.start_time),
-          endMin: timeToMinutes(s.end_time),
-          step: s.slot_minutes || 30,
+        candidateSlots.push({
+          start_at: slotStart.toISOString(),
+          end_at: slotEnd.toISOString(),
+          available: result === null,
+          reason: result || undefined,
+          provider_id: window.provider_id,
         });
-        windowsByProvider.set(s.provider_id, list);
-      }
-
-      for (const ex of (exceptions || []) as Exception[]) {
-        if (ex.exception_date !== dayKeyStr) continue;
-        if (ex.type !== "addition") continue;
-        const list = windowsByProvider.get(ex.provider_id) || [];
-        list.push({
-          startMin: timeToMinutes(ex.start_time),
-          endMin: timeToMinutes(ex.end_time),
-          step: ex.slot_minutes || 30,
-        });
-        windowsByProvider.set(ex.provider_id, list);
-      }
-
-      // Removal exceptions for this date apply per-provider as extra blocks.
-      const removalsByProvider = new Map<
-        string,
-        { startMin: number; endMin: number }[]
-      >();
-      for (const ex of (exceptions || []) as Exception[]) {
-        if (ex.exception_date !== dayKeyStr) continue;
-        if (ex.type !== "removal") continue;
-        const list = removalsByProvider.get(ex.provider_id) || [];
-        list.push({
-          startMin: timeToMinutes(ex.start_time),
-          endMin: timeToMinutes(ex.end_time),
-        });
-        removalsByProvider.set(ex.provider_id, list);
-      }
-
-      for (const [providerIdForDay, windows] of windowsByProvider.entries()) {
-        const removals = removalsByProvider.get(providerIdForDay) || [];
-        for (const w of windows) {
-          for (let m = w.startMin; m + duration_minutes <= w.endMin; m += w.step) {
-            const slotStart = new Date(day);
-            slotStart.setHours(0, 0, 0, 0);
-            slotStart.setMinutes(m);
-            const slotEnd = new Date(slotStart.getTime() + duration_minutes * 60_000);
-
-            // Skip past slots (with 2hr buffer)
-            if (slotStart.getTime() < now.getTime() + 2 * 60 * 60 * 1000) continue;
-
-            // Removal exception covers this slot → skip
-            const removed = removals.some((r) => m < r.endMin && m + duration_minutes > r.startMin);
-            if (removed) continue;
-
-            // Conflict with appointments
-            const conflictAppt = (appts || []).some((a: Appt) => {
-              if (a.provider_id !== providerIdForDay) return false;
-              const aStart = new Date(a.scheduled_at).getTime();
-              const aEnd = aStart + (a.duration_minutes || 30) * 60_000;
-              return slotStart.getTime() < aEnd && slotEnd.getTime() > aStart;
-            });
-            if (conflictAppt) continue;
-
-            // Conflict with blocks
-            const conflictBlock = (blocks || []).some((b: Block) => {
-              if (b.provider_id !== providerIdForDay) return false;
-              const bStart = new Date(b.start_at).getTime();
-              const bEnd = new Date(b.end_at).getTime();
-              return slotStart.getTime() < bEnd && slotEnd.getTime() > bStart;
-            });
-            if (conflictBlock) continue;
-
-            const key = `${providerIdForDay}|${slotStart.toISOString()}`;
-            if (seen.has(key)) continue;
-            seen.add(key);
-
-            slots.push({
-              provider_id: providerIdForDay,
-              start: slotStart.toISOString(),
-              end: slotEnd.toISOString(),
-            });
-          }
-        }
       }
     }
 
-    return new Response(JSON.stringify({ slots }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
+    // Dedupe: if any provider could serve a slot, it's available
+    const deduped = dedupeKeepBest(candidateSlots);
+
+    return json({
+      service: {
+        id: service.id,
+        name: service.name,
+        category: service.category,
+        duration_minutes: service.duration_minutes,
+      },
+      slots: deduped
+        .filter((s) => s.available)
+        .map((s) => ({ start_at: s.start_at, end_at: s.end_at, provider_id: s.provider_id })),
     });
-  } catch (e) {
-    console.error("get-available-slots error", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : String(e) }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+  } catch (err) {
+    console.error("get-available-slots error:", err);
+    return json({ error: (err as Error).message }, 500);
   }
 });
+
+// ----- Helpers -----
+
+function checkSlot(
+  slotStart: Date,
+  slotEnd: Date,
+  service: any,
+  rooms: any[],
+  appointments: any[],
+  blackouts: any[],
+  limits: any[],
+  serviceRooms: any[],
+  timeOff: any[],
+  providerId: string,
+): string | null {
+  // Provider time-off
+  const onLeave = timeOff.some(
+    (t) =>
+      t.provider_id === providerId &&
+      new Date(t.start_at).getTime() < slotEnd.getTime() &&
+      new Date(t.end_at).getTime() > slotStart.getTime(),
+  );
+  if (onLeave) return "provider_off";
+
+  // Provider double-booking
+  const providerConflict = appointments.some(
+    (a) =>
+      a.provider_id === providerId &&
+      new Date(a.start_at).getTime() < slotEnd.getTime() &&
+      new Date(a.end_at).getTime() > slotStart.getTime(),
+  );
+  if (providerConflict) return "provider_busy";
+
+  // Room availability
+  if (service.requires_room) {
+    const eligibleRooms = rooms.filter((r) => {
+      if (!r.active) return false;
+      if (!r.allowed_service_categories?.includes(service.category)) return false;
+      if (service.room_type_required) {
+        if (r.type === service.room_type_required) return true;
+        if (service.allow_flex_room && r.is_flex) return true;
+        return false;
+      }
+      return true;
+    });
+
+    const compatRooms = serviceRooms.length > 0
+      ? eligibleRooms.filter((r) => serviceRooms.some((sr) => sr.room_id === r.id))
+      : eligibleRooms;
+
+    if (compatRooms.length === 0) return "no_eligible_rooms";
+
+    compatRooms.sort((a, b) => {
+      const aPref = serviceRooms.find((sr) => sr.room_id === a.id)?.preferred ? 1 : 0;
+      const bPref = serviceRooms.find((sr) => sr.room_id === b.id)?.preferred ? 1 : 0;
+      if (aPref !== bPref) return bPref - aPref;
+      return (a.display_order || 0) - (b.display_order || 0);
+    });
+
+    const bufBefore = (service.buffer_before_minutes || 0) * 60_000;
+    const bufAfter = (service.buffer_after_minutes || 15) * 60_000;
+
+    const hasRoom = compatRooms.some((room) => {
+      const overlap = appointments.some(
+        (a) =>
+          a.room_id === room.id &&
+          new Date(a.start_at).getTime() < slotEnd.getTime() + bufAfter &&
+          new Date(a.end_at).getTime() > slotStart.getTime() - bufBefore,
+      );
+      if (overlap) return false;
+
+      const blackedOut = blackouts.some(
+        (b) =>
+          b.room_id === room.id &&
+          new Date(b.start_at).getTime() < slotEnd.getTime() &&
+          new Date(b.end_at).getTime() > slotStart.getTime(),
+      );
+      if (blackedOut) return false;
+
+      return true;
+    });
+
+    if (!hasRoom) return "rooms_full";
+  }
+
+  // Booking limits
+  for (const limit of limits) {
+    if (limit.service_category && limit.service_category !== service.category) continue;
+    const dow = slotStart.getUTCDay();
+    // Convert to clinic TZ DOW (approx — for DST-correct logic, use Intl.DateTimeFormat)
+    if (limit.day_of_week !== null && limit.day_of_week !== dow) continue;
+
+    const slotStartMin = slotStart.getUTCHours() * 60 + slotStart.getUTCMinutes();
+    const slotEndMin = slotEnd.getUTCHours() * 60 + slotEnd.getUTCMinutes();
+    const limStart = timeStrToMinutes(limit.start_time);
+    const limEnd = timeStrToMinutes(limit.end_time);
+    if (slotStartMin < limStart || slotEndMin > limEnd) continue;
+
+    const concurrent = appointments.filter((a) => {
+      if (limit.service_category && a.services?.category !== limit.service_category) return false;
+      if (limit.applies_to_room_types) {
+        const room = rooms.find((r) => r.id === a.room_id);
+        if (!room || !limit.applies_to_room_types.includes(room.type)) return false;
+      }
+      return (
+        new Date(a.start_at).getTime() < slotEnd.getTime() &&
+        new Date(a.end_at).getTime() > slotStart.getTime()
+      );
+    }).length;
+
+    if (concurrent >= limit.max_concurrent) return `limit_${limit.name}`;
+  }
+
+  return null;
+}
+
+function parseLocalTime(dateStr: string, timeStr: string): Date {
+  // timeStr like "08:00" or "08:00:00"
+  const [h, m] = timeStr.split(":").map(Number);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return new Date(`${dateStr}T${pad(h)}:${pad(m)}:00${CLINIC_TZ_OFFSET}`);
+}
+
+function timeStrToMinutes(timeStr: string): number {
+  const [h, m] = timeStr.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function dedupeKeepBest(slots: SlotInternal[]): SlotInternal[] {
+  const byStart = new Map<string, SlotInternal>();
+  for (const s of slots) {
+    const existing = byStart.get(s.start_at);
+    if (!existing) {
+      byStart.set(s.start_at, s);
+    } else if (s.available && !existing.available) {
+      byStart.set(s.start_at, s);
+    }
+  }
+  return Array.from(byStart.values()).sort((a, b) =>
+    a.start_at.localeCompare(b.start_at),
+  );
+}
+
+function json(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+  });
+}
