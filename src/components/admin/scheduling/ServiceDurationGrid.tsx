@@ -35,7 +35,7 @@ export function ServiceDurationGrid() {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from("services")
       .select("*")
       .eq("active", true)

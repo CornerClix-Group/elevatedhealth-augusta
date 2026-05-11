@@ -60,7 +60,7 @@ export function RoomList() {
   useEffect(() => { load(); }, []);
 
   const toggleActive = async (room: Room) => {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("rooms")
       .update({ active: !room.active })
       .eq("id", room.id);
@@ -73,7 +73,7 @@ export function RoomList() {
   };
 
   const saveRoom = async (room: Partial<Room> & { id: string }) => {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("rooms")
       .update({
         name: room.name,

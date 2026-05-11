@@ -45,7 +45,7 @@ export function BookingLimitsTable() {
   useEffect(() => { load(); }, []);
 
   const toggle = async (limit: BookingLimit) => {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("booking_limits")
       .update({ active: !limit.active })
       .eq("id", limit.id);
