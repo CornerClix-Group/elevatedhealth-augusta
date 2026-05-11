@@ -47,8 +47,8 @@ export function RoomList() {
   const load = async () => {
     setLoading(true);
     const [{ data: roomData }, { data: utilData }] = await Promise.all([
-      supabase.from("rooms").select("*").order("display_order"),
-      supabase.from("v_room_utilization").select("*"),
+      (supabase as any).from("rooms").select("*").order("display_order"),
+      (supabase as any).from("v_room_utilization").select("*"),
     ]);
     setRooms((roomData as Room[]) || []);
     const utilMap: Record<string, Utilization> = {};
@@ -60,7 +60,7 @@ export function RoomList() {
   useEffect(() => { load(); }, []);
 
   const toggleActive = async (room: Room) => {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("rooms")
       .update({ active: !room.active })
       .eq("id", room.id);
@@ -73,7 +73,7 @@ export function RoomList() {
   };
 
   const saveRoom = async (room: Partial<Room> & { id: string }) => {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("rooms")
       .update({
         name: room.name,
