@@ -109,7 +109,7 @@ serve(async (req) => {
     // Find the order with this fax_id and get patient/medication info
     const { data: order, error: findError } = await supabase
       .from("orders")
-      .select("id, patient_id, fax_status, protocol_snapshot, patients(full_name)")
+      .select("id, patient_id, fax_status, protocol_snapshot, pharmacy_id, patients(full_name)")
       .eq("fax_id", faxId)
       .maybeSingle();
 
