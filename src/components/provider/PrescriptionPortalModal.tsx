@@ -523,7 +523,7 @@ const PrescriptionPortalModal = ({
           status: "sent_to_pharmacy",
           protocol_snapshot,
           portal_opened_at: new Date().toISOString(),
-        } as Record<string, unknown>)
+        })
         .select()
         .single();
 
