@@ -227,7 +227,6 @@ serve(async (req) => {
   try {
     const SINCH_ACCESS_KEY = Deno.env.get("SINCH_ACCESS_KEY");
     const SINCH_SECRET_KEY = Deno.env.get("SINCH_SECRET_KEY");
-    const HOLGATE_FAX_NUMBER = Deno.env.get("HOLGATE_FAX_NUMBER") || "+17069933772";
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
