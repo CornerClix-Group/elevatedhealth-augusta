@@ -94,6 +94,7 @@ export type Database = {
           reminder_2h_sent_at: string | null
           reminder_sent_at: string | null
           room: string | null
+          room_id: string | null
           scheduled_at: string
           service_line: string
           status: string
@@ -120,6 +121,7 @@ export type Database = {
           reminder_2h_sent_at?: string | null
           reminder_sent_at?: string | null
           room?: string | null
+          room_id?: string | null
           scheduled_at: string
           service_line?: string
           status?: string
@@ -146,6 +148,7 @@ export type Database = {
           reminder_2h_sent_at?: string | null
           reminder_sent_at?: string | null
           room?: string | null
+          room_id?: string | null
           scheduled_at?: string
           service_line?: string
           status?: string
@@ -160,7 +163,69 @@ export type Database = {
             referencedRelation: "patients"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "appointments_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "v_room_utilization"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      booking_limits: {
+        Row: {
+          active: boolean
+          applies_to_room_types: string[] | null
+          created_at: string
+          day_of_week: number | null
+          effective_from: string | null
+          effective_until: string | null
+          end_time: string | null
+          id: string
+          max_concurrent: number
+          name: string
+          service_line: string | null
+          start_time: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          applies_to_room_types?: string[] | null
+          created_at?: string
+          day_of_week?: number | null
+          effective_from?: string | null
+          effective_until?: string | null
+          end_time?: string | null
+          id?: string
+          max_concurrent: number
+          name: string
+          service_line?: string | null
+          start_time?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          applies_to_room_types?: string[] | null
+          created_at?: string
+          day_of_week?: number | null
+          effective_from?: string | null
+          effective_until?: string | null
+          end_time?: string | null
+          id?: string
+          max_concurrent?: number
+          name?: string
+          service_line?: string | null
+          start_time?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       chat_leads: {
         Row: {
@@ -2290,6 +2355,99 @@ export type Database = {
         }
         Relationships: []
       }
+      room_blackouts: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          end_at: string
+          id: string
+          reason: string | null
+          recurrence_pattern: Json | null
+          recurring: boolean
+          room_id: string
+          start_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          end_at: string
+          id?: string
+          reason?: string | null
+          recurrence_pattern?: Json | null
+          recurring?: boolean
+          room_id: string
+          start_at: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          end_at?: string
+          id?: string
+          reason?: string | null
+          recurrence_pattern?: Json | null
+          recurring?: boolean
+          room_id?: string
+          start_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "room_blackouts_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "room_blackouts_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "v_room_utilization"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rooms: {
+        Row: {
+          allowed_service_lines: string[]
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          is_flex: boolean
+          max_concurrent_appointments: number
+          name: string
+          notes: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          allowed_service_lines?: string[]
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          is_flex?: boolean
+          max_concurrent_appointments?: number
+          name: string
+          notes?: string | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          allowed_service_lines?: string[]
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          is_flex?: boolean
+          max_concurrent_appointments?: number
+          name?: string
+          notes?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       schedule_blocks: {
         Row: {
           created_at: string
@@ -2708,7 +2866,20 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_room_utilization: {
+        Row: {
+          active_blackouts: number | null
+          allowed_service_lines: string[] | null
+          appointments_this_week: number | null
+          appointments_today: number | null
+          id: string | null
+          is_active: boolean | null
+          is_flex: boolean | null
+          name: string | null
+          type: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       bootstrap_vault_create_cron_secret: {
@@ -2718,6 +2889,15 @@ export type Database = {
       bootstrap_vault_update_cron_secret: {
         Args: { _value: string }
         Returns: undefined
+      }
+      check_booking_limits: {
+        Args: {
+          _duration_minutes: number
+          _exclude_appointment_id?: string
+          _scheduled_at: string
+          _service_line: string
+        }
+        Returns: boolean
       }
       dispense_from_lot: {
         Args: {
@@ -2733,6 +2913,15 @@ export type Database = {
         Returns: string
       }
       expire_inventory_lots: { Args: never; Returns: number }
+      find_available_room: {
+        Args: {
+          _duration_minutes: number
+          _exclude_appointment_id?: string
+          _service_line: string
+          _start_at: string
+        }
+        Returns: string
+      }
       get_active_lot_for_sku: { Args: { p_sku_id: string }; Returns: string }
       get_inventory_status: { Args: { p_sku_id: string }; Returns: Json }
       get_iv_booking_by_stripe_session: {
