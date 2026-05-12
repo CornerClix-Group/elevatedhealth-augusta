@@ -262,8 +262,72 @@ serve(async (req) => {
       provider_notes,
       diagnosis_code,
       diagnosis_description,
-      provider_signature_url
+      provider_signature_url,
+      pharmacy_id,
     } = validationResult.data;
+
+    // Resolve destination pharmacy
+    let destinationFax: string;
+    let pharmacyName: string;
+    let resolvedPharmacyId: string | null = null;
+
+    if (pharmacy_id) {
+      const { data: pharmacy, error: pharmErr } = await supabase
+        .from("pharmacies")
+        .select("id, name, fax_number, fulfillment_method, is_active")
+        .eq("id", pharmacy_id)
+        .single();
+
+      if (pharmErr || !pharmacy) {
+        return new Response(
+          JSON.stringify({ error: "Pharmacy not found", pharmacy_id }),
+          { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (!pharmacy.is_active) {
+        return new Response(
+          JSON.stringify({ error: `Pharmacy ${pharmacy.name} is inactive` }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (pharmacy.fulfillment_method !== "fax") {
+        return new Response(
+          JSON.stringify({
+            error: `Pharmacy ${pharmacy.name} uses ${pharmacy.fulfillment_method}, not fax. Use the portal submission flow instead.`,
+            fulfillment_method: pharmacy.fulfillment_method,
+          }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (!pharmacy.fax_number) {
+        return new Response(
+          JSON.stringify({ error: `Pharmacy ${pharmacy.name} has no fax number configured` }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      destinationFax = pharmacy.fax_number;
+      pharmacyName = pharmacy.name;
+      resolvedPharmacyId = pharmacy.id;
+    } else {
+      const { data: defaultPharmacy } = await supabase
+        .from("pharmacies")
+        .select("id, name, fax_number")
+        .eq("slug", "custom-pharmacy-evans")
+        .eq("is_active", true)
+        .single();
+
+      if (defaultPharmacy?.fax_number) {
+        destinationFax = defaultPharmacy.fax_number;
+        pharmacyName = defaultPharmacy.name;
+        resolvedPharmacyId = defaultPharmacy.id;
+      } else {
+        destinationFax = Deno.env.get("HOLGATE_FAX_NUMBER") || "+17069933772";
+        pharmacyName = "Custom Pharmacy of Evans (env fallback)";
+        resolvedPharmacyId = null;
+      }
+    }
+    console.log("Resolved pharmacy:", pharmacyName, "->", destinationFax);
 
     console.log("Processing validated fax request for patient:", patient_id);
     console.log("Provider:", provider_name, provider_credentials, "NPI:", provider_npi);
