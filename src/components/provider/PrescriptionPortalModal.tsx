@@ -516,14 +516,14 @@ const PrescriptionPortalModal = ({
 
       const { data: order, error } = await supabase
         .from("orders")
-        .insert({
+        .insert([{
           patient_id: patient.id,
           pharmacy_id: pharmacy.id,
           submission_method: "portal",
           status: "sent_to_pharmacy",
-          protocol_snapshot,
+          protocol_snapshot: protocol_snapshot as any,
           portal_opened_at: new Date().toISOString(),
-        } as Record<string, unknown>)
+        }])
         .select()
         .single();
 
