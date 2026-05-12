@@ -2,8 +2,14 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+// Fallback constants ensure the app still mounts on published deploys
+// even if Vite env injection didn't run. These are publishable (anon) keys
+// and are safe to expose in the client bundle.
+const FALLBACK_SUPABASE_URL = "https://szcbfgnucdhwtccsolru.supabase.co";
+const FALLBACK_SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6Y2JmZ251Y2Rod3RjY3NvbHJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE2NDcwMTQsImV4cCI6MjA3NzIyMzAxNH0.ZpkIOrI0Er5RaE7S5Mqp8IZ1HtRrnoIh9J8o33rtvFk";
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || FALLBACK_SUPABASE_URL;
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || FALLBACK_SUPABASE_PUBLISHABLE_KEY;
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
