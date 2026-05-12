@@ -135,7 +135,22 @@ serve(async (req) => {
       if (resend) {
         const patientName = (order as any).patients?.full_name || "Unknown Patient";
         const medication = (order.protocol_snapshot as any)?.medication_name || "Unknown Medication";
-        await sendFailureAlert(resend, patientName, medication, errorMessage, faxId);
+
+        let pharmacyContactLine = "Contact the prescribing provider for next steps.";
+        if ((order as any).pharmacy_id) {
+          const { data: pharmacy } = await supabase
+            .from("pharmacies")
+            .select("name, phone_number")
+            .eq("id", (order as any).pharmacy_id)
+            .single();
+          if (pharmacy?.phone_number) {
+            pharmacyContactLine = `Or call ${pharmacy.name} directly: ${pharmacy.phone_number}`;
+          } else if (pharmacy?.name) {
+            pharmacyContactLine = `Or contact ${pharmacy.name}.`;
+          }
+        }
+
+        await sendFailureAlert(resend, patientName, medication, errorMessage, faxId, pharmacyContactLine);
       }
     }
 
