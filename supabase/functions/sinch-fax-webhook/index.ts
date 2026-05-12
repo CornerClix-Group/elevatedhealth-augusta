@@ -21,7 +21,8 @@ async function sendFailureAlert(
   patientName: string,
   medication: string,
   errorMessage: string,
-  faxId: string
+  faxId: string,
+  pharmacyContactLine: string,
 ) {
   const html = `
     <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -48,7 +49,7 @@ async function sendFailureAlert(
           <li>Open the Provider Dashboard</li>
           <li>Navigate to the patient's profile</li>
           <li>Use "FCC Portal" button to manually enter the order</li>
-          <li>Or call the compounding pharmacy directly: (706) 993-3772</li>
+          <li>${pharmacyContactLine}</li>
         </ol>
       </div>
       
@@ -108,7 +109,7 @@ serve(async (req) => {
     // Find the order with this fax_id and get patient/medication info
     const { data: order, error: findError } = await supabase
       .from("orders")
-      .select("id, patient_id, fax_status, protocol_snapshot, patients(full_name)")
+      .select("id, patient_id, fax_status, protocol_snapshot, pharmacy_id, patients(full_name)")
       .eq("fax_id", faxId)
       .maybeSingle();
 
@@ -134,7 +135,22 @@ serve(async (req) => {
       if (resend) {
         const patientName = (order as any).patients?.full_name || "Unknown Patient";
         const medication = (order.protocol_snapshot as any)?.medication_name || "Unknown Medication";
-        await sendFailureAlert(resend, patientName, medication, errorMessage, faxId);
+
+        let pharmacyContactLine = "Contact the prescribing provider for next steps.";
+        if ((order as any).pharmacy_id) {
+          const { data: pharmacy } = await supabase
+            .from("pharmacies")
+            .select("name, phone_number")
+            .eq("id", (order as any).pharmacy_id)
+            .single();
+          if (pharmacy?.phone_number) {
+            pharmacyContactLine = `Or call ${pharmacy.name} directly: ${pharmacy.phone_number}`;
+          } else if (pharmacy?.name) {
+            pharmacyContactLine = `Or contact ${pharmacy.name}.`;
+          }
+        }
+
+        await sendFailureAlert(resend, patientName, medication, errorMessage, faxId, pharmacyContactLine);
       }
     }
 

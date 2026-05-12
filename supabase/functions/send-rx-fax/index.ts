@@ -82,6 +82,7 @@ const faxRequestSchema = z.object({
   diagnosis_code: z.string().max(20).optional(),
   diagnosis_description: z.string().max(200).optional(),
   provider_signature_url: z.string().url().max(500).optional(),
+  pharmacy_id: z.string().uuid().optional(),
 });
 
 type FaxRequest = z.infer<typeof faxRequestSchema>;
@@ -150,7 +151,7 @@ function generatePrescriptionHtml(
   <div class="header">
     <h1>ELEVATED HEALTH AUGUSTA</h1>
     <p>7013 Evans Town Center Blvd, Suite 203, Evans, GA 30809</p>
-    <p>Phone: (706) 760-3470 | Fax: (706) 993-3772</p>
+    <p>Phone: (706) 760-3470</p>
   </div>
 
   <div class="provider-info">
@@ -226,7 +227,6 @@ serve(async (req) => {
   try {
     const SINCH_ACCESS_KEY = Deno.env.get("SINCH_ACCESS_KEY");
     const SINCH_SECRET_KEY = Deno.env.get("SINCH_SECRET_KEY");
-    const HOLGATE_FAX_NUMBER = Deno.env.get("HOLGATE_FAX_NUMBER") || "+17069933772";
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -262,8 +262,72 @@ serve(async (req) => {
       provider_notes,
       diagnosis_code,
       diagnosis_description,
-      provider_signature_url
+      provider_signature_url,
+      pharmacy_id,
     } = validationResult.data;
+
+    // Resolve destination pharmacy
+    let destinationFax: string;
+    let pharmacyName: string;
+    let resolvedPharmacyId: string | null = null;
+
+    if (pharmacy_id) {
+      const { data: pharmacy, error: pharmErr } = await supabase
+        .from("pharmacies")
+        .select("id, name, fax_number, fulfillment_method, is_active")
+        .eq("id", pharmacy_id)
+        .single();
+
+      if (pharmErr || !pharmacy) {
+        return new Response(
+          JSON.stringify({ error: "Pharmacy not found", pharmacy_id }),
+          { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (!pharmacy.is_active) {
+        return new Response(
+          JSON.stringify({ error: `Pharmacy ${pharmacy.name} is inactive` }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (pharmacy.fulfillment_method !== "fax") {
+        return new Response(
+          JSON.stringify({
+            error: `Pharmacy ${pharmacy.name} uses ${pharmacy.fulfillment_method}, not fax. Use the portal submission flow instead.`,
+            fulfillment_method: pharmacy.fulfillment_method,
+          }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (!pharmacy.fax_number) {
+        return new Response(
+          JSON.stringify({ error: `Pharmacy ${pharmacy.name} has no fax number configured` }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      destinationFax = pharmacy.fax_number;
+      pharmacyName = pharmacy.name;
+      resolvedPharmacyId = pharmacy.id;
+    } else {
+      const { data: defaultPharmacy } = await supabase
+        .from("pharmacies")
+        .select("id, name, fax_number")
+        .eq("slug", "custom-pharmacy-evans")
+        .eq("is_active", true)
+        .single();
+
+      if (defaultPharmacy?.fax_number) {
+        destinationFax = defaultPharmacy.fax_number;
+        pharmacyName = defaultPharmacy.name;
+        resolvedPharmacyId = defaultPharmacy.id;
+      } else {
+        destinationFax = Deno.env.get("HOLGATE_FAX_NUMBER") || "+17069933772";
+        pharmacyName = "Custom Pharmacy of Evans (env fallback)";
+        resolvedPharmacyId = null;
+      }
+    }
+    console.log("Resolved pharmacy:", pharmacyName, "->", destinationFax);
 
     console.log("Processing validated fax request for patient:", patient_id);
     console.log("Provider:", provider_name, provider_credentials, "NPI:", provider_npi);
@@ -297,7 +361,7 @@ serve(async (req) => {
     // Send fax via Sinch API
     const sinchAuth = btoa(`${SINCH_ACCESS_KEY}:${SINCH_SECRET_KEY}`);
     
-    console.log("Sending fax to:", HOLGATE_FAX_NUMBER);
+    console.log("Sending fax to:", destinationFax);
 
     const faxResponse = await fetch("https://fax.api.sinch.com/v3/faxes", {
       method: "POST",
@@ -306,7 +370,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        to: HOLGATE_FAX_NUMBER,
+        to: destinationFax,
         contentUrl: `data:text/html;base64,${htmlBase64}`,
         headerText: "Elevated Health Augusta - Prescription",
       }),
@@ -339,7 +403,9 @@ serve(async (req) => {
         fax_id: faxId,
         fax_status: "queued",
         fax_sent_at: new Date().toISOString(),
-        fax_destination: HOLGATE_FAX_NUMBER,
+        fax_destination: destinationFax,
+        pharmacy_id: resolvedPharmacyId,
+        submission_method: "fax",
       })
       .select()
       .single();
