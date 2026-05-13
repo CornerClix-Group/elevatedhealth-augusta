@@ -1,15 +1,328 @@
 /**
  * Central Stripe Price & Product Configuration — Elevated Health Augusta
  *
- * Single source of truth for all Stripe price IDs.
- * Last audited: 2026-05-08 (Membership architecture cleanup)
+ * Live production IDs mirror `docs/pricing/pricing_source_of_truth.md`.
+ * Legacy test-mode IDs remain in the DEPRECATED section until PR #12.
  */
 
-// ============================================================================
-// CONSULTATIONS
-// ============================================================================
+// =============================================================================
+// LIVE STRIPE PRICE IDS — SOURCE OF TRUTH
+// =============================================================================
+// Stripe Account: acct_1SQrM7CXbCBPFEeI (live mode)
+// All IDs in this section are LIVE production. Do not introduce test mode IDs.
+// =============================================================================
 
+// ELEVATED Memberships (recurring monthly)
+export const ELEVATED_PROGRAMS = {
+  trt: {
+    name: "ELEVATED TRT",
+    priceId: "price_1TWcPICXbCBPFEeInMGSsjDN",
+    productId: "prod_UVdgaw0SyMI2jz",
+    amount: 24900, // cents
+    displayPrice: "$249/mo",
+    interval: "month",
+  },
+  hrt: {
+    name: "ELEVATED HRT",
+    priceId: "price_1TWcPKCXbCBPFEeIJKBf62b9",
+    productId: "prod_UVdgH1SlumTl5O",
+    amount: 22900,
+    displayPrice: "$229/mo",
+    interval: "month",
+  },
+  glp1: {
+    name: "ELEVATED GLP-1",
+    priceId: "price_1TWcPLCXbCBPFEeIK7tkeIAM",
+    productId: "prod_UVdgUmNtkHxr3V",
+    amount: 34900,
+    displayPrice: "$349/mo",
+    interval: "month",
+  },
+  wellness: {
+    name: "ELEVATED WELLNESS",
+    priceId: "price_1TWcPNCXbCBPFEeIXo6IDpPf",
+    productId: "prod_UVdg37MnW1puuK",
+    amount: 19900,
+    displayPrice: "$199/mo",
+    interval: "month",
+  },
+} as const;
+
+export type ElevatedProgramKey = keyof typeof ELEVATED_PROGRAMS;
+
+// Core services (one-time)
+export const CORE_SERVICES = {
+  wellnessAssessment: {
+    name: "Wellness Assessment",
+    priceId: "price_1TWcmaCXbCBPFEeImikpoTPo",
+    productId: "prod_UVe4fac4EOfgDG",
+    amount: 7900,
+    displayPrice: "$79",
+  },
+  medicalReview: {
+    name: "Medical Review",
+    priceId: "price_1TWcn3CXbCBPFEeILKHcCnTR",
+    productId: "prod_UVe5QPpWNyYLpU",
+    amount: 14900,
+    displayPrice: "$149",
+  },
+  phoneFollowUp: {
+    name: "Physician Phone Follow-Up",
+    priceId: "price_1TWcnXCXbCBPFEeIEojOHJDL",
+    productId: "prod_UVe5hSb451qkZ4",
+    amount: 9900,
+    displayPrice: "$99",
+  },
+  rebookingFee: {
+    name: "Rebooking Fee",
+    priceId: "price_1TWcnsCXbCBPFEeIFltNQdpi",
+    productId: "prod_UVe6AiMtx1xDO0",
+    amount: 9900,
+    displayPrice: "$99",
+  },
+  comprehensivePanel: {
+    name: "Comprehensive Wellness Panel",
+    priceId: "price_1TWcoMCXbCBPFEeIKTLxoYYs",
+    productId: "prod_UVe6QvjqrmgbXa",
+    amount: 19900,
+    displayPrice: "$199",
+  },
+  expandedPanel: {
+    name: "Expanded Panel",
+    priceId: "price_1TWcolCXbCBPFEeI11uF9lyf",
+    productId: "prod_UVe64hyL4IIMt6",
+    amount: 29900,
+    displayPrice: "$299",
+  },
+} as const;
+
+// À la carte medication fills (non-member, one-time)
+export const MEDICATION_FILLS = {
+  testosterone: {
+    name: "Testosterone Fill",
+    priceId: "price_1TWcp8CXbCBPFEeI8pQsOIVm",
+    productId: "prod_UVe7nW7JJ1xuC6",
+    amount: 17900,
+    displayPrice: "$179",
+    memberAlternative: "trt" satisfies ElevatedProgramKey,
+  },
+  biEst: {
+    name: "Bi-Est Cream Fill",
+    priceId: "price_1TWcpTCXbCBPFEeIIt4jKgoR",
+    productId: "prod_UVe7Ntu4xUg72s",
+    amount: 10900,
+    displayPrice: "$109",
+    memberAlternative: "hrt" satisfies ElevatedProgramKey,
+  },
+  progesterone: {
+    name: "Progesterone Fill",
+    priceId: "price_1TWcq1CXbCBPFEeI35J50U0I",
+    productId: "prod_UVe8jVlaypTCLy",
+    amount: 9900,
+    displayPrice: "$99",
+    memberAlternative: "hrt" satisfies ElevatedProgramKey,
+  },
+  semaglutide: {
+    name: "Semaglutide Single Fill",
+    priceId: "price_1TWcqTCXbCBPFEeIP1U1HSld",
+    productId: "prod_UVe8LmywoayLOE",
+    amount: 29900,
+    displayPrice: "$299",
+    memberAlternative: "glp1" satisfies ElevatedProgramKey,
+  },
+  tirzepatide: {
+    name: "Tirzepatide Single Fill",
+    priceId: "price_1TWcsCCXbCBPFEeI8iA8kbrx",
+    productId: "prod_UVeAmnWt8FMQCf",
+    amount: 39900,
+    displayPrice: "$399",
+    memberAlternative: "glp1" satisfies ElevatedProgramKey,
+  },
+} as const;
+
+// Peptide therapy (recurring monthly)
+export const PEPTIDE_PRODUCTS = {
+  sermorelin: {
+    name: "Sermorelin Injection",
+    priceId: "price_1TWcskCXbCBPFEeIBSytC63Q",
+    productId: "prod_UVeBkWZPGxLdmc",
+    amount: 14900,
+    displayPrice: "$149/mo",
+  },
+  cjc1295Ipamorelin: {
+    name: "CJC-1295/Ipamorelin",
+    priceId: "price_1TWct7CXbCBPFEeIXT7Mv0A3",
+    productId: "prod_UVeB6yGA5Sy73e",
+    amount: 17900,
+    displayPrice: "$179/mo",
+  },
+  tesamorelin: {
+    name: "Tesamorelin",
+    priceId: "price_1TWctuCXbCBPFEeI4rpKGThG",
+    productId: "prod_UVeCDgLGVJ04hm",
+    amount: 39900,
+    displayPrice: "$399/mo",
+  },
+  nadTroches: {
+    name: "NAD+ Troches",
+    priceId: "price_1TWcujCXbCBPFEeIgLXiONWC",
+    productId: "prod_UVeDctVXwIySHX",
+    amount: 9900,
+    displayPrice: "$99/mo",
+  },
+  nadInjection: {
+    name: "NAD+ Injection",
+    priceId: "price_1TWcv4CXbCBPFEeIqJILZWQY",
+    productId: "prod_UVeDVPf2YZCceL",
+    amount: 19900,
+    displayPrice: "$199/mo",
+  },
+  nadNasal: {
+    name: "NAD+ Nasal Spray",
+    priceId: "price_1TWcvUCXbCBPFEeILsUFp0tq",
+    productId: "prod_UVeDO4N214JNkQ",
+    amount: 9900,
+    displayPrice: "$99/mo",
+  },
+  ghkCuSublingual: {
+    name: "GHK-Cu Sublingual",
+    priceId: "price_1TWcvrCXbCBPFEeIJYVzAjXS",
+    productId: "prod_UVeEjWP5nRaa3z",
+    amount: 9900,
+    displayPrice: "$99/mo",
+  },
+  ghkCuTopical: {
+    name: "GHK-Cu Topical",
+    priceId: "price_1TWcwJCXbCBPFEeIL3UgXgTu",
+    productId: "prod_UVeEx971R0NYhK",
+    amount: 14900,
+    displayPrice: "$149/mo",
+  },
+} as const;
+
+// Sexual wellness
+export const SEXUAL_WELLNESS_PRODUCTS = {
+  tadalafil: {
+    name: "Tadalafil",
+    priceId: "price_1TWcwsCXbCBPFEeI9yGko9k8",
+    productId: "prod_UVeFMp6Re5QcwP",
+    amount: 9900,
+    displayPrice: "$99/mo",
+    interval: "month",
+  },
+  sildenafil: {
+    name: "Sildenafil",
+    priceId: "price_1TWcxGCXbCBPFEeIezbJUMS1",
+    productId: "prod_UVeFzuXMRsbfR3",
+    amount: 7900,
+    displayPrice: "$79/mo",
+    interval: "month",
+  },
+  pt141: {
+    name: "PT-141 (Bremelanotide)",
+    priceId: "price_1TWcxgCXbCBPFEeIVx833x02",
+    productId: "prod_UVeGVXyl1tyGGx",
+    amount: 22500,
+    displayPrice: "$225",
+    interval: "one_time",
+  },
+  oxytocin: {
+    name: "Oxytocin Nasal Spray",
+    priceId: "price_1TWcyCCXbCBPFEeITwirLO84",
+    productId: "prod_UVeGd7W941z5zi",
+    amount: 8900,
+    displayPrice: "$89/mo",
+    interval: "month",
+  },
+} as const;
+
+// Hair restoration
+export const HAIR_RESTORATION_PRODUCTS = {
+  minoxidilFinasteride: {
+    name: "Minoxidil + Finasteride",
+    priceId: "price_1TWcz6CXbCBPFEeI3fWrJOU0",
+    productId: "prod_UVeHUF34WxfW2b",
+    amount: 12900,
+    displayPrice: "$129/mo",
+  },
+  dutasteride: {
+    name: "Dutasteride Protocol",
+    priceId: "price_1TWczRCXbCBPFEeIGjWNLOYX",
+    productId: "prod_UVeIHluYVIXexo",
+    amount: 14900,
+    displayPrice: "$149/mo",
+  },
+  ghkCuScalp: {
+    name: "GHK-Cu Scalp Therapy",
+    priceId: "price_1TWczwCXbCBPFEeIXCBtnslN",
+    productId: "prod_UVeIyhp13vmLLw",
+    amount: 14900,
+    displayPrice: "$149/mo",
+  },
+} as const;
+
+/**
+ * Walk-in IV example used in marketing comparisons until IV drip SKUs live
+ * in this config. Canonical with `/iv-lounge` Myers Cocktail display.
+ */
+export const IV_WALKIN_EXAMPLES = {
+  myersCocktailCents: 18500,
+} as const;
+
+/**
+ * Non-member steady-state monthly estimates (cents) for MembershipComparison
+ * annual math (Phase 2B sweep plan). Not Stripe line items.
+ */
+export const MEMBERSHIP_COMPARISON_ESTIMATES = {
+  nonMemberSteadyMonthlyCents: {
+    trt: 22500,
+    hrt: 25400,
+    glp1Semaglutide: 47800,
+    glp1Tirzepatide: 57800,
+  },
+} as const;
+
+// Member discount applied to à la carte products
+export const MEMBER_DISCOUNT_PERCENT = 20;
+
+// Aggregate helpers
+export const ALL_LIVE_PRICE_IDS = [
+  ...Object.values(ELEVATED_PROGRAMS).map((p) => p.priceId),
+  ...Object.values(CORE_SERVICES).map((p) => p.priceId),
+  ...Object.values(MEDICATION_FILLS).map((p) => p.priceId),
+  ...Object.values(PEPTIDE_PRODUCTS).map((p) => p.priceId),
+  ...Object.values(SEXUAL_WELLNESS_PRODUCTS).map((p) => p.priceId),
+  ...Object.values(HAIR_RESTORATION_PRODUCTS).map((p) => p.priceId),
+];
+
+export const ELEVATED_PROGRAM_PRICE_IDS = Object.values(ELEVATED_PROGRAMS).map((p) => p.priceId);
+
+export function isElevatedProgramPrice(priceId: string): boolean {
+  return ELEVATED_PROGRAM_PRICE_IDS.includes(priceId);
+}
+
+export function getProgramFromPriceId(priceId: string): ElevatedProgramKey | null {
+  for (const [key, program] of Object.entries(ELEVATED_PROGRAMS)) {
+    if (program.priceId === priceId) return key as ElevatedProgramKey;
+  }
+  return null;
+}
+
+// =============================================================================
+// DEPRECATED — TEST MODE PRICE IDS
+// =============================================================================
+// The following references exist only to keep legacy callers compiling.
+// All must be removed by PR #12 (Edge functions sweep). Any new code that
+// references these constants is a bug — use the LIVE constants above.
+// =============================================================================
+
+/**
+ * @deprecated Legacy consultation catalog. Use {@link CORE_SERVICES.wellnessAssessment} for live Stripe catalog.
+ */
 export const CONSULTATION_PRICES = {
+  /**
+   * @deprecated Use {@link CORE_SERVICES.wellnessAssessment}
+   */
   discovery: {
     priceId: null, // Uses price_data for dynamic product naming per service type
     amount: 7900, // $79
@@ -21,16 +334,9 @@ export const CONSULTATION_PRICES = {
   },
 } as const;
 
-// ============================================================================
-// DIAGNOSTIC KITS (legacy ZRT $250 hormone-mapping kit) — DEPRECATED
-//
-// Kept ONLY as a price-comparison reference for PricingComparison.tsx (which
-// shows what the old $349 lab kit would have cost vs. the current Elevated
-// pricing). The associated `create-hormone-checkout` edge function and
-// provider-side "send kit link" surface were removed in the R-5 audit
-// remediation. Do not wire this constant to any new checkout path.
-// ============================================================================
-
+/**
+ * @deprecated Legacy ZRT kit reference. Use {@link CORE_SERVICES.comprehensivePanel} / {@link CORE_SERVICES.expandedPanel} for live LabCorp panels.
+ */
 export const DIAGNOSTIC_KIT_PRICES = {
   hormone: {
     priceId: "price_1T1AbVEOtKRY99pumPdgj1k3",
@@ -43,16 +349,8 @@ export const DIAGNOSTIC_KIT_PRICES = {
   },
 } as const;
 
-// ============================================================================
-// ELEVATED MEMBERSHIP — single tier ($199/mo)
-// ============================================================================
-
 /**
- * The one and only membership product.
- *
- * priceId is a placeholder. Create the recurring monthly $199 price in
- * Stripe (test + live) and replace the placeholder string in test/live
- * deploys via `VITE_STRIPE_ELEVATED_MEMBERSHIP_PRICE_ID` before launch.
+ * @deprecated Single-tier $199 membership price ID. Use {@link ELEVATED_PROGRAMS.wellness} or a program-specific tier (trt / hrt / glp1).
  */
 export const ELEVATED_MEMBERSHIP = {
   priceId:
@@ -69,11 +367,13 @@ export const ELEVATED_MEMBERSHIP = {
   edgeFunction: "create-elevated-membership-checkout",
 } as const;
 
-// ============================================================================
-// À LA CARTE MEDICATIONS
-// ============================================================================
-
+/**
+ * @deprecated Legacy à la carte medication keys (test Stripe account). Use {@link MEDICATION_FILLS}.
+ */
 export const ALACARTE_PRICES = {
+  /**
+   * @deprecated Use {@link MEDICATION_FILLS.testosterone}
+   */
   testosterone: {
     priceId: "price_1Sga66EOtKRY99puQgPWACIy",
     amount: 14900,
@@ -83,6 +383,9 @@ export const ALACARTE_PRICES = {
     mode: "payment" as const,
     edgeFunction: "create-alacarte-checkout",
   },
+  /**
+   * @deprecated Use {@link MEDICATION_FILLS.biEst}
+   */
   biEst: {
     priceId: "price_1Sga67EOtKRY99puoS8b5U6h",
     amount: 8900,
@@ -92,6 +395,9 @@ export const ALACARTE_PRICES = {
     mode: "payment" as const,
     edgeFunction: "create-alacarte-checkout",
   },
+  /**
+   * @deprecated Use {@link MEDICATION_FILLS.progesterone}
+   */
   progesterone: {
     priceId: "price_1Sga69EOtKRY99puO8NJ5bpx",
     amount: 7900,
@@ -101,6 +407,9 @@ export const ALACARTE_PRICES = {
     mode: "payment" as const,
     edgeFunction: "create-alacarte-checkout",
   },
+  /**
+   * @deprecated Use {@link CORE_SERVICES.phoneFollowUp}
+   */
   followUp: {
     priceId: "price_1Sga6AEOtKRY99puEx0mC3jx",
     amount: 9900,
@@ -110,6 +419,9 @@ export const ALACARTE_PRICES = {
     mode: "payment" as const,
     edgeFunction: "create-alacarte-checkout",
   },
+  /**
+   * @deprecated Use {@link CORE_SERVICES.comprehensivePanel}
+   */
   labPanel: {
     priceId: "price_1T1AbVEOtKRY99pumPdgj1k3",
     amount: 25000,
@@ -121,25 +433,8 @@ export const ALACARTE_PRICES = {
   },
 } as const;
 
-// ============================================================================
-// GLP-1 MEDICATION PRICES
-// ============================================================================
-
 /**
- * Per-medication, member vs non-member pricing.
- *
- * Replaces the legacy TIERED_GLP1_PRICES (vitality / concierge variants).
- * Edge functions look up the patient's elevated_membership_status and
- * route to .member or .nonmember accordingly.
- *
- * NOTE — Three of these four price IDs do NOT yet exist in Stripe and are
- * marked with `price_TODO_...`. The user must create the corresponding
- * recurring monthly Stripe Products/Prices in test + live mode and
- * replace the placeholder strings, OR provide them via env vars listed
- * in LAUNCH_CHECKLIST.md before publishing.
- *
- * The only Price ID confirmed against Stripe is tirzepatide.nonmember
- * ($499/mo) which reuses the existing `Tirzepatide Membership` product.
+ * @deprecated Legacy GLP-1 member/non-member split SKUs. Use {@link ELEVATED_PROGRAMS.glp1} and {@link MEDICATION_FILLS.semaglutide} / {@link MEDICATION_FILLS.tirzepatide}.
  */
 export const GLP1_MEDICATION_PRICES = {
   semaglutide: {
@@ -168,10 +463,9 @@ export const GLP1_MEDICATION_PRICES = {
   },
 } as const;
 
-// ============================================================================
-// WEIGHT LOSS / GLP-1 MEMBERSHIPS (legacy — kept as display-only metadata)
-// ============================================================================
-
+/**
+ * @deprecated Legacy weight-loss subscription metadata. Use {@link ELEVATED_PROGRAMS.glp1} / {@link MEDICATION_FILLS.semaglutide} / {@link MEDICATION_FILLS.tirzepatide}.
+ */
 export const WEIGHT_LOSS_PRICES = {
   semaglutide: {
     priceId: GLP1_MEDICATION_PRICES.semaglutide.nonmember.priceId,
@@ -197,31 +491,97 @@ export const WEIGHT_LOSS_PRICES = {
   },
 } as const;
 
-// ============================================================================
-// HAIR RESTORATION (Legacy — service sunsetted)
-// ============================================================================
-
+/**
+ * @deprecated Legacy hair restoration Stripe account. Use {@link HAIR_RESTORATION_PRODUCTS}.
+ */
 export const HAIR_RESTORATION_PRICES = {
-  minoxidilFinasteride: { priceId: "price_1SfijTEOtKRY99puE2WxgmrI", amount: 12900, displayPrice: "$129/mo", name: "Minoxidil + Finasteride", description: "Combination topical therapy for hair regrowth", mode: "subscription" as const, interval: "month", productKey: "minoxidil_finasteride", edgeFunction: "create-hair-restoration-checkout" },
-  dutasteride: { priceId: "price_1SfijUEOtKRY99puH5TqvFks", amount: 14900, displayPrice: "$149/mo", name: "Dutasteride", description: "Advanced DHT blocker for hair loss", mode: "subscription" as const, interval: "month", productKey: "dutasteride", edgeFunction: "create-hair-restoration-checkout" },
-  ghkCuScalp: { priceId: "price_1SfijVEOtKRY99puXq7N3Lp2", amount: 14900, displayPrice: "$149/mo", name: "GHK-Cu Scalp Therapy", description: "Copper peptide serum for scalp health", mode: "subscription" as const, interval: "month", productKey: "ghk_cu_scalp", edgeFunction: "create-hair-restoration-checkout" },
+  minoxidilFinasteride: {
+    priceId: "price_1SfijTEOtKRY99puE2WxgmrI",
+    amount: 12900,
+    displayPrice: "$129/mo",
+    name: "Minoxidil + Finasteride",
+    description: "Combination topical therapy for hair regrowth",
+    mode: "subscription" as const,
+    interval: "month",
+    productKey: "minoxidil_finasteride",
+    edgeFunction: "create-hair-restoration-checkout",
+  },
+  dutasteride: {
+    priceId: "price_1SfijUEOtKRY99puH5TqvFks",
+    amount: 14900,
+    displayPrice: "$149/mo",
+    name: "Dutasteride",
+    description: "Advanced DHT blocker for hair loss",
+    mode: "subscription" as const,
+    interval: "month",
+    productKey: "dutasteride",
+    edgeFunction: "create-hair-restoration-checkout",
+  },
+  ghkCuScalp: {
+    priceId: "price_1SfijVEOtKRY99puXq7N3Lp2",
+    amount: 14900,
+    displayPrice: "$149/mo",
+    name: "GHK-Cu Scalp Therapy",
+    description: "Copper peptide serum for scalp health",
+    mode: "subscription" as const,
+    interval: "month",
+    productKey: "ghk_cu_scalp",
+    edgeFunction: "create-hair-restoration-checkout",
+  },
 } as const;
 
-// ============================================================================
-// SEXUAL WELLNESS (Legacy — service sunsetted)
-// ============================================================================
-
+/**
+ * @deprecated Legacy sexual wellness Stripe account. Use {@link SEXUAL_WELLNESS_PRODUCTS}.
+ */
 export const SEXUAL_WELLNESS_PRICES = {
-  tadalafil: { priceId: "price_1SfijREOtKRY99puq0ITndfC", amount: 9900, displayPrice: "$99/mo", name: "Tadalafil (Cialis)", description: "Daily or as-needed ED medication", mode: "subscription" as const, interval: "month", productKey: "tadalafil", edgeFunction: "create-sexual-wellness-checkout" },
-  sildenafil: { priceId: "price_1SfijSEOtKRY99pumi7jjNvs", amount: 7900, displayPrice: "$79/mo", name: "Sildenafil (Viagra)", description: "As-needed ED medication", mode: "subscription" as const, interval: "month", productKey: "sildenafil", edgeFunction: "create-sexual-wellness-checkout" },
-  pt141: { priceId: "price_1Sa67YEOtKRY99puQlYCjH4m", amount: 22500, displayPrice: "$225", name: "PT-141 (Bremelanotide)", description: "Peptide therapy for libido enhancement", mode: "payment" as const, productKey: "pt141", edgeFunction: "create-sexual-wellness-checkout" },
-  oxytocinNasal: { priceId: "price_1SfijWEOtKRY99puB9Rq4Lm3", amount: 8900, displayPrice: "$89/mo", name: "Oxytocin Nasal Spray", description: "Bonding and intimacy enhancement", mode: "subscription" as const, interval: "month", productKey: "oxytocin_nasal", edgeFunction: "create-sexual-wellness-checkout" },
+  tadalafil: {
+    priceId: "price_1SfijREOtKRY99puq0ITndfC",
+    amount: 9900,
+    displayPrice: "$99/mo",
+    name: "Tadalafil (Cialis)",
+    description: "Daily or as-needed ED medication",
+    mode: "subscription" as const,
+    interval: "month",
+    productKey: "tadalafil",
+    edgeFunction: "create-sexual-wellness-checkout",
+  },
+  sildenafil: {
+    priceId: "price_1SfijSEOtKRY99pumi7jjNvs",
+    amount: 7900,
+    displayPrice: "$79/mo",
+    name: "Sildenafil (Viagra)",
+    description: "As-needed ED medication",
+    mode: "subscription" as const,
+    interval: "month",
+    productKey: "sildenafil",
+    edgeFunction: "create-sexual-wellness-checkout",
+  },
+  pt141: {
+    priceId: "price_1Sa67YEOtKRY99puQlYCjH4m",
+    amount: 22500,
+    displayPrice: "$225",
+    name: "PT-141 (Bremelanotide)",
+    description: "Peptide therapy for libido enhancement",
+    mode: "payment" as const,
+    productKey: "pt141",
+    edgeFunction: "create-sexual-wellness-checkout",
+  },
+  oxytocinNasal: {
+    priceId: "price_1SfijWEOtKRY99puB9Rq4Lm3",
+    amount: 8900,
+    displayPrice: "$89/mo",
+    name: "Oxytocin Nasal Spray",
+    description: "Bonding and intimacy enhancement",
+    mode: "subscription" as const,
+    interval: "month",
+    productKey: "oxytocin_nasal",
+    edgeFunction: "create-sexual-wellness-checkout",
+  },
 } as const;
 
-// ============================================================================
-// ADMINISTRATIVE / OTHER
-// ============================================================================
-
+/**
+ * @deprecated Legacy rebooking Stripe reference. Use {@link CORE_SERVICES.rebookingFee}.
+ */
 export const ADMIN_PRICES = {
   rebookingFee: {
     priceId: "price_1Sa5UFEOtKRY99pupEQlaFvN",
@@ -260,14 +620,24 @@ export type AdminPriceKey = keyof typeof ADMIN_PRICES;
 // AUDIT HELPER
 // ============================================================================
 
-export const getAllPriceIds = (): string[] => {
-  const allPrices = [
+function legacyPriceIdStrings(): string[] {
+  const legacyObjects = [
     ELEVATED_MEMBERSHIP,
     ...Object.values(DIAGNOSTIC_KIT_PRICES),
     ...Object.values(WEIGHT_LOSS_PRICES),
     ...Object.values(ADMIN_PRICES),
+    ...Object.values(ALACARTE_PRICES),
+    ...Object.values(GLP1_MEDICATION_PRICES).flatMap((m) => [m.member, m.nonmember]),
+    ...Object.values(HAIR_RESTORATION_PRICES),
+    ...Object.values(SEXUAL_WELLNESS_PRICES),
   ];
-  return allPrices
-    .map((p) => p.priceId as string | null)
+  return legacyObjects
+    .map((p) => (p as { priceId?: string | null }).priceId as string | null | undefined)
     .filter((id): id is string => !!id && !id.startsWith("price_TODO_"));
+}
+
+/** All known price IDs (live catalog + deprecated legacy) for audits and tooling. */
+export const getAllPriceIds = (): string[] => {
+  const merged = [...ALL_LIVE_PRICE_IDS, ...legacyPriceIdStrings()];
+  return [...new Set(merged)];
 };
