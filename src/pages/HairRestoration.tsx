@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import ConsultationModal from "@/components/ConsultationModal";
 import AssistantHub from "@/components/AssistantHub";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { HAIR_RESTORATION_PRODUCTS, CORE_SERVICES } from "@/lib/stripeConfig";
 import { Check, Sparkles, Shield, Zap, Users } from "lucide-react";
 import NotReadyToBook from "@/components/NotReadyToBook";
 
@@ -40,9 +41,9 @@ const treatmentOptions = [
     name: "Minoxidil + Finasteride",
     subtitle: "The Foundation Protocol",
     description: "Our most popular hair restoration protocol combining two proven medications. Minoxidil stimulates blood flow to follicles while Finasteride blocks DHT—the hormone responsible for male pattern baldness.",
-    price: "$129",
+    price: HAIR_RESTORATION_PRODUCTS.minoxidilFinasteride.displayPrice.replace("/mo", ""),
     priceNote: "/month",
-    priceId: "price_1SfijTEOtKRY99puE2WxgmrI",
+    priceId: HAIR_RESTORATION_PRODUCTS.minoxidilFinasteride.priceId,
     benefits: [
       "FDA-approved medications",
       "Stops hair loss at the source",
@@ -57,9 +58,9 @@ const treatmentOptions = [
     name: "Dutasteride Protocol",
     subtitle: "Advanced DHT Blocker",
     description: "For patients who need stronger DHT blocking, Dutasteride inhibits both Type I and Type II 5-alpha reductase enzymes—providing more comprehensive protection than Finasteride alone.",
-    price: "$149",
+    price: HAIR_RESTORATION_PRODUCTS.dutasteride.displayPrice.replace("/mo", ""),
     priceNote: "/month",
-    priceId: "price_1SfijUEOtKRY99pubB9WRUs1",
+    priceId: HAIR_RESTORATION_PRODUCTS.dutasteride.priceId,
     benefits: [
       "Blocks 90%+ of DHT production",
       "More effective than Finasteride",
@@ -71,11 +72,12 @@ const treatmentOptions = [
     badge: "Premium",
   },
   {
-    name: "GHK-Cu Peptide Therapy",
+    name: HAIR_RESTORATION_PRODUCTS.ghkCuScalp.name,
     subtitle: "Regenerative Copper Peptide",
     description: "A powerful regenerative peptide that stimulates hair follicle stem cells, increases follicle size, and extends the growth phase of the hair cycle. Can be used alone or combined with other protocols.",
-    price: "$149",
-    priceNote: "one-time",
+    price: HAIR_RESTORATION_PRODUCTS.ghkCuScalp.displayPrice.replace("/mo", ""),
+    priceNote: "/month",
+    priceId: HAIR_RESTORATION_PRODUCTS.ghkCuScalp.priceId,
     benefits: [
       "Stimulates hair follicle stem cells",
       "Increases blood vessel formation",
@@ -127,16 +129,16 @@ const HairRestoration = () => {
     <>
       <Helmet>
         <title>Hair Restoration Augusta | Minoxidil, Finasteride, Dutasteride, GHK-Cu - Elevated Health Augusta</title>
-        <meta name="description" content="Hair restoration in Augusta, GA. $79 Wellness Assessment credited toward treatment. Chat with our Virtual Care Team 24/7. Minoxidil, Finasteride, Dutasteride, GHK-Cu protocols." />
+        <meta name="description" content={`Hair restoration in Augusta, GA. ${CORE_SERVICES.wellnessAssessment.displayPrice} Wellness Assessment, paid at booking. Minoxidil, Finasteride, Dutasteride, and GHK-Cu scalp protocols when prescribed.`} />
         <meta name="keywords" content="hair restoration Augusta, hair loss treatment Augusta GA, Minoxidil Augusta, Finasteride Augusta, Dutasteride hair loss, GHK-Cu hair growth, male pattern baldness treatment Georgia" />
-        <meta property="og:title" content="Hair Restoration Augusta | $79 Assessment Credited | Elevated Health Augusta" />
-        <meta property="og:description" content="Hair restoration in Augusta, GA. $79 Wellness Assessment credited toward treatment. Chat with our Virtual Care Team 24/7." />
+        <meta property="og:title" content="Hair Restoration Augusta | Elevated Health Augusta" />
+        <meta property="og:description" content={`Hair restoration in Augusta, GA. ${CORE_SERVICES.wellnessAssessment.displayPrice} Wellness Assessment. Physician-prescribed protocols.`} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://elevatedhealthaugusta.com/hair-restoration" />
         <meta property="og:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Hair Restoration Augusta | $79 Wellness Assessment" />
-        <meta name="twitter:description" content="$79 Wellness Assessment credited toward treatment. Chat with our Virtual Care Team 24/7. FDA-approved protocols." />
+        <meta name="twitter:title" content="Hair Restoration Augusta | Elevated Health Augusta" />
+        <meta name="twitter:description" content={`${CORE_SERVICES.wellnessAssessment.displayPrice} Wellness Assessment. Physician-prescribed hair protocols in Evans, GA.`} />
         <meta name="twitter:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>
@@ -241,13 +243,13 @@ const HairRestoration = () => {
                           Hair Restoration Consultation
                         </h3>
                         <p className="text-sm text-muted-foreground font-lato">
-                          Meet with our provider to assess your hair loss pattern, discuss your goals, and design a personalized protocol. The $79 fee is credited toward your treatment.
+                          Meet with our provider to assess your hair loss pattern, discuss your goals, and design a personalized protocol. {CORE_SERVICES.wellnessAssessment.displayPrice} paid at booking.
                         </p>
                       </div>
                     </div>
                     <div className="text-center md:text-right shrink-0">
-                      <span className="text-3xl font-cormorant text-foreground">$79</span>
-                      <p className="text-xs text-muted-foreground">credited toward treatment</p>
+                      <span className="text-3xl font-cormorant text-foreground">{CORE_SERVICES.wellnessAssessment.displayPrice}</span>
+                      <p className="text-xs text-muted-foreground">Wellness Assessment</p>
                       <Button
                         onClick={() => setIsConsultOpen(true)}
                         className="mt-4 bg-gold hover:bg-gold-dark text-white rounded-full px-6"
@@ -470,7 +472,7 @@ const HairRestoration = () => {
                   Ready to Restore Your Hair?
                 </h2>
                 <p className="text-lg font-cormorant text-muted-foreground mb-8">
-                  Book your consultation today. The $79 fee is credited toward your treatment protocol.
+                  Book your {CORE_SERVICES.wellnessAssessment.displayPrice} Wellness Assessment to begin a personalized protocol.
                 </p>
                 <Button
                   onClick={() => setIsConsultOpen(true)}

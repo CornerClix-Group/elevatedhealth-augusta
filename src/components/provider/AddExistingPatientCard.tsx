@@ -309,8 +309,8 @@ const AddExistingPatientCard = ({ onPatientAdded, embedded = false }: AddExistin
                 disabled={isAdding}
               />
               <p className="text-xs text-muted-foreground mt-1.5">
-                Enter a credit code if this patient previously paid for a $79 Wellness Assessment.
-                The $149 will be applied toward their Hormone Mapping Kit.
+                Enter a credit code only if operations issued one for a prior $79 Wellness Assessment payment.
+                Staff workflows for codes are internal — do not quote retired kit bundles to patients.
               </p>
             </div>
           </CollapsibleContent>

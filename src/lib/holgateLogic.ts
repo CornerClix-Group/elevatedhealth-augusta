@@ -226,7 +226,7 @@ function analyzeAdrenals(values: LabValues): Finding[] {
       });
     }
   } else if (hasSingleCortisol) {
-    // Single morning cortisol analysis (ZRT Saliva Profile III)
+    // Single morning cortisol analysis (legacy saliva panel profile)
     const morning = values.cortisol_morning!;
     
     // Low morning cortisol

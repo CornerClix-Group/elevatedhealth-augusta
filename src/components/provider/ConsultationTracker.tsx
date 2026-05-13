@@ -476,7 +476,7 @@ const ConsultationTracker = () => {
             ) : (
               <>
                 <Calendar className="h-5 w-5" />
-                Discovery Consultations
+                Wellness Assessment consults
               </>
             )}
           </CardTitle>

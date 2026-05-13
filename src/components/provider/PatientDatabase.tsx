@@ -38,6 +38,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { ELEVATED_PROGRAMS } from "@/lib/stripeConfig";
 import {
   Search,
   MoreHorizontal,
@@ -103,11 +104,15 @@ const statusLabels: Record<string, { label: string; variant: "default" | "second
 };
 
 const membershipLabels: Record<string, { label: string; color: string }> = {
-  access: { label: "ACCESS ($99)", color: "bg-slate-100 text-slate-800" },
-  vitality: { label: "VITALITY ($149)", color: "bg-amber-100 text-amber-800" },
-  concierge: { label: "CONCIERGE ($249)", color: "bg-gold/20 text-gold" },
-  semaglutide: { label: "Semaglutide ($399)", color: "bg-blue-100 text-blue-800" },
-  tirzepatide: { label: "Tirzepatide ($499)", color: "bg-purple-100 text-purple-800" },
+  elevated_trt: { label: `${ELEVATED_PROGRAMS.trt.name} (${ELEVATED_PROGRAMS.trt.displayPrice})`, color: "bg-emerald-100 text-emerald-900" },
+  elevated_hrt: { label: `${ELEVATED_PROGRAMS.hrt.name} (${ELEVATED_PROGRAMS.hrt.displayPrice})`, color: "bg-emerald-100 text-emerald-900" },
+  elevated_glp1: { label: `${ELEVATED_PROGRAMS.glp1.name} (${ELEVATED_PROGRAMS.glp1.displayPrice})`, color: "bg-emerald-100 text-emerald-900" },
+  elevated_wellness: { label: `${ELEVATED_PROGRAMS.wellness.name} (${ELEVATED_PROGRAMS.wellness.displayPrice})`, color: "bg-emerald-100 text-emerald-900" },
+  access: { label: "ACCESS (Legacy)", color: "bg-slate-100 text-slate-800" },
+  vitality: { label: "VITALITY (Legacy)", color: "bg-amber-100 text-amber-800" },
+  concierge: { label: "CONCIERGE (Legacy)", color: "bg-gold/20 text-gold" },
+  semaglutide: { label: "Semaglutide (Legacy)", color: "bg-blue-100 text-blue-800" },
+  tirzepatide: { label: "Tirzepatide (Legacy)", color: "bg-purple-100 text-purple-800" },
 };
 
 const programLabels: Record<string, string> = {
@@ -301,11 +306,15 @@ export default function PatientDatabase({
           <SelectContent>
             <SelectItem value="all">All Memberships</SelectItem>
             <SelectItem value="none">No Membership</SelectItem>
-            <SelectItem value="access">ACCESS ($99)</SelectItem>
-            <SelectItem value="vitality">VITALITY ($149)</SelectItem>
-            <SelectItem value="concierge">CONCIERGE ($249)</SelectItem>
-            <SelectItem value="semaglutide">Semaglutide ($399)</SelectItem>
-            <SelectItem value="tirzepatide">Tirzepatide ($499)</SelectItem>
+            <SelectItem value="elevated_trt">{ELEVATED_PROGRAMS.trt.name}</SelectItem>
+            <SelectItem value="elevated_hrt">{ELEVATED_PROGRAMS.hrt.name}</SelectItem>
+            <SelectItem value="elevated_glp1">{ELEVATED_PROGRAMS.glp1.name}</SelectItem>
+            <SelectItem value="elevated_wellness">{ELEVATED_PROGRAMS.wellness.name}</SelectItem>
+            <SelectItem value="access">ACCESS (Legacy)</SelectItem>
+            <SelectItem value="vitality">VITALITY (Legacy)</SelectItem>
+            <SelectItem value="concierge">CONCIERGE (Legacy)</SelectItem>
+            <SelectItem value="semaglutide">Semaglutide (Legacy)</SelectItem>
+            <SelectItem value="tirzepatide">Tirzepatide (Legacy)</SelectItem>
           </SelectContent>
         </Select>
 

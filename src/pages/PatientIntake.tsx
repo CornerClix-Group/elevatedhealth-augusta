@@ -168,7 +168,7 @@ const PatientIntake = () => {
   const [gad7Answers, setGad7Answers] = useState<Record<string, number>>({});
   const [mentalWellnessIndex, setMentalWellnessIndex] = useState(0);
   
-  // Hormone History (ZRT Required)
+  // Hormone history (required for hormone optimization intake)
   const [menstrualStatus, setMenstrualStatus] = useState<string>("");
   const [takingHormones, setTakingHormones] = useState<boolean | null>(null);
   const [hormoneDetails, setHormoneDetails] = useState<string>("");
@@ -349,7 +349,7 @@ const PatientIntake = () => {
       return { path: "labcorp", panel: "safety_cmp", reason: "Organ function requires CMP safety panel" };
     }
     
-    // Default: ZRT Saliva Kit for all female hormone/weight loss
+    // Default: legacy saliva-kit routing for female hormone/weight loss when no LabCorp panel matched
     return { path: "zrt", panel: null, reason: null };
   };
 
@@ -777,7 +777,7 @@ const PatientIntake = () => {
             </>
           )}
 
-          {/* Hormone History Step (ZRT Required) */}
+          {/* Hormone history step */}
           {step === "hormoneHistory" && (
             <>
               <Card className="border-border/50 mb-8">
@@ -789,7 +789,7 @@ const PatientIntake = () => {
                     </h2>
                   </div>
                   <p className="text-sm text-muted-foreground mb-6">
-                    This information is required for your ZRT saliva test kit.
+                    This information helps us interpret your labs and build your hormone plan.
                   </p>
 
                   {/* Menstrual Status - Female Only */}

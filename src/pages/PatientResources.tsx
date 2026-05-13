@@ -224,17 +224,20 @@ const serviceFAQs: Record<string, Array<{ question: string; answer: string }>> =
       answer: "While we don't bill insurance directly, many patients receive partial reimbursement for out-of-network services. We provide superbills with proper medical coding. Hormone therapy is often covered as a medical necessity. Contact your insurance to verify your out-of-network benefits."
     },
     {
-      question: "What's included in the Vitality Membership?",
-      answer: "The Vitality Membership ($249/mo) includes bio-identical hormone therapy with transdermal creams, quarterly lab testing, unlimited provider messaging, symptom tracking, and medication adjustments. Prescriptions are billed separately through the pharmacy."
+      question: "What are the ELEVATED programs?",
+      answer:
+        "We offer four monthly ELEVATED programs — TRT, HRT, GLP-1, and WELLNESS — each with medication included when prescribed as part of that program, monthly RN check-ins, quarterly labs, lab review, and unlimited messaging. See elevatedhealthaugusta.com/membership for details.",
     },
     {
-      question: "What's included in the Concierge Membership?",
-      answer: "The Concierge Membership ($499/mo) includes everything in Vitality PLUS GLP-1 weight loss medication, adrenal support protocol (DHEA, Pregnenolone, adaptogenic herbs), cortisol rhythm optimization, and priority scheduling. It's our most comprehensive metabolic optimization program."
+      question: "What does 'Everything Included' mean for billing?",
+      answer:
+        "Your program price covers the clinical bundle described for that tier. Initial Wellness Assessment and baseline labs are paid upfront. We do not use 'pass-through pharmacy' language for medications that are part of your enrolled program.",
     },
     {
       question: "When is my membership renewal date?",
-      answer: "Your membership renews on the same day each month that you initially enrolled. You can view your renewal date in the Patient Dashboard under 'Membership Summary'. You'll receive an email reminder 3 days before each renewal."
-    }
+      answer:
+        "Your membership renews on the same day each month that you initially enrolled. You can view your renewal date in the Patient Dashboard under 'Membership Summary'. You'll receive an email reminder 3 days before each renewal.",
+    },
   ],
   getting_started: [
     {

@@ -125,13 +125,13 @@ const Insurance = () => {
             </h4>
             <div className="space-y-4 text-muted-foreground">
               <p>
-                <strong className="text-foreground">Coverage varies by plan and diagnosis.</strong> We'll confirm your 
-                eligibility during your $79 Wellness Assessment – the fee is credited toward treatment. Our team will help you understand 
-                your benefits and any out-of-pocket costs before beginning treatment.
+                <strong className="text-foreground">Coverage varies by plan and diagnosis.</strong> We will confirm your
+                eligibility context during your $79 Wellness Assessment. Our team will help you understand your benefits and
+                any out-of-pocket costs before beginning treatment.
               </p>
               <p>
-                <strong className="text-foreground">Prior authorization may be required</strong> for SPRAVATO® therapy. 
-                We handle all insurance paperwork and communicate with your provider to streamline the approval process.
+                <strong className="text-foreground">Cash-pay clinic.</strong> We do not bill insurance directly; we can
+                provide a superbill for eligible out-of-network reimbursement when applicable.
               </p>
             </div>
           </Card>

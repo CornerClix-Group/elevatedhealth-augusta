@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { UserPlus, Users, Calendar, MessageCircle, FileText, Activity } from "lucide-react";
 import AddPatientModal from "./AddPatientModal";
 import TodayScheduleWidget from "./TodayScheduleWidget";
+import { CORE_SERVICES } from "@/lib/stripeConfig";
 
 interface DashboardWelcomeStateProps {
   providerName: string;
@@ -90,7 +91,7 @@ const DashboardWelcomeState = ({
               }
             />
             <p className="text-xs text-center text-muted-foreground">
-              Choose between consultation invite ($149) or direct add (no fee)
+              Choose between Wellness Assessment invite ({CORE_SERVICES.wellnessAssessment.displayPrice}) or direct add (no fee)
             </p>
           </CardContent>
         </Card>

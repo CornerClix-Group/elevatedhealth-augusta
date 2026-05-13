@@ -20,6 +20,7 @@ export interface Patient {
   treatment_request: string | null;
   membership_tier: string | null;
   membership_renewal_date: string | null;
+  elevated_membership_status?: string | null;
   street_address: string | null;
   city: string | null;
   state: string | null;

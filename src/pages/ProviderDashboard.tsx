@@ -2233,7 +2233,7 @@ const ProviderDashboard = () => {
                             ? "text-amber-700 dark:text-amber-400" 
                             : "text-green-700 dark:text-green-400"
                         }`}>
-                          {selectedPatient.labPath.path === "labcorp" ? "LabCorp Blood Work Required" : "ZRT Saliva Kit (Standard)"}
+                          {selectedPatient.labPath.path === "labcorp" ? "LabCorp Blood Work Required" : "Legacy saliva kit (standard)"}
                         </p>
                         {selectedPatient.labPath.reason && (
                           <p className="text-sm text-muted-foreground mt-1">
@@ -2275,7 +2275,7 @@ const ProviderDashboard = () => {
                 />
               )}
 
-              {/* ZRT Saliva Kit Requisition */}
+              {/* Legacy saliva kit requisition */}
               {selectedPatient.labPath?.path === "zrt" && (
                 <ZRTRequisitionGenerator
                   patient={{

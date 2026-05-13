@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Printer } from "lucide-react";
+import { CORE_SERVICES, ELEVATED_PROGRAMS, MEMBER_DISCOUNT_PERCENT } from "@/lib/stripeConfig";
 
 const StaffQuickCard = () => {
   const handlePrint = () => {
@@ -41,7 +42,7 @@ const StaffQuickCard = () => {
             {/* Header */}
             <div className="text-center border-b-2 border-foreground pb-3 mb-4 print:border-black">
               <h1 className="text-xl font-bold tracking-tight">ELEVATED HEALTH AUGUSTA QUICK REFERENCE</h1>
-              <p className="text-sm font-medium">Front Desk Cheat Sheet • January 2025</p>
+              <p className="text-sm font-medium">Front Desk Cheat Sheet • {new Date().getFullYear()}</p>
             </div>
 
             {/* Entry Point */}
@@ -49,9 +50,9 @@ const StaffQuickCard = () => {
               <h2 className="font-bold text-sm uppercase tracking-wide mb-1">Entry Point</h2>
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="font-bold text-lg">$79 Wellness Assessment</p>
+                  <p className="font-bold text-lg">{CORE_SERVICES.wellnessAssessment.name} {CORE_SERVICES.wellnessAssessment.displayPrice}</p>
                   <p className="text-sm">30 min • IN-PERSON at Evans clinic</p>
-                  <p className="text-sm italic">Fee credited toward first treatment</p>
+                  <p className="text-sm italic">Paid at booking; program pricing quoted separately</p>
                 </div>
               </div>
             </div>
@@ -62,45 +63,18 @@ const StaffQuickCard = () => {
                 Core Services
               </h2>
               <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-                <div className="flex justify-between py-1 border-b border-border">
-                  <span>Vitality Membership</span>
-                  <span className="font-mono font-bold">$249/mo</span>
+                {Object.values(ELEVATED_PROGRAMS).map((p) => (
+                  <div key={p.priceId} className="flex justify-between py-1 border-b border-border">
+                    <span>{p.name}</span>
+                    <span className="font-mono font-bold">{p.displayPrice}</span>
+                  </div>
+                ))}
+                <div className="flex justify-between py-1 border-b border-border col-span-2">
+                  <span>Member discount on à la carte</span>
+                  <span className="font-mono font-bold">{MEMBER_DISCOUNT_PERCENT}%</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-border">
-                  <span>Semaglutide (GLP-1)</span>
-                  <span className="font-mono font-bold">$399/mo</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-border">
-                  <span>Tirzepatide</span>
-                  <span className="font-mono font-bold">$499/mo</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-border">
-                  <span>Hormone Add-On (GLP-1)</span>
-                  <span className="font-mono font-bold">+$149/mo</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-border">
-                  <span>IV Ketamine (single)</span>
-                  <span className="font-mono font-bold">$400</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-border">
-                  <span>IV Ketamine (6-pack)</span>
-                  <span className="font-mono font-bold">$2,200</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-border">
-                  <span>Hormone Mapping Kit</span>
-                  <span className="font-mono font-bold">$349</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-border">
-                  <span className="italic">↳ With $79 credit</span>
-                  <span className="font-mono font-bold">$270</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-border">
-                  <span>RN Follow-Up (15min)</span>
-                  <span className="font-mono font-bold">$49</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-border">
-                  <span>Injection Admin</span>
-                  <span className="font-mono font-bold">$20</span>
+                <div className="flex justify-between py-1 border-b border-border col-span-2 text-xs text-muted-foreground italic">
+                  Full catalog: Staff Pricing Cheatsheet (digital)
                 </div>
               </div>
             </div>
@@ -113,15 +87,15 @@ const StaffQuickCard = () => {
               <ul className="text-sm space-y-1">
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">✓</span>
-                  <span>"The $79 fee is credited toward your treatment."</span>
+                  <span>&quot;ELEVATED programs bundle medication when prescribed, check-ins, quarterly labs, and messaging.&quot;</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">✓</span>
-                  <span>"Labs are NOT required for weight loss — most start the same week."</span>
+                  <span>&quot;{MEMBER_DISCOUNT_PERCENT}% off eligible à la carte services for active ELEVATED members.&quot;</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">✓</span>
-                  <span>"SPRAVATO® is often covered by insurance (BCBS, TRICARE)."</span>
+                  <span>&quot;Ketamine and SPRAVATO are not offered on our current public menu.&quot;</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-destructive font-bold">✗</span>
@@ -134,8 +108,7 @@ const StaffQuickCard = () => {
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="bg-muted/50 rounded-lg p-3 print:bg-gray-50">
                 <h3 className="font-bold text-xs uppercase tracking-wide mb-1">Insurance</h3>
-                <p className="text-xs">BCBS, TRICARE, VA accepted for Ketamine</p>
-                <p className="text-xs">Other services: Superbill for OON</p>
+                <p className="text-xs">Superbills for eligible out-of-network reimbursement when applicable</p>
               </div>
               <div className="bg-muted/50 rounded-lg p-3 print:bg-gray-50">
                 <h3 className="font-bold text-xs uppercase tracking-wide mb-1">Payment Options</h3>

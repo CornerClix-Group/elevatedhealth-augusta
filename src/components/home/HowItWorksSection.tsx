@@ -1,15 +1,16 @@
 import { useScrollReveal, revealClasses } from "@/hooks/useScrollReveal";
+import { CORE_SERVICES } from "@/lib/stripeConfig";
 
 const steps = [
   {
     n: "01",
     title: "Wellness Assessment",
-    body: "A 45-minute, in-clinic conversation with our RN to map your symptoms, history, and goals. $79.",
+    body: `A 30–45 minute, in-clinic visit with our RN to map your symptoms, history, and goals. ${CORE_SERVICES.wellnessAssessment.displayPrice}.`,
   },
   {
     n: "02",
     title: "Diagnostic Workup",
-    body: "Targeted labs and, when indicated, our $250 Hormone Mapping Kit — interpreted by a physician, not an algorithm.",
+    body: `In-office blood draw at our Evans office; panels such as the Comprehensive Wellness Panel (${CORE_SERVICES.comprehensivePanel.displayPrice}) or Expanded Panel (${CORE_SERVICES.expandedPanel.displayPrice}) sent to LabCorp—interpreted by your physician-led team.`,
   },
   {
     n: "03",
@@ -19,7 +20,7 @@ const steps = [
   {
     n: "04",
     title: "Ongoing Optimization",
-    body: "Membership keeps you on protocol with unlimited visits, labs, and titration as your body changes.",
+    body: "An ELEVATED program keeps you on track with medication included where prescribed, monthly RN check-ins, quarterly labs, and unlimited messaging.",
   },
 ];
 

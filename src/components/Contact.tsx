@@ -167,7 +167,7 @@ const Contact = () => {
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-primary mt-0.5">•</span>
-                          We'll help you schedule a consultation
+                          We'll help you schedule a Wellness Assessment
                         </li>
                       </ul>
                     </div>
@@ -179,7 +179,7 @@ const Contact = () => {
                           size="lg"
                           className="w-full rounded-sm font-lato tracking-wide"
                         >
-                          Book a $79 consultation
+                          Book a $79 Wellness Assessment
                         </Button>
                         <p className="text-xs font-jost text-muted-foreground leading-snug">
                           For hormone therapy, peptides, weight loss, or sexual wellness.
@@ -309,7 +309,7 @@ const Contact = () => {
                           size="lg"
                           className="w-full rounded-sm font-lato tracking-wide"
                         >
-                          Book a $79 consultation
+                          Book a $79 Wellness Assessment
                         </Button>
                         <p className="text-xs font-jost text-muted-foreground leading-snug">
                           For hormone therapy, peptides, weight loss, or sexual wellness.
@@ -411,7 +411,7 @@ const Contact = () => {
                     size="lg"
                     className="w-full rounded-sm font-lato tracking-wide"
                   >
-                    Book a $79 consultation
+                    Book a $79 Wellness Assessment
                   </Button>
                   <p className="text-xs font-jost text-muted-foreground leading-snug text-center">
                     Hormones, peptides, weight loss, sexual wellness.

@@ -27,7 +27,7 @@ const HormoneReplacement = () => {
     <div className="min-h-screen">
       <Helmet>
         <title>Hormone Replacement Therapy Augusta | HRT Clinic - Elevated Health Augusta</title>
-        <meta name="description" content="Hormone replacement therapy in Augusta, GA. $79 Wellness Assessment credited toward treatment. Chat with our Virtual Care Team 24/7. Personalized HRT for men and women." />
+        <meta name="description" content="Hormone replacement therapy in Augusta, GA. Start with a $79 Wellness Assessment. Chat with our Virtual Care Team 24/7. Personalized HRT for men and women." />
       </Helmet>
       <Navbar />
       

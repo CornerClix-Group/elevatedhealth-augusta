@@ -66,12 +66,12 @@ const Consult = () => {
       <main className="flex-1 pt-40 pb-16 px-4 bg-background">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-12">
-            <p className="section-label mb-4">Clinical Strategy Session</p>
+            <p className="section-label mb-4">Wellness Assessment</p>
             <h1 className="font-playfair text-4xl md:text-5xl text-foreground mb-4">
               Your awakening starts with a conversation.
             </h1>
             <p className="font-jost font-light text-lg text-muted-foreground max-w-2xl mx-auto mb-2">
-              Select a service below to book your $79 Wellness Assessment — credited toward your first treatment.
+              Select a service below to book your $79 Wellness Assessment — your universal entry point for consult-gated care.
             </p>
             <p className="font-jost text-xs text-muted-foreground/80 max-w-2xl mx-auto mt-3">
               Need a physician evaluation for prescription therapies? We'll schedule the MD visit ($149) after your assessment if clinically appropriate.
