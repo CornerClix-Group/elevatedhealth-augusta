@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ConsultationModal from "@/components/ConsultationModal";
 import AssistantHub from "@/components/AssistantHub";
-import { SITE_CONFIG } from "@/lib/siteConfig";
+import { SEXUAL_WELLNESS_PRODUCTS, CORE_SERVICES } from "@/lib/stripeConfig";
 import { Check, Shield, Clock, Package, Heart } from "lucide-react";
 import NotReadyToBook from "@/components/NotReadyToBook";
 
@@ -33,9 +33,9 @@ const treatmentOptions = [
     name: "Tadalafil",
     subtitle: "Daily or As-Needed",
     description: "The active ingredient in Cialis. Available in daily low-dose (2.5-5mg) for spontaneity or higher doses (10-20mg) for as-needed use. Effects last up to 36 hours.",
-    price: "$99",
+    price: SEXUAL_WELLNESS_PRODUCTS.tadalafil.displayPrice.replace("/mo", ""),
     priceNote: "/month",
-    priceId: "price_1SfijREOtKRY99puq0ITndfC",
+    priceId: SEXUAL_WELLNESS_PRODUCTS.tadalafil.priceId,
     benefits: [
       "Effects last up to 36 hours",
       "Daily option for spontaneity",
@@ -51,9 +51,9 @@ const treatmentOptions = [
     name: "Sildenafil",
     subtitle: "As-Needed",
     description: "The active ingredient in Viagra. Taken 30-60 minutes before activity. Available in 25mg, 50mg, and 100mg doses tailored to your needs.",
-    price: "$79",
+    price: SEXUAL_WELLNESS_PRODUCTS.sildenafil.displayPrice.replace("/mo", ""),
     priceNote: "/month",
-    priceId: "price_1SfijSEOtKRY99pumi7jjNvs",
+    priceId: SEXUAL_WELLNESS_PRODUCTS.sildenafil.priceId,
     benefits: [
       "Fast-acting (30-60 min)",
       "Well-established safety profile",
@@ -104,16 +104,16 @@ const SexualWellness = () => {
     <>
       <Helmet>
         <title>Sexual Wellness for Men Augusta | Tadalafil, Sildenafil - Elevated Health Augusta</title>
-        <meta name="description" content="Discreet sexual wellness for men in Augusta, GA. $99 private consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Tadalafil and Sildenafil prescriptions." />
+        <meta name="description" content={`Discreet sexual wellness for men in Augusta, GA. Start with a ${CORE_SERVICES.wellnessAssessment.displayPrice} Wellness Assessment. Tadalafil and Sildenafil prescriptions with physician oversight.`} />
         <meta name="keywords" content="sexual wellness Augusta, ED treatment Augusta GA, Tadalafil Augusta, Sildenafil Augusta, mens health clinic Georgia, erectile dysfunction treatment" />
-        <meta property="og:title" content="Sexual Wellness for Men | $99 Private Consultation | Elevated Health Augusta" />
-        <meta property="og:description" content="Discreet sexual wellness in Augusta, GA. $99 private consultation credited toward treatment. Chat with our Virtual Care Team 24/7." />
+        <meta property="og:title" content="Sexual Wellness for Men | Elevated Health Augusta" />
+        <meta property="og:description" content={`Discreet sexual wellness in Augusta, GA. ${CORE_SERVICES.wellnessAssessment.displayPrice} Wellness Assessment. In-person care and discreet delivery when prescribed.`} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://elevatedhealthaugusta.com/sexual-wellness" />
         <meta property="og:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Men's Sexual Wellness Augusta | $99 Private Consultation" />
-        <meta name="twitter:description" content="$99 private consultation credited toward treatment. Chat with our Virtual Care Team 24/7. Discreet delivery." />
+        <meta name="twitter:title" content="Men's Sexual Wellness Augusta | Elevated Health Augusta" />
+        <meta name="twitter:description" content={`${CORE_SERVICES.wellnessAssessment.displayPrice} Wellness Assessment. Discreet men's health care in Evans.`} />
         <meta name="twitter:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>
@@ -147,7 +147,7 @@ const SexualWellness = () => {
                     size="lg"
                     className="bg-transparent border border-foreground text-foreground hover:bg-gold hover:text-white hover:border-gold px-10 py-6 text-base md:text-lg transition-all duration-300"
                   >
-                    Start Your Private Consultation
+                    Start Your Wellness Assessment
                   </Button>
                 </div>
               </div>
@@ -241,18 +241,18 @@ const SexualWellness = () => {
                           Private Health Assessment
                         </h3>
                         <p className="text-sm text-muted-foreground font-lato">
-                          A confidential conversation with our provider to review your health, discuss options, and create your personalized treatment plan. The $79 fee is credited toward your first month.
+                          A confidential conversation with our provider to review your health, discuss options, and create your personalized treatment plan. {CORE_SERVICES.wellnessAssessment.displayPrice} paid at booking.
                         </p>
                       </div>
                     </div>
                     <div className="text-center md:text-right shrink-0">
-                      <span className="text-3xl font-cormorant text-foreground">$79</span>
-                      <p className="text-xs text-muted-foreground">credited toward treatment</p>
+                      <span className="text-3xl font-cormorant text-foreground">{CORE_SERVICES.wellnessAssessment.displayPrice}</span>
+                      <p className="text-xs text-muted-foreground">in-person at Evans</p>
                       <Button
                         onClick={() => setIsConsultOpen(true)}
                         className="mt-4 bg-gold hover:bg-gold-dark text-white rounded-full px-6"
                       >
-                        Book Private Consultation
+                        Book Wellness Assessment
                       </Button>
                     </div>
                   </div>
@@ -371,8 +371,8 @@ const SexualWellness = () => {
                       ))}
                       <tr>
                         <td className="py-4 px-4 text-muted-foreground font-lato">Monthly Price</td>
-                        <td className="py-4 px-4 text-center text-gold font-cormorant text-xl">$99/mo</td>
-                        <td className="py-4 px-4 text-center text-gold font-cormorant text-xl">$79/mo</td>
+                        <td className="py-4 px-4 text-center text-gold font-cormorant text-xl">{SEXUAL_WELLNESS_PRODUCTS.tadalafil.displayPrice}</td>
+                        <td className="py-4 px-4 text-center text-gold font-cormorant text-xl">{SEXUAL_WELLNESS_PRODUCTS.sildenafil.displayPrice}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -399,7 +399,7 @@ const SexualWellness = () => {
                     <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-4">
                       <span className="text-xl font-cormorant text-gold">1</span>
                     </div>
-                    <h3 className="text-lg font-cormorant text-foreground mb-2">Private Consultation</h3>
+                    <h3 className="text-lg font-cormorant text-foreground mb-2">Wellness Assessment</h3>
                     <p className="text-sm text-muted-foreground font-lato">
                       Complete a confidential health assessment with our provider to discuss your needs and medical history.
                     </p>
@@ -475,14 +475,14 @@ const SexualWellness = () => {
                   Ready to Restore Your Confidence?
                 </h2>
                 <p className="text-lg font-cormorant text-muted-foreground mb-8">
-                  Start with a private consultation. The $79 fee is credited toward your first month of treatment.
+                  Start with a {CORE_SERVICES.wellnessAssessment.displayPrice} Wellness Assessment at our Evans clinic.
                 </p>
                 <Button
                   onClick={() => setIsConsultOpen(true)}
                   size="lg"
                   className="bg-gold hover:bg-gold-dark text-white px-10 py-6 text-base md:text-lg rounded-full"
                 >
-                  Book Private Consultation
+                  Book Wellness Assessment
                 </Button>
               </div>
             </div>

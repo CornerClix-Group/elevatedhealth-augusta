@@ -7,13 +7,15 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ArrowRight } from "lucide-react";
 import { useBooking } from "@/contexts/BookingContext";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { CORE_SERVICES, ELEVATED_PROGRAMS } from "@/lib/stripeConfig";
+import { EverythingIncludedPillars } from "@/components/marketing/EverythingIncludedPillars";
+import { MembershipComparison } from "@/components/marketing/MembershipComparison";
 
 // Display values — actual charges flow through Stripe via
-// create-consultation-checkout ($79) and the membership product.
-const PRICE_CONSULT = "$79";
-const PRICE_PANEL = "$395";
-const PRICE_PANEL_MEMBER = "$345";
-const PRICE_MEMBERSHIP = "$199";
+// create-consultation-checkout and program checkout edge functions.
+const PRICE_CONSULT = CORE_SERVICES.wellnessAssessment.displayPrice;
+const PRICE_PANEL = CORE_SERVICES.comprehensivePanel.displayPrice;
+const PRICE_MEMBERSHIP = ELEVATED_PROGRAMS.hrt.displayPrice;
 
 const services = [
   "Bioidentical hormone replacement (BHRT)",
@@ -33,9 +35,9 @@ const symptoms = [
 
 const steps = [
   { n: "01", t: "Wellness Assessment ($79)", d: "Meet your physician. Walk through symptoms, history, goals. About 45 minutes." },
-  { n: "02", t: "Lab Draw On-Site", d: `Comprehensive Hormone Panel — Female (${PRICE_PANEL}, ${PRICE_PANEL_MEMBER} for members) — drawn at your visit, processed by LabCorp. Results in 1–3 days.` },
+  { n: "02", t: "Lab Draw On-Site", d: `Comprehensive hormone panel — drawn at your visit, processed by LabCorp. Baseline comprehensive wellness panel ${PRICE_PANEL}.` },
   { n: "03", t: "Custom Protocol", d: "Physician reviews labs, designs your protocol, sends Rx to FCC. Your medication ships directly to your door." },
-  { n: "04", t: "Ongoing Care", d: "Weekly visits if needed, quarterly physician check-in, member-rate labs at follow-up. All included with membership." },
+  { n: "04", t: "Ongoing Care", d: `ELEVATED HRT (${PRICE_MEMBERSHIP}) includes prescribed creams, monthly RN check-ins, quarterly labs, and unlimited messaging.` },
 ];
 
 const faqs = [
@@ -51,6 +53,12 @@ const faqs = [
 const HormonesWomen = () => {
   const { openBooking } = useBooking();
   useEffect(() => { window.scrollTo(0, 0); }, []);
+
+  const fmtCents = (cents: number) => `$${(cents / 100).toFixed(0)}`;
+  const typicalProgramMonth1Cents =
+    CORE_SERVICES.wellnessAssessment.amount +
+    CORE_SERVICES.comprehensivePanel.amount +
+    ELEVATED_PROGRAMS.hrt.amount;
 
   return (
     <>
@@ -77,7 +85,7 @@ const HormonesWomen = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button onClick={openBooking} size="lg" className="font-jost tracking-wide">
-                  Book your {PRICE_CONSULT} consultation <ArrowRight className="ml-2 h-4 w-4" />
+                  Book your {PRICE_CONSULT} Wellness Assessment <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
                 <Button asChild variant="link" size="lg" className="font-jost tracking-wide text-foreground">
                   <a href="#how-it-works">Learn how it works ↓</a>
@@ -86,14 +94,21 @@ const HormonesWomen = () => {
             </div>
           </section>
 
+          <section className="py-12 md:py-16 bg-muted/20 border-b border-border">
+            <div className="container mx-auto px-6 lg:px-8 max-w-5xl space-y-10">
+              <EverythingIncludedPillars />
+              <MembershipComparison program="hrt" />
+            </div>
+          </section>
+
           {/* 2. Pricing Strip (Pattern B) */}
           <section className="py-16 md:py-20 bg-background border-y border-border">
             <div className="container mx-auto px-6 lg:px-8 max-w-5xl">
               <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
                 {[
-                  { l: "Initial Consultation", p: PRICE_CONSULT, sub: "credited toward your protocol" },
-                  { l: "Hormone Panel — Female", p: `${PRICE_PANEL} / Member ${PRICE_PANEL_MEMBER}`, sub: "drawn on-site, processed by LabCorp" },
-                  { l: "Elevated Membership", p: `${PRICE_MEMBERSHIP}/mo`, sub: "ongoing care, supplies, member labs" },
+                  { l: "Wellness Assessment", p: PRICE_CONSULT, sub: "RN intake, in-office at Evans" },
+                  { l: "Comprehensive Wellness Panel", p: PRICE_PANEL, sub: "drawn on-site, processed by LabCorp" },
+                  { l: ELEVATED_PROGRAMS.hrt.name, p: PRICE_MEMBERSHIP, sub: "medication + monitoring included" },
                 ].map((c) => (
                   <div key={c.l} className="px-6 py-8 md:py-4 text-center">
                     <p className="section-label mb-3">{c.l}</p>
@@ -191,28 +206,44 @@ const HormonesWomen = () => {
                 <div>
                   <p className="section-label mb-4">One-time costs</p>
                   <div className="space-y-3 font-jost text-foreground">
-                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Initial Wellness Assessment</span><span className="font-medium">{PRICE_CONSULT}</span></div>
-                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Hormone Optimization Panel — Female</span><span className="font-medium">{PRICE_PANEL} / Member {PRICE_PANEL_MEMBER}</span></div>
+                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Wellness Assessment</span><span className="font-medium">{PRICE_CONSULT}</span></div>
+                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Comprehensive Wellness Panel — Female</span><span className="font-medium">{PRICE_PANEL}</span></div>
                   </div>
                 </div>
 
                 <div>
-                  <p className="section-label mb-4">Ongoing (if you proceed)</p>
+                  <p className="section-label mb-4">Ongoing</p>
                   <div className="space-y-3 font-jost text-foreground">
                     <div className="flex justify-between border-b border-border/60 pb-3">
-                      <span>Elevated Membership<br /><span className="font-light text-sm text-muted-foreground">unlimited weekly visits, in-office supplies, member-rate labs, quarterly check-in</span></span>
-                      <span className="font-medium whitespace-nowrap">{PRICE_MEMBERSHIP}/mo</span>
+                      <span>
+                        {ELEVATED_PROGRAMS.hrt.name}
+                        <br />
+                        <span className="font-light text-sm text-muted-foreground">
+                          Prescribed creams, monthly RN visit, quarterly labs, messaging included
+                        </span>
+                      </span>
+                      <span className="font-medium whitespace-nowrap">{PRICE_MEMBERSHIP}</span>
                     </div>
                     <div className="flex justify-between border-b border-border/60 pb-3">
-                      <span>Compounded medication (FCC)<br /><span className="font-light text-sm text-muted-foreground">billed separately by FCC, shipped to your door</span></span>
-                      <span className="font-medium whitespace-nowrap">$40–$120/mo</span>
+                      <span>
+                        Supportive adjustments
+                        <br />
+                        <span className="font-light text-sm text-muted-foreground">when clinically indicated</span>
+                      </span>
+                      <span className="font-medium whitespace-nowrap">Included</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-background border border-border p-6 space-y-2 font-jost text-sm">
-                  <div className="flex justify-between"><span className="text-muted-foreground">Typical first month (consult + labs + first month membership)</span><span className="font-medium text-foreground">~$673 / $573 members</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Typical ongoing month (membership + medication)</span><span className="font-medium text-foreground">~$240–320/mo</span></div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Typical first month (assessment + labs + HRT)</span>
+                    <span className="font-medium text-foreground">{fmtCents(typicalProgramMonth1Cents)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Ongoing (program month 2+)</span>
+                    <span className="font-medium text-foreground">{ELEVATED_PROGRAMS.hrt.displayPrice}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -242,7 +273,7 @@ const HormonesWomen = () => {
               </h2>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button onClick={openBooking} size="lg" className="font-jost tracking-wide">
-                  Book your {PRICE_CONSULT} consultation
+                  Book your {PRICE_CONSULT} Wellness Assessment
                 </Button>
                 <Button asChild variant="outline" size="lg" className="font-jost tracking-wide">
                   <a href={`tel:${SITE_CONFIG.phoneRaw}`}>Or call {SITE_CONFIG.phone}</a>

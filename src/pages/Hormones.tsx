@@ -7,13 +7,12 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useBooking } from "@/contexts/BookingContext";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { CORE_SERVICES, ELEVATED_PROGRAMS } from "@/lib/stripeConfig";
+import { EverythingIncludedPillars } from "@/components/marketing/EverythingIncludedPillars";
+import { MembershipComparison } from "@/components/marketing/MembershipComparison";
 
-// Display values — actual charges flow through Stripe via
-// create-consultation-checkout ($79) and the membership product.
-const PRICE_CONSULT = "$79";
-const PRICE_PANEL = "$395";
-const PRICE_PANEL_MEMBER = "$345";
-const PRICE_MEMBERSHIP = "$199";
+const PRICE_CONSULT = CORE_SERVICES.wellnessAssessment.displayPrice;
+const PRICE_PANEL = CORE_SERVICES.comprehensivePanel.displayPrice;
 
 const Hormones = () => {
   const { openBooking } = useBooking();
@@ -107,6 +106,28 @@ const Hormones = () => {
             </div>
           </section>
 
+          <section className="py-16 md:py-24 bg-muted/20 border-y border-border">
+            <div className="container mx-auto px-6 lg:px-8 max-w-5xl space-y-16">
+              <EverythingIncludedPillars intro="Choose the comparison for the program that matches your biology, then dive into the women's or men's detail page." />
+              <div className="space-y-4">
+                <h2 className="font-playfair text-2xl text-foreground text-center">{ELEVATED_PROGRAMS.trt.name}</h2>
+                <MembershipComparison program="trt" />
+              </div>
+              <div className="space-y-4">
+                <h2 className="font-playfair text-2xl text-foreground text-center">{ELEVATED_PROGRAMS.hrt.name}</h2>
+                <MembershipComparison program="hrt" />
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild size="lg" variant="outline" className="font-jost tracking-wide">
+                  <Link to="/hormones-men">Men&apos;s TRT details</Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="font-jost tracking-wide">
+                  <Link to="/hormones-women">Women&apos;s HRT details</Link>
+                </Button>
+              </div>
+            </div>
+          </section>
+
           <div className="section-divider max-w-4xl mx-auto" />
 
           {/* Why Elevated Health for Hormones */}
@@ -122,7 +143,7 @@ const Hormones = () => {
                 {[
                   { n: "01", t: "Compounded transdermal", d: "Our default delivery is compounded transdermal cream from FCC, a 503A pharmacy in Texas. Custom-dosed to your labs. Shipped to your door. Insulated from FDA-patch shortages." },
                   { n: "02", t: "Physician-led", d: "Every protocol is built and monitored by a physician. Quarterly labs. Real adjustments. No template, no auto-renew." },
-                  { n: "03", t: "Concierge membership", d: "$199/mo Elevated Membership covers unlimited weekly visits, in-office supplies, and member-rate labs at follow-up." },
+                  { n: "03", t: "ELEVATED programs", d: `${ELEVATED_PROGRAMS.hrt.name} (${ELEVATED_PROGRAMS.hrt.displayPrice}) and ${ELEVATED_PROGRAMS.trt.name} (${ELEVATED_PROGRAMS.trt.displayPrice}) bundle medication where prescribed, monthly RN check-ins, quarterly labs, and unlimited messaging.` },
                 ].map((p) => (
                   <div key={p.n}>
                     <p className="font-playfair italic text-3xl text-accent mb-4">{p.n}</p>
@@ -139,9 +160,13 @@ const Hormones = () => {
             <div className="container mx-auto px-6 lg:px-8 max-w-5xl">
               <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
                 {[
-                  { l: "Initial Consultation", p: PRICE_CONSULT, sub: "credited toward your protocol" },
-                  { l: "Hormone Optimization Panel", p: `${PRICE_PANEL} / Member ${PRICE_PANEL_MEMBER}`, sub: "drawn on-site, processed by LabCorp" },
-                  { l: "Elevated Membership", p: `${PRICE_MEMBERSHIP}/mo`, sub: "ongoing care, supplies, member labs" },
+                  { l: "Wellness Assessment", p: PRICE_CONSULT, sub: "RN intake, in-office at Evans" },
+                  { l: "Comprehensive Wellness Panel", p: PRICE_PANEL, sub: "drawn on-site, processed by LabCorp" },
+                  {
+                    l: "ELEVATED programs",
+                    p: `${ELEVATED_PROGRAMS.hrt.displayPrice} / ${ELEVATED_PROGRAMS.trt.displayPrice}`,
+                    sub: "HRT and TRT monthly memberships",
+                  },
                 ].map((c) => (
                   <div key={c.l} className="px-6 py-8 md:py-4 text-center">
                     <p className="section-label mb-3">{c.l}</p>
@@ -160,11 +185,11 @@ const Hormones = () => {
                 Not sure which path?
               </h2>
               <p className="font-jost font-light text-lg text-muted-foreground mb-10">
-                Book a {PRICE_CONSULT} consultation and we'll figure it out together.
+                Book a {PRICE_CONSULT} Wellness Assessment and we&apos;ll help you choose TRT vs. HRT.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button onClick={openBooking} size="lg" className="font-jost tracking-wide">
-                  Book your {PRICE_CONSULT} consultation
+                  Book your {PRICE_CONSULT} Wellness Assessment
                 </Button>
                 <Button asChild variant="outline" size="lg" className="font-jost tracking-wide">
                   <a href={`tel:${SITE_CONFIG.phoneRaw}`}>Or call {SITE_CONFIG.phone}</a>

@@ -9,7 +9,7 @@ const pillars = [
   {
     label: "Transparent Pricing",
     title: "No surprise bills. Ever.",
-    body: "Memberships and à la carte services are posted publicly. Labs and medications pass through at cost — we don't mark them up.",
+    body: "Memberships include your medication, monthly check-in, free quarterly labs, and unlimited messaging — one transparent monthly price, no hidden fees.",
   },
   {
     label: "Continuity of Care",

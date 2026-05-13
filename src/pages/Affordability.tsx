@@ -5,11 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreditCard, Shield, Heart, DollarSign, CheckCircle, Phone } from "lucide-react";
 import PaymentMethodsBadge from "@/components/PaymentMethodsBadge";
+import { SITE_CONFIG } from "@/lib/siteConfig";
+import { CORE_SERVICES } from "@/lib/stripeConfig";
 
 const Affordability = () => {
   const scrollToContact = () => {
-    window.location.href = "tel:+17069733866";
+    window.location.href = `tel:+1${SITE_CONFIG.phoneRaw}`;
   };
+  const assessmentPrice = CORE_SERVICES.wellnessAssessment.displayPrice;
 
   return (
     <>
@@ -17,7 +20,7 @@ const Affordability = () => {
         <title>Affordable Payment Options | Klarna, Affirm, Insurance | Elevated Health Augusta</title>
         <meta
           name="description"
-          content="Flexible payment plans with Klarna and Affirm. We accept Blue Cross Blue Shield, TRICARE, and VA insurance. HSA/FSA eligible. $79 Wellness Assessment credits available."
+          content="Flexible payment plans with Klarna and Affirm. We accept Blue Cross Blue Shield, TRICARE, and VA insurance where applicable. HSA/FSA eligible. $79 Wellness Assessment, paid at booking."
         />
         <meta name="keywords" content="payment plans Augusta GA, Klarna healthcare, Affirm medical financing, BCBS mental health coverage, TRICARE ketamine therapy, HSA FSA eligible" />
         <link rel="canonical" href="https://elevatedhealthaugusta.com/affordability" />
@@ -99,7 +102,7 @@ const Affordability = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground font-lato">
-                    We accept major insurance plans for qualifying services including SPRAVATO® and select consultations.
+                    We accept major insurance plans for qualifying services when we participate with your carrier. Coverage varies by plan and service.
                   </p>
                   <ul className="space-y-2">
                     <li className="flex items-start gap-2 text-sm text-foreground">
@@ -121,7 +124,7 @@ const Affordability = () => {
                   </ul>
                   <div className="pt-4 border-t border-border/50">
                     <p className="text-xs text-muted-foreground">
-                      SPRAVATO® often covered with prior authorization. We handle the paperwork.
+                      Benefits verification is available before you book when insurance may apply.
                     </p>
                   </div>
                 </CardContent>
@@ -165,41 +168,33 @@ const Affordability = () => {
                 </CardContent>
               </Card>
 
-              {/* Consultation Credits Card */}
+              {/* Wellness Assessment */}
               <Card className="border border-border/50 shadow-lg hover:shadow-xl transition-shadow">
                 <CardHeader className="pb-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                     <DollarSign className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle className="font-cormorant text-2xl text-foreground">$79 Assessment Credit</CardTitle>
+                  <CardTitle className="font-cormorant text-2xl text-foreground">{assessmentPrice} Wellness Assessment</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground font-lato">
-                    Your initial consultation fee becomes a credit toward your treatment—you never pay twice for getting started.
+                    Your first in-person visit is a flat {assessmentPrice} Wellness Assessment, paid when you book. Program
+                    pricing is quoted separately once your clinician confirms the right ELEVATED plan.
                   </p>
                   <ul className="space-y-2">
                     <li className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                      <span>$79 Wellness Assessment fee applies to next step</span>
+                      <span>RN intake and eligibility review at our Evans clinic</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                      <span>Reduces Hormone Mapping to $250</span>
+                      <span>Clear next-step pricing before you enroll in a program</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                      <span>Reduces Metabolic Mapping to $250</span>
-                    </li>
-                    <li className="flex items-start gap-2 text-sm text-foreground">
-                      <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                      <span>Unique credit code emailed after payment</span>
+                      <span>Receipt provided for HSA/FSA or reimbursement requests</span>
                     </li>
                   </ul>
-                  <div className="pt-4 border-t border-border/50">
-                    <p className="text-xs text-muted-foreground">
-                      Pay now for consultation, credit applies when you move forward.
-                    </p>
-                  </div>
                 </CardContent>
               </Card>
 
@@ -260,11 +255,11 @@ const Affordability = () => {
                     </li>
                     <li className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                      <span>$79 Wellness Assessments (credited forward)</span>
+                      <span>{assessmentPrice} Wellness Assessments (paid at booking)</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                      <span>$139 IV drips (no membership needed)</span>
+                      <span>Walk-in IV Lounge menu (see /iv-lounge)</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
@@ -301,7 +296,7 @@ const Affordability = () => {
                   className="rounded-full"
                 >
                   <Phone className="mr-2 h-4 w-4" />
-                  Call (706) 973-3866
+                  Call {SITE_CONFIG.phone}
                 </Button>
                 <Button 
                   variant="outline" 

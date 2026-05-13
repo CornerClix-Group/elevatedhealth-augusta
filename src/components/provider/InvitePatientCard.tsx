@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { supabase } from "@/integrations/supabase/client";
+import { SITE_CONFIG } from "@/lib/siteConfig";
 import { toast } from "sonner";
 import { Loader2, Mail, MessageSquare, UserPlus, Check, Calendar, Eye, Send } from "lucide-react";
 
@@ -95,7 +96,7 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
                 <p style="font-size: 14px; color: #7F8C8D; margin-top: 4px;">Consultation Fee • 30 Minutes</p>
               </div>
               
-              <p style="color: #4a5568; font-size: 14px;">This $79 becomes a credit toward your Hormone Mapping Kit if you decide to proceed with treatment.</p>
+              <p style="color: #4a5568; font-size: 14px;">This confirms your $79 Wellness Assessment. Baseline labs and program pricing are quoted separately if you enroll.</p>
               
               <div style="text-align: center; margin: 32px 0;">
                 <a href="#" style="display: inline-block; background: linear-gradient(135deg, #2C3E50 0%, #1a252f 100%); color: white; padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 600;">Complete Payment →</a>
@@ -130,7 +131,7 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
                 <li style="margin: 8px 0;">✓ 30-minute one-on-one with your provider</li>
                 <li style="margin: 8px 0;">✓ Complete symptom assessment</li>
                 <li style="margin: 8px 0;">✓ Personalized treatment path discussion</li>
-                <li style="margin: 8px 0;">✓ <strong>$79 credit toward your Hormone Mapping Kit</strong></li>
+                <li style="margin: 8px 0;">✓ <strong>Clear next-step pricing if you move forward</strong></li>
               </ul>
             </div>
             
@@ -158,7 +159,7 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
       return `Hi ${firstName}! 🏥 Please complete your $79 payment to confirm your ${serviceLabel} consultation on ${dateDisplay}. Pay here: [payment link] - Elevated Health Augusta`;
     }
     
-    return `Hi ${firstName}! 🌟 The clinical team at Elevated Health Augusta has invited you to book a $79 Wellness Assessment. Book here: [payment link] Questions? Call (706) 821-7354`;
+    return `Hi ${firstName}! 🌟 The clinical team at Elevated Health Augusta has invited you to book a $79 Wellness Assessment. Book here: [payment link] Questions? Call ${SITE_CONFIG.phone}`;
   };
 
   const handlePreview = (mode: "email" | "sms") => {
@@ -278,8 +279,8 @@ const InvitePatientCard = ({ onInviteSent, embedded = false }: InvitePatientCard
   const formContent = (
     <div className="space-y-4">
       <p className="text-xs text-muted-foreground">
-        Send a $79 Wellness Assessment invite. After payment, they'll schedule their consultation. 
-        The $79 becomes a credit toward their $250 Hormone Mapping Kit.
+        Send a $79 Wellness Assessment invite. After payment, they schedule their in-office visit. Labs and programs are
+        priced separately when clinically appropriate.
       </p>
       
       {/* Invite Type Selection */}

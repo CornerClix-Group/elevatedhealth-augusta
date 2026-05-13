@@ -114,7 +114,7 @@ const NewLabResultModal = ({
   // Lab Source Toggle
   const [labSource, setLabSource] = useState<"zrt" | "labcorp">("zrt");
   
-  // ZRT Saliva Labs (Primary)
+  // Legacy saliva labs (Primary)
   const [estradiol, setEstradiol] = useState("");
   const [progesterone, setProgesterone] = useState("");
   const [testosterone, setTestosterone] = useState("");
@@ -383,7 +383,7 @@ const NewLabResultModal = ({
           resetAndClose();
         }
       } else {
-        // ZRT Saliva Labs
+        // Legacy saliva labs
         const e2Value = estradiol ? parseFloat(estradiol) : null;
         const pgValue = progesterone ? parseFloat(progesterone) : null;
         const tValue = testosterone ? parseFloat(testosterone) : null;
@@ -651,7 +651,7 @@ const NewLabResultModal = ({
               </div>
             </div>
 
-            {/* ZRT Saliva Fields */}
+            {/* Legacy saliva result fields */}
             {labSource === "zrt" && (
               <>
                 {/* PDF Upload */}
@@ -675,7 +675,7 @@ const NewLabResultModal = ({
                 {/* ZRT Hormone Fields - Editable */}
                 <div className="space-y-3">
                   <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                    ZRT Saliva Profile III
+                    Legacy saliva panel (Profile III)
                     {parsedFromPdf && (
                       <Badge variant="secondary" className="ml-2 text-xs">Parsed from PDF</Badge>
                     )}

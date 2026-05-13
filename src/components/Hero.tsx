@@ -58,7 +58,7 @@ const Hero = () => {
             onClick={openBooking}
             className="bg-background text-foreground font-jost font-medium tracking-wide text-sm px-10 py-6 rounded-sm transition-all duration-300 hover:bg-background/90"
           >
-            Book a consultation
+            Book a $79 Wellness Assessment
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
 

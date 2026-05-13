@@ -13,7 +13,7 @@ const WhyUsCompare = () => {
 
   const comparisonPoints = [
     { feature: "Medication Approach", standard: "Generic GLP-1 Dosing", elevated: "FDA-Approved GLP-1s with Personalized Protocols" },
-    { feature: "Diagnostic Testing", standard: "Basic Weight Check", elevated: "ZRT Saliva Diagnostics + Hormone Panel" },
+    { feature: "Diagnostic Testing", standard: "Basic Weight Check", elevated: "In-office LabCorp labs + hormone panel" },
     { feature: "Consultations", standard: "15-Minute Med Refills", elevated: "Comprehensive Provider-Led Consultations" },
     { feature: "Root Cause Analysis", standard: "Symptom Treatment Only", elevated: "Hormone Blockers Identified & Addressed" },
     { feature: "Biological Approach", standard: "Calories In, Calories Out", elevated: "Cortisol, Estrogen, Testosterone Optimization" },
@@ -35,8 +35,8 @@ const WhyUsCompare = () => {
             We Test. <span className="text-primary">We Don't Guess.</span>
           </h2>
           <p className="text-lg text-muted-foreground font-inter leading-relaxed">
-            Most clinics prescribe blindly. We architect your protocol around your unique biology 
-            using advanced saliva diagnostics.
+            Most clinics prescribe blindly. We architect your protocol around your unique biology
+            using in-office blood work and physician-led review.
           </p>
         </div>
 

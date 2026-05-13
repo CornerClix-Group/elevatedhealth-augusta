@@ -8,16 +8,29 @@ import { ArrowRight } from "lucide-react";
 import { useBooking } from "@/contexts/BookingContext";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { isServiceActive } from "@/lib/serviceConfig";
+import {
+  CORE_SERVICES,
+  ELEVATED_PROGRAMS,
+  MEMBER_DISCOUNT_PERCENT,
+  PEPTIDE_PRODUCTS,
+  SEXUAL_WELLNESS_PRODUCTS,
+} from "@/lib/stripeConfig";
+import { EverythingIncludedPillars } from "@/components/marketing/EverythingIncludedPillars";
+import { MembershipComparison } from "@/components/marketing/MembershipComparison";
 
-// Display values — actual charges flow through Stripe via
-// create-consultation-checkout ($79) and the membership product.
-// Stack subscription Stripe Price IDs to be wired in a future prompt.
-const PRICE_CONSULT = "$79";
-const PRICE_PANEL_PEPTIDE = "$245";
-const PRICE_PANEL_PEPTIDE_MEMBER = "$195";
-const PRICE_MEMBERSHIP = "$199";
+const PRICE_CONSULT = CORE_SERVICES.wellnessAssessment.displayPrice;
+const PRICE_PANEL = CORE_SERVICES.comprehensivePanel.displayPrice;
+const PRICE_PROGRAM_WELLNESS = ELEVATED_PROGRAMS.wellness.displayPrice;
+
+const fmt = (cents: number) => `$${(cents / 100).toFixed(0)}`;
+const memberCents = (cents: number) => Math.round((cents * (100 - MEMBER_DISCOUNT_PERCENT)) / 100);
+const pairNonMember = (a: number, b: number) => `${fmt(a + b)}/mo`;
+const pairMember = (a: number, b: number) => `${fmt(memberCents(a) + memberCents(b))}/mo`;
 
 const TB500_AVAILABLE = isServiceActive("peptideTB500");
+
+/** IV Lounge walk-in reference until NAD infusion SKU is exported here (SOT IV menu). */
+const NAD_250_IV_LOUNGE_CENTS = 45000;
 
 type Stack = {
   name: string;
@@ -30,6 +43,11 @@ type Stack = {
   note: string;
 };
 
+const vitalityBaseNon = PEPTIDE_PRODUCTS.sermorelin.amount + PEPTIDE_PRODUCTS.nadInjection.amount;
+const vitalityBaseMember = memberCents(PEPTIDE_PRODUCTS.sermorelin.amount) + memberCents(PEPTIDE_PRODUCTS.nadInjection.amount);
+const vitalityIvNon = PEPTIDE_PRODUCTS.sermorelin.amount + NAD_250_IV_LOUNGE_CENTS;
+const vitalityIvMember = memberCents(PEPTIDE_PRODUCTS.sermorelin.amount) + memberCents(NAD_250_IV_LOUNGE_CENTS);
+
 const stacks: Stack[] = [
   {
     name: "The Restore Protocol",
@@ -39,8 +57,8 @@ const stacks: Stack[] = [
       "Optional: PT-141 / Oxytocin nasal spray for couples",
     ],
     bestFor: ["Low libido", "Arousal challenges", "Intimacy disconnect"],
-    priceMember: "$129/mo",
-    priceNonMember: "$179/mo",
+    priceMember: `${fmt(memberCents(SEXUAL_WELLNESS_PRODUCTS.pt141.amount))} + ${fmt(memberCents(SEXUAL_WELLNESS_PRODUCTS.oxytocin.amount))}/mo`,
+    priceNonMember: `${SEXUAL_WELLNESS_PRODUCTS.pt141.displayPrice} + ${SEXUAL_WELLNESS_PRODUCTS.oxytocin.displayPrice}/mo`,
     note: "PT-141 is FDA-approved as Vyleesi. Compounded alternative dosing available.",
   },
   {
@@ -51,15 +69,17 @@ const stacks: Stack[] = [
           "Pentadeca Arginate (PDA) oral capsules, daily",
           "TB-500 (Thymosin Beta-4) subcutaneous injection, weekly",
         ]
-      : [
-          "Pentadeca Arginate (PDA) oral capsules, daily",
-        ],
+      : ["Pentadeca Arginate (PDA) oral capsules, daily"],
     bestFor: ["Post-injury recovery", "Tendon & ligament healing", "Chronic inflammation", "Gut barrier integrity"],
-    priceMember: TB500_AVAILABLE ? "$249/mo" : "$149/mo",
-    priceNonMember: TB500_AVAILABLE ? "$329/mo" : "$199/mo",
+    priceMember: TB500_AVAILABLE
+      ? pairMember(PEPTIDE_PRODUCTS.cjc1295Ipamorelin.amount, PEPTIDE_PRODUCTS.nadInjection.amount)
+      : pairMember(PEPTIDE_PRODUCTS.ghkCuSublingual.amount, PEPTIDE_PRODUCTS.nadTroches.amount),
+    priceNonMember: TB500_AVAILABLE
+      ? pairNonMember(PEPTIDE_PRODUCTS.cjc1295Ipamorelin.amount, PEPTIDE_PRODUCTS.nadInjection.amount)
+      : pairNonMember(PEPTIDE_PRODUCTS.ghkCuSublingual.amount, PEPTIDE_PRODUCTS.nadTroches.amount),
     note: TB500_AVAILABLE
-      ? "PDA is the successor to BPC-157, available through legal compounding channels."
-      : "PDA is the successor to BPC-157. TB-500 temporarily unavailable pending pharmacy compliance review.",
+      ? "PDA is the successor to BPC-157, available through legal compounding channels. Posted totals use representative pharmacy-line items; your physician may substitute equivalents."
+      : "PDA is the successor to BPC-157. TB-500 temporarily unavailable pending pharmacy compliance review. Posted totals use representative pharmacy-line items.",
   },
   {
     name: "The Vitality Protocol",
@@ -69,29 +89,81 @@ const stacks: Stack[] = [
       "NAD+ subcutaneous take-home OR IV at the IV Lounge",
     ],
     bestFor: ["Low energy", "Cognitive dulling", "Poor sleep quality", "Age-related decline"],
-    priceMember: "$299/mo",
-    priceNonMember: "$399/mo",
+    priceMember: `${fmt(vitalityBaseMember)}/mo`,
+    priceNonMember: `${fmt(vitalityBaseNon)}/mo`,
     priceVariant: {
       label: "With monthly NAD+ IV at the lounge",
-      member: "$449/mo",
-      nonMember: "$599/mo",
+      member: `${fmt(vitalityIvMember)}/mo`,
+      nonMember: `${fmt(vitalityIvNon)}/mo`,
     },
-    note: "Sermorelin and NAD+ are well-established peptides with clear regulatory standing.",
+    note: "Sermorelin and NAD+ are well-established peptides with clear regulatory standing. IV add-on uses IV Lounge walk-in pricing reference.",
   },
 ];
 
 type AlaCarte = { name: string; desc: string; bestFor: string; priceMember: string; priceNonMember: string; note?: string };
 
 const alacarte: AlaCarte[] = [
-  { name: "Pentadeca Arginate (PDA)", desc: "Healing, anti-inflammatory.", bestFor: "Recovery · gut · inflammation", priceMember: "$99/mo", priceNonMember: "$129/mo" },
-  { name: "PT-141 (Bremelanotide)", desc: "Sexual wellness — for men and women.", bestFor: "Libido · desire", priceMember: "$99/mo", priceNonMember: "$129/mo" },
+  ...(
+    [
+      ["sermorelin", "GH support, sleep, recovery.", "Sleep · energy · body comp"],
+      ["cjc1295Ipamorelin", "Recovery-focused peptide support.", "Recovery · performance"],
+      ["tesamorelin", "Metabolic and body-composition support.", "Visceral fat · metabolic health"],
+      ["nadTroches", "Cellular energy support.", "Longevity · convenience"],
+      ["nadInjection", "Cellular energy, longevity.", "Longevity · home protocol"],
+      ["nadNasal", "Cellular energy, nasal delivery.", "Longevity · travel-friendly"],
+      ["ghkCuSublingual", "Skin, hair, collagen support.", "Skin · hair · collagen"],
+      ["ghkCuTopical", "Skin, hair, collagen support.", "Skin · hair · topical"],
+    ] as const
+  ).map(([key, desc, bestFor]) => {
+    const p = PEPTIDE_PRODUCTS[key];
+    return {
+      name: p.name,
+      desc,
+      bestFor,
+      priceMember: `${fmt(memberCents(p.amount))}/mo`,
+      priceNonMember: p.displayPrice,
+    };
+  }),
   ...(TB500_AVAILABLE
-    ? [{ name: "TB-500 (Thymosin Beta-4)", desc: "Tissue repair and recovery.", bestFor: "Tendon · ligament · muscle", priceMember: "$129/mo", priceNonMember: "$169/mo", note: "Subject to FCC compliance verification." } as AlaCarte]
+    ? ([
+        {
+          name: "TB-500 (Thymosin Beta-4)",
+          desc: "Tissue repair and recovery.",
+          bestFor: "Tendon · ligament · muscle",
+          priceMember: "—",
+          priceNonMember: "—",
+          note: "Subject to FCC compliance verification; priced at enrollment.",
+        },
+      ] as AlaCarte[])
     : []),
-  { name: "Sermorelin", desc: "GH support, sleep, recovery.", bestFor: "Sleep · energy · body comp", priceMember: "$179/mo", priceNonMember: "$229/mo" },
-  { name: "NAD+ subcutaneous (take-home)", desc: "Cellular energy, longevity.", bestFor: "Longevity · home protocol", priceMember: "$199/mo", priceNonMember: "$249/mo" },
-  { name: "NAD+ IV (at the IV Lounge)", desc: "Cellular energy infusion.", bestFor: "Longevity · clarity", priceMember: "$399/infusion", priceNonMember: "$450/infusion", note: "Booked at /iv-lounge" },
-  { name: "GHK-Cu topical cream", desc: "Skin, hair, collagen support.", bestFor: "Skin · hair · collagen", priceMember: "$79/mo", priceNonMember: "$99/mo" },
+  {
+    name: SEXUAL_WELLNESS_PRODUCTS.tadalafil.name,
+    desc: "Sexual wellness — men.",
+    bestFor: "Performance · confidence",
+    priceMember: `${fmt(memberCents(SEXUAL_WELLNESS_PRODUCTS.tadalafil.amount))}/mo`,
+    priceNonMember: SEXUAL_WELLNESS_PRODUCTS.tadalafil.displayPrice,
+  },
+  {
+    name: SEXUAL_WELLNESS_PRODUCTS.sildenafil.name,
+    desc: "Sexual wellness — men.",
+    bestFor: "Performance · confidence",
+    priceMember: `${fmt(memberCents(SEXUAL_WELLNESS_PRODUCTS.sildenafil.amount))}/mo`,
+    priceNonMember: SEXUAL_WELLNESS_PRODUCTS.sildenafil.displayPrice,
+  },
+  {
+    name: SEXUAL_WELLNESS_PRODUCTS.pt141.name,
+    desc: "Sexual wellness — for men and women.",
+    bestFor: "Libido · desire",
+    priceMember: fmt(memberCents(SEXUAL_WELLNESS_PRODUCTS.pt141.amount)),
+    priceNonMember: SEXUAL_WELLNESS_PRODUCTS.pt141.displayPrice,
+  },
+  {
+    name: SEXUAL_WELLNESS_PRODUCTS.oxytocin.name,
+    desc: "Bonding and intimacy support.",
+    bestFor: "Couples · connection",
+    priceMember: `${fmt(memberCents(SEXUAL_WELLNESS_PRODUCTS.oxytocin.amount))}/mo`,
+    priceNonMember: SEXUAL_WELLNESS_PRODUCTS.oxytocin.displayPrice,
+  },
 ];
 
 const symptoms = [
@@ -102,9 +174,13 @@ const symptoms = [
 
 const steps = [
   { n: "01", t: `Wellness Assessment (${PRICE_CONSULT})`, d: "Meet your physician. Walk through goals, current protocol/medications, history. About 45 minutes." },
-  { n: "02", t: "Targeted Lab Panel", d: `Foundation labs plus IGF-1 (for GH peptides) and hormone markers if relevant. ${PRICE_PANEL_PEPTIDE}–$345 / ${PRICE_PANEL_PEPTIDE_MEMBER}–$295 members.` },
+  {
+    n: "02",
+    t: "Targeted Lab Panel",
+    d: `Foundation labs plus IGF-1 (for GH peptides) and hormone markers if relevant. Common panels include ${CORE_SERVICES.comprehensivePanel.name} (${CORE_SERVICES.comprehensivePanel.displayPrice}) or ${CORE_SERVICES.expandedPanel.name} (${CORE_SERVICES.expandedPanel.displayPrice}) when ordered.`,
+  },
   { n: "03", t: "Custom Protocol", d: "Physician selects your stack or à la carte peptides, designs dosing, sends Rx to FCC. Compounded for you and shipped refrigerated (5-day fulfillment)." },
-  { n: "04", t: "Self-Administer or In-Clinic", d: "Most peptides are subcutaneous self-injection at home — Caroline trains you in 15 minutes. Or come in weekly with membership for in-clinic administration." },
+  { n: "04", t: "Self-Administer or In-Clinic", d: "Most peptides are subcutaneous self-injection at home — Caroline trains you in 15 minutes. Or come in weekly with your ELEVATED program for in-clinic administration." },
 ];
 
 const faqs = [
@@ -145,7 +221,7 @@ const PeptideTherapy = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button onClick={openBooking} size="lg" className="font-jost tracking-wide">
-                  Book your {PRICE_CONSULT} consultation <ArrowRight className="ml-2 h-4 w-4" />
+                  Book your {PRICE_CONSULT} Wellness Assessment <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
                 <Button asChild variant="link" size="lg" className="font-jost tracking-wide text-foreground">
                   <a href="#stacks">Explore the protocols ↓</a>
@@ -154,14 +230,29 @@ const PeptideTherapy = () => {
             </div>
           </section>
 
+          <section className="py-16 md:py-24 bg-muted/20 border-y border-border">
+            <div className="container mx-auto px-6 lg:px-8 max-w-5xl space-y-10">
+              <EverythingIncludedPillars intro="Pair peptide therapy with ELEVATED WELLNESS for 20% off eligible à la carte items and bundled clinical access." />
+              <MembershipComparison program="wellness" />
+            </div>
+          </section>
+
           {/* 2. Pricing Strip (Pattern B) */}
           <section className="py-16 md:py-20 bg-background border-y border-border">
             <div className="container mx-auto px-6 lg:px-8 max-w-5xl">
               <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
                 {[
-                  { l: "Initial Consultation", p: PRICE_CONSULT, sub: "credited toward your protocol" },
-                  { l: "Peptide Lab Panel", p: `from ${PRICE_PANEL_PEPTIDE}`, sub: `members from ${PRICE_PANEL_PEPTIDE_MEMBER}` },
-                  { l: "Elevated Membership", p: `${PRICE_MEMBERSHIP}/mo`, sub: "supplies, weekly visits, member labs" },
+                  { l: "Wellness Assessment", p: PRICE_CONSULT, sub: "RN intake, in-person at Evans" },
+                  {
+                    l: CORE_SERVICES.comprehensivePanel.name,
+                    p: PRICE_PANEL,
+                    sub: `or ${CORE_SERVICES.expandedPanel.name} (${CORE_SERVICES.expandedPanel.displayPrice}) when expanded markers are ordered`,
+                  },
+                  {
+                    l: ELEVATED_PROGRAMS.wellness.name,
+                    p: PRICE_PROGRAM_WELLNESS,
+                    sub: "20% off eligible à la carte IV, peptide, and injectable services",
+                  },
                 ].map((c) => (
                   <div key={c.l} className="px-6 py-8 md:py-4 text-center">
                     <p className="section-label mb-3">{c.l}</p>
@@ -345,23 +436,23 @@ const PeptideTherapy = () => {
                   <p className="section-label mb-4">One-time</p>
                   <div className="space-y-3 font-jost text-foreground">
                     <div className="flex justify-between border-b border-border/60 pb-3"><span>Initial Wellness Assessment</span><span className="font-medium">{PRICE_CONSULT}</span></div>
-                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Peptide Lab Panel<br /><span className="font-light text-sm text-muted-foreground">depends on which markers your physician orders</span></span><span className="font-medium whitespace-nowrap text-right">{PRICE_PANEL_PEPTIDE}–$345<br /><span className="font-light text-xs">Member {PRICE_PANEL_PEPTIDE_MEMBER}–$295</span></span></div>
+                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Peptide Lab Panel<br /><span className="font-light text-sm text-muted-foreground">depends on which markers your physician orders</span></span><span className="font-medium whitespace-nowrap text-right">{CORE_SERVICES.comprehensivePanel.displayPrice} or {CORE_SERVICES.expandedPanel.displayPrice}</span></div>
                   </div>
                 </div>
 
                 <div>
                   <p className="section-label mb-4">Ongoing (depends on protocol)</p>
                   <div className="space-y-3 font-jost text-foreground">
-                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Elevated Membership<br /><span className="font-light text-sm text-muted-foreground">visits, supplies, member-rate labs</span></span><span className="font-medium whitespace-nowrap">{PRICE_MEMBERSHIP}/mo</span></div>
-                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Restore Protocol</span><span className="font-medium whitespace-nowrap">$129–179/mo</span></div>
-                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Healing Protocol</span><span className="font-medium whitespace-nowrap">{TB500_AVAILABLE ? "$249–329/mo" : "$149–199/mo"}</span></div>
-                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Vitality Protocol<br /><span className="font-light text-sm text-muted-foreground">depending on NAD+ delivery</span></span><span className="font-medium whitespace-nowrap">$299–599/mo</span></div>
-                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Individual peptides</span><span className="font-medium whitespace-nowrap">$79–249/mo each</span></div>
+                    <div className="flex justify-between border-b border-border/60 pb-3"><span>{ELEVATED_PROGRAMS.wellness.name}<br /><span className="font-light text-sm text-muted-foreground">preferred pathway for peptide patients needing bundled access</span></span><span className="font-medium whitespace-nowrap">{PRICE_PROGRAM_WELLNESS}</span></div>
+                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Restore Protocol</span><span className="font-medium whitespace-nowrap">{stacks[0].priceNonMember}</span></div>
+                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Healing Protocol</span><span className="font-medium whitespace-nowrap">{stacks[1].priceNonMember}</span></div>
+                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Vitality Protocol<br /><span className="font-light text-sm text-muted-foreground">depending on NAD+ delivery</span></span><span className="font-medium whitespace-nowrap">{stacks[2].priceNonMember}</span></div>
+                    <div className="flex justify-between border-b border-border/60 pb-3"><span>Individual peptides (à la carte)</span><span className="font-medium whitespace-nowrap">See catalog below</span></div>
                   </div>
                 </div>
 
                 <div className="bg-muted/30 border border-border p-6 space-y-2 font-jost text-sm">
-                  <div className="flex justify-between"><span className="text-muted-foreground">Typical first month (consult + labs + first month protocol + membership)</span><span className="font-medium text-foreground whitespace-nowrap">~$523–823 / $473–723 mbrs</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Typical first month (assessment + labs + first month protocol + program)</span><span className="font-medium text-foreground whitespace-nowrap text-right">Varies by protocol — priced at checkout</span></div>
                 </div>
               </div>
             </div>
@@ -391,7 +482,7 @@ const PeptideTherapy = () => {
               </h2>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button onClick={openBooking} size="lg" className="font-jost tracking-wide">
-                  Book your {PRICE_CONSULT} consultation
+                  Book your {PRICE_CONSULT} Wellness Assessment
                 </Button>
                 <Button asChild variant="outline" size="lg" className="font-jost tracking-wide">
                   <a href={`tel:${SITE_CONFIG.phoneRaw}`}>Or call {SITE_CONFIG.phone}</a>

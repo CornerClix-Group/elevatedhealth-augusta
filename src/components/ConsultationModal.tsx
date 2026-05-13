@@ -218,8 +218,8 @@ const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
         </div>
 
         <p className="text-[10px] text-muted-foreground text-center mt-4 max-w-md mx-auto font-jost">
-          The $79 Wellness Assessment fee is non-refundable. If you move forward with treatment, 
-          this fee is applied as a credit toward your first service.
+          The $79 Wellness Assessment fee is non-refundable. Onboarding labs and program memberships
+          are priced separately and quoted before you enroll.
         </p>
 
         <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground font-jost">

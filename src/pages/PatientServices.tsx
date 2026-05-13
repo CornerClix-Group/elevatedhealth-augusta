@@ -10,6 +10,7 @@ import WelcomeIntake from "@/components/patient/WelcomeIntake";
 import SafetyGate from "@/components/patient/SafetyGate";
 import OAuthOnboarding from "@/components/patient/OAuthOnboarding";
 import { usePatient, useInvalidatePatientData } from "@/hooks/usePatient";
+import { EverythingIncludedPillars } from "@/components/marketing/EverythingIncludedPillars";
 
 interface Service {
   id: string;
@@ -214,6 +215,10 @@ const PatientServices = () => {
       />
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="mb-8">
+          <EverythingIncludedPillars intro="When you are on an ELEVATED program, your care team bundles clinical access the same way we describe on our public site — ask us any time how your plan maps to these pillars." />
+        </div>
+
         {/* Welcome Header */}
         <div className="text-center mb-8">
           <p className="text-sm text-muted-foreground uppercase tracking-widest mb-1">Welcome back</p>

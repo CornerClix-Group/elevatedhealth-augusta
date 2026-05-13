@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/accordion";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { useBooking } from "@/contexts/BookingContext";
+import { EverythingIncludedPillars } from "@/components/marketing/EverythingIncludedPillars";
+import { CORE_SERVICES, ELEVATED_PROGRAMS, MEDICATION_FILLS, MEMBER_DISCOUNT_PERCENT } from "@/lib/stripeConfig";
 import {
   Check,
   Star,
@@ -88,31 +90,75 @@ const Pricing = () => {
     return activeCategory === "all" || activeCategory === category;
   };
 
+  const structuredOfferCatalog = {
+    "@type": "OfferCatalog" as const,
+    name: "Elevated Health Augusta Services",
+    itemListElement: [
+      ...Object.values(ELEVATED_PROGRAMS).map((p) => ({
+        "@type": "Offer" as const,
+        itemOffered: {
+          "@type": "Service" as const,
+          name: p.name,
+          description: "Monthly ELEVATED program membership",
+        },
+        price: String(p.amount / 100),
+        priceCurrency: "USD",
+      })),
+      {
+        "@type": "Offer" as const,
+        itemOffered: {
+          "@type": "MedicalProcedure" as const,
+          name: CORE_SERVICES.wellnessAssessment.name,
+        },
+        price: String(CORE_SERVICES.wellnessAssessment.amount / 100),
+        priceCurrency: "USD",
+      },
+      {
+        "@type": "Offer" as const,
+        itemOffered: {
+          "@type": "MedicalProcedure" as const,
+          name: CORE_SERVICES.comprehensivePanel.name,
+        },
+        price: String(CORE_SERVICES.comprehensivePanel.amount / 100),
+        priceCurrency: "USD",
+      },
+      {
+        "@type": "Offer" as const,
+        itemOffered: {
+          "@type": "MedicalProcedure" as const,
+          name: CORE_SERVICES.expandedPanel.name,
+        },
+        price: String(CORE_SERVICES.expandedPanel.amount / 100),
+        priceCurrency: "USD",
+      },
+    ],
+  };
+
   return (
     <>
       <Helmet>
         <title>Pricing - Transparent Healthcare Pricing | Elevated Health Augusta</title>
         <meta
           name="description"
-          content="Transparent pricing for all services. $79 Wellness Assessment credited toward treatment. Chat with our Virtual Care Team 24/7. Memberships and à la carte options available."
+          content="Transparent pricing for Elevated Health Augusta. $79 Wellness Assessment entry. ELEVATED TRT, HRT, GLP-1, and Wellness memberships with medication included where prescribed."
         />
         <meta
           name="keywords"
-          content="ketamine therapy pricing Augusta, weight loss program cost, hormone therapy pricing, IV therapy prices, medical spa pricing Georgia"
+          content="wellness pricing Evans GA, hormone therapy pricing, medical weight loss cost, IV therapy prices, transparent healthcare pricing"
         />
         <link rel="canonical" href="https://elevatedhealthaugusta.com/pricing" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Transparent Healthcare Pricing | $79 Assessment Credited | Elevated Health Augusta" />
-        <meta property="og:description" content="Transparent pricing for all services. $79 Wellness Assessment credited toward treatment. Chat with our Virtual Care Team 24/7." />
+        <meta property="og:title" content="Transparent Healthcare Pricing | Elevated Health Augusta" />
+        <meta property="og:description" content="Transparent pricing. $79 Wellness Assessment. ELEVATED program memberships with Everything Included messaging." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://elevatedhealthaugusta.com/pricing" />
         <meta property="og:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Healthcare Pricing | $79 Assessment Credited" />
-        <meta name="twitter:description" content="Transparent pricing. $79 Wellness Assessment credited toward treatment. Chat with our Virtual Care Team 24/7." />
+        <meta name="twitter:title" content="Healthcare Pricing | Elevated Health Augusta" />
+        <meta name="twitter:description" content="Transparent pricing. $79 Wellness Assessment. ELEVATED memberships." />
         <meta name="twitter:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
         
         {/* FAQ Schema for Rich Snippets */}
@@ -126,66 +172,42 @@ const Pricing = () => {
                 "name": "Can I switch between programs?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Absolutely! Your health journey may evolve, and we're here to adapt with you. You can upgrade, downgrade, or switch programs at any time. Just message your provider and we'll adjust your plan—no penalties or waiting periods."
-                }
+                  "text": "Your health journey may evolve. You can discuss changing ELEVATED programs with your care team; terms depend on your active subscription and clinical appropriateness.",
+                },
               },
               {
                 "@type": "Question",
                 "name": "What if I need to pause my membership?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Life happens. You can pause your membership for up to 3 months without losing your rate or benefits. When you're ready to resume, everything picks up right where you left off."
-                }
+                  "text": "Memberships are month-to-month with cancellation notice per your patient agreement. Ask the front office about pausing if your circumstances change.",
+                },
               },
               {
                 "@type": "Question",
                 "name": "Do you offer payment plans?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Yes! We've partnered with Klarna and Affirm to offer flexible financing options. At checkout, you can choose to split your payment into 4 interest-free installments or select monthly financing up to 36 months. Approval takes seconds and won't affect your credit score for the soft check. We also accept HSA/FSA cards for most services."
-                }
+                  "text": "We partner with Klarna and Affirm for eligible purchases at checkout. HSA and FSA cards may be used for many services; patients may also submit superbills for potential reimbursement.",
+                },
               },
               {
                 "@type": "Question",
                 "name": "Is any of this covered by insurance?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "SPRAVATO® (esketamine) is typically covered by most major insurance plans including BCBS and TRICARE. We verify your benefits before treatment. For other services, we provide detailed superbills for potential out-of-network reimbursement. Many HSA/FSA plans cover our treatments."
-                }
+                  "text": "Elevated Health Augusta is a cash-pay practice. We provide documentation so patients may self-submit to insurance or use HSA/FSA where permitted.",
+                },
               },
               {
                 "@type": "Question",
-                "name": "What's included in the membership vs. paying per visit?",
+                "name": "What is included in an ELEVATED membership?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Memberships include medication, quarterly lab testing, unlimited provider messaging, weekly check-ins, and priority scheduling. Per-visit pricing covers just that single service. Most patients save 30-40% annually with membership compared to à la carte pricing."
-                }
+                  "text": "ELEVATED program memberships include monthly medication where applicable to the program, monthly RN check-in, free quarterly labs at the clinic, clinically appropriate lab review and protocol adjustments, and unlimited messaging—one transparent monthly price. Initial Wellness Assessment and baseline labs are separate one-time onboarding fees.",
+                },
               },
-              {
-                "@type": "Question",
-                "name": "How much does ketamine therapy cost in Augusta, GA?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "At Elevated Health Augusta, IV ketamine therapy is $400 per session, or $2,200 for a 6-session series (saving $200). SPRAVATO® (esketamine) is often covered by insurance with $0-50 copays. We also offer an optional Neurotransmitter Analysis for $399 to optimize your treatment."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "What is the cheapest way to get started at Elevated Health Augusta?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "The most affordable entry point is chatting with our Virtual Care Team—available 24/7 to answer questions about pricing, insurance, and logistics. When you're ready for personalized medical guidance, our $79 Wellness Assessment provides a comprehensive clinical assessment and the fee is credited toward your first treatment."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Can I use my HSA or FSA for treatment?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes! Most of our services qualify for HSA (Health Savings Account) and FSA (Flexible Spending Account) payment. This includes ketamine therapy, hormone optimization, medical weight loss, and peptide therapy. We provide all necessary documentation for your records."
-                }
-              }
-            ]
+            ],
           })}
         </script>
 
@@ -194,83 +216,16 @@ const Pricing = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "MedicalBusiness",
-            "name": SITE_CONFIG.clinicName,
-            "address": {
+            name: SITE_CONFIG.clinicName,
+            address: {
               "@type": "PostalAddress",
-              "streetAddress": SITE_CONFIG.address.line1,
-              "addressLocality": "Evans",
-              "addressRegion": "GA",
-              "postalCode": "30809"
+              streetAddress: SITE_CONFIG.address.line1,
+              addressLocality: "Evans",
+              addressRegion: "GA",
+              postalCode: "30809",
             },
-            "telephone": SITE_CONFIG.phone,
-            "hasOfferCatalog": {
-              "@type": "OfferCatalog",
-              "name": "Healthcare Services",
-              "itemListElement": [
-                {
-                  "@type": "Offer",
-                  "itemOffered": {
-                    "@type": "MedicalProcedure",
-                    "name": "IV Ketamine Therapy Session",
-                    "procedureType": "Therapeutic"
-                  },
-                  "price": "400",
-                  "priceCurrency": "USD",
-                  "priceValidUntil": "2025-12-31"
-                },
-                {
-                  "@type": "Offer",
-                  "itemOffered": {
-                    "@type": "MedicalProcedure",
-                    "name": "6-Session Ketamine Series",
-                    "procedureType": "Therapeutic"
-                  },
-                  "price": "2200",
-                  "priceCurrency": "USD",
-                  "priceValidUntil": "2025-12-31"
-                },
-                {
-                  "@type": "Offer",
-                  "itemOffered": {
-                    "@type": "Service",
-                    "name": "Metabolic Reset Program (Monthly)",
-                    "description": "Medical weight loss with GLP-1 medication and provider support"
-                  },
-                  "price": "399",
-                  "priceCurrency": "USD"
-                },
-                {
-                  "@type": "Offer",
-                  "itemOffered": {
-                    "@type": "Service",
-                    "name": "Hormone Concierge Membership (Monthly)",
-                    "description": "Complete hormone optimization with testing and medication"
-                  },
-                  "price": "399",
-                  "priceCurrency": "USD"
-                },
-                {
-                  "@type": "Offer",
-                  "itemOffered": {
-                    "@type": "Service",
-                    "name": "Vitality Membership (Monthly)",
-                    "description": "Hormone optimization without GLP-1 medication"
-                  },
-                  "price": "249",
-                  "priceCurrency": "USD"
-                },
-                {
-                  "@type": "Offer",
-                  "itemOffered": {
-                    "@type": "Service",
-                    "name": "Hormone Mapping Experience",
-                    "description": "Comprehensive hormone testing and protocol design"
-                  },
-                  "price": "349",
-                  "priceCurrency": "USD"
-                }
-              ]
-            }
+            telephone: SITE_CONFIG.phone,
+            hasOfferCatalog: structuredOfferCatalog,
           })}
         </script>
       </Helmet>
@@ -341,164 +296,74 @@ const Pricing = () => {
           </div>
         </section>
 
-        {/* Mental Wellness / Ketamine Section - Reduced padding */}
+        <section className="py-14 bg-muted/10 border-y border-border">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <EverythingIncludedPillars className="border-0 bg-transparent shadow-none mb-12" />
+            <div className="text-center mb-10">
+              <p className="section-label mb-2">ELEVATED Programs</p>
+              <h2 className="font-playfair text-3xl md:text-4xl text-foreground mb-3">
+                One monthly price. Everything that matters.
+              </h2>
+              <p className="text-muted-foreground font-jost text-sm max-w-2xl mx-auto leading-relaxed">
+                Every new patient starts with a {CORE_SERVICES.wellnessAssessment.displayPrice}{" "}
+                {CORE_SERVICES.wellnessAssessment.name.toLowerCase()} and baseline labs (
+                {CORE_SERVICES.comprehensivePanel.displayPrice} comprehensive panel, or{" "}
+                {CORE_SERVICES.expandedPanel.displayPrice} expanded when clinically indicated). Then
+                enroll in the ELEVATED program that matches your care plan.
+              </p>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {(
+                [
+                  ["trt", "/hormones-men"],
+                  ["hrt", "/hormones-women"],
+                  ["glp1", "/weightloss"],
+                  ["wellness", "/membership"],
+                ] as const
+              ).map(([key, href]) => {
+                const p = ELEVATED_PROGRAMS[key];
+                return (
+                  <Card key={key} className="border-border flex flex-col">
+                    <CardHeader className="pb-2">
+                      <h3 className="font-playfair text-xl text-foreground">{p.name}</h3>
+                    </CardHeader>
+                    <CardContent className="flex flex-col flex-grow pt-0">
+                      <p className="text-3xl font-playfair text-foreground mb-4">{p.displayPrice}</p>
+                      <p className="text-xs text-muted-foreground font-jost flex-grow mb-4 leading-relaxed">
+                        Medication included where prescribed, monthly RN check-in, quarterly labs,
+                        lab review when needed, unlimited messaging.
+                      </p>
+                      <Button variant="outline" asChild className="mt-auto rounded-full">
+                        <Link to={href}>View program</Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Mental Wellness — no ketamine / esketamine services offered (Phase 3 may expand) */}
         {shouldShow("mental") && (
           <section className="py-12 lg:py-16 bg-background">
-            <div className="container mx-auto px-4">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-12 h-12 rounded-full bg-hope/10 flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-hope" />
-                </div>
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-cormorant text-foreground">
-                    Mental Wellness & Ketamine Therapy
-                  </h2>
-                  <p className="text-muted-foreground font-lato text-sm">
-                    Breakthrough treatments for depression, anxiety & PTSD
-                  </p>
-                </div>
+            <div className="container mx-auto px-4 max-w-3xl text-center">
+              <div className="w-12 h-12 rounded-full bg-hope/10 flex items-center justify-center mx-auto mb-6">
+                <Brain className="w-6 h-6 text-hope" />
               </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Single Session */}
-                <Card className="border border-border hover:border-gold/30 transition-all duration-300 hover:shadow-lg flex flex-col">
-                  <CardHeader className="pb-4">
-                    <Badge variant="outline" className="w-fit mb-2 text-muted-foreground">
-                      Try First
-                    </Badge>
-                    <h3 className="text-xl font-cormorant text-foreground">IV Ketamine Session</h3>
-                    <p className="text-sm text-muted-foreground font-lato">
-                      Single infusion with provider monitoring
-                    </p>
-                  </CardHeader>
-                  <CardContent className="flex flex-col flex-grow">
-                    <div className="mb-2">
-                      <span className="text-4xl font-cormorant text-foreground">$400</span>
-                      <span className="text-muted-foreground font-lato">/session</span>
-                    </div>
-                    <p className="text-xs text-gold font-lato mb-4">
-                      or 4 payments of $100 with Klarna
-                    </p>
-                    <ul className="space-y-2 mb-6 flex-grow">
-                      <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                        <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                        60-90 minute monitored infusion
-                      </li>
-                      <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                        <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                        Private treatment suite
-                      </li>
-                      <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                        <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                        Board-certified provider supervision
-                      </li>
-                    </ul>
-                    <Button variant="outline" className="w-full mt-auto" onClick={openBooking}>
-                      Book Session
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                {/* 6-Session Series */}
-                <Card className="border-2 border-gold/50 relative hover:shadow-lg transition-all duration-300 flex flex-col">
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <Badge className="bg-gold text-gold-foreground">
-                      <Star className="w-3 h-3 mr-1" /> Best Value
-                    </Badge>
-                  </div>
-                  <CardHeader className="pb-4">
-                    <Badge variant="outline" className="w-fit mb-2 text-gold border-gold/30">
-                      Save $200
-                    </Badge>
-                    <h3 className="text-xl font-cormorant text-foreground">6-Session Series</h3>
-                    <p className="text-sm text-muted-foreground font-lato">
-                      Complete induction protocol
-                    </p>
-                  </CardHeader>
-                  <CardContent className="flex flex-col flex-grow">
-                    <div className="mb-2">
-                      <span className="text-4xl font-cormorant text-foreground">$2,200</span>
-                      <span className="text-muted-foreground font-lato ml-2 line-through text-sm">$2,400</span>
-                    </div>
-                    <p className="text-xs text-gold font-lato mb-4">
-                      or ~$183/mo for 12 months with Affirm
-                    </p>
-                    <ul className="space-y-2 mb-6 flex-grow">
-                      <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                        <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                        6 infusions over 2-3 weeks
-                      </li>
-                      <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                        <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                        Optimized dosing protocol
-                      </li>
-                      <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                        <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                        Integration support included
-                      </li>
-                      <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                        <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                        Maintenance session discount
-                      </li>
-                    </ul>
-                    <Button className="w-full bg-gold hover:bg-gold-dark text-gold-foreground mt-auto" onClick={openBooking}>
-                      Start Treatment
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                {/* SPRAVATO */}
-                <Card className="border border-border hover:border-gold/30 transition-all duration-300 hover:shadow-lg flex flex-col">
-                  <CardHeader className="pb-4">
-                    <Badge variant="outline" className="w-fit mb-2 text-hope border-hope/30">
-                      Insurance Covered
-                    </Badge>
-                    <h3 className="text-xl font-cormorant text-foreground">SPRAVATO® (Esketamine)</h3>
-                    <p className="text-sm text-muted-foreground font-lato">
-                      FDA-approved nasal spray treatment
-                    </p>
-                  </CardHeader>
-                  <CardContent className="flex flex-col flex-grow">
-                    <div className="mb-4">
-                      <span className="text-2xl font-cormorant text-foreground">Often $0-50</span>
-                      <span className="text-muted-foreground font-lato text-sm block">with insurance coverage</span>
-                    </div>
-                    <ul className="space-y-2 mb-6 flex-grow">
-                      <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                        <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                        BCBS, TRICARE & most major plans
-                      </li>
-                      <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                        <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                        We verify your benefits for you
-                      </li>
-                      <li className="flex items-start gap-2 text-sm font-lato text-muted-foreground">
-                        <Check className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
-                        REMS-certified administration
-                      </li>
-                    </ul>
-                    <Button variant="outline" className="w-full mt-auto" onClick={openBooking}>
-                      Check Coverage
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Optional Add-on */}
-              <div className="mt-8 p-6 bg-secondary/50 rounded-xl border border-border">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div>
-                    <h4 className="font-cormorant text-lg text-foreground">Neurotransmitter Analysis</h4>
-                    <p className="text-sm text-muted-foreground font-lato">
-                      Advanced urine analysis measuring Serotonin, Dopamine & GABA levels
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-2xl font-cormorant text-foreground">$399</span>
-                    <Badge variant="outline">Optional Add-on</Badge>
-                  </div>
-                </div>
-              </div>
+              <h2 className="text-2xl md:text-3xl font-cormorant text-foreground mb-4">
+                Mental wellness
+              </h2>
+              <p className="text-muted-foreground font-lato text-sm leading-relaxed">
+                IV ketamine and SPRAVATO® (esketamine) are not offered at Elevated Health Augusta. If
+                you are working with depression or anxiety, our clinicians can discuss evidence-based
+                options within our active service lines—such as medical weight loss, hormone
+                optimization, IV hydration, and primary care coordination. Call{" "}
+                <a className="text-accent underline-offset-4 hover:underline" href={`tel:+1${SITE_CONFIG.phoneRaw}`}>
+                  {SITE_CONFIG.phone}
+                </a>{" "}
+                to learn more.
+              </p>
             </div>
           </section>
         )}
@@ -542,14 +407,18 @@ const Pricing = () => {
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                           <div>
                             <h3 className="text-xl font-cormorant text-slate-900 mb-2">
-                              Provider Strategy Session
+                              {CORE_SERVICES.wellnessAssessment.name}
                             </h3>
                             <p className="text-slate-600 font-lato text-sm leading-relaxed">
-                              Skip the waiting room. Meet directly with your provider to review your medical history and determine eligibility. The $79 fee is credited toward your first treatment.
+                              Meet with our clinical team for an in-office intake. The{" "}
+                              {CORE_SERVICES.wellnessAssessment.displayPrice} fee covers your visit;
+                              labs and program enrollment are priced separately and shown upfront.
                             </p>
                           </div>
                           <div className="text-right flex-shrink-0">
-                            <span className="text-3xl font-cormorant text-slate-900">$79</span>
+                            <span className="text-3xl font-cormorant text-slate-900">
+                              {CORE_SERVICES.wellnessAssessment.displayPrice}
+                            </span>
                             <span className="block text-xs text-slate-500 font-lato">one-time</span>
                           </div>
                         </div>
@@ -557,7 +426,7 @@ const Pricing = () => {
                           className="mt-6 bg-amber-600 hover:bg-amber-700 text-white rounded-full px-8"
                           onClick={openBooking}
                         >
-                          Book Strategy Session
+                          Book {CORE_SERVICES.wellnessAssessment.displayPrice} Wellness Assessment
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
                       </div>
@@ -735,7 +604,7 @@ const Pricing = () => {
               {/* Vertical Stepper - Linear Journey */}
               <div className="max-w-2xl mx-auto">
                 <div className="relative">
-                  {/* STEP 1 - Provider Strategy Session */}
+                  {/* STEP 1 - Wellness Assessment */}
                   <Card className="relative bg-white rounded-2xl border border-slate-200 p-8 shadow-sm hover:shadow-md transition-all">
                     <div className="flex items-start gap-6">
                       <div className="flex flex-col items-center">
@@ -750,14 +619,16 @@ const Pricing = () => {
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                           <div>
                             <h3 className="text-xl font-cormorant text-slate-900 mb-1">
-                              Provider Strategy Session
+                              {CORE_SERVICES.wellnessAssessment.name}
                             </h3>
                             <p className="text-sm text-slate-600 font-lato leading-relaxed">
-                              Meet with your provider to review your symptoms, medical history, and treatment goals.
+                              In-office visit with our RN to review symptoms, history, and goals.
                             </p>
                           </div>
                           <div className="text-right shrink-0">
-                            <span className="text-3xl font-cormorant text-slate-900">$79</span>
+                            <span className="text-3xl font-cormorant text-slate-900">
+                              {CORE_SERVICES.wellnessAssessment.displayPrice}
+                            </span>
                             <p className="text-xs text-slate-500 font-lato">one-time</p>
                           </div>
                         </div>
@@ -767,7 +638,7 @@ const Pricing = () => {
                             className="bg-amber-600 hover:bg-amber-700 text-white font-lato rounded-full px-6"
                             onClick={openBooking}
                           >
-                            Book Strategy Session
+                            Book {CORE_SERVICES.wellnessAssessment.displayPrice} Wellness Assessment
                             <ArrowRight className="w-4 h-4 ml-2" />
                           </Button>
                         </div>
@@ -780,7 +651,7 @@ const Pricing = () => {
                     <div className="w-0.5 h-8 bg-gradient-to-b from-amber-500 to-slate-300" />
                   </div>
 
-                  {/* STEP 2 - Hormone Mapping */}
+                  {/* STEP 2 - Baseline labs */}
                   <Card className="relative bg-white rounded-2xl border border-slate-200 p-8 shadow-sm opacity-90">
                     <div className="flex items-start gap-6">
                       <div className="flex flex-col items-center">
@@ -795,20 +666,19 @@ const Pricing = () => {
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                           <div>
                             <h3 className="text-xl font-cormorant text-slate-900 mb-1">
-                              Hormone Mapping Panel
+                              {CORE_SERVICES.comprehensivePanel.name}
                             </h3>
                             <p className="text-sm text-slate-600 font-lato leading-relaxed">
-                              ZRT Saliva Profile III — Comprehensive at-home saliva test covering Estradiol, Testosterone, Progesterone, DHEA-S & Cortisol. Includes follow-up consultation after results return to review findings and design your custom protocol.
+                              Blood draw in our Evans office; processed through LabCorp. Expanded panels
+                              available when clinically indicated ({CORE_SERVICES.expandedPanel.displayPrice}).
                             </p>
                           </div>
                           <div className="text-right shrink-0">
-                            <span className="text-3xl font-cormorant text-slate-900">$250</span>
-                            <p className="text-xs text-slate-500 font-lato">one-time</p>
+                            <span className="text-3xl font-cormorant text-slate-900">
+                              {CORE_SERVICES.comprehensivePanel.displayPrice}
+                            </span>
+                            <p className="text-xs text-slate-500 font-lato">typical baseline</p>
                           </div>
-                        </div>
-                        <div className="mt-4 flex items-center gap-2 text-slate-500">
-                          <Activity className="w-5 h-5 stroke-[1.5]" />
-                          <span className="text-xs font-lato">Includes follow-up consultation after results return</span>
                         </div>
                       </div>
                     </div>
@@ -819,7 +689,7 @@ const Pricing = () => {
                     <div className="w-0.5 h-8 bg-gradient-to-b from-slate-300 to-amber-500" />
                   </div>
 
-                  {/* STEP 3 - Membership */}
+                  {/* STEP 3 - ELEVATED programs */}
                   <Card className="relative bg-white rounded-2xl border-2 border-amber-500 p-8 shadow-lg">
                     <div className="flex items-start gap-6">
                       <div className="flex flex-col items-center">
@@ -829,30 +699,36 @@ const Pricing = () => {
                       </div>
                       <div className="flex-1">
                         <Badge className="mb-3 bg-amber-100 text-amber-800 hover:bg-amber-100 font-lato text-xs">
-                          Step 3: Treatment
+                          Step 3: ELEVATED membership
                         </Badge>
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                           <div>
                             <h3 className="text-xl font-cormorant text-slate-900 mb-1">
-                              Vitality Membership
+                              {ELEVATED_PROGRAMS.trt.name} / {ELEVATED_PROGRAMS.hrt.name}
                             </h3>
                             <p className="text-sm text-slate-600 font-lato leading-relaxed">
-                              Once medically cleared, unlock ongoing hormone optimization. Includes quarterly ZRT testing, $50/month medication credit, and unlimited provider messaging.
+                              Program memberships include hormone therapy where prescribed, monthly RN
+                              check-ins, quarterly labs, clinically appropriate physician review, and
+                              unlimited messaging—see men&apos;s and women&apos;s program pages for
+                              details.
                             </p>
                           </div>
-                          <div className="text-right shrink-0">
-                            <span className="text-3xl font-cormorant text-slate-900">$249</span>
-                            <p className="text-xs text-slate-500 font-lato">/month</p>
+                          <div className="text-right shrink-0 space-y-1">
+                            <span className="text-3xl font-cormorant text-slate-900 block">
+                              {ELEVATED_PROGRAMS.hrt.displayPrice}
+                            </span>
+                            <p className="text-xs text-slate-500 font-lato">
+                              {ELEVATED_PROGRAMS.trt.displayPrice} men&apos;s TRT
+                            </p>
                           </div>
                         </div>
-                        <div className="mt-4 flex items-center gap-2">
-                          <Sparkles className="w-5 h-5 text-amber-600 stroke-[1.5]" />
-                          <div className="flex items-center gap-2">
-                            <ShieldAlert className="w-4 h-4 text-amber-600" />
-                            <span className="text-xs text-slate-600 font-lato">
-                              Requires Medical Clearance — Complete Steps 1 & 2 first
-                            </span>
-                          </div>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          <Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate("/hormones-men")}>
+                            Men (TRT)
+                          </Button>
+                          <Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate("/hormones-women")}>
+                            Women (HRT)
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -1475,165 +1351,126 @@ const Pricing = () => {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {/* Testosterone Cream */}
               <Card className="border border-border hover:border-gold/30 transition-all hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <Badge variant="outline" className="text-masculine border-masculine/30">
-                      Men's HRT
+                      Men&apos;s TRT fill
                     </Badge>
-                    <span className="text-xs text-muted-foreground font-lato">10-week fill</span>
                   </div>
-                  <h3 className="text-xl font-cormorant text-foreground mb-1">Testosterone Cream</h3>
+                  <h3 className="text-xl font-cormorant text-foreground mb-1">{MEDICATION_FILLS.testosterone.name}</h3>
                   <p className="text-sm text-muted-foreground font-lato mb-4">
-                    Compounded testosterone cream for optimization
+                    Non-member single fill (medication included in {ELEVATED_PROGRAMS.trt.name})
                   </p>
                   <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-3xl font-cormorant text-foreground">$149</span>
-                    <span className="text-sm text-muted-foreground line-through">$249 membership</span>
+                    <span className="text-3xl font-cormorant text-foreground">
+                      {MEDICATION_FILLS.testosterone.displayPrice}
+                    </span>
+                    <span className="text-sm text-muted-foreground">one-time</span>
                   </div>
-                  <p className="text-xs text-gold font-lato">
-                    Save $100/month with Vitality Membership
-                  </p>
                 </CardContent>
               </Card>
 
-              {/* Bi-Est Cream */}
               <Card className="border border-border hover:border-gold/30 transition-all hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <Badge variant="outline" className="text-feminine border-feminine/30">
-                      Women's HRT
+                      Women&apos;s HRT fill
                     </Badge>
-                    <span className="text-xs text-muted-foreground font-lato">30-day fill</span>
                   </div>
-                  <h3 className="text-xl font-cormorant text-foreground mb-1">Bi-Est Cream</h3>
+                  <h3 className="text-xl font-cormorant text-foreground mb-1">{MEDICATION_FILLS.biEst.name}</h3>
                   <p className="text-sm text-muted-foreground font-lato mb-4">
-                    Bioidentical estrogen (estriol + estradiol)
+                    Non-member single fill (included in {ELEVATED_PROGRAMS.hrt.name})
                   </p>
                   <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-3xl font-cormorant text-foreground">$89</span>
-                    <span className="text-sm text-muted-foreground line-through">$249 membership</span>
+                    <span className="text-3xl font-cormorant text-foreground">
+                      {MEDICATION_FILLS.biEst.displayPrice}
+                    </span>
+                    <span className="text-sm text-muted-foreground">one-time</span>
                   </div>
-                  <p className="text-xs text-gold font-lato">
-                    Save with Vitality Membership (includes labs)
-                  </p>
                 </CardContent>
               </Card>
 
-              {/* Progesterone */}
               <Card className="border border-border hover:border-gold/30 transition-all hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <Badge variant="outline" className="text-feminine border-feminine/30">
-                      Women's HRT
+                      Women&apos;s HRT fill
                     </Badge>
-                    <span className="text-xs text-muted-foreground font-lato">30-day fill</span>
                   </div>
-                  <h3 className="text-xl font-cormorant text-foreground mb-1">Progesterone</h3>
+                  <h3 className="text-xl font-cormorant text-foreground mb-1">{MEDICATION_FILLS.progesterone.name}</h3>
                   <p className="text-sm text-muted-foreground font-lato mb-4">
-                    Bioidentical progesterone capsules
+                    Non-member single fill (included in {ELEVATED_PROGRAMS.hrt.name})
                   </p>
                   <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-3xl font-cormorant text-foreground">$79</span>
-                    <span className="text-sm text-muted-foreground line-through">$249 membership</span>
-                  </div>
-                  <p className="text-xs text-gold font-lato">
-                    Save with Vitality Membership (includes labs)
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Follow-up Consultation */}
-              <Card className="border border-border hover:border-gold/30 transition-all hover:shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <Badge variant="outline" className="text-muted-foreground">
-                      Consultation
-                    </Badge>
-                    <span className="text-xs text-muted-foreground font-lato">30 minutes</span>
-                  </div>
-                  <h3 className="text-xl font-cormorant text-foreground mb-1">Follow-up Consult</h3>
-                  <p className="text-sm text-muted-foreground font-lato mb-4">
-                    Video or in-person follow-up visit
-                  </p>
-                  <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-3xl font-cormorant text-foreground">$149</span>
+                    <span className="text-3xl font-cormorant text-foreground">
+                      {MEDICATION_FILLS.progesterone.displayPrice}
+                    </span>
                     <span className="text-sm text-muted-foreground">one-time</span>
                   </div>
-                  <p className="text-xs text-gold font-lato">
-                    FREE with any active membership
-                  </p>
                 </CardContent>
               </Card>
 
-              {/* Lab Panel */}
               <Card className="border border-border hover:border-gold/30 transition-all hover:shadow-lg">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <Badge variant="outline" className="text-muted-foreground">
-                      Diagnostics
-                    </Badge>
-                    <span className="text-xs text-muted-foreground font-lato">Individual</span>
-                  </div>
-                  <h3 className="text-xl font-cormorant text-foreground mb-1">Lab Panel</h3>
+                  <Badge variant="outline" className="text-muted-foreground mb-4">
+                    Physician escalation
+                  </Badge>
+                  <h3 className="text-xl font-cormorant text-foreground mb-1">{CORE_SERVICES.medicalReview.name}</h3>
                   <p className="text-sm text-muted-foreground font-lato mb-4">
-                    Comprehensive hormone or metabolic panel
+                    Patient-requested extended consults beyond standard program care.
                   </p>
                   <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-3xl font-cormorant text-foreground">$250</span>
+                    <span className="text-3xl font-cormorant text-foreground">
+                      {CORE_SERVICES.medicalReview.displayPrice}
+                    </span>
                     <span className="text-sm text-muted-foreground">one-time</span>
                   </div>
-                  <p className="text-xs text-gold font-lato">
-                    Quarterly labs included in membership
-                  </p>
                 </CardContent>
               </Card>
 
-              {/* Membership Savings CTA */}
+              <Card className="border border-border hover:border-gold/30 transition-all hover:shadow-lg">
+                <CardContent className="p-6">
+                  <Badge variant="outline" className="text-muted-foreground mb-4">
+                    Diagnostics
+                  </Badge>
+                  <h3 className="text-xl font-cormorant text-foreground mb-1">{CORE_SERVICES.comprehensivePanel.name}</h3>
+                  <p className="text-sm text-muted-foreground font-lato mb-4">
+                    In-office LabCorp draw; quarterly panels included in active ELEVATED memberships.
+                  </p>
+                  <div className="flex items-baseline gap-2 mb-4">
+                    <span className="text-3xl font-cormorant text-foreground">
+                      {CORE_SERVICES.comprehensivePanel.displayPrice}
+                    </span>
+                    <span className="text-sm text-muted-foreground">one-time</span>
+                  </div>
+                </CardContent>
+              </Card>
+
               <Card className="border-2 border-gold bg-gold/5 hover:bg-gold/10 transition-all">
                 <CardContent className="p-6 flex flex-col h-full justify-center text-center">
                   <Sparkles className="w-8 h-8 text-gold mx-auto mb-4" />
-                  <h3 className="text-xl font-cormorant text-foreground mb-2">Save with Membership</h3>
+                  <h3 className="text-xl font-cormorant text-foreground mb-2">Compare programs</h3>
                   <p className="text-sm text-muted-foreground font-lato mb-4">
-                    Vitality members save up to <span className="text-gold font-semibold">60%</span> compared to à la carte pricing
+                    See non-member vs. ELEVATED member economics for TRT, HRT, GLP-1, and Wellness.
                   </p>
                   <Button 
                     className="bg-gold hover:bg-gold-dark text-gold-foreground w-full"
                     onClick={() => navigate("/pricing-comparison")}
                   >
-                    Compare Pricing
+                    Open pricing comparison
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Comparison Banner */}
-            <div className="mt-10 max-w-4xl mx-auto bg-card rounded-xl border border-border p-6">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="text-center md:text-left">
-                  <h4 className="font-cormorant text-xl text-foreground mb-2">
-                    Annual Cost Comparison
-                  </h4>
-                  <p className="text-sm text-muted-foreground font-lato">
-                    See how much you could save with a Vitality Membership
-                  </p>
-                </div>
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <div className="text-center px-6 py-3 bg-secondary/50 rounded-lg">
-                    <p className="text-xs text-muted-foreground font-lato uppercase tracking-wide mb-1">À La Carte</p>
-                    <p className="text-2xl font-cormorant text-foreground">$4,500+</p>
-                    <p className="text-xs text-muted-foreground font-lato">/year</p>
-                  </div>
-                  <ArrowRight className="w-5 h-5 text-gold hidden sm:block" />
-                  <div className="text-center px-6 py-3 bg-gold/10 border border-gold/30 rounded-lg">
-                    <p className="text-xs text-gold font-lato uppercase tracking-wide mb-1">Membership</p>
-                    <p className="text-2xl font-cormorant text-foreground">$2,988</p>
-                    <p className="text-xs text-muted-foreground font-lato">/year</p>
-                  </div>
-                </div>
-              </div>
+            <div className="mt-10 max-w-4xl mx-auto bg-card rounded-xl border border-border p-6 text-center">
+              <p className="font-lato text-sm text-muted-foreground">
+                ELEVATED members receive {MEMBER_DISCOUNT_PERCENT}% off eligible à la carte IV, peptide, and injectable
+                services where checkout supports the discount. Program medications are included in TRT, HRT, and GLP-1
+                memberships—not billed separately.
+              </p>
             </div>
           </div>
         </section>
@@ -1749,7 +1586,9 @@ const Pricing = () => {
               Chat with our <span className="font-semibold text-foreground">Virtual Care Team</span> for instant answers about pricing, insurance, and logistics—24/7.
             </p>
             <p className="text-sm text-muted-foreground font-lato max-w-xl mx-auto mb-8 italic">
-              When you're ready for personalized medical guidance, book a $79 Wellness Assessment ($149 MD evaluation also available for Rx-eligible patients).
+              When you&apos;re ready for personalized medical guidance, book a{" "}
+              {CORE_SERVICES.wellnessAssessment.displayPrice} {CORE_SERVICES.wellnessAssessment.name}. Optional{" "}
+              {CORE_SERVICES.medicalReview.displayPrice} medical review visits are available when clinically appropriate.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button 
@@ -1812,9 +1651,8 @@ const Pricing = () => {
                   Do you offer payment plans?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground font-lato pb-4">
-                  Yes! For larger one-time purchases like the 6-session ketamine series, 
-                  we offer interest-free payment plans through our payment processor. 
-                  Ask about options during your consultation.
+                  Yes. Larger packages may qualify for installment plans at checkout through Klarna or Affirm. Ask
+                  the front office if you need help choosing an option.
                 </AccordionContent>
               </AccordionItem>
 
@@ -1823,11 +1661,8 @@ const Pricing = () => {
                   Is any of this covered by insurance?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground font-lato pb-4">
-                  SPRAVATO® (esketamine) is often covered by insurance—we verify your 
-                  benefits at no cost. Our other services are generally not covered by 
-                  insurance, but we provide superbills you can submit for potential 
-                  out-of-network reimbursement. Many patients with HSA/FSA accounts 
-                  use those funds for our services.
+                  Elevated Health Augusta is cash-pay. We provide superbills for potential out-of-network reimbursement
+                  and accept many HSA/FSA cards. Coverage varies by plan.
                 </AccordionContent>
               </AccordionItem>
 
@@ -1836,10 +1671,8 @@ const Pricing = () => {
                   What's included in the à la carte consultations?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground font-lato pb-4">
-                  Our $79 Wellness Assessments include a thorough review of your symptoms and 
-                  health history, discussion of treatment options, and a personalized 
-                  recommendation. If you decide to proceed with treatment, the consultation 
-                  fee is applied toward your first month or diagnostic package.
+                  {CORE_SERVICES.wellnessAssessment.displayPrice} visits include history, goals, vitals, and a written
+                  plan recommendation. Labs and program fees are quoted separately before you commit—no hidden bundles.
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
@@ -1860,7 +1693,7 @@ const Pricing = () => {
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Star className="w-5 h-5 text-gold" />
-                <span>SPRAVATO® REMS Certified</span>
+                <span>LabCorp in-office diagnostics</span>
               </div>
             </div>
           </div>

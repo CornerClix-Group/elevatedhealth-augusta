@@ -57,7 +57,7 @@ export function useBookingConfirmation() {
         const emailSent = data?.results?.email?.success;
         const smsSent = data?.results?.sms?.success;
         
-        let description = "Your Clinical Strategy Session is confirmed!";
+        let description = "Your Wellness Assessment booking is confirmed!";
         if (emailSent && smsSent) {
           description = "Confirmation sent to your email and phone!";
         } else if (emailSent) {

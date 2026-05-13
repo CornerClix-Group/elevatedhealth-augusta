@@ -13,8 +13,9 @@ const PromiseSection = () => {
           <div className="section-divider max-w-[80px] mx-auto mb-8" />
           <p className="font-jost font-light text-base md:text-lg text-muted-foreground leading-relaxed">
             We believe healthcare should feel personal, not transactional. Every protocol is
-            written by a board-certified physician. Every visit is unhurried. Every result
-            is reviewed in person — never automated, never outsourced.
+            written by a board-certified physician. ELEVATED memberships bundle medication (where
+            prescribed), lab review, and unlimited messaging into one predictable monthly price—so
+            you always know what to expect.
           </p>
         </div>
       </div>

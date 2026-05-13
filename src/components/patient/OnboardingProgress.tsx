@@ -30,7 +30,7 @@ export const OnboardingProgress = ({
   const getStepInfo = () => {
     const status = onboardingStatus || "pending_invite";
     
-    // Step 1: Strategy Session
+    // Step 1: Wellness Assessment
     if (["pending_invite", "account_created"].includes(status)) {
       return { step: 1, subStep: "book", progress: 0 };
     }
@@ -75,7 +75,7 @@ export const OnboardingProgress = ({
     {
       id: "strategy",
       stepNumber: 1,
-      label: "Strategy Session",
+      label: "Wellness Assessment",
       description: currentStep === 1 ? getStep1Description(currentSubStep) : "Initial consultation complete",
       icon: <Stethoscope className="w-5 h-5" />,
     },
@@ -83,8 +83,8 @@ export const OnboardingProgress = ({
       id: "diagnostics",
       stepNumber: 2,
       label: "Diagnostic Labs",
-      description: currentStep === 2 ? getStep2Description(currentSubStep, trackingNumber) : 
-                   currentStep > 2 ? "Lab results reviewed" : "At-home testing kit",
+      description: currentStep === 2 ? getStep2Description(currentSubStep, trackingNumber) :
+                   currentStep > 2 ? "Lab results reviewed" : "Baseline labs (in-office draw when applicable)",
       icon: <Activity className="w-5 h-5" />,
     },
     {
@@ -98,7 +98,7 @@ export const OnboardingProgress = ({
 
   function getStep1Description(sub: string): string {
     switch (sub) {
-      case "book": return "Book your strategy session";
+      case "book": return "Book your Wellness Assessment";
       case "paid": return "Session paid - schedule your appointment";
       case "scheduled": return "Session scheduled - see you soon!";
       case "complete": return "Session complete ✓";
@@ -108,11 +108,11 @@ export const OnboardingProgress = ({
 
   function getStep2Description(sub: string, tracking?: string | null): string {
     switch (sub) {
-      case "paid": return "Kit ordered - shipping soon";
-      case "shipped": return tracking ? `In transit: ${tracking}` : "Kit shipped - check your mailbox";
-      case "received": return "Sample received - analyzing...";
+      case "paid": return "Labs ordered — processing";
+      case "shipped": return tracking ? `In transit: ${tracking}` : "Supplies shipped — watch for delivery";
+      case "received": return "Sample received — analyzing…";
       case "ready": return "Results ready for review!";
-      default: return "At-home testing kit";
+      default: return "Baseline labs";
     }
   }
 

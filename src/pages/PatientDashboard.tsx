@@ -24,6 +24,8 @@ import ActionPlanTab from "@/components/patient/ActionPlanTab";
 import AnimatedCard from "@/components/patient/AnimatedCard";
 import MembershipSummary from "@/components/patient/MembershipSummary";
 import OAuthOnboarding from "@/components/patient/OAuthOnboarding";
+import { EverythingIncludedPillars } from "@/components/marketing/EverythingIncludedPillars";
+
 import { 
   usePatient, 
   useLatestSymptomLog, 
@@ -69,7 +71,7 @@ const PatientDashboard = () => {
   const { data: latestOrder } = useLatestOrder(patient?.id);
   const { data: kitTracking } = useKitTracking(patient?.id);
   const { data: labResult } = useLatestLabResult(patient?.id);
-  // TEMPORARILY HIDDEN - Only offering Hormone Mapping Kit for now
+  // TEMPORARILY HIDDEN — legacy diagnostics path (superseded by in-office LabCorp draws)
   // const { data: neuroPayment } = useNeurotransmitterPayment(
   //   patient?.primary_program === "ketamine" ? patient?.id : undefined
   // );
@@ -277,7 +279,7 @@ const PatientDashboard = () => {
               <MindCareCard />
             </AnimatedCard>
 
-            {/* TEMPORARILY HIDDEN - Only offering Hormone Mapping Kit for now */}
+            {/* TEMPORARILY HIDDEN — legacy diagnostics path (superseded by in-office LabCorp draws) */}
             {/* <AnimatedCard delay={200} animation="fadeUp">
               <NeurotransmitterCard 
                 patientEmail={patient.email || undefined}
@@ -306,6 +308,14 @@ const PatientDashboard = () => {
         ) : (
           /* HORMONE PATIENT DASHBOARD */
           <>
+            {patient.elevated_membership_status === "active" && (
+              <AnimatedCard delay={25} animation="fadeUp">
+                <div className="rounded-xl border border-accent/30 bg-muted/30 p-4 md:p-6">
+                  <EverythingIncludedPillars intro="Your ELEVATED membership bundles prescribed therapy, quarterly labs, check-ins, and messaging — one predictable monthly price." />
+                </div>
+              </AnimatedCard>
+            )}
+
             {/* Next Action Card - Prominently shows what patient needs to do */}
             {!isAuthorized && (
               <AnimatedCard delay={0} animation="fadeUp">
@@ -378,8 +388,8 @@ const PatientDashboard = () => {
                   )}
 
                   {/* Membership Summary */}
-                  <MembershipSummary 
-                    membershipTier={patient.membership_tier as "vitality" | "concierge" | null}
+                  <MembershipSummary
+                    membershipTier={patient.membership_tier}
                     renewalDate={patient.membership_renewal_date ? new Date(patient.membership_renewal_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : undefined}
                   />
                 </TabsContent>

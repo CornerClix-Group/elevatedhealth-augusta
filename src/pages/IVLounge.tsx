@@ -23,6 +23,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import { ELEVATED_PROGRAMS, MEMBER_DISCOUNT_PERCENT } from "@/lib/stripeConfig";
 
 interface Therapy {
   id: string;
@@ -201,7 +202,7 @@ const IVLounge = () => {
               {[
                 { l: "Walk-In Pricing", p: "$95–$185", sub: "per drip · no consult required" },
                 { l: "Premium Drips", p: "$450–$750", sub: "NAD+ infusions · longevity protocols" },
-                { l: "Member Discount", p: "15% off", sub: "all add-ons · priority booking" },
+                { l: "Member Discount", p: `${MEMBER_DISCOUNT_PERCENT}% off`, sub: "à la carte IV, peptide, and injectable add-ons for ELEVATED members · priority booking" },
               ].map((c) => (
                 <div key={c.l} className="px-6 py-8 md:py-4 text-center">
                   <p className="section-label mb-3">{c.l}</p>
@@ -480,7 +481,7 @@ const IVLounge = () => {
                 { q: "Do I need a consultation first?", a: "No — IV therapy is direct-book. Our RN screens for contraindications at the visit." },
                 { q: "How long does an IV take?", a: "Most drips take 30–45 minutes. NAD+ runs longer — typically 1–2 hours depending on the dose." },
                 { q: "Can I add boosters at the visit?", a: "Yes. Let your RN know when you arrive — add-ons are charged at checkout after." },
-                { q: "Are members charged differently?", a: "Members get 15% off all add-ons and priority booking. Base IV pricing is the same." },
+                { q: "Are members charged differently?", a: `ELEVATED members save ${MEMBER_DISCOUNT_PERCENT}% on eligible à la carte IV, peptide, and injectable add-ons and receive priority booking. Base walk-in IV pricing is the same.` },
                 { q: "What if I'm not feeling well after?", a: "Reach out. We follow up with every patient. Reactions are rare, but we take every concern seriously." },
               ].map((f, i) => (
                 <AccordionItem key={i} value={`faq-${i}`}>
@@ -497,13 +498,13 @@ const IVLounge = () => {
           <div className="container mx-auto px-6 lg:px-8 max-w-3xl text-center">
             <p className="section-label mb-4">Membership</p>
             <h2 className="font-playfair text-3xl md:text-4xl text-foreground mb-3">
-              Elevated Membership — <span className="italic text-accent">$199/mo</span>
+              {ELEVATED_PROGRAMS.wellness.name} — <span className="italic text-accent">{ELEVATED_PROGRAMS.wellness.displayPrice}</span>
             </h2>
             <p className="font-jost font-light text-muted-foreground leading-relaxed mb-2">
-              15% off all IV add-ons · priority booking · concierge access across hormones, peptides, and weight loss
+              Two complimentary IV drip visits per month plus {MEMBER_DISCOUNT_PERCENT}% off à la carte IV, peptide, and injectable services — aligned with our Everything Included positioning for ongoing members.
             </p>
             <p className="text-sm text-muted-foreground italic mt-4">
-              One single membership tier. Cancel anytime.
+              Program enrollment is medically gated. Cancel anytime per your agreement.
             </p>
           </div>
         </section>

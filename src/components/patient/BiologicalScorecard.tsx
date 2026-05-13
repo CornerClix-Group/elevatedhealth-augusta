@@ -217,7 +217,7 @@ const BiologicalScorecard = ({
   const scores = [hormonalScore, metabolicScore, brainScore, toxicityScore, nutrientScore].filter(s => s !== null) as number[];
   const overallScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null;
 
-  // TEMPORARILY HIDDEN - Only offering Hormone Mapping Kit for now
+  // TEMPORARILY HIDDEN — legacy diagnostics path (superseded by in-office LabCorp draws)
   // const handleUnlockToxicity = async () => {
   //   setLoadingCheckout('toxicity');
   //   try {
@@ -236,7 +236,7 @@ const BiologicalScorecard = ({
   //   }
   // };
 
-  // TEMPORARILY HIDDEN - Only offering Hormone Mapping Kit for now
+  // TEMPORARILY HIDDEN — legacy diagnostics path (superseded by in-office LabCorp draws)
   // const handleUnlockBundle = async () => {
   //   setLoadingCheckout('bundle');
   //   try {
@@ -300,7 +300,7 @@ const BiologicalScorecard = ({
             score={hasToxicityPayment || hasElevatedArchitecturePayment ? toxicityScore : null}
             label="Toxicity Load"
             unlockPrice={299}
-            // TEMPORARILY HIDDEN - Only offering Hormone Mapping Kit for now
+            // TEMPORARILY HIDDEN — legacy diagnostics path (superseded by in-office LabCorp draws)
             // onUnlock={handleUnlockToxicity}
             // isLoading={loadingCheckout === 'toxicity'}
           />
@@ -312,7 +312,7 @@ const BiologicalScorecard = ({
           />
         </div>
 
-        {/* TEMPORARILY HIDDEN - Only offering Hormone Mapping Kit for now */}
+        {/* TEMPORARILY HIDDEN — legacy diagnostics path (superseded by in-office LabCorp draws) */}
         {/* Elevated Architecture Bundle Promo */}
         {/* {!hasElevatedArchitecturePayment && (
           <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 p-4 border border-primary/20">

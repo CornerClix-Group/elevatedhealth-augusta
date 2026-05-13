@@ -296,7 +296,7 @@ export function LabInterpretationEngine({ patientId, patientName, patientGender 
         </CardHeader>
         <CardContent>
           {kitType === 'hormone_mapping' ? (
-            // Single cortisol for ZRT Saliva Profile III
+            // Single cortisol for legacy saliva profile III
             <div className="max-w-xs">
               <InputWithHint 
                 label="Morning Cortisol (AM)" 

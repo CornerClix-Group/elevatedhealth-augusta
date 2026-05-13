@@ -328,7 +328,7 @@ export const CONSULTATION_PRICES = {
     amount: 7900, // $79
     displayPrice: "$79",
     name: "Wellness Assessment",
-    description: "45-minute initial consultation. Credited toward your protocol if you proceed.",
+    description: "In-office RN Wellness Assessment. Paid at booking; program and labs quoted separately if you enroll.",
     mode: "payment" as const,
     edgeFunction: "create-consultation-checkout",
   },
@@ -343,7 +343,7 @@ export const DIAGNOSTIC_KIT_PRICES = {
     amount: 25000, // $250 — historical reference only, no active checkout
     displayPrice: "$250",
     name: "Hormone Mapping Panel (legacy)",
-    description: "Réveil-era ZRT Saliva Profile III. No longer offered.",
+    description: "Legacy third-party saliva panel. Deprecated — use LabCorp panels in CORE_SERVICES.",
     zrtPanel: "saliva_iii",
     mode: "payment" as const,
   },
@@ -361,7 +361,7 @@ export const ELEVATED_MEMBERSHIP = {
   displayPrice: "$199/mo",
   name: "Elevated Membership",
   description:
-    "Unlimited weekly visits, all in-office supplies, member-rate labs, quarterly physician check-in, 15% off IV add-ons. Medications billed separately at FCC cost-plus.",
+    "Deprecated single-tier membership copy. Prefer ELEVATED_PROGRAMS — medications are included in program tiers per live catalog.",
   mode: "subscription" as const,
   interval: "month",
   edgeFunction: "create-elevated-membership-checkout",

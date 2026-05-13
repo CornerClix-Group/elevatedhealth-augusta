@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Crown, Calendar, Loader2, Save, Scale, Star, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { ELEVATED_PROGRAMS } from "@/lib/stripeConfig";
 
 interface MembershipAssignmentCardProps {
   patientId: string;
@@ -39,6 +40,11 @@ const MembershipAssignmentCard = ({
         return "bg-gradient-to-r from-primary to-primary/80 text-white";
       case "concierge":
         return "bg-gradient-to-r from-gold to-gold/80 text-gold-foreground";
+      case "elevated_trt":
+      case "elevated_hrt":
+      case "elevated_glp1":
+      case "elevated_wellness":
+        return "bg-gradient-to-r from-accent/90 to-accent text-accent-foreground";
       case "semaglutide":
         return "bg-gradient-to-r from-green-500 to-green-600 text-white";
       case "tirzepatide":
@@ -56,6 +62,11 @@ const MembershipAssignmentCard = ({
         return <Star className="w-3 h-3 mr-1" />;
       case "concierge":
         return <Crown className="w-3 h-3 mr-1" />;
+      case "elevated_trt":
+      case "elevated_hrt":
+      case "elevated_glp1":
+      case "elevated_wellness":
+        return <Crown className="w-3 h-3 mr-1" />;
       case "semaglutide":
       case "tirzepatide":
         return <Scale className="w-3 h-3 mr-1" />;
@@ -72,10 +83,18 @@ const MembershipAssignmentCard = ({
         return "VITALITY";
       case "concierge":
         return "CONCIERGE";
+      case "elevated_trt":
+        return ELEVATED_PROGRAMS.trt.name;
+      case "elevated_hrt":
+        return ELEVATED_PROGRAMS.hrt.name;
+      case "elevated_glp1":
+        return ELEVATED_PROGRAMS.glp1.name;
+      case "elevated_wellness":
+        return ELEVATED_PROGRAMS.wellness.name;
       case "semaglutide":
-        return "Semaglutide";
+        return "Semaglutide (Legacy)";
       case "tirzepatide":
-        return "Tirzepatide";
+        return "Tirzepatide (Legacy)";
       default:
         return "None";
     }
@@ -141,14 +160,28 @@ const MembershipAssignmentCard = ({
             className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="none">No Membership</option>
-            <optgroup label="Hormone Memberships">
-              <option value="access">ACCESS ($99/mo) - 20% labs</option>
-              <option value="vitality">VITALITY ($149/mo) - 30% labs, 10% GLP-1</option>
-              <option value="concierge">CONCIERGE ($249/mo) - 40% labs, 15% GLP-1</option>
+            <optgroup label="ELEVATED programs (assign new patients here)">
+              <option value="elevated_trt">
+                {ELEVATED_PROGRAMS.trt.name} ({ELEVATED_PROGRAMS.trt.displayPrice})
+              </option>
+              <option value="elevated_hrt">
+                {ELEVATED_PROGRAMS.hrt.name} ({ELEVATED_PROGRAMS.hrt.displayPrice})
+              </option>
+              <option value="elevated_glp1">
+                {ELEVATED_PROGRAMS.glp1.name} ({ELEVATED_PROGRAMS.glp1.displayPrice})
+              </option>
+              <option value="elevated_wellness">
+                {ELEVATED_PROGRAMS.wellness.name} ({ELEVATED_PROGRAMS.wellness.displayPrice})
+              </option>
             </optgroup>
-            <optgroup label="GLP-1 Memberships">
-              <option value="semaglutide">Semaglutide ($399/mo)</option>
-              <option value="tirzepatide">Tirzepatide ($499/mo)</option>
+            <optgroup label="Legacy tiers (existing patient rows only)">
+              <option value="access">ACCESS (Legacy)</option>
+              <option value="vitality">VITALITY (Legacy)</option>
+              <option value="concierge">CONCIERGE (Legacy)</option>
+            </optgroup>
+            <optgroup label="Legacy GLP-1 tier labels">
+              <option value="semaglutide">Semaglutide subscription (Legacy)</option>
+              <option value="tirzepatide">Tirzepatide subscription (Legacy)</option>
             </optgroup>
           </select>
         </div>
@@ -171,6 +204,21 @@ const MembershipAssignmentCard = ({
         )}
 
         {/* Tier Features Summary */}
+        {(tier === "elevated_trt" ||
+          tier === "elevated_hrt" ||
+          tier === "elevated_glp1" ||
+          tier === "elevated_wellness") && (
+          <div className="text-xs text-muted-foreground p-3 bg-accent/10 rounded-lg">
+            <p className="font-medium text-foreground mb-1">ELEVATED program bundle</p>
+            <ul className="space-y-0.5">
+              <li>• Medication included when prescribed as part of this program</li>
+              <li>• Monthly RN check-in and unlimited messaging</li>
+              <li>• Quarterly labs and lab review included</li>
+              <li>• Posted prices live in Stripe — see Staff Pricing Cheatsheet</li>
+            </ul>
+          </div>
+        )}
+
         {tier === "access" && (
           <div className="text-xs text-muted-foreground p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
             <p className="font-medium text-slate-700 dark:text-slate-300 mb-1">ACCESS Includes:</p>

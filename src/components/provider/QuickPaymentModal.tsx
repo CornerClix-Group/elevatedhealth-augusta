@@ -41,7 +41,7 @@ interface QuickPaymentModalProps {
 //   - À la carte: testosterone / biEst / progesterone / follow-up / lab panel
 //
 // Removed: Hormone tiers (access/vitality/concierge), Vitality, hormone
-// add-on, IV ketamine, "Discovery Consultation $149". All Réveil-era.
+// add-on, IV ketamine, retired $149 discovery-style consult SKU. All Réveil-era.
 const PRODUCTS = [
   { value: "elevated_membership", label: "Elevated Membership", price: "$199/mo", category: "Membership" },
   { value: "consultation", label: "Wellness Assessment", price: "$79", category: "Consultation" },

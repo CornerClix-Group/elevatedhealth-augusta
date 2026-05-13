@@ -47,7 +47,7 @@ const WhatToExpectPage = () => {
       icon: ClipboardCheck,
       title: "2. $79 Wellness Assessment",
       description: "Your first conversation with a provider. Discuss your goals, review your health history, and get a personalized plan.",
-      duration: "$99 • Credited toward treatment",
+      duration: "$79 Wellness Assessment",
       color: "text-primary"
     },
     {
@@ -81,7 +81,7 @@ const WhatToExpectPage = () => {
         <title>What to Expect from Ketamine Therapy Augusta | Elevated Health Augusta</title>
         <meta 
           name="description" 
-          content="Learn about ketamine infusion cost Augusta, treatment protocol, and what to expect during your visit. 6-8 infusions at $400 each. $79 Wellness Assessment available." 
+          content="Learn about ketamine infusion care in Augusta, treatment protocol, and what to expect during your visit. $79 Wellness Assessment available for new patient onboarding." 
         />
         <meta name="keywords" content="ketamine infusion cost Augusta, ketamine therapy protocol, ketamine treatment Augusta GA, IV ketamine price, SPRAVATO cost" />
         <link rel="canonical" href="https://www.elevatedhealthaugusta.com/what-to-expect" />

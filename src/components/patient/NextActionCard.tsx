@@ -111,8 +111,8 @@ export const NextActionCard = ({
     if (status === "account_created") {
       return {
         icon: <Calendar className="w-6 h-6" />,
-        title: "Book Your Strategy Session",
-        description: "Schedule your consultation to discuss your health goals and create a personalized plan.",
+        title: "Book Your Wellness Assessment",
+        description: "Schedule your in-office visit to discuss your health goals and create a personalized plan.",
         buttonText: "Book Now",
         buttonAction: onBookConsultation,
         timeEstimate: "15-30 minute session",

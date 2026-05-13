@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { 
   CheckCircle2, Award, Heart, Users, TrendingDown, Activity, 
   Apple, Scale, Droplet, LineChart, Brain, Pill, Clock, 
-  MessageCircle, Shield, Sparkles, CreditCard, Loader2, Calendar
+  MessageCircle, Shield, CreditCard, Loader2, Calendar
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -17,18 +17,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import NotReadyToBook from "@/components/NotReadyToBook";
 import HowGLP1Works from "@/components/HowGLP1Works";
+import { CORE_SERVICES, ELEVATED_PROGRAMS, MEDICATION_FILLS } from "@/lib/stripeConfig";
+import { EverythingIncludedPillars } from "@/components/marketing/EverythingIncludedPillars";
+import { MembershipComparison } from "@/components/marketing/MembershipComparison";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 // Display values — actual charges flow through Stripe
 // (create-consultation-checkout, semaglutide/tirzepatide checkouts).
-const PRICE_CONSULT = "$79";
-const PRICE_PANEL_WEIGHT = "$345";
-const PRICE_PANEL_WEIGHT_MEMBER = "$295";
-const PRICE_MEMBERSHIP = "$199";
+const PRICE_CONSULT = CORE_SERVICES.wellnessAssessment.displayPrice;
+const PRICE_PANEL_WEIGHT = CORE_SERVICES.expandedPanel.displayPrice;
+const PRICE_PROGRAM_GLP1 = ELEVATED_PROGRAMS.glp1.displayPrice;
 
 const WeightLoss = () => {
   const [isConsultationLoading, setIsConsultationLoading] = useState(false);
   const [isSemaglutideLoading, setIsSemaglutideLoading] = useState(false);
   const [isTirzepatideLoading, setIsTirzepatideLoading] = useState(false);
+  const [glpComparisonDrug, setGlpComparisonDrug] = useState<"semaglutide" | "tirzepatide">("semaglutide");
 
   const handleConsultationCheckout = async () => {
     setIsConsultationLoading(true);
@@ -109,20 +113,20 @@ const WeightLoss = () => {
     {
       step: "02",
       headline: "Get Cleared Same Day.",
-      body: "Most patients are approved immediately during their consultation. If your provider needs additional information, they'll coordinate with your PCP."
+      body: "Most patients are approved immediately during their Wellness Assessment visit. If your provider needs additional information, they'll coordinate with your PCP.",
     },
     {
       step: "03",
-      headline: "Start Medication at Member Pricing.",
-      body: "Elevated Members ($199/mo) get GLP-1 medications at member rates: $199/mo Semaglutide or $399/mo Tirzepatide. Non-members pay $249 or $499."
-    }
+      headline: "Enroll in ELEVATED GLP-1 monthly care.",
+      body: `One program (${PRICE_PROGRAM_GLP1}) bundles medication when prescribed, monthly RN check-ins, quarterly labs, and unlimited messaging. À la carte single fills are ${MEDICATION_FILLS.semaglutide.displayPrice} (semaglutide) or ${MEDICATION_FILLS.tirzepatide.displayPrice} (tirzepatide) when your clinician recommends pay-per-fill fulfillment.`,
+    },
   ];
 
   const programIncludes = [
-    { icon: Pill, text: "Weekly GLP-1 Medications" },
-    { icon: Shield, text: "Medical Eligibility Assessment" },
-    { icon: Activity, text: "Ongoing Provider Supervision" },
-    { icon: Apple, text: "Nutrition & Macro Guidance" }
+    { icon: Pill, text: "GLP-1 medication when prescribed (bundled in ELEVATED GLP-1)" },
+    { icon: Shield, text: "Medical eligibility review at your Wellness Assessment" },
+    { icon: Activity, text: "Ongoing provider supervision and dose adjustments" },
+    { icon: Apple, text: "Nutrition and lifestyle coaching support" },
   ];
 
   const differentiators = [
@@ -134,7 +138,7 @@ const WeightLoss = () => {
     {
       icon: Users,
       title: "True Medical Oversight",
-      description: "Ketamine-quality medical supervision applied to weight loss. Your safety is our priority."
+      description: "Physician-led protocols with the same rigor we apply across every service line. Your safety is our priority.",
     },
     {
       icon: Heart,
@@ -149,11 +153,11 @@ const WeightLoss = () => {
   ];
 
   const membershipInclusions = [
-    "FDA-Approved GLP-1 Medication (Semaglutide) included.",
-    "Medical eligibility screening included.",
-    "Unlimited provider messaging and support.",
-    "Dosage adjustments as needed.",
-    "Priority Shipping from our Compounding Partner."
+    "Medication included when you are on the ELEVATED GLP-1 program.",
+    "Monthly RN check-in and unlimited secure messaging.",
+    "Quarterly labs and lab review included in program pricing.",
+    "Dosage adjustments as clinically appropriate.",
+    "Compounded medication from our 503A pharmacy partner when prescribed.",
   ];
 
   const faqs = [
@@ -166,12 +170,12 @@ const WeightLoss = () => {
       a: "Most patients can start GLP-1 medication after their $79 Wellness Assessment. If your provider determines additional lab work would benefit your safety or results, they may request recent labs from your PCP or recommend optional hormone testing."
     },
     {
-      q: "What if I want hormone testing too?",
-      a: "If you suspect hormonal barriers (high cortisol, thyroid issues), you can add our Hormone Mapping Kit ($250) for comprehensive saliva testing. Elevated Members ($199/mo) get hormone optimization included."
+      q: "What if I want hormone or metabolic labs too?",
+      a: `If your clinician recommends additional markers beyond your visit, we order LabCorp panels such as the ${CORE_SERVICES.comprehensivePanel.name} (${CORE_SERVICES.comprehensivePanel.displayPrice}) or ${CORE_SERVICES.expandedPanel.name} (${CORE_SERVICES.expandedPanel.displayPrice}) when clinically appropriate.`,
     },
     {
       q: "How quickly can I start medication?",
-      a: "Most patients start within a week of their consultation. Your provider will determine eligibility during your in-person visit and can often authorize treatment the same day."
+      a: "Most patients start within a week of their Wellness Assessment. Your provider will determine eligibility during your in-person visit and can often authorize treatment the same day.",
     }
   ];
 
@@ -179,16 +183,16 @@ const WeightLoss = () => {
     <>
       <Helmet>
         <title>Metabolic Optimization Program - Weight Loss Augusta | Elevated Health Augusta</title>
-        <meta name="description" content="Medical weight loss in Augusta, GA. $79 Wellness Assessment credited toward treatment. Chat with our Virtual Care Team 24/7. GLP-1 therapy + ZRT hormone testing + metabolic analysis." />
-        <meta name="keywords" content="metabolic optimization Augusta, semaglutide Augusta GA, tirzepatide Augusta, GLP-1 Augusta, weight loss clinic Georgia, ZRT testing Augusta, metabolic labs" />
+        <meta name="description" content="Medical weight loss in Augusta, GA. Start with a $79 Wellness Assessment. In-person GLP-1 care, LabCorp labs, compounded semaglutide and tirzepatide when clinically appropriate." />
+        <meta name="keywords" content="metabolic optimization Augusta, semaglutide Augusta GA, tirzepatide Augusta, GLP-1 Augusta, weight loss clinic Georgia, metabolic labs" />
         <meta property="og:title" content="Metabolic Optimization Program - Weight Loss Augusta | Elevated Health Augusta" />
-        <meta property="og:description" content="Medical weight loss in Augusta, GA. $79 Wellness Assessment credited toward treatment. Chat with our Virtual Care Team 24/7. GLP-1 therapy + hormone testing." />
+        <meta property="og:description" content="Medical weight loss in Augusta, GA. $79 Wellness Assessment. In-person GLP-1 therapy with transparent program pricing." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://elevatedhealthaugusta.com/weight-loss" />
         <meta property="og:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Medical Weight Loss Augusta | Metabolic Optimization" />
-        <meta name="twitter:description" content="$79 Wellness Assessment credited toward treatment. Chat with our Virtual Care Team 24/7. GLP-1 + hormone testing." />
+        <meta name="twitter:description" content="$79 Wellness Assessment. In-person GLP-1 care with clear monthly program pricing." />
         <meta name="twitter:image" content="https://elevatedhealthaugusta.com/og-image.jpg" />
       </Helmet>
 
@@ -239,9 +243,7 @@ const WeightLoss = () => {
                   FDA-Approved GLP-1s. Optimized by Your Biology.
                 </p>
                 <p className="text-lg md:text-xl text-primary/70 leading-relaxed mb-10 max-w-3xl mx-auto animate-fade-in-up font-jost" style={{ animationDelay: "0.2s" }}>
-                  Weight loss isn't just about calories—it's about hormones. We combine state-of-the-art GLP-1 therapy 
-                  with advanced saliva diagnostics to identify and treat the hidden blockers (like High Cortisol 
-                  or Estrogen Dominance) that stall your progress.
+                  Weight loss isn&apos;t only about calories—it&apos;s about metabolism, hormones, and follow-through. We pair evidence-based GLP-1 therapy with in-person Evans visits, LabCorp labs when ordered, and ongoing clinical oversight.
                 </p>
 
                 {/* Differentiator Icons */}
@@ -249,40 +251,23 @@ const WeightLoss = () => {
                   {/* Saliva Diagnostics */}
                   <div className="flex flex-col items-center gap-2">
                     <div className="p-3 rounded-full border border-accent/30">
-                      <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 2v6" />
-                        <path d="M12 8a4 4 0 0 1 4 4c0 3-4 10-4 10s-4-7-4-10a4 4 0 0 1 4-4z" />
-                      </svg>
+                      <Activity className="w-8 h-8 text-accent" />
                     </div>
-                    <span className="text-sm font-jost text-primary font-medium">Saliva Diagnostics</span>
+                    <span className="text-sm font-jost text-primary font-medium">In-person Evans visits</span>
                   </div>
-                  {/* Fat vs Muscle Targeting */}
+                  {/* GLP-1 */}
                   <div className="flex flex-col items-center gap-2">
                     <div className="p-3 rounded-full border border-accent/30">
-                      <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <circle cx="12" cy="12" r="6" />
-                        <circle cx="12" cy="12" r="2" />
-                      </svg>
+                      <Pill className="w-8 h-8 text-accent" />
                     </div>
-                    <span className="text-sm font-jost text-primary font-medium">Fat vs. Muscle Targeting</span>
+                    <span className="text-sm font-jost text-primary font-medium">Compounded GLP-1s</span>
                   </div>
-                  {/* Adrenal Support */}
+                  {/* Labs */}
                   <div className="flex flex-col items-center gap-2">
                     <div className="p-3 rounded-full border border-accent/30">
-                      <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="4" />
-                        <path d="M12 2v2" />
-                        <path d="M12 20v2" />
-                        <path d="m4.93 4.93 1.41 1.41" />
-                        <path d="m17.66 17.66 1.41 1.41" />
-                        <path d="M2 12h2" />
-                        <path d="M20 12h2" />
-                        <path d="m6.34 17.66-1.41 1.41" />
-                        <path d="m19.07 4.93-1.41 1.41" />
-                      </svg>
+                      <Droplet className="w-8 h-8 text-accent" />
                     </div>
-                    <span className="text-sm font-jost text-primary font-medium">Adrenal Support</span>
+                    <span className="text-sm font-jost text-primary font-medium">Lab-driven dosing</span>
                   </div>
                 </div>
 
@@ -298,20 +283,17 @@ const WeightLoss = () => {
                     ) : (
                       <CreditCard className="mr-2 h-5 w-5" />
                     )}
-                    {isConsultationLoading ? "Processing..." : "Wellness Assessment - $79"}
+                    {isConsultationLoading ? "Processing..." : `Book a ${PRICE_CONSULT} Wellness Assessment`}
                   </Button>
                   <Button onClick={() => window.open(`tel:${SITE_CONFIG.phone}`, "_self")} size="lg" variant="outline" className="text-lg px-8 py-6 border-primary/30 text-primary bg-transparent hover:bg-primary/5">
                     Call {SITE_CONFIG.phone}
                   </Button>
                 </div>
-                <p className="text-center text-xs text-green-600 font-medium mt-2 animate-fade-in-up" style={{ animationDelay: "0.35s" }}>
-                  $79 Wellness Assessment fee credited toward your treatment
-                </p>
 
                 <div className="mt-10 flex flex-wrap justify-center gap-6 text-sm text-primary/60 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-5 w-5 text-accent" />
-                    <span>Powered by ZRT Diagnostics</span>
+                    <span>LabCorp on-site draws</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-5 w-5 text-accent" />
@@ -319,9 +301,36 @@ const WeightLoss = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-5 w-5 text-accent" />
-                    <span>Hormone Blocker Analysis</span>
+                    <span>Transparent program pricing</span>
                   </div>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="py-16 md:py-24 bg-muted/20 border-y border-border">
+            <div className="container mx-auto px-6 lg:px-8 max-w-5xl space-y-10">
+              <EverythingIncludedPillars intro="ELEVATED GLP-1 bundles medication when prescribed with the same clinical rhythm we use across every ELEVATED program." />
+              <div className="flex flex-col items-center gap-4">
+                <p className="font-jost text-sm text-muted-foreground text-center max-w-md">
+                  Compare program vs. à la carte for the medication you are considering.
+                </p>
+                <ToggleGroup
+                  type="single"
+                  value={glpComparisonDrug}
+                  onValueChange={(v) => {
+                    if (v === "semaglutide" || v === "tirzepatide") setGlpComparisonDrug(v);
+                  }}
+                  className="justify-center"
+                >
+                  <ToggleGroupItem value="semaglutide" className="font-jost">
+                    Semaglutide
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="tirzepatide" className="font-jost">
+                    Tirzepatide
+                  </ToggleGroupItem>
+                </ToggleGroup>
+                <MembershipComparison program="glp1" drug={glpComparisonDrug} />
               </div>
             </div>
           </section>
@@ -331,9 +340,17 @@ const WeightLoss = () => {
             <div className="container mx-auto px-6 lg:px-8 max-w-5xl">
               <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
                 {[
-                  { l: "Initial Consultation", p: PRICE_CONSULT, sub: "credited toward your first month" },
-                  { l: "Weight Optimization Panel", p: `${PRICE_PANEL_WEIGHT} / Member ${PRICE_PANEL_WEIGHT_MEMBER}`, sub: "metabolic + hormone markers, drawn on-site" },
-                  { l: "Elevated Membership", p: `${PRICE_MEMBERSHIP}/mo`, sub: "ongoing care, supplies, member labs" },
+                  { l: "Wellness Assessment", p: PRICE_CONSULT, sub: "RN intake, in-person at Evans" },
+                  {
+                    l: CORE_SERVICES.expandedPanel.name,
+                    p: PRICE_PANEL_WEIGHT,
+                    sub: "when your clinician orders expanded metabolic markers",
+                  },
+                  {
+                    l: ELEVATED_PROGRAMS.glp1.name,
+                    p: PRICE_PROGRAM_GLP1,
+                    sub: "medication when prescribed, check-ins, quarterly labs, messaging",
+                  },
                 ].map((c) => (
                   <div key={c.l} className="px-6 py-8 md:py-4 text-center">
                     <p className="section-label mb-3">{c.l}</p>
@@ -352,7 +369,7 @@ const WeightLoss = () => {
                 <NotReadyToBook 
                   variant="b" 
                   title="Frustrated by failed diets? Let's talk."
-                  description="If you've tried everything and nothing has worked, there may be a metabolic reason. Our team can explain how hormone testing reveals hidden blockers and whether GLP-1 therapy might finally break the cycle."
+                  description="If you have tried everything and nothing has worked, there may be a metabolic reason. Our team can explain how in-person GLP-1 care works and whether it is a fit."
                   ctaText="Understand Your Metabolism"
                 />
               </div>
@@ -512,15 +529,15 @@ const WeightLoss = () => {
                   </p>
                 </div>
 
-                {/* Savings Callout */}
+                {/* Comparison highlights */}
                 <div className="mb-10 flex flex-col sm:flex-row gap-4 justify-center">
                   <div className="inline-flex items-center gap-3 px-6 py-3 bg-green-50 border border-green-200 rounded-xl">
                     <div className="flex items-center justify-center w-10 h-10 bg-green-500 rounded-full">
                       <TrendingDown className="h-5 w-5 text-white" />
                     </div>
                     <div className="text-left">
-                      <p className="text-sm text-green-600 font-medium font-jost">Save up to</p>
-                      <p className="text-2xl font-bold text-green-700 font-playfair">$1,140/year</p>
+                      <p className="text-sm text-green-600 font-medium font-jost">Program pricing</p>
+                      <p className="text-lg font-bold text-green-700 font-playfair">{PRICE_PROGRAM_GLP1} bundled</p>
                     </div>
                   </div>
                 </div>
@@ -543,35 +560,35 @@ const WeightLoss = () => {
                     </thead>
                     <tbody>
                       <tr className="border-b border-border/50">
-                        <td className="p-4 font-jost text-primary font-medium">Semaglutide (non-member)</td>
+                        <td className="p-4 font-jost text-primary font-medium">ELEVATED GLP-1 program</td>
+                        <td className="p-4 text-center">
+                          <span className="text-sm text-muted-foreground">Not offered</span>
+                        </td>
+                        <td className="p-4 text-center bg-accent/5">
+                          <span className="text-xl font-bold text-accent">{PRICE_PROGRAM_GLP1}</span>
+                          <p className="text-xs text-green-600 font-medium">Medication + ongoing care bundle</p>
+                        </td>
+                      </tr>
+                      <tr className="border-b border-border/50">
+                        <td className="p-4 font-jost text-primary font-medium">À la carte semaglutide fill</td>
                         <td className="p-4 text-center">
                           <span className="text-lg font-bold text-muted-foreground line-through">$300+/mo</span>
                           <p className="text-xs text-muted-foreground">Hidden fees & rebill traps</p>
                         </td>
                         <td className="p-4 text-center bg-accent/5">
-                          <span className="text-xl font-bold text-accent">$249/mo</span>
-                          <p className="text-xs text-green-600 font-medium">Transparent flat rate</p>
+                          <span className="text-xl font-bold text-accent">{MEDICATION_FILLS.semaglutide.displayPrice}</span>
+                          <p className="text-xs text-green-600 font-medium">Single fill when not on program</p>
                         </td>
                       </tr>
                       <tr className="border-b border-border/50">
-                        <td className="p-4 font-jost text-primary font-medium">Semaglutide (Elevated Member)</td>
-                        <td className="p-4 text-center">
-                          <span className="text-sm text-muted-foreground">Not offered</span>
-                        </td>
-                        <td className="p-4 text-center bg-accent/5">
-                          <span className="text-xl font-bold text-accent">$199/mo</span>
-                          <p className="text-xs text-green-600 font-medium">+ $199 membership</p>
-                        </td>
-                      </tr>
-                      <tr className="border-b border-border/50">
-                        <td className="p-4 font-jost text-primary font-medium">Tirzepatide (non-member)</td>
+                        <td className="p-4 font-jost text-primary font-medium">À la carte tirzepatide fill</td>
                         <td className="p-4 text-center">
                           <span className="text-lg font-bold text-muted-foreground line-through">$600+/mo</span>
                           <p className="text-xs text-muted-foreground">Compounded, often unstable supply</p>
                         </td>
                         <td className="p-4 text-center bg-accent/5">
-                          <span className="text-xl font-bold text-accent">$499/mo</span>
-                          <p className="text-xs text-green-600 font-medium">All-inclusive</p>
+                          <span className="text-xl font-bold text-accent">{MEDICATION_FILLS.tirzepatide.displayPrice}</span>
+                          <p className="text-xs text-green-600 font-medium">Single fill when not on program</p>
                         </td>
                       </tr>
                       <tr className="border-b border-border/50">
@@ -615,13 +632,13 @@ const WeightLoss = () => {
                         </td>
                       </tr>
                       <tr className="border-b border-border/50">
-                        <td className="p-4 font-jost text-primary font-medium">Hormone Integration</td>
+                        <td className="p-4 font-jost text-primary font-medium">Hormone & metabolic integration</td>
                         <td className="p-4 text-center">
                           <span className="text-muted-foreground">Not offered</span>
                         </td>
                         <td className="p-4 text-center bg-accent/5">
                           <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
-                          <span className="text-xs text-green-600">$149/mo add-on</span>
+                          <span className="text-xs text-green-600">Optional ELEVATED TRT / HRT programs</span>
                         </td>
                       </tr>
                       <tr>
@@ -631,7 +648,7 @@ const WeightLoss = () => {
                         </td>
                         <td className="p-4 text-center bg-accent/5">
                           <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
-                          <span className="text-xs text-green-600">Ketamine-certified provider</span>
+                          <span className="text-xs text-green-600">Integrated behavioral support</span>
                         </td>
                       </tr>
                     </tbody>
@@ -655,9 +672,12 @@ const WeightLoss = () => {
                     ) : (
                       <Calendar className="mr-2 h-4 w-4" />
                     )}
-                    {isConsultationLoading ? "Processing..." : "Book $79 Wellness Assessment — Get $99 Credit"}
+                    {isConsultationLoading ? "Processing..." : `Book a ${PRICE_CONSULT} Wellness Assessment`}
                   </Button>
-                  <p className="text-xs text-muted-foreground mt-2">Then $249/mo Semaglutide or $499/mo Tirzepatide ($199 / $399 for Elevated Members)</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Program {PRICE_PROGRAM_GLP1}; à la carte fills {MEDICATION_FILLS.semaglutide.displayPrice} /{" "}
+                    {MEDICATION_FILLS.tirzepatide.displayPrice} when not bundled.
+                  </p>
                 </div>
               </div>
             </div>
@@ -688,14 +708,14 @@ const WeightLoss = () => {
                         <th className="p-4 text-center font-playfair text-xl text-primary bg-white/50 border-b border-accent/20">
                           <div className="flex flex-col items-center gap-1">
                             <span className="font-bold">Semaglutide</span>
-                            <span className="text-accent text-lg font-jost">$399/mo</span>
+                            <span className="text-accent text-lg font-jost">{MEDICATION_FILLS.semaglutide.displayPrice} fill</span>
                           </div>
                         </th>
                         <th className="p-4 text-center font-playfair text-xl text-primary bg-accent/10 border-b border-accent/30 rounded-tr-xl">
                           <div className="flex flex-col items-center gap-1">
                             <span className="inline-block px-2 py-0.5 bg-accent text-white text-xs rounded-full mb-1 font-jost">Premium</span>
                             <span className="font-bold">Tirzepatide</span>
-                            <span className="text-accent text-lg font-jost">$499/mo</span>
+                            <span className="text-accent text-lg font-jost">{MEDICATION_FILLS.tirzepatide.displayPrice} fill</span>
                           </div>
                         </th>
                       </tr>
@@ -778,7 +798,7 @@ const WeightLoss = () => {
                     {isConsultationLoading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : null}
-                    {isConsultationLoading ? "Processing..." : "Not Sure Which? Book a Consultation - $99"}
+                    {isConsultationLoading ? "Processing..." : `Book a ${PRICE_CONSULT} Wellness Assessment`}
                   </Button>
                 </div>
               </div>
@@ -799,30 +819,22 @@ const WeightLoss = () => {
                   Start Your Journey
                 </h2>
                 <p className="text-lg text-muted-foreground font-jost">
-                  $79 Wellness Assessment credited toward your first month of treatment
+                  Start with a {PRICE_CONSULT} Wellness Assessment, then enroll in {ELEVATED_PROGRAMS.glp1.name} or pay per fill when your clinician recommends it.
                 </p>
               </div>
 
-              {/* Three Cards: Consultation + Two Memberships */}
               <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
-                
-                {/* Wellness Assessment */}
                 <Card className="border border-accent/30 hover:border-accent/50 transition-all">
                   <CardContent className="p-6 text-center">
                     <div className="inline-flex p-3 bg-accent/10 rounded-full mb-4">
                       <MessageCircle className="h-6 w-6 text-accent" />
                     </div>
-                    <h3 className="font-playfair text-xl text-primary font-bold mb-2">
-                      Wellness Assessment
-                    </h3>
-                    <p className="text-3xl font-playfair text-primary mb-2">$79</p>
-                    <p className="text-xs text-green-600 font-medium mb-2">
-                      Credited toward your first month
-                    </p>
+                    <h3 className="font-playfair text-xl text-primary font-bold mb-2">{CORE_SERVICES.wellnessAssessment.name}</h3>
+                    <p className="text-3xl font-playfair text-primary mb-2">{PRICE_CONSULT}</p>
                     <p className="text-sm text-muted-foreground mb-4 font-jost">
-                      30-minute in-person session to assess eligibility and create your personalized plan.
+                      In-person visit to assess eligibility and build your plan.
                     </p>
-                    <Button 
+                    <Button
                       onClick={handleConsultationCheckout}
                       disabled={isConsultationLoading}
                       className="w-full bg-accent hover:bg-accent text-white"
@@ -832,43 +844,34 @@ const WeightLoss = () => {
                       ) : (
                         <Calendar className="mr-2 h-4 w-4" />
                       )}
-                      {isConsultationLoading ? "..." : "Book Consultation"}
+                      {isConsultationLoading ? "..." : `Book ${PRICE_CONSULT} Wellness Assessment`}
                     </Button>
                   </CardContent>
                 </Card>
 
-                {/* Semaglutide Membership */}
-                <div 
-                  className="relative p-6 rounded-2xl border border-accent/30 animate-fade-in-up"
+                <div
+                  className="relative p-6 rounded-2xl border border-accent/30 md:col-span-1"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 50%, rgba(250,247,242,0.8) 100%)',
-                    backdropFilter: 'blur(20px)',
-                    boxShadow: '0 8px 32px rgba(44, 62, 80, 0.08), inset 0 1px 0 rgba(255,255,255,0.8)'
+                    background:
+                      "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 50%, rgba(250,247,242,0.8) 100%)",
+                    backdropFilter: "blur(20px)",
+                    boxShadow: "0 8px 32px rgba(44, 62, 80, 0.08), inset 0 1px 0 rgba(255,255,255,0.8)",
                   }}
                 >
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="bg-accent text-white text-xs px-3 py-1 rounded-full font-jost">
-                      Most Popular
-                    </span>
+                    <span className="bg-accent text-white text-xs px-3 py-1 rounded-full font-jost">Flagship</span>
                   </div>
                   <div className="relative z-10 text-center pt-2">
                     <div className="inline-flex p-3 bg-accent/10 rounded-full mb-4">
                       <Pill className="h-6 w-6 text-accent" />
                     </div>
-                    <h3 className="font-playfair text-xl text-primary font-bold mb-2">
-                      Semaglutide Membership
-                    </h3>
+                    <h3 className="font-playfair text-xl text-primary font-bold mb-2">{ELEVATED_PROGRAMS.glp1.name}</h3>
                     <div className="flex items-baseline justify-center gap-1 mb-1">
-                      <span className="font-playfair text-3xl text-primary font-light">$249</span>
-                      <span className="text-primary/60 font-jost text-sm">/ month</span>
+                      <span className="font-playfair text-3xl text-primary font-light">{PRICE_PROGRAM_GLP1}</span>
                     </div>
-                    <p className="text-xs text-green-600 font-medium mb-3">
-                      $199/mo for Elevated Members
-                    </p>
                     <p className="text-sm text-muted-foreground mb-4 font-jost">
-                      FDA-approved GLP-1 for steady, sustainable weight loss with full provider support.
+                      Medication when prescribed, monthly check-in, quarterly labs, lab review, and unlimited messaging.
                     </p>
-                    
                     <ul className="space-y-2 mb-4 text-sm text-left">
                       {membershipInclusions.slice(0, 4).map((inclusion, index) => (
                         <li key={index} className="flex items-start gap-2">
@@ -877,88 +880,68 @@ const WeightLoss = () => {
                         </li>
                       ))}
                     </ul>
-
-                    <Button 
-                      onClick={handleSemaglutideCheckout}
-                      disabled={isSemaglutideLoading}
-                      size="lg" 
-                      className="w-full bg-primary hover:bg-primary/90 text-white font-jost"
-                    >
-                      {isSemaglutideLoading ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : null}
-                      {isSemaglutideLoading ? "Processing..." : "Start Semaglutide"}
-                    </Button>
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        onClick={handleSemaglutideCheckout}
+                        disabled={isSemaglutideLoading}
+                        size="lg"
+                        className="w-full bg-primary hover:bg-primary/90 text-white font-jost"
+                      >
+                        {isSemaglutideLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                        {isSemaglutideLoading ? "Processing..." : "Enroll — semaglutide path"}
+                      </Button>
+                      <Button
+                        onClick={handleTirzepatideCheckout}
+                        disabled={isTirzepatideLoading}
+                        size="lg"
+                        variant="outline"
+                        className="w-full border-accent text-primary font-jost"
+                      >
+                        {isTirzepatideLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                        {isTirzepatideLoading ? "Processing..." : "Enroll — tirzepatide path"}
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
-                {/* Tirzepatide Membership - Premium */}
-                <div 
-                  className="relative p-6 rounded-2xl border-2 border-accent/60 animate-fade-in-up"
-                  style={{
-                    animationDelay: "0.1s",
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(250,247,242,0.9) 50%, rgba(212,160,23,0.05) 100%)',
-                    backdropFilter: 'blur(20px)',
-                    boxShadow: '0 8px 32px rgba(212, 160, 23, 0.15), inset 0 1px 0 rgba(255,255,255,0.9)'
-                  }}
-                >
-                  {/* Premium Badge */}
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-accent to-accent-dark text-white text-xs px-4 py-1 rounded-full font-jost font-medium shadow-lg">
-                      Premium Tier
-                    </span>
-                  </div>
-
-                  <div className="relative z-10 text-center pt-2">
-                    <div className="inline-flex p-3 bg-accent/10 rounded-full mb-4">
-                      <Sparkles className="h-6 w-6 text-accent" />
-                    </div>
-                    <h3 className="font-playfair text-xl text-primary font-bold mb-2">
-                      Tirzepatide Membership
-                    </h3>
-                    <div className="flex items-baseline justify-center gap-1 mb-1">
-                      <span className="font-playfair text-3xl text-accent font-light">$499</span>
-                      <span className="text-primary/60 font-jost text-sm">/ month</span>
-                    </div>
-                    <p className="text-xs text-green-600 font-medium mb-3">
-                      $399/mo for Elevated Members
+                <Card className="border border-border">
+                  <CardContent className="p-6 text-center flex flex-col h-full">
+                    <h3 className="font-playfair text-xl text-primary font-bold mb-2">À la carte single fills</h3>
+                    <p className="text-sm text-muted-foreground mb-4 font-jost flex-1">
+                      When your clinician recommends pay-per-fill instead of the monthly program bundle.
                     </p>
-                    <p className="text-sm text-muted-foreground mb-4 font-jost">
-                      Dual-action GLP-1/GIP for accelerated results — up to 22.5% weight loss.
-                    </p>
-
-                    <ul className="space-y-2 mb-4 text-sm text-left">
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-accent shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-jost text-xs">FDA-Approved Tirzepatide (dual GLP-1/GIP)</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-accent shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-jost text-xs">Medical eligibility screening included</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-accent shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-jost text-xs">Unlimited provider messaging & support</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-accent shrink-0 mt-0.5" />
-                        <span className="text-primary/70 font-jost text-xs">Priority shipping from our partner</span>
-                      </li>
-                    </ul>
-
-                    <Button 
-                      onClick={handleTirzepatideCheckout}
-                      disabled={isTirzepatideLoading}
-                      size="lg" 
-                      className="w-full bg-accent hover:bg-accent text-white font-jost"
-                    >
-                      {isTirzepatideLoading ? (
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      ) : null}
-                      {isTirzepatideLoading ? "Processing..." : "Start Tirzepatide"}
-                    </Button>
-                  </div>
-                </div>
+                    <div className="space-y-3 text-left font-jost text-sm mb-4">
+                      <div className="flex justify-between gap-2">
+                        <span>{MEDICATION_FILLS.semaglutide.name}</span>
+                        <span className="font-medium text-accent">{MEDICATION_FILLS.semaglutide.displayPrice}</span>
+                      </div>
+                      <div className="flex justify-between gap-2">
+                        <span>{MEDICATION_FILLS.tirzepatide.name}</span>
+                        <span className="font-medium text-accent">{MEDICATION_FILLS.tirzepatide.displayPrice}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2 mt-auto">
+                      <Button
+                        onClick={handleSemaglutideCheckout}
+                        disabled={isSemaglutideLoading}
+                        size="sm"
+                        variant="outline"
+                        className="w-full font-jost"
+                      >
+                        {isSemaglutideLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Checkout — semaglutide"}
+                      </Button>
+                      <Button
+                        onClick={handleTirzepatideCheckout}
+                        disabled={isTirzepatideLoading}
+                        size="sm"
+                        variant="outline"
+                        className="w-full font-jost"
+                      >
+                        {isTirzepatideLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Checkout — tirzepatide"}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
 
               <p className="mt-8 text-center text-xs text-primary/50 font-jost">
