@@ -41,9 +41,9 @@ const ALACARTE_CATALOG: Record<
   AlaCarteCatalogKey,
   { name: string; displayPrice: string; description: string; amount: number }
 > = {
-  testosterone: MEDICATION_FILLS.testosterone,
-  biEst: MEDICATION_FILLS.biEst,
-  progesterone: MEDICATION_FILLS.progesterone,
+  testosterone: { ...MEDICATION_FILLS.testosterone, description: "Transdermal testosterone cream refill (non-member)." },
+  biEst: { ...MEDICATION_FILLS.biEst, description: "Bi-Est transdermal cream refill (non-member)." },
+  progesterone: { ...MEDICATION_FILLS.progesterone, description: "Progesterone cream refill (non-member)." },
   followUp: {
     name: CORE_SERVICES.phoneFollowUp.name,
     displayPrice: CORE_SERVICES.phoneFollowUp.displayPrice,
