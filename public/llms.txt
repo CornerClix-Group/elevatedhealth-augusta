@@ -1,0 +1,28 @@
+# Elevated Health Augusta
+
+> Physician-owned wellness clinic in Evans, GA offering hormone optimization, medical weight loss, IV therapy, and peptide protocols. BCBS, TRICARE, and VA accepted.
+
+Elevated Health Augusta is a small, physician-led practice serving the Augusta / CSRA region. Care starts with a $79 in-person Wellness Assessment and progresses to personalized treatment plans across four service lines. Memberships are tiered at $199, $399, and $699 per month.
+
+## Pages
+
+- [Home](/): Clinic overview, services, and booking entry points.
+- [About](/about): Clinical team, philosophy, and location details.
+- [Hormone Therapy](/hormones): BHRT for women and TRT for men, transdermal compounded.
+- [Hormone Therapy for Women](/hormones-women): Compounded transdermal BHRT details.
+- [Hormone Therapy for Men](/hormones-men): Physician-led TRT details.
+- [Medical Weight Loss](/weight-loss): GLP-1 program with semaglutide or tirzepatide.
+- [IV Therapy](/iv-lounge): RN-administered Myers, NAD+, Immunity, Recovery, and Beauty drips. Bookable online.
+- [Peptide Therapy](/peptides): Pharmacy-compounded protocols (PDA, PT-141, Sermorelin, NAD+, GHK-Cu).
+- [Pricing](/pricing): Transparent cash-pay pricing for assessments, programs, labs, and medications.
+- [Membership](/membership): $199 / $399 / $699 monthly tiers and included benefits.
+- [Affordability](/affordability): Insurance, financing, and BNPL options.
+- [Consult](/consult): Schedule the Wellness Assessment.
+- [FAQ](/faq): Common questions on services, pricing, and care model.
+
+## Optional
+
+- [Privacy Policy](/privacy-policy)
+- [Terms of Service](/terms-of-service)
+- [HIPAA Notice](/hipaa-notice)
+- [Accessibility](/accessibility)
