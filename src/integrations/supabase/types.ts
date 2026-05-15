@@ -84,6 +84,7 @@ export type Database = {
           created_at: string
           duration_minutes: number
           id: string
+          intake_reminder_sent_at: string | null
           is_telehealth: boolean | null
           iv_drip_booking_id: string | null
           notes: string | null
@@ -111,6 +112,7 @@ export type Database = {
           created_at?: string
           duration_minutes?: number
           id?: string
+          intake_reminder_sent_at?: string | null
           is_telehealth?: boolean | null
           iv_drip_booking_id?: string | null
           notes?: string | null
@@ -138,6 +140,7 @@ export type Database = {
           created_at?: string
           duration_minutes?: number
           id?: string
+          intake_reminder_sent_at?: string | null
           is_telehealth?: boolean | null
           iv_drip_booking_id?: string | null
           notes?: string | null
@@ -531,6 +534,282 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      consent_acknowledgments: {
+        Row: {
+          acknowledged_at: string
+          acknowledged_ip: string
+          acknowledged_user_agent: string
+          acknowledgment_text: string
+          acknowledgment_type: string
+          created_at: string
+          id: string
+          parent_consent_record_id: string
+          patient_id: string
+          substance_added: string | null
+        }
+        Insert: {
+          acknowledged_at?: string
+          acknowledged_ip: string
+          acknowledged_user_agent: string
+          acknowledgment_text: string
+          acknowledgment_type: string
+          created_at?: string
+          id?: string
+          parent_consent_record_id: string
+          patient_id: string
+          substance_added?: string | null
+        }
+        Update: {
+          acknowledged_at?: string
+          acknowledged_ip?: string
+          acknowledged_user_agent?: string
+          acknowledgment_text?: string
+          acknowledgment_type?: string
+          created_at?: string
+          id?: string
+          parent_consent_record_id?: string
+          patient_id?: string
+          substance_added?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_acknowledgments_parent_consent_record_id_fkey"
+            columns: ["parent_consent_record_id"]
+            isOneToOne: false
+            referencedRelation: "consent_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consent_acknowledgments_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consent_expiration_reminders_sent: {
+        Row: {
+          channels_delivered: string[]
+          consent_record_id: string
+          id: string
+          reminder_window: string
+          sent_at: string
+        }
+        Insert: {
+          channels_delivered?: string[]
+          consent_record_id: string
+          id?: string
+          reminder_window: string
+          sent_at?: string
+        }
+        Update: {
+          channels_delivered?: string[]
+          consent_record_id?: string
+          id?: string
+          reminder_window?: string
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_expiration_reminders_sent_consent_record_id_fkey"
+            columns: ["consent_record_id"]
+            isOneToOne: false
+            referencedRelation: "consent_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consent_overrides: {
+        Row: {
+          consent_record_id: string
+          created_at: string
+          id: string
+          override_reason: string
+          override_reason_category: string
+          patient_id: string
+          patient_identity_verification_method: string
+          staff_attestation: string
+          staff_member_user_id: string
+          witness_staff_user_id: string | null
+        }
+        Insert: {
+          consent_record_id: string
+          created_at?: string
+          id?: string
+          override_reason: string
+          override_reason_category: string
+          patient_id: string
+          patient_identity_verification_method: string
+          staff_attestation: string
+          staff_member_user_id: string
+          witness_staff_user_id?: string | null
+        }
+        Update: {
+          consent_record_id?: string
+          created_at?: string
+          id?: string
+          override_reason?: string
+          override_reason_category?: string
+          patient_id?: string
+          patient_identity_verification_method?: string
+          staff_attestation?: string
+          staff_member_user_id?: string
+          witness_staff_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_overrides_consent_record_id_fkey"
+            columns: ["consent_record_id"]
+            isOneToOne: false
+            referencedRelation: "consent_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consent_overrides_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consent_records: {
+        Row: {
+          consent_type: string
+          consent_version_id: string
+          created_at: string
+          document_text_hash: string
+          expires_at: string
+          id: string
+          patient_id: string
+          pdf_storage_path: string | null
+          revoked_at: string | null
+          section_attestations: Json | null
+          signed_at: string
+          signed_ip: string
+          signed_session_id: string | null
+          signed_typed_name: string
+          signed_user_agent: string
+          signing_method: string
+          staff_witness_user_id: string | null
+          superseded_by_consent_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          consent_type: string
+          consent_version_id: string
+          created_at?: string
+          document_text_hash: string
+          expires_at: string
+          id?: string
+          patient_id: string
+          pdf_storage_path?: string | null
+          revoked_at?: string | null
+          section_attestations?: Json | null
+          signed_at?: string
+          signed_ip: string
+          signed_session_id?: string | null
+          signed_typed_name: string
+          signed_user_agent: string
+          signing_method?: string
+          staff_witness_user_id?: string | null
+          superseded_by_consent_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          consent_type?: string
+          consent_version_id?: string
+          created_at?: string
+          document_text_hash?: string
+          expires_at?: string
+          id?: string
+          patient_id?: string
+          pdf_storage_path?: string | null
+          revoked_at?: string | null
+          section_attestations?: Json | null
+          signed_at?: string
+          signed_ip?: string
+          signed_session_id?: string | null
+          signed_typed_name?: string
+          signed_user_agent?: string
+          signing_method?: string
+          staff_witness_user_id?: string | null
+          superseded_by_consent_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_records_consent_version_id_fkey"
+            columns: ["consent_version_id"]
+            isOneToOne: false
+            referencedRelation: "consent_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consent_records_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consent_records_superseded_by_consent_id_fkey"
+            columns: ["superseded_by_consent_id"]
+            isOneToOne: false
+            referencedRelation: "consent_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consent_versions: {
+        Row: {
+          body_hash: string
+          body_markdown: string
+          consent_type: string
+          created_at: string
+          effective_from: string
+          effective_to: string | null
+          id: string
+          is_active: boolean
+          legal_review_notes: string | null
+          legal_review_status: string | null
+          title: string
+          updated_at: string
+          version_label: string
+        }
+        Insert: {
+          body_hash: string
+          body_markdown: string
+          consent_type: string
+          created_at?: string
+          effective_from: string
+          effective_to?: string | null
+          id?: string
+          is_active?: boolean
+          legal_review_notes?: string | null
+          legal_review_status?: string | null
+          title: string
+          updated_at?: string
+          version_label: string
+        }
+        Update: {
+          body_hash?: string
+          body_markdown?: string
+          consent_type?: string
+          created_at?: string
+          effective_from?: string
+          effective_to?: string | null
+          id?: string
+          is_active?: boolean
+          legal_review_notes?: string | null
+          legal_review_status?: string | null
+          title?: string
+          updated_at?: string
+          version_label?: string
+        }
+        Relationships: []
       }
       consultation_bookings: {
         Row: {
@@ -1073,6 +1352,65 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      intake_magic_links: {
+        Row: {
+          booking_id: string | null
+          created_at: string
+          email_address: string | null
+          expires_at: string
+          first_used_at: string | null
+          id: string
+          last_used_at: string | null
+          patient_id: string
+          pending_consent_types: string[] | null
+          phone_number: string | null
+          reminder_sent_at: string | null
+          revoked_at: string | null
+          token: string
+          use_count: number
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string
+          email_address?: string | null
+          expires_at: string
+          first_used_at?: string | null
+          id?: string
+          last_used_at?: string | null
+          patient_id: string
+          pending_consent_types?: string[] | null
+          phone_number?: string | null
+          reminder_sent_at?: string | null
+          revoked_at?: string | null
+          token: string
+          use_count?: number
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string
+          email_address?: string | null
+          expires_at?: string
+          first_used_at?: string | null
+          id?: string
+          last_used_at?: string | null
+          patient_id?: string
+          pending_consent_types?: string[] | null
+          phone_number?: string | null
+          reminder_sent_at?: string | null
+          revoked_at?: string | null
+          token?: string
+          use_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intake_magic_links_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       inventory_dispensations: {
         Row: {
@@ -2160,6 +2498,9 @@ export type Database = {
           insurance_plan_name: string | null
           insurance_type: string | null
           intake_completed: boolean | null
+          intake_consents_completed_at: string | null
+          intake_link_email_opt_out: boolean
+          intake_link_sms_opt_out: boolean
           intake_token: string | null
           intake_token_expires_at: string | null
           invited_at: string | null
@@ -2215,6 +2556,9 @@ export type Database = {
           insurance_plan_name?: string | null
           insurance_type?: string | null
           intake_completed?: boolean | null
+          intake_consents_completed_at?: string | null
+          intake_link_email_opt_out?: boolean
+          intake_link_sms_opt_out?: boolean
           intake_token?: string | null
           intake_token_expires_at?: string | null
           invited_at?: string | null
@@ -2270,6 +2614,9 @@ export type Database = {
           insurance_plan_name?: string | null
           insurance_type?: string | null
           intake_completed?: boolean | null
+          intake_consents_completed_at?: string | null
+          intake_link_email_opt_out?: boolean
+          intake_link_sms_opt_out?: boolean
           intake_token?: string | null
           intake_token_expires_at?: string | null
           invited_at?: string | null
