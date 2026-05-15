@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { LogOut, Stethoscope, RefreshCw, Settings, Menu, MessageCircle, FileText, Mail, UserPlus, BookOpen, Boxes, CalendarDays } from "lucide-react";
+import { LogOut, Stethoscope, RefreshCw, Settings, Menu, MessageCircle, FileText, Mail, UserPlus, BookOpen, Boxes, CalendarDays, ScrollText } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,9 +28,25 @@ const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMes
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
   const [inventoryAlertCount, setInventoryAlertCount] = useState(0);
+  const [isBusinessAdmin, setIsBusinessAdmin] = useState(false);
 
   const isOnProviderDashboard = location.pathname === "/provider/dashboard";
   const isOnSettings = location.pathname === "/admin/settings";
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      const { data, error } = await supabase.rpc("has_business_admin_role", { _user_id: user.id });
+      if (!cancelled && !error) setIsBusinessAdmin(!!data);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Fetch unread message count
   const fetchUnreadCount = async () => {
@@ -237,6 +253,14 @@ const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMes
                   Scheduling Settings
                 </Link>
               </DropdownMenuItem>
+              {isBusinessAdmin && (
+                <DropdownMenuItem asChild>
+                  <Link to="/admin/consent-versions" className="cursor-pointer gap-2">
+                    <ScrollText className="w-4 h-4" />
+                    Consent versions
+                  </Link>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link to="/staff-pricing-cheatsheet" target="_blank" className="cursor-pointer">
@@ -346,6 +370,14 @@ const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMes
                   Scheduling Settings
                 </Link>
               </DropdownMenuItem>
+              {isBusinessAdmin && (
+                <DropdownMenuItem asChild>
+                  <Link to="/admin/consent-versions" className="cursor-pointer gap-2">
+                    <ScrollText className="w-4 h-4" />
+                    Consent versions
+                  </Link>
+                </DropdownMenuItem>
+              )}
               
               <DropdownMenuItem asChild>
                 <Link to="/staff-pricing-cheatsheet" target="_blank" className="cursor-pointer gap-2">

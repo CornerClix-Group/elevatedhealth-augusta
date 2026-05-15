@@ -44,7 +44,7 @@ export default defineConfig(({ mode }) => ({
         cleanupOutdatedCaches: true,
         cacheId: 'elevated-health-v1',
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
-        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3 MiB
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4 MiB (main bundle growth / precache limit)
         skipWaiting: true,
         clientsClaim: true,
         runtimeCaching: [

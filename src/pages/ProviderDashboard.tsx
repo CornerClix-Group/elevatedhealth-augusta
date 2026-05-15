@@ -67,6 +67,7 @@ import ResendIntakeLinkButton from "@/components/provider/ResendIntakeLinkButton
 import ProviderQuickActions from "@/components/provider/ProviderQuickActions";
 import InventoryAlerts from "@/components/provider/InventoryAlerts";
 import PatientDatabase from "@/components/provider/PatientDatabase";
+import { PatientConsentStatusSection } from "@/components/provider/PatientConsentStatusSection";
 import DashboardActivityWidget from "@/components/provider/DashboardActivityWidget";
 import NextActionsWidget from "@/components/provider/NextActionsWidget";
 import CommunicationLog from "@/components/provider/CommunicationLog";
@@ -202,6 +203,8 @@ const ProviderDashboard = () => {
   const [resendingActivationId, setResendingActivationId] = useState<string | null>(null);
   const [deletingActivationId, setDeletingActivationId] = useState<string | null>(null);
   const [selectedPatientIds, setSelectedPatientIds] = useState<Set<string>>(new Set());
+  /** When set, patient profile dialog scrolls to #patient-consent-status once opened. */
+  const [consentScrollPatientId, setConsentScrollPatientId] = useState<string | null>(null);
   const [providerInfo, setProviderInfo] = useState<{ name: string; credentials: string; role: string }>({
     name: "Provider",
     credentials: "NP-C",
@@ -564,6 +567,44 @@ const ProviderDashboard = () => {
       setRecommendedProtocol(recommended || null);
     }
   };
+
+  const openPatientById = async (patientId: string) => {
+    const patient = pendingPatients.find((p) => p.patient.id === patientId);
+    if (patient) {
+      await selectPatient(patient);
+      return;
+    }
+    const { data, error } = await supabase.from("patients").select("*").eq("id", patientId).single();
+    if (error || !data) {
+      toast.error("Could not load patient");
+      return;
+    }
+    await selectPatient({
+      patient: data as Patient,
+      latestLog: null,
+      highestCategory: "Unknown",
+      riskLevel: "green",
+    });
+  };
+
+  useEffect(() => {
+    if (
+      !consentScrollPatientId ||
+      !selectedPatient ||
+      selectedPatient.patient.id !== consentScrollPatientId ||
+      !isPanelOpen
+    ) {
+      return;
+    }
+    const t = window.setTimeout(() => {
+      document.getElementById("patient-consent-status")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      setConsentScrollPatientId(null);
+    }, 450);
+    return () => window.clearTimeout(t);
+  }, [consentScrollPatientId, selectedPatient?.patient.id, isPanelOpen]);
 
   const handleSaveContactInfo = async () => {
     if (!selectedPatient) return;
@@ -1935,28 +1976,11 @@ const ProviderDashboard = () => {
               </CardHeader>
               <CardContent>
                 <PatientDatabase
-                  onSelectPatient={(patientId) => {
-                    const patient = pendingPatients.find(p => p.patient.id === patientId);
-                    if (patient) {
-                      selectPatient(patient);
-                    } else {
-                      // Load patient directly if not in pending list
-                      supabase
-                        .from("patients")
-                        .select("*")
-                        .eq("id", patientId)
-                        .single()
-                        .then(({ data }) => {
-                          if (data) {
-                            selectPatient({
-                              patient: data as Patient,
-                              latestLog: null,
-                              highestCategory: "Unknown",
-                              riskLevel: "green",
-                            });
-                          }
-                        });
-                    }
+                  onSelectPatient={(patientId) => void openPatientById(patientId)}
+                  onConsentNavigate={(patientId) => {
+                    setActiveTab("allpatients");
+                    setConsentScrollPatientId(patientId);
+                    void openPatientById(patientId);
                   }}
                 />
               </CardContent>
@@ -2063,6 +2087,13 @@ const ProviderDashboard = () => {
 
               {/* Communication History Log */}
               <CommunicationLog patientId={selectedPatient.patient.id} />
+
+              <PatientConsentStatusSection
+                patientId={selectedPatient.patient.id}
+                patientName={selectedPatient.patient.full_name}
+                patientEmail={selectedPatient.patient.email ?? null}
+                patientPhone={selectedPatient.patient.phone ?? null}
+              />
 
               {/* SOAP Notes - Clinical Encounter Documentation */}
               <SOAPNotesPanel
