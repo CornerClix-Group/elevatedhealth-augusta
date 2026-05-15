@@ -1,3 +1,5 @@
+import type { Database } from "@/integrations/supabase/types";
+
 export type ConsentType =
   | "terms_of_service"
   | "hipaa_acknowledgment"
@@ -29,3 +31,15 @@ export interface ConsentDocument {
   signing_method: "typed_name" | "typed_name_with_section_attestation" | "one_tap_acknowledgment";
   effective_from: string;
 }
+
+/** Row from `consent_versions` (catalog / legal text). */
+export type ConsentVersion = Database["public"]["Tables"]["consent_versions"]["Row"];
+
+/** Row from `consent_records` (signed instance). */
+export type ConsentRecord = Database["public"]["Tables"]["consent_records"]["Row"];
+
+/** Per-section attestation map stored in `consent_records.section_attestations`. */
+export type SectionAttestations = Record<string, boolean>;
+
+/** Row from `consent_acknowledgments` (substance addition, minor version bumps). */
+export type ConsentAcknowledgment = Database["public"]["Tables"]["consent_acknowledgments"]["Row"];
