@@ -129,12 +129,22 @@ const IVLounge = () => {
   return (
     <>
       <Helmet>
-        <title>IV Therapy in Augusta, GA | Book Your Drip Online | Elevated Health</title>
-        <meta
-          name="description"
-          content="Book IV hydration therapy online in Augusta. Myers, NAD+, Immunity, Recovery & Beauty drips. RN-administered. No consultation required. Same-day appointments."
-        />
+        <title>IV Therapy Augusta GA | Book Online — Elevated Health</title>
+        <meta name="description" content="Book IV hydration therapy online in Augusta, GA. Myers, NAD+, Immunity, Recovery and Beauty drips. RN-administered. Same-day appointments." />
         <link rel="canonical" href="https://elevatedhealthaugusta.com/iv-lounge" />
+        <meta property="og:title" content="IV Therapy Augusta GA | Elevated Health" />
+        <meta property="og:description" content="RN-administered Myers, NAD+, Immunity, Recovery and Beauty drips. Same-day appointments." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://elevatedhealthaugusta.com/iv-lounge" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "MedicalProcedure",
+          "name": "IV Hydration Therapy",
+          "description": "RN-administered IV hydration and vitamin therapy: Myers cocktail, NAD+, Immunity, Recovery, and Beauty drips.",
+          "procedureType": "https://schema.org/TherapeuticProcedure",
+          "url": "https://elevatedhealthaugusta.com/iv-lounge",
+          "provider": { "@type": "MedicalClinic", "name": "Elevated Health Augusta", "url": "https://elevatedhealthaugusta.com" }
+        })}</script>
       </Helmet>
 
       <div className="min-h-screen bg-background">
