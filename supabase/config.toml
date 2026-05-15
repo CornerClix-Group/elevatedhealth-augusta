@@ -160,6 +160,9 @@ verify_jwt = false
 [functions.generate-consent-pdf]
 verify_jwt = true
 
+[functions.get-client-ip]
+verify_jwt = true
+
 [functions.add-existing-patient]
 verify_jwt = false
 

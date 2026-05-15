@@ -21,6 +21,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
+import { handleCatalogConsentPdf } from "./catalog-handler.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -69,10 +70,15 @@ async function authorizePatientOrStaff(
   return { ok: false, status: 403, error: "Not authorized for this patient" };
 }
 
-// Input validation schema
-const consentPdfRequestSchema = z.object({
+// Legacy patient consent PDF (pre-catalog system)
+const legacyConsentPdfRequestSchema = z.object({
   patientId: z.string().uuid("Invalid patient ID format"),
   action: z.enum(["download", "email"]).optional(),
+});
+
+// Catalog consent_records PDF (PR 2+ consent system)
+const catalogConsentPdfRequestSchema = z.object({
+  consent_record_id: z.string().uuid("Invalid consent record ID"),
 });
 
 serve(async (req) => {
@@ -83,9 +89,14 @@ serve(async (req) => {
 
   try {
     const rawBody = await req.json();
-    
-    // Validate input against schema
-    const validationResult = consentPdfRequestSchema.safeParse(rawBody);
+
+    const catalogParse = catalogConsentPdfRequestSchema.safeParse(rawBody);
+    if (catalogParse.success) {
+      return await handleCatalogConsentPdf(req, catalogParse.data.consent_record_id);
+    }
+
+    // Validate input against legacy schema
+    const validationResult = legacyConsentPdfRequestSchema.safeParse(rawBody);
     if (!validationResult.success) {
       console.error('[generate-consent-pdf] Validation error:', validationResult.error.errors);
       return new Response(

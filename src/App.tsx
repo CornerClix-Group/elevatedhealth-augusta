@@ -68,6 +68,7 @@ import InventoryDashboard from "./pages/InventoryDashboard";
 import EligibilityReviewQueue from "./pages/EligibilityReviewQueue";
 import SchedulingSettings from "./pages/admin/SchedulingSettings";
 import FAQ from "./pages/FAQ";
+import ConsentPreview from "./pages/_dev/ConsentPreview";
 
 const queryClient = new QueryClient();
 
@@ -280,6 +281,10 @@ const App = () => {
               <InventoryDashboard />
             </ProviderLayout>
           } />
+          {import.meta.env.DEV && (
+            <Route path="/_dev/consent-preview" element={<ConsentPreview />} />
+          )}
+
           <Route path="/admin/eligibility-reviews" element={
             <ProviderLayout title="Eligibility Reviews" subtitle="Safety-flagged patients" showNavbar={false}>
               <EligibilityReviewQueue />

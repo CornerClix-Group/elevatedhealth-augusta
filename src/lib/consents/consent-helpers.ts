@@ -6,6 +6,13 @@ import type { ConsentType } from "@/data/consents/types";
 
 const sb = supabase as any;
 
+/** Add calendar months to a date (for consent expiration). */
+export function addMonths(base: Date, months: number): Date {
+  const d = new Date(base);
+  d.setMonth(d.getMonth() + months);
+  return d;
+}
+
 /** Check if a patient has a valid (signed, not expired, not revoked) consent of given type. */
 export async function hasValidConsent(
   patientId: string,
