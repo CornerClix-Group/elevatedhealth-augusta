@@ -183,6 +183,13 @@ export const MEDICATION_CONSENT_RULES: MedicationConsentRule[] = [
       "FDA-approved as Vyleesi for HSDD in premenopausal women; off-label for other indications",
   },
   {
+    medication_id: "barfield_cream",
+    medication_category: "sexual_wellness",
+    required_consents: ["off_label"],
+    notes:
+      "Compounded sexual wellness cream prescribed off-label; recipe by Dr. Holgate, filled by Custom Pharmacy of Evans",
+  },
+  {
     medication_id: "nad_plus_injection",
     medication_category: "longevity",
     required_consents: [],
@@ -247,7 +254,7 @@ export const FORMULARY_LINE_ID_TO_CANONICAL: Record<string, string> = {
   female_testosterone: "testosterone_female_low_dose",
   progesterone_sleep: "progesterone",
   biest: "bi_est_cream",
-  barfield_cream: "progesterone",
+  barfield_cream: "barfield_cream",
 };
 
 /** Custom Pharmacy of Evans preparation ids → canonical medication_id */
