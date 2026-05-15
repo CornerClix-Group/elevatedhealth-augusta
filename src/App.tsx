@@ -67,6 +67,7 @@ import ClinicalProtocolEditor from "./components/provider/ClinicalProtocolEditor
 import InventoryDashboard from "./pages/InventoryDashboard";
 import EligibilityReviewQueue from "./pages/EligibilityReviewQueue";
 import SchedulingSettings from "./pages/admin/SchedulingSettings";
+import ConsentVersionsAdmin from "./pages/admin/ConsentVersionsAdmin";
 import FAQ from "./pages/FAQ";
 import ConsentPreview from "./pages/_dev/ConsentPreview";
 import PatientIntakeConsents from "./pages/PatientIntakeConsents";
@@ -281,6 +282,7 @@ const App = () => {
               <EmailTemplates />
             </ProviderLayout>
           } />
+          <Route path="/admin/consent-versions" element={<ConsentVersionsAdmin />} />
           <Route path="/clinical-protocols" element={
             <ProviderLayout title="Clinical Protocols" subtitle="Standing orders & SOPs" showNavbar={true}>
               <ClinicalProtocolLibrary />

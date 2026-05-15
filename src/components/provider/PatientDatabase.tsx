@@ -1,4 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
+import { PatientConsentStatusBadge } from "@/components/provider/PatientConsentStatusBadge";
+import {
+  getConsentStatusesForPatients,
+  type PatientConsentStatus,
+} from "@/lib/consents/patient-consent-status";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -74,6 +79,8 @@ interface Patient {
 
 interface PatientDatabaseProps {
   onSelectPatient?: (patientId: string) => void;
+  /** Opens patient profile scrolled to consent section (provider dashboard). */
+  onConsentNavigate?: (patientId: string) => void;
   onSendKit?: (patient: Patient) => void;
   onSendPayment?: (patient: Patient) => void;
   onMessage?: (patient: Patient) => void;
@@ -123,6 +130,7 @@ const programLabels: Record<string, string> = {
 
 export default function PatientDatabase({
   onSelectPatient,
+  onConsentNavigate,
   onSendKit,
   onSendPayment,
   onMessage,
@@ -139,6 +147,8 @@ export default function PatientDatabase({
   const [deletePatient, setDeletePatient] = useState<Patient | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isArchiving, setIsArchiving] = useState<string | null>(null);
+  const [consentByPatient, setConsentByPatient] = useState<Map<string, PatientConsentStatus>>(new Map());
+  const [consentsLoading, setConsentsLoading] = useState(false);
 
   useEffect(() => {
     loadPatients();
@@ -206,6 +216,35 @@ export default function PatientDatabase({
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
+
+  const pagePatientIdsKey = useMemo(
+    () => paginatedPatients.map((p) => p.id).sort().join("|"),
+    [paginatedPatients],
+  );
+
+  /**
+   * Dashboard consent badges — Option A: fetch statuses only for the current page of rows.
+   * Post-launch: consider a patient.consent_status_snapshot column (nightly job) or a DB view.
+   */
+  useEffect(() => {
+    const ids = paginatedPatients.map((p) => p.id);
+    if (ids.length === 0) {
+      setConsentByPatient(new Map());
+      setConsentsLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setConsentsLoading(true);
+    void getConsentStatusesForPatients(ids).then((m) => {
+      if (!cancelled) {
+        setConsentByPatient(m);
+        setConsentsLoading(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [pagePatientIdsKey]);
 
   const handleArchive = async (patient: Patient) => {
     setIsArchiving(patient.id);
@@ -352,6 +391,7 @@ export default function PatientDatabase({
               <TableHead>Patient</TableHead>
               <TableHead>Contact</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead className="whitespace-nowrap">Consents</TableHead>
               <TableHead>Membership</TableHead>
               <TableHead>Program</TableHead>
               <TableHead>Created</TableHead>
@@ -361,13 +401,13 @@ export default function PatientDatabase({
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8">
+                <TableCell colSpan={8} className="text-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" />
                 </TableCell>
               </TableRow>
             ) : paginatedPatients.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                   No patients found
                 </TableCell>
               </TableRow>
@@ -404,6 +444,15 @@ export default function PatientDatabase({
                     ) : (
                       <Badge variant="outline">{patient.onboarding_status || "Unknown"}</Badge>
                     )}
+                  </TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    <PatientConsentStatusBadge
+                      status={consentByPatient.get(patient.id)}
+                      loading={consentsLoading}
+                      onNavigateConsent={
+                        onConsentNavigate ? () => onConsentNavigate(patient.id) : undefined
+                      }
+                    />
                   </TableCell>
                   <TableCell>
                     {patient.membership_tier && membershipLabels[patient.membership_tier] ? (

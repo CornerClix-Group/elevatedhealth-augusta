@@ -25,5 +25,8 @@ export type { Tier2TreatmentBundleProps } from "./Tier2TreatmentBundle";
 export { ConsentGatePanel } from "./ConsentGatePanel";
 export type { ConsentGatePanelProps } from "./ConsentGatePanel";
 
+export { SignatureHistoryView } from "./SignatureHistoryView";
+export type { SignatureHistoryViewProps } from "./SignatureHistoryView";
+
 export { StaffOverrideModal } from "./StaffOverrideModal";
 export type { StaffOverrideModalProps } from "./StaffOverrideModal";
