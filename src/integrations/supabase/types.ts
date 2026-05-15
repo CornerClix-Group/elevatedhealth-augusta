@@ -767,12 +767,10 @@ export type Database = {
         Row: {
           body_hash: string
           body_markdown: string
-          changelog_notes: string | null
           consent_type: string
           created_at: string
           effective_from: string
           effective_to: string | null
-          force_re_consent_required: boolean
           id: string
           is_active: boolean
           legal_review_notes: string | null
@@ -784,12 +782,10 @@ export type Database = {
         Insert: {
           body_hash: string
           body_markdown: string
-          changelog_notes?: string | null
           consent_type: string
           created_at?: string
           effective_from: string
           effective_to?: string | null
-          force_re_consent_required?: boolean
           id?: string
           is_active?: boolean
           legal_review_notes?: string | null
@@ -801,12 +797,10 @@ export type Database = {
         Update: {
           body_hash?: string
           body_markdown?: string
-          changelog_notes?: string | null
           consent_type?: string
           created_at?: string
           effective_from?: string
           effective_to?: string | null
-          force_re_consent_required?: boolean
           id?: string
           is_active?: boolean
           legal_review_notes?: string | null
