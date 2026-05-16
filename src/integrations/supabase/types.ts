@@ -1240,6 +1240,107 @@ export type Database = {
         }
         Relationships: []
       }
+      encounter_attachments: {
+        Row: {
+          attachment_type: string
+          description: string | null
+          encounter_id: string | null
+          file_name: string
+          file_size_bytes: number | null
+          id: string
+          lab_collection_date: string | null
+          mime_type: string | null
+          patient_id: string
+          storage_path: string
+          uploaded_at: string
+          uploaded_by_user_id: string
+        }
+        Insert: {
+          attachment_type: string
+          description?: string | null
+          encounter_id?: string | null
+          file_name: string
+          file_size_bytes?: number | null
+          id?: string
+          lab_collection_date?: string | null
+          mime_type?: string | null
+          patient_id: string
+          storage_path: string
+          uploaded_at?: string
+          uploaded_by_user_id: string
+        }
+        Update: {
+          attachment_type?: string
+          description?: string | null
+          encounter_id?: string | null
+          file_name?: string
+          file_size_bytes?: number | null
+          id?: string
+          lab_collection_date?: string | null
+          mime_type?: string | null
+          patient_id?: string
+          storage_path?: string
+          uploaded_at?: string
+          uploaded_by_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "encounter_attachments_encounter_id_fkey"
+            columns: ["encounter_id"]
+            isOneToOne: false
+            referencedRelation: "patient_encounters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "encounter_attachments_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      encounter_audit_log: {
+        Row: {
+          action: string
+          action_details: Json
+          encounter_id: string
+          id: string
+          ip_address: string | null
+          occurred_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          action_details?: Json
+          encounter_id: string
+          id?: string
+          ip_address?: string | null
+          occurred_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          action_details?: Json
+          encounter_id?: string
+          id?: string
+          ip_address?: string | null
+          occurred_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "encounter_audit_log_encounter_id_fkey"
+            columns: ["encounter_id"]
+            isOneToOne: false
+            referencedRelation: "patient_encounters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       encounter_forms: {
         Row: {
           check_number: string | null
@@ -1301,6 +1402,62 @@ export type Database = {
             columns: ["patient_id"]
             isOneToOne: false
             referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      encounter_vitals: {
+        Row: {
+          bmi: number | null
+          diastolic_bp: number | null
+          encounter_id: string
+          heart_rate: number | null
+          height_inches: number | null
+          id: string
+          recorded_at: string
+          recorded_by_user_id: string
+          respiratory_rate: number | null
+          spo2_pct: number | null
+          systolic_bp: number | null
+          temperature_f: number | null
+          weight_lbs: number | null
+        }
+        Insert: {
+          bmi?: number | null
+          diastolic_bp?: number | null
+          encounter_id: string
+          heart_rate?: number | null
+          height_inches?: number | null
+          id?: string
+          recorded_at?: string
+          recorded_by_user_id: string
+          respiratory_rate?: number | null
+          spo2_pct?: number | null
+          systolic_bp?: number | null
+          temperature_f?: number | null
+          weight_lbs?: number | null
+        }
+        Update: {
+          bmi?: number | null
+          diastolic_bp?: number | null
+          encounter_id?: string
+          heart_rate?: number | null
+          height_inches?: number | null
+          id?: string
+          recorded_at?: string
+          recorded_by_user_id?: string
+          respiratory_rate?: number | null
+          spo2_pct?: number | null
+          systolic_bp?: number | null
+          temperature_f?: number | null
+          weight_lbs?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "encounter_vitals_encounter_id_fkey"
+            columns: ["encounter_id"]
+            isOneToOne: false
+            referencedRelation: "patient_encounters"
             referencedColumns: ["id"]
           },
         ]
@@ -2516,6 +2673,109 @@ export type Database = {
           },
         ]
       }
+      patient_allergies: {
+        Row: {
+          active: boolean
+          allergen: string
+          id: string
+          noted_at: string
+          noted_by_user_id: string
+          noted_date: string | null
+          patient_id: string
+          reaction: string | null
+          severity: string | null
+        }
+        Insert: {
+          active?: boolean
+          allergen: string
+          id?: string
+          noted_at?: string
+          noted_by_user_id: string
+          noted_date?: string | null
+          patient_id: string
+          reaction?: string | null
+          severity?: string | null
+        }
+        Update: {
+          active?: boolean
+          allergen?: string
+          id?: string
+          noted_at?: string
+          noted_by_user_id?: string
+          noted_date?: string | null
+          patient_id?: string
+          reaction?: string | null
+          severity?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_allergies_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_current_medications: {
+        Row: {
+          active: boolean
+          added_at: string
+          added_by_user_id: string
+          dose: string | null
+          end_date: string | null
+          frequency: string | null
+          id: string
+          is_eha_prescribed: boolean
+          medication_name: string
+          notes: string | null
+          patient_id: string
+          prescribed_by: string | null
+          route: string | null
+          start_date: string | null
+        }
+        Insert: {
+          active?: boolean
+          added_at?: string
+          added_by_user_id: string
+          dose?: string | null
+          end_date?: string | null
+          frequency?: string | null
+          id?: string
+          is_eha_prescribed?: boolean
+          medication_name: string
+          notes?: string | null
+          patient_id: string
+          prescribed_by?: string | null
+          route?: string | null
+          start_date?: string | null
+        }
+        Update: {
+          active?: boolean
+          added_at?: string
+          added_by_user_id?: string
+          dose?: string | null
+          end_date?: string | null
+          frequency?: string | null
+          id?: string
+          is_eha_prescribed?: boolean
+          medication_name?: string
+          notes?: string | null
+          patient_id?: string
+          prescribed_by?: string | null
+          route?: string | null
+          start_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_current_medications_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patient_documents: {
         Row: {
           created_at: string
@@ -2550,6 +2810,137 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "patient_documents_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_encounters: {
+        Row: {
+          amends_encounter_id: string | null
+          assessment: string | null
+          chief_complaint: string | null
+          created_at: string
+          created_by_user_id: string
+          encounter_date: string
+          encounter_type: string
+          follow_up_plan: string | null
+          id: string
+          internal_notes: string | null
+          last_edited_at: string | null
+          last_edited_by_user_id: string | null
+          medications_prescribed: string | null
+          objective: string | null
+          patient_id: string
+          plan: string | null
+          signed_at: string | null
+          signed_by_user_id: string | null
+          signed_ip_address: string | null
+          status: string
+          subjective: string | null
+        }
+        Insert: {
+          amends_encounter_id?: string | null
+          assessment?: string | null
+          chief_complaint?: string | null
+          created_at?: string
+          created_by_user_id: string
+          encounter_date?: string
+          encounter_type: string
+          follow_up_plan?: string | null
+          id?: string
+          internal_notes?: string | null
+          last_edited_at?: string | null
+          last_edited_by_user_id?: string | null
+          medications_prescribed?: string | null
+          objective?: string | null
+          patient_id: string
+          plan?: string | null
+          signed_at?: string | null
+          signed_by_user_id?: string | null
+          signed_ip_address?: string | null
+          status?: string
+          subjective?: string | null
+        }
+        Update: {
+          amends_encounter_id?: string | null
+          assessment?: string | null
+          chief_complaint?: string | null
+          created_at?: string
+          created_by_user_id?: string
+          encounter_date?: string
+          encounter_type?: string
+          follow_up_plan?: string | null
+          id?: string
+          internal_notes?: string | null
+          last_edited_at?: string | null
+          last_edited_by_user_id?: string | null
+          medications_prescribed?: string | null
+          objective?: string | null
+          patient_id?: string
+          plan?: string | null
+          signed_at?: string | null
+          signed_by_user_id?: string | null
+          signed_ip_address?: string | null
+          status?: string
+          subjective?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_encounters_amends_encounter_id_fkey"
+            columns: ["amends_encounter_id"]
+            isOneToOne: false
+            referencedRelation: "patient_encounters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_encounters_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_problem_list: {
+        Row: {
+          icd10_code: string | null
+          id: string
+          noted_at: string
+          noted_by_user_id: string
+          onset_date: string | null
+          patient_id: string
+          problem: string
+          resolved_date: string | null
+          status: string
+        }
+        Insert: {
+          icd10_code?: string | null
+          id?: string
+          noted_at?: string
+          noted_by_user_id: string
+          onset_date?: string | null
+          patient_id: string
+          problem: string
+          resolved_date?: string | null
+          status?: string
+        }
+        Update: {
+          icd10_code?: string | null
+          id?: string
+          noted_at?: string
+          noted_by_user_id?: string
+          onset_date?: string | null
+          patient_id?: string
+          problem?: string
+          resolved_date?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_problem_list_patient_id_fkey"
             columns: ["patient_id"]
             isOneToOne: false
             referencedRelation: "patients"
