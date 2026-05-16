@@ -198,7 +198,7 @@ serve(async (req) => {
         Authorization: `Basic ${btoa(`api:${pdfApiKey}`)}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ source: html, landscape: false, use_print: false }),
+      body: JSON.stringify({ source: html, landscape: false, use_print: false, is_hipaa: true }),
     });
     if (!pdfRes.ok) {
       const errText = await pdfRes.text();
