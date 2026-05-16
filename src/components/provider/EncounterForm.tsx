@@ -365,6 +365,17 @@ export function EncounterForm({
               </TooltipTrigger>
               <TooltipContent>Opens your iPrescribe account in a new tab</TooltipContent>
             </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button type="button" variant="outline" size="sm" onClick={handleOpenFullscript}>
+                  <ExternalLink className="h-4 w-4 mr-1" />
+                  Open Fullscript
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                Copies patient email to clipboard and opens Fullscript in a new tab
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
 
