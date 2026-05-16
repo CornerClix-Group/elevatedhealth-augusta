@@ -38,6 +38,7 @@ import {
 } from "@/lib/encounters/encounter-helpers";
 import { supabase } from "@/integrations/supabase/client";
 import { getEprescribeUrl } from "@/lib/encounters/eprescribe-url";
+import { getFullscriptUrl } from "@/lib/encounters/fullscript-url";
 import type { EncounterAttachment } from "@/data/encounters/types";
 
 const ENCOUNTER_TYPES = Object.keys(ENCOUNTER_TYPE_LABELS) as EncounterType[];
