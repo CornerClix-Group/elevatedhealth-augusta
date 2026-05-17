@@ -389,7 +389,7 @@ const ProviderDashboard = () => {
         }
 
         // Get lab path info from symptom log
-        let labPath: LabPathInfo = { path: "zrt" };
+        let labPath: LabPathInfo = { path: "labcorp" };
         if (latestLog) {
           const rawAnswers = latestLog.raw_answers as Record<string, any> | null;
           if (rawAnswers?.labPath) {
