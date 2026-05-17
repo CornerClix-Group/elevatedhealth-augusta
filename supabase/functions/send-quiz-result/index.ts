@@ -1,9 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
-const PAUBOX_SMTP_PASSWORD = Deno.env.get("PAUBOX_SMTP_PASSWORD");
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -47,18 +46,6 @@ const handler = async (req: Request): Promise<Response> => {
       timeZone: 'America/New_York',
       dateStyle: 'full',
       timeStyle: 'long'
-    });
-
-    const client = new SMTPClient({
-      connection: {
-        hostname: "smtp.paubox.com",
-        port: 465,
-        tls: true,
-        auth: {
-          username: "care@elevatedhealthaugusta.com",
-          password: PAUBOX_SMTP_PASSWORD!,
-        },
-      },
     });
 
     let emailContent: string;
@@ -127,15 +114,24 @@ const handler = async (req: Request): Promise<Response> => {
       emailContent = `<html><body><h1>${validatedData.treatment}</h1><p>${validatedData.reason}</p></body></html>`;
     }
 
-    await client.send({
-      from: "care@elevatedhealthaugusta.com",
-      to: "booking@elevatedhealthaugusta.com",
-      subject: emailSubject,
-      content: "auto",
-      html: emailContent,
+    const emailResponse = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Elevated Health Augusta <care@stripe.elevatedhealthaugusta.com>",
+        to: ["booking@elevatedhealthaugusta.com"],
+        subject: emailSubject,
+        html: emailContent,
+      }),
     });
 
-    await client.close();
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text();
+      throw new Error(`Resend API error (${emailResponse.status}): ${errorText}`);
+    }
 
     return new Response(
       JSON.stringify({ success: true, message: "Quiz result sent successfully" }),

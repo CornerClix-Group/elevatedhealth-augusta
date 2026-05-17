@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
-const PAUBOX_SMTP_PASSWORD = Deno.env.get("PAUBOX_SMTP_PASSWORD");
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -171,30 +170,28 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Send email via Paubox HIPAA-compliant SMTP
-    const client = new SMTPClient({
-      connection: {
-        hostname: "smtp.paubox.com",
-        port: 465,
-        tls: true,
-        auth: {
-          username: "care@elevatedhealthaugusta.com",
-          password: PAUBOX_SMTP_PASSWORD!,
-        },
+    // Send email via Resend
+
+    const emailResponse = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        from: "Elevated Health Augusta <care@stripe.elevatedhealthaugusta.com>",
+        to: ["booking@elevatedhealthaugusta.com"],
+        subject: `LabCorp Requisition Required - ${patientName} (${panel.title})`,
+        html: emailHtml,
+      }),
     });
 
-    await client.send({
-      from: "care@elevatedhealthaugusta.com",
-      to: "booking@elevatedhealthaugusta.com",
-      subject: `LabCorp Requisition Required - ${patientName} (${panel.title})`,
-      content: "auto",
-      html: emailHtml,
-    });
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text();
+      throw new Error(`Resend API error (${emailResponse.status}): ${errorText}`);
+    }
 
-    await client.close();
-
-    console.log("LabCorp requisition email sent successfully via Paubox HIPAA-compliant SMTP");
+    console.log("LabCorp requisition email sent successfully via Resend");
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

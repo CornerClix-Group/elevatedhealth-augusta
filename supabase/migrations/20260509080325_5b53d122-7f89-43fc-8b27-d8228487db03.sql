@@ -38,13 +38,13 @@ REVOKE ALL ON FUNCTION public.bootstrap_vault_create_cron_secret(text) FROM PUBL
 REVOKE ALL ON FUNCTION public.bootstrap_vault_update_cron_secret(text) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.bootstrap_vault_create_cron_secret(text) TO service_role;
 GRANT EXECUTE ON FUNCTION public.bootstrap_vault_update_cron_secret(text) TO service_role;
-
--- Rewrite cron jobs 1 and 2 to read X-Cron-Secret from vault at execution time.
-SELECT cron.alter_job(
-  job_id := 1,
-  command := $cmd$
+-- Create (or replace) cron jobs by name. cron.schedule is idempotent.
+SELECT cron.schedule(
+  'send-intake-reminder',
+  '0 */4 * * *',
+  $cmd$
     SELECT net.http_post(
-      url := 'https://eserdstrggzfremnsvrf.supabase.co/functions/v1/send-intake-reminder',
+      url := 'https://jiiparpfkjytdcuelcns.supabase.co/functions/v1/send-intake-reminder',
       headers := jsonb_build_object(
         'Content-Type', 'application/json',
         'X-Cron-Secret', (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'cron_secret' LIMIT 1)
@@ -53,12 +53,12 @@ SELECT cron.alter_job(
     ) AS request_id;
   $cmd$
 );
-
-SELECT cron.alter_job(
-  job_id := 2,
-  command := $cmd$
+SELECT cron.schedule(
+  'send-stale-intake-alert',
+  '0 14 * * *',
+  $cmd$
     SELECT net.http_post(
-      url := 'https://eserdstrggzfremnsvrf.supabase.co/functions/v1/send-stale-intake-alert',
+      url := 'https://jiiparpfkjytdcuelcns.supabase.co/functions/v1/send-stale-intake-alert',
       headers := jsonb_build_object(
         'Content-Type', 'application/json',
         'X-Cron-Secret', (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'cron_secret' LIMIT 1)

@@ -38,6 +38,7 @@
 DROP POLICY IF EXISTS "Public can view by stripe session id"
   ON public.iv_drip_bookings;
 
+DROP POLICY IF EXISTS "Patients can view their own IV drip bookings" ON public.iv_drip_bookings;
 CREATE POLICY "Patients can view their own IV drip bookings"
   ON public.iv_drip_bookings
   FOR SELECT
@@ -216,13 +217,14 @@ COMMENT ON FUNCTION public.get_patient_by_intake_token(text) IS
 DROP POLICY IF EXISTS "Protect master admin role"
   ON public.user_roles;
 
+DROP POLICY IF EXISTS "Block deletion of master admin role" ON public.user_roles;
 CREATE POLICY "Block deletion of master admin role"
   ON public.user_roles
   AS RESTRICTIVE
   FOR DELETE
   USING (
     NOT (
-      user_id = '31178dc3-3509-4cdd-8440-e75835bb1521'::uuid
+      user_id = '1227a9b3-e319-4c79-a31a-ad17cdc847cc'::uuid
       AND role = 'admin'::app_role
     )
   );
@@ -236,7 +238,7 @@ CREATE POLICY "Block deletion of master admin role"
 --   CREATE POLICY "Protect master admin role"
 --     ON public.user_roles FOR DELETE
 --     USING (
---       NOT (user_id = '31178dc3-3509-4cdd-8440-e75835bb1521' AND role = 'admin'::app_role)
+--       NOT (user_id = '1227a9b3-e319-4c79-a31a-ad17cdc847cc' AND role = 'admin'::app_role)
 --       OR has_role(auth.uid(), 'admin'::app_role) = false
 --     );
 --

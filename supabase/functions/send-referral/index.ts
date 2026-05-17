@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
-const PAUBOX_SMTP_PASSWORD = Deno.env.get("PAUBOX_SMTP_PASSWORD");
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -41,18 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
       priorTreatments,
     } = data;
 
-    // Configure Paubox HIPAA-compliant SMTP client (port 465 with implicit TLS)
-    const client = new SMTPClient({
-      connection: {
-        hostname: "smtp.paubox.com",
-        port: 465,
-        tls: true,
-        auth: {
-          username: "care@elevatedhealthaugusta.com",
-          password: PAUBOX_SMTP_PASSWORD!,
-        },
-      },
-    });
+    // Send emails via Resend
 
     const timestamp = new Date().toLocaleString('en-US', { 
       timeZone: 'America/New_York',
@@ -172,51 +160,80 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Send email to provider (or just clinic if provider unknown) using Paubox SMTP
+    // Send email to provider (or just clinic if provider unknown)
     let providerResult = null;
     
     // Only send to provider if we have a valid email
     if (providerEmail && providerEmail !== "unknown" && providerEmail !== "custom") {
       console.log("Sending referral to provider:", providerEmail);
-      await client.send({
-        from: "care@elevatedhealthaugusta.com",
-        to: providerEmail,
-        cc: "care@elevatedhealthaugusta.com",
-        replyTo: patientEmail,
-        subject: `Referral Request for ${patientName} - ${benefitType.toUpperCase()}`,
-        content: "auto",
-        html: providerEmailHtml,
+      const emailResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "Elevated Health Augusta <care@stripe.elevatedhealthaugusta.com>",
+          to: [providerEmail],
+          cc: ["care@elevatedhealthaugusta.com"],
+          reply_to: patientEmail,
+          subject: `Referral Request for ${patientName} - ${benefitType.toUpperCase()}`,
+          html: providerEmailHtml,
+        }),
       });
-      console.log("Provider email sent via Paubox SMTP");
+
+      if (!emailResponse.ok) {
+        const errorText = await emailResponse.text();
+        throw new Error(`Resend API error (${emailResponse.status}): ${errorText}`);
+      }
+      console.log("Provider email sent via Resend");
       providerResult = { success: true, recipient: providerEmail };
     } else {
       // Send only to clinic if no valid provider email
       console.log("No valid provider email, sending to clinic only");
-      await client.send({
-        from: "care@elevatedhealthaugusta.com",
-        to: "care@elevatedhealthaugusta.com",
-        replyTo: patientEmail,
-        subject: `Referral Request for ${patientName} - ${benefitType.toUpperCase()} (No Provider Contact)`,
-        content: "auto",
-        html: providerEmailHtml,
+      const emailResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "Elevated Health Augusta <care@stripe.elevatedhealthaugusta.com>",
+          to: ["care@elevatedhealthaugusta.com"],
+          subject: `Referral Request for ${patientName} - ${benefitType.toUpperCase()} (No Provider Contact)`,
+          html: providerEmailHtml,
+        }),
       });
-      console.log("Clinic-only email sent via Paubox SMTP");
+
+      if (!emailResponse.ok) {
+        const errorText = await emailResponse.text();
+        throw new Error(`Resend API error (${emailResponse.status}): ${errorText}`);
+      }
+      console.log("Clinic-only email sent via Resend");
       providerResult = { success: true, recipient: "clinic-only" };
     }
 
     // Send confirmation email to patient
     console.log("Sending confirmation to patient:", patientEmail);
-    await client.send({
-      from: "care@elevatedhealthaugusta.com",
-      to: patientEmail,
-      replyTo: "care@elevatedhealthaugusta.com",
-      subject: "Your Referral Request - Elevated Health Augusta",
-      content: "auto",
-      html: patientEmailHtml,
+    const emailResponse = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Elevated Health Augusta <care@stripe.elevatedhealthaugusta.com>",
+        to: [patientEmail],
+        subject: "Your Referral Request - Elevated Health Augusta",
+        html: patientEmailHtml,
+      }),
     });
-    console.log("Patient confirmation email sent via Paubox SMTP");
 
-    await client.close();
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text();
+      throw new Error(`Resend API error (${emailResponse.status}): ${errorText}`);
+    }
+    console.log("Patient confirmation email sent via Resend");
 
     return new Response(
       JSON.stringify({

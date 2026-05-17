@@ -131,6 +131,7 @@ CREATE POLICY "signed_consents_own_read" ON storage.objects FOR SELECT TO authen
     OR public.has_role(auth.uid(),'provider'::public.app_role) OR public.has_business_admin_role(auth.uid())
   )
 );
+DROP POLICY IF EXISTS "signed_consents_insert" ON storage.objects;
 CREATE POLICY "signed_consents_insert" ON storage.objects FOR INSERT TO authenticated WITH CHECK (
   bucket_id = 'signed-consents' AND (
     split_part(name,'/',1)::uuid IN (SELECT p.id FROM public.patients p WHERE p.user_id = auth.uid())

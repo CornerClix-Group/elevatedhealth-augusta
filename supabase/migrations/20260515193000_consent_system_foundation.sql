@@ -246,6 +246,7 @@ CREATE POLICY "signed_consents_own_read"
     )
   );
 
+DROP POLICY IF EXISTS "signed_consents_insert" ON storage.objects;
 CREATE POLICY "signed_consents_insert"
   ON storage.objects
   FOR INSERT

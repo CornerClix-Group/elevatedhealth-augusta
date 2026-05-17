@@ -78,6 +78,7 @@ CREATE INDEX IF NOT EXISTS idx_inventory_skus_category ON public.inventory_skus(
 CREATE INDEX IF NOT EXISTS idx_inventory_skus_vendor ON public.inventory_skus(vendor) WHERE is_active = true;
 CREATE INDEX IF NOT EXISTS idx_inventory_skus_controlled ON public.inventory_skus(is_controlled_substance) WHERE is_active = true;
 
+DROP TRIGGER IF EXISTS trg_inventory_skus_updated_at ON public.inventory_skus;
 CREATE TRIGGER trg_inventory_skus_updated_at
   BEFORE UPDATE ON public.inventory_skus
   FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
@@ -123,6 +124,7 @@ CREATE INDEX IF NOT EXISTS idx_inventory_lots_expiration
   ON public.inventory_lots(expiration_date)
   WHERE status = 'active';
 
+DROP TRIGGER IF EXISTS trg_inventory_lots_updated_at ON public.inventory_lots;
 CREATE TRIGGER trg_inventory_lots_updated_at
   BEFORE UPDATE ON public.inventory_lots
   FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
@@ -195,10 +197,12 @@ ALTER TABLE public.inventory_lots           ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.inventory_dispensations  ENABLE ROW LEVEL SECURITY;
 
 -- inventory_skus -------------------------------------------------------------
+DROP POLICY IF EXISTS "Authenticated can read SKU catalog" ON public.inventory_skus;
 CREATE POLICY "Authenticated can read SKU catalog"
   ON public.inventory_skus FOR SELECT
   USING (auth.uid() IS NOT NULL);
 
+DROP POLICY IF EXISTS "Staff and admins can manage SKU catalog" ON public.inventory_skus;
 CREATE POLICY "Staff and admins can manage SKU catalog"
   ON public.inventory_skus FOR ALL
   USING (
@@ -211,6 +215,7 @@ CREATE POLICY "Staff and admins can manage SKU catalog"
   );
 
 -- inventory_lots ------------------------------------------------------------
+DROP POLICY IF EXISTS "Staff and admins can read lots" ON public.inventory_lots;
 CREATE POLICY "Staff and admins can read lots"
   ON public.inventory_lots FOR SELECT
   USING (
@@ -218,6 +223,7 @@ CREATE POLICY "Staff and admins can read lots"
     OR public.has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can receive lots" ON public.inventory_lots;
 CREATE POLICY "Staff and admins can receive lots"
   ON public.inventory_lots FOR INSERT
   WITH CHECK (
@@ -232,6 +238,7 @@ CREATE POLICY "Staff and admins can receive lots"
 --   (a) a BEFORE UPDATE trigger that rejects quantity_remaining changes
 --       outside of SECURITY DEFINER paths, and
 --   (b) all UI-level writes going through narrow update payloads.
+DROP POLICY IF EXISTS "Staff and admins can update lot bookkeeping" ON public.inventory_lots;
 CREATE POLICY "Staff and admins can update lot bookkeeping"
   ON public.inventory_lots FOR UPDATE
   USING (
@@ -243,6 +250,7 @@ CREATE POLICY "Staff and admins can update lot bookkeeping"
     OR public.has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Admins can delete unused lots" ON public.inventory_lots;
 CREATE POLICY "Admins can delete unused lots"
   ON public.inventory_lots FOR DELETE
   USING (
@@ -255,6 +263,7 @@ CREATE POLICY "Admins can delete unused lots"
 -- inventory_dispensations
 -- INSERT is blocked at the policy layer; dispense_from_lot() runs SECURITY DEFINER.
 -- UPDATE and DELETE are blocked for everyone (no policies → denied with RLS on).
+DROP POLICY IF EXISTS "Staff and admins can read all dispensations" ON public.inventory_dispensations;
 CREATE POLICY "Staff and admins can read all dispensations"
   ON public.inventory_dispensations FOR SELECT
   USING (
