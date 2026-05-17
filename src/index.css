@@ -128,6 +128,47 @@
   }
 }
 
+/* EHA brand button utility classes — editorial, squared, uppercase tracked */
+@layer components {
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Jost', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 13px;
+    border-radius: 0;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+  }
+  .btn-primary {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border: 0;
+    padding: 14px 28px;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-secondary {
+    background: var(--color-accent);
+    color: var(--color-accent-on); /* NEVER white */
+    border: 0;
+    padding: 14px 28px;
+  }
+  .btn-secondary:hover { filter: brightness(0.95); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ink);
+    border: 0;
+    border-bottom: var(--rule);
+    padding: 8px 0;
+  }
+  .btn-ghost:hover { color: var(--color-accent); }
+}
+
 /* Section divider — 1px gold at 40% opacity */
 .section-divider {
   height: 1px;
