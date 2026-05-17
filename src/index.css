@@ -36,6 +36,12 @@
     --input: 36 20% 87%;
     --ring: 32 36% 56%;
     --radius: 0.1875rem;
+    /* EHA brand raw values — for .btn-* utility classes */
+    --color-ink: #2A2826;
+    --color-paper: #F2EBDC;
+    --color-accent: #B8956A;
+    --color-accent-on: #2A2826;
+    --rule: 1px solid var(--color-accent);
     --shadow-sm: none;
     --shadow-md: none;
     --shadow-lg: none;
