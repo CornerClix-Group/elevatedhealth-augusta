@@ -37,12 +37,20 @@ CREATE TABLE IF NOT EXISTS public.clinical_protocol_versions (
   )
 );
 
-ALTER TABLE public.clinical_protocols
-  ADD CONSTRAINT clinical_protocols_current_version_fkey
-  FOREIGN KEY (current_version_id)
-  REFERENCES public.clinical_protocol_versions(id)
-  ON DELETE SET NULL
-  DEFERRABLE INITIALLY DEFERRED;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'clinical_protocols_current_version_fkey'
+  ) THEN
+    ALTER TABLE public.clinical_protocols
+      ADD CONSTRAINT clinical_protocols_current_version_fkey
+      FOREIGN KEY (current_version_id)
+      REFERENCES public.clinical_protocol_versions(id)
+      ON DELETE SET NULL
+      DEFERRABLE INITIALLY DEFERRED;
+  END IF;
+END $$;
 
 CREATE TABLE IF NOT EXISTS public.clinical_protocol_executions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

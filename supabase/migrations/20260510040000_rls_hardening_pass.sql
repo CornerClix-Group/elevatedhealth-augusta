@@ -51,6 +51,7 @@ DROP POLICY IF EXISTS "Allow public symptom log insert via intake"
 -- patient's email (no patient_id FK exists on this table).
 -- ============================================================================
 
+DROP POLICY IF EXISTS "Patients can view their own consultation bookings" ON public.consultation_bookings;
 CREATE POLICY "Patients can view their own consultation bookings"
   ON public.consultation_bookings
   FOR SELECT
@@ -82,6 +83,7 @@ CREATE POLICY "Patients can view their own consultation bookings"
 DROP POLICY IF EXISTS "Staff and admins can manage patients"
   ON public.patients;
 
+DROP POLICY IF EXISTS "Staff and admins can read all patients" ON public.patients;
 CREATE POLICY "Staff and admins can read all patients"
   ON public.patients
   FOR SELECT
@@ -91,6 +93,7 @@ CREATE POLICY "Staff and admins can read all patients"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can update patients" ON public.patients;
 CREATE POLICY "Staff and admins can update patients"
   ON public.patients
   FOR UPDATE
@@ -104,6 +107,7 @@ CREATE POLICY "Staff and admins can update patients"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can insert patients" ON public.patients;
 CREATE POLICY "Staff and admins can insert patients"
   ON public.patients
   FOR INSERT
@@ -120,6 +124,7 @@ CREATE POLICY "Staff and admins can insert patients"
 DROP POLICY IF EXISTS "Staff and admins can manage clinical notes"
   ON public.clinical_notes;
 
+DROP POLICY IF EXISTS "Staff and admins can read clinical notes" ON public.clinical_notes;
 CREATE POLICY "Staff and admins can read clinical notes"
   ON public.clinical_notes
   FOR SELECT
@@ -129,6 +134,7 @@ CREATE POLICY "Staff and admins can read clinical notes"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can insert clinical notes" ON public.clinical_notes;
 CREATE POLICY "Staff and admins can insert clinical notes"
   ON public.clinical_notes
   FOR INSERT
@@ -138,6 +144,7 @@ CREATE POLICY "Staff and admins can insert clinical notes"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can update clinical notes" ON public.clinical_notes;
 CREATE POLICY "Staff and admins can update clinical notes"
   ON public.clinical_notes
   FOR UPDATE
@@ -151,6 +158,7 @@ CREATE POLICY "Staff and admins can update clinical notes"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Admins can delete clinical notes" ON public.clinical_notes;
 CREATE POLICY "Admins can delete clinical notes"
   ON public.clinical_notes
   FOR DELETE
@@ -162,6 +170,7 @@ CREATE POLICY "Admins can delete clinical notes"
 DROP POLICY IF EXISTS "Staff and admins can manage lab results"
   ON public.lab_results;
 
+DROP POLICY IF EXISTS "Staff and admins can read lab results" ON public.lab_results;
 CREATE POLICY "Staff and admins can read lab results"
   ON public.lab_results
   FOR SELECT
@@ -171,6 +180,7 @@ CREATE POLICY "Staff and admins can read lab results"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can insert lab results" ON public.lab_results;
 CREATE POLICY "Staff and admins can insert lab results"
   ON public.lab_results
   FOR INSERT
@@ -180,6 +190,7 @@ CREATE POLICY "Staff and admins can insert lab results"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can update lab results" ON public.lab_results;
 CREATE POLICY "Staff and admins can update lab results"
   ON public.lab_results
   FOR UPDATE
@@ -193,6 +204,7 @@ CREATE POLICY "Staff and admins can update lab results"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Admins can delete lab results" ON public.lab_results;
 CREATE POLICY "Admins can delete lab results"
   ON public.lab_results
   FOR DELETE
@@ -204,6 +216,7 @@ CREATE POLICY "Admins can delete lab results"
 DROP POLICY IF EXISTS "Staff and admins can manage medications"
   ON public.medications;
 
+DROP POLICY IF EXISTS "Staff and admins can read medications" ON public.medications;
 CREATE POLICY "Staff and admins can read medications"
   ON public.medications
   FOR SELECT
@@ -213,6 +226,7 @@ CREATE POLICY "Staff and admins can read medications"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can insert medications" ON public.medications;
 CREATE POLICY "Staff and admins can insert medications"
   ON public.medications
   FOR INSERT
@@ -222,6 +236,7 @@ CREATE POLICY "Staff and admins can insert medications"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can update medications" ON public.medications;
 CREATE POLICY "Staff and admins can update medications"
   ON public.medications
   FOR UPDATE
@@ -235,6 +250,7 @@ CREATE POLICY "Staff and admins can update medications"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Admins can delete medications" ON public.medications;
 CREATE POLICY "Admins can delete medications"
   ON public.medications
   FOR DELETE
@@ -246,6 +262,7 @@ CREATE POLICY "Admins can delete medications"
 DROP POLICY IF EXISTS "Staff and admins can manage treatment plans"
   ON public.treatment_plans;
 
+DROP POLICY IF EXISTS "Staff and admins can read treatment plans" ON public.treatment_plans;
 CREATE POLICY "Staff and admins can read treatment plans"
   ON public.treatment_plans
   FOR SELECT
@@ -255,6 +272,7 @@ CREATE POLICY "Staff and admins can read treatment plans"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can insert treatment plans" ON public.treatment_plans;
 CREATE POLICY "Staff and admins can insert treatment plans"
   ON public.treatment_plans
   FOR INSERT
@@ -264,6 +282,7 @@ CREATE POLICY "Staff and admins can insert treatment plans"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can update treatment plans" ON public.treatment_plans;
 CREATE POLICY "Staff and admins can update treatment plans"
   ON public.treatment_plans
   FOR UPDATE
@@ -277,6 +296,7 @@ CREATE POLICY "Staff and admins can update treatment plans"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Admins can delete treatment plans" ON public.treatment_plans;
 CREATE POLICY "Admins can delete treatment plans"
   ON public.treatment_plans
   FOR DELETE
@@ -288,6 +308,7 @@ CREATE POLICY "Admins can delete treatment plans"
 DROP POLICY IF EXISTS "Staff and admins can manage SOAP notes"
   ON public.soap_notes;
 
+DROP POLICY IF EXISTS "Staff and admins can read SOAP notes" ON public.soap_notes;
 CREATE POLICY "Staff and admins can read SOAP notes"
   ON public.soap_notes
   FOR SELECT
@@ -297,6 +318,7 @@ CREATE POLICY "Staff and admins can read SOAP notes"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can insert SOAP notes" ON public.soap_notes;
 CREATE POLICY "Staff and admins can insert SOAP notes"
   ON public.soap_notes
   FOR INSERT
@@ -306,6 +328,7 @@ CREATE POLICY "Staff and admins can insert SOAP notes"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can update SOAP notes" ON public.soap_notes;
 CREATE POLICY "Staff and admins can update SOAP notes"
   ON public.soap_notes
   FOR UPDATE
@@ -319,6 +342,7 @@ CREATE POLICY "Staff and admins can update SOAP notes"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Admins can delete SOAP notes" ON public.soap_notes;
 CREATE POLICY "Admins can delete SOAP notes"
   ON public.soap_notes
   FOR DELETE
@@ -330,6 +354,7 @@ CREATE POLICY "Admins can delete SOAP notes"
 DROP POLICY IF EXISTS "Staff and admins can manage encounter forms"
   ON public.encounter_forms;
 
+DROP POLICY IF EXISTS "Staff and admins can read encounter forms" ON public.encounter_forms;
 CREATE POLICY "Staff and admins can read encounter forms"
   ON public.encounter_forms
   FOR SELECT
@@ -339,6 +364,7 @@ CREATE POLICY "Staff and admins can read encounter forms"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can insert encounter forms" ON public.encounter_forms;
 CREATE POLICY "Staff and admins can insert encounter forms"
   ON public.encounter_forms
   FOR INSERT
@@ -348,6 +374,7 @@ CREATE POLICY "Staff and admins can insert encounter forms"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can update encounter forms" ON public.encounter_forms;
 CREATE POLICY "Staff and admins can update encounter forms"
   ON public.encounter_forms
   FOR UPDATE
@@ -361,6 +388,7 @@ CREATE POLICY "Staff and admins can update encounter forms"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Admins can delete encounter forms" ON public.encounter_forms;
 CREATE POLICY "Admins can delete encounter forms"
   ON public.encounter_forms
   FOR DELETE
@@ -372,6 +400,7 @@ CREATE POLICY "Admins can delete encounter forms"
 DROP POLICY IF EXISTS "Staff and admins can manage superbills"
   ON public.superbills;
 
+DROP POLICY IF EXISTS "Staff and admins can read superbills" ON public.superbills;
 CREATE POLICY "Staff and admins can read superbills"
   ON public.superbills
   FOR SELECT
@@ -381,6 +410,7 @@ CREATE POLICY "Staff and admins can read superbills"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can insert superbills" ON public.superbills;
 CREATE POLICY "Staff and admins can insert superbills"
   ON public.superbills
   FOR INSERT
@@ -390,6 +420,7 @@ CREATE POLICY "Staff and admins can insert superbills"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Staff and admins can update superbills" ON public.superbills;
 CREATE POLICY "Staff and admins can update superbills"
   ON public.superbills
   FOR UPDATE
@@ -403,6 +434,7 @@ CREATE POLICY "Staff and admins can update superbills"
     OR has_role(auth.uid(), 'staff'::app_role)
   );
 
+DROP POLICY IF EXISTS "Admins can delete superbills" ON public.superbills;
 CREATE POLICY "Admins can delete superbills"
   ON public.superbills
   FOR DELETE
@@ -448,6 +480,7 @@ DROP POLICY IF EXISTS "Anyone can create toxicity payment record"
 DROP POLICY IF EXISTS "Authenticated can view active clinical protocols"
   ON public.clinical_protocols;
 
+DROP POLICY IF EXISTS "Staff and admins can view clinical protocols" ON public.clinical_protocols;
 CREATE POLICY "Staff and admins can view clinical protocols"
   ON public.clinical_protocols
   FOR SELECT
@@ -460,6 +493,7 @@ CREATE POLICY "Staff and admins can view clinical protocols"
 DROP POLICY IF EXISTS "Authenticated users can view protocols"
   ON public.protocols;
 
+DROP POLICY IF EXISTS "Staff and admins can view protocols" ON public.protocols;
 CREATE POLICY "Staff and admins can view protocols"
   ON public.protocols
   FOR SELECT
@@ -472,6 +506,7 @@ CREATE POLICY "Staff and admins can view protocols"
 DROP POLICY IF EXISTS "Authenticated users can view SOAP templates"
   ON public.soap_templates;
 
+DROP POLICY IF EXISTS "Staff and admins can view SOAP templates" ON public.soap_templates;
 CREATE POLICY "Staff and admins can view SOAP templates"
   ON public.soap_templates
   FOR SELECT
@@ -484,6 +519,7 @@ CREATE POLICY "Staff and admins can view SOAP templates"
 DROP POLICY IF EXISTS "Authenticated users can view clinic settings"
   ON public.clinic_settings;
 
+DROP POLICY IF EXISTS "Staff and admins can view clinic settings" ON public.clinic_settings;
 CREATE POLICY "Staff and admins can view clinic settings"
   ON public.clinic_settings
   FOR SELECT
@@ -506,6 +542,7 @@ CREATE POLICY "Staff and admins can view clinic settings"
 DROP POLICY IF EXISTS "Authenticated can read SKU catalog"
   ON public.inventory_skus;
 
+DROP POLICY IF EXISTS "Staff and admins can read SKU catalog" ON public.inventory_skus;
 CREATE POLICY "Staff and admins can read SKU catalog"
   ON public.inventory_skus
   FOR SELECT

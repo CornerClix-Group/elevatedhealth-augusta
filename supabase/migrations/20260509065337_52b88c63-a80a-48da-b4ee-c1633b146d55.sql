@@ -71,7 +71,7 @@ CREATE POLICY "Block deletion of master admin role"
   FOR DELETE
   USING (
     NOT (
-      user_id = '31178dc3-3509-4cdd-8440-e75835bb1521'::uuid
+      user_id = '1227a9b3-e319-4c79-a31a-ad17cdc847cc'::uuid
       AND role = 'admin'::app_role
     )
   );

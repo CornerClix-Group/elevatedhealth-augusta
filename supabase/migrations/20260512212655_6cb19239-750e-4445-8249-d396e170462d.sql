@@ -1,5 +1,5 @@
 -- Pharmacies table
-CREATE TABLE public.pharmacies (
+CREATE TABLE IF NOT EXISTS public.pharmacies (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   slug text NOT NULL UNIQUE,
   name text NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE public.pharmacies (
 
 -- Add pharmacy_id and portal submission tracking to orders
 ALTER TABLE public.orders ADD COLUMN pharmacy_id uuid REFERENCES public.pharmacies(id);
-CREATE INDEX idx_orders_pharmacy_id ON public.orders(pharmacy_id);
+CREATE INDEX IF NOT EXISTS idx_orders_pharmacy_id ON public.orders(pharmacy_id);
 
 ALTER TABLE public.orders ADD COLUMN portal_opened_at timestamptz;
 ALTER TABLE public.orders ADD COLUMN portal_submitted_at timestamptz;
@@ -40,9 +40,11 @@ ALTER TABLE public.orders ADD COLUMN submission_method text
 -- RLS
 ALTER TABLE public.pharmacies ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS pharmacies_read_active ON public.pharmacies;
 CREATE POLICY pharmacies_read_active ON public.pharmacies
   FOR SELECT USING (auth.uid() IS NOT NULL AND is_active = true);
 
+DROP POLICY IF EXISTS pharmacies_admin_write ON public.pharmacies;
 CREATE POLICY pharmacies_admin_write ON public.pharmacies
   FOR ALL USING (
     EXISTS (
@@ -52,6 +54,7 @@ CREATE POLICY pharmacies_admin_write ON public.pharmacies
   );
 
 -- Updated-at trigger
+DROP TRIGGER IF EXISTS set_pharmacies_updated_at ON public.pharmacies;
 CREATE TRIGGER set_pharmacies_updated_at
   BEFORE UPDATE ON public.pharmacies
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();

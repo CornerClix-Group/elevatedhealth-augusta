@@ -14,22 +14,28 @@
 -- inside the clinic on a Caroline / Troy queue.
 -- ============================================================================
 
-CREATE TYPE public.eligibility_review_status AS ENUM (
-  'pending',
-  'contacted',
-  'scheduled',
-  'declined',
-  'referred_out'
-);
+DO $$ BEGIN
+  CREATE TYPE public.eligibility_review_status AS ENUM (
+    'pending',
+    'contacted',
+    'scheduled',
+    'declined',
+    'referred_out'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE TYPE public.callback_window AS ENUM (
-  'morning',
-  'afternoon',
-  'evening',
-  'no_preference'
-);
+DO $$ BEGIN
+  CREATE TYPE public.callback_window AS ENUM (
+    'morning',
+    'afternoon',
+    'evening',
+    'no_preference'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE TABLE public.eligibility_review_requests (
+CREATE TABLE IF NOT EXISTS public.eligibility_review_requests (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   patient_id uuid REFERENCES public.patients(id) ON DELETE SET NULL,
   -- Snapshot of the patient name + contact info at submission time so the
@@ -55,9 +61,9 @@ CREATE TABLE public.eligibility_review_requests (
   updated_at timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_eligibility_review_status
+CREATE INDEX IF NOT EXISTS idx_eligibility_review_status
   ON public.eligibility_review_requests(status, created_at DESC);
-CREATE INDEX idx_eligibility_review_patient
+CREATE INDEX IF NOT EXISTS idx_eligibility_review_patient
   ON public.eligibility_review_requests(patient_id)
   WHERE patient_id IS NOT NULL;
 
@@ -84,6 +90,7 @@ ALTER TABLE public.eligibility_review_requests ENABLE ROW LEVEL SECURITY;
 -- Helper: did the caller originate this request? Allows a logged-in
 -- patient to read their own (limited) submission for confirmation views,
 -- but not the full queue.
+DROP POLICY IF EXISTS eligibility_review_select_staff ON public.eligibility_review_requests;
 CREATE POLICY eligibility_review_select_staff
   ON public.eligibility_review_requests
   FOR SELECT
@@ -96,6 +103,7 @@ CREATE POLICY eligibility_review_select_staff
     )
   );
 
+DROP POLICY IF EXISTS eligibility_review_update_staff ON public.eligibility_review_requests;
 CREATE POLICY eligibility_review_update_staff
   ON public.eligibility_review_requests
   FOR UPDATE

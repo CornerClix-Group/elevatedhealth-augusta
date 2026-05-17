@@ -17,6 +17,7 @@ ALTER TABLE public.consent_expiration_reminders_sent ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "consent_expiration_reminders_staff_read"
   ON public.consent_expiration_reminders_sent;
 
+DROP POLICY IF EXISTS "consent_expiration_reminders_staff_read" ON public.consent_expiration_reminders_sent;
 CREATE POLICY "consent_expiration_reminders_staff_read"
   ON public.consent_expiration_reminders_sent
   FOR SELECT TO authenticated USING (
