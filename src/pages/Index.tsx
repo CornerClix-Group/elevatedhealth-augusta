@@ -5,7 +5,6 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import SEOSchema from "@/components/SEOSchema";
 import { FloatingMobileCTA } from "@/components/FloatingMobileCTA";
-import { FloatingMobileChatCTA } from "@/components/FloatingMobileChatCTA";
 import CacheRefreshBanner from "@/components/CacheRefreshBanner";
 
 import PromiseSection from "@/components/home/PromiseSection";
@@ -76,7 +75,6 @@ const Index = () => {
       </main>
       <Footer />
       <FloatingMobileCTA />
-      <FloatingMobileChatCTA />
     </div>
   );
 };
