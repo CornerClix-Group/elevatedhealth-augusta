@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { TestTube, CheckCircle, Loader2, User, Eye, Clock, Upload, AlertTriangle } from "lucide-react";
-import LabPdfUploader from "./LabPdfUploader";
 
 interface PendingResult {
   id: string;
@@ -152,19 +151,11 @@ const LabResultsQueue = ({ onSelectPatient }: LabResultsQueueProps) => {
       </CardHeader>
       <CardContent className="space-y-3">
         {showBatchUpload && (
-          <div className="border rounded-lg p-4 bg-muted/30 space-y-3">
-            <p className="text-sm font-medium">Upload LabCorp or ZRT PDFs</p>
+          <div className="border rounded-lg p-4 bg-muted/30 space-y-2">
+            <p className="text-sm font-medium">Lab PDF upload retired</p>
             <p className="text-xs text-muted-foreground">
-              AI will auto-detect the lab source and extract values. Patient matching is done by name from the PDF.
+              Enter LabCorp results from the patient chart using &quot;Add lab result&quot; — ZRT saliva parsing is no longer offered.
             </p>
-            <LabPdfUploader
-              patientName=""
-              onParsed={(data) => {
-                toast.info(`Extracted results for ${data.patientName || 'unknown patient'}. Open their chart to save.`);
-                setShowBatchUpload(false);
-              }}
-              onPdfUploaded={() => {}}
-            />
           </div>
         )}
 

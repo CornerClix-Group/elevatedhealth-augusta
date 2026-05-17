@@ -13,7 +13,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Beaker, AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import LabPdfUploader from "./LabPdfUploader";
 import HolgateAnalysisPanel from "./HolgateAnalysisPanel";
 import { analyzeLabResults, ClinicalImpression, LabValues } from "@/lib/holgateLogic";
 import { generateMedicationRecommendations, MedicationRecommendation } from "@/lib/medicationMapping";
@@ -112,7 +111,7 @@ const NewLabResultModal = ({
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   
   // Lab Source Toggle
-  const [labSource, setLabSource] = useState<"zrt" | "labcorp">("zrt");
+  const [labSource, setLabSource] = useState<"zrt" | "labcorp">("labcorp");
   
   // Legacy saliva labs (Primary)
   const [estradiol, setEstradiol] = useState("");
@@ -484,7 +483,7 @@ const NewLabResultModal = ({
   };
 
   const resetAndClose = () => {
-    setLabSource("zrt");
+    setLabSource("labcorp");
     setCollectionDate(new Date().toISOString().split('T')[0]);
     setShowAdvanced(false);
     setParsedFromPdf(false);
@@ -622,45 +621,14 @@ const NewLabResultModal = ({
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Lab Source Toggle */}
-            <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
-              <Label className="text-sm font-medium">Lab Source:</Label>
-              <div className="flex gap-1 bg-background rounded-lg p-1">
-                <button
-                  type="button"
-                  onClick={() => setLabSource("zrt")}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                    labSource === "zrt"
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  ZRT (Saliva)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLabSource("labcorp")}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                    labSource === "labcorp"
-                      ? "bg-amber-600 text-white"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Labcorp (Blood)
-                </button>
-              </div>
-            </div>
+            {labSource === "zrt" && isEditMode && (
+              <p className="text-xs text-muted-foreground rounded-md border border-border bg-muted/40 p-3">
+                Legacy ZRT saliva record — edit values below. New entries use LabCorp blood panels only.
+              </p>
+            )}
 
-            {/* Legacy saliva result fields */}
-            {labSource === "zrt" && (
+            {labSource === "zrt" && isEditMode && (
               <>
-                {/* PDF Upload */}
-                <LabPdfUploader 
-                  patientName={patientName}
-                  onParsed={handleParsedData}
-                  onPdfUploaded={handlePdfUploaded}
-                />
-
                 <div>
                   <Label htmlFor="collectionDate">Collection Date</Label>
                   <Input

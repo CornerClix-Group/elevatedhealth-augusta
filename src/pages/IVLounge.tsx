@@ -9,19 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  ArrowRight,
-  Check,
-  Clock,
-  Droplet,
-  Heart,
-  Plus,
-  ShieldCheck,
-  Sparkles,
-  Star,
-  X,
-  Zap,
-} from "lucide-react";
+import { ArrowRight, Check, Clock, Droplet, Plus, Star, X } from "lucide-react";
+import { BrandCategoryGlyph, normalizeBrandGlyphCategory } from "@/components/brand/BrandCategoryGlyph";
 import { ELEVATED_PROGRAMS, MEMBER_DISCOUNT_PERCENT } from "@/lib/stripeConfig";
 
 interface Therapy {
@@ -47,12 +36,12 @@ interface Addon {
   icon_name: string | null;
 }
 
-const CATEGORY_META: Record<string, { color: string; icon: any; tagline: string }> = {
-  Recovery: { color: "from-rose-500/15 to-orange-400/10", icon: Zap, tagline: "Bounce back fast" },
-  Wellness: { color: "from-emerald-500/15 to-teal-400/10", icon: Heart, tagline: "Daily defense" },
-  Performance: { color: "from-blue-500/15 to-indigo-400/10", icon: Zap, tagline: "Train. Recover. Repeat." },
-  Immunity: { color: "from-amber-500/15 to-yellow-400/10", icon: ShieldCheck, tagline: "Stay in the game" },
-  Glow: { color: "from-pink-500/15 to-fuchsia-400/10", icon: Sparkles, tagline: "Skin, hair & nails" },
+const CATEGORY_META: Record<string, { tagline: string }> = {
+  Recovery: { tagline: "Bounce back fast" },
+  Wellness: { tagline: "Daily balance" },
+  Performance: { tagline: "Train. Recover. Repeat." },
+  Immunity: { tagline: "Stay in the game" },
+  Glow: { tagline: "Skin, hair & nails" },
 };
 
 const IV_START_FEE_NOTE = "RN start & monitoring included";
@@ -156,8 +145,11 @@ const IVLounge = () => {
           <div className="absolute bottom-0 -left-32 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
 
           <div className="relative container mx-auto px-6 lg:px-8 max-w-5xl text-center">
-            <Badge className="mb-6 bg-accent/10 text-accent border-accent/20 hover:bg-accent/15">
-              <Droplet className="h-3 w-3 mr-1.5" /> Walk-in friendly · No consult needed
+            <Badge className="mb-6 bg-card text-foreground border border-accent/30 hover:bg-card">
+              <span className="inline-flex items-center gap-1.5">
+                <BrandCategoryGlyph category="IV" size={14} className="text-accent" />
+                Walk-in friendly · No consult needed
+              </span>
             </Badge>
             <h1 className="font-playfair text-4xl md:text-6xl lg:text-7xl text-foreground leading-[1.1] mb-6">
               Pick your drip.<br />
@@ -258,32 +250,40 @@ const IVLounge = () => {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map((therapy) => {
                   const meta = CATEGORY_META[therapy.category] || CATEGORY_META.Wellness;
-                  const Icon = meta.icon;
+                  const glyphCategory = normalizeBrandGlyphCategory(therapy.category);
                   const isSelected = selectedTherapyId === therapy.id;
                   const isPopular = therapy.name === "The Meyers";
 
                   return (
                     <Card
                       key={therapy.id}
-                      className={`group relative overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 border ${
-                        isSelected ? "border-accent ring-2 ring-accent/30 shadow-xl" : "border-border"
+                      className={`group relative overflow-hidden cursor-pointer transition-all duration-300 bg-card hover:shadow-lg border ${
+                        isSelected
+                          ? "border-accent shadow-md ring-1 ring-accent/25"
+                          : "border-border hover:border-accent/40"
                       }`}
                       onClick={() => selectTherapy(therapy.id)}
                     >
-                      <div className={`absolute inset-0 bg-gradient-to-br ${meta.color} opacity-50 group-hover:opacity-100 transition-opacity`} />
+                      <div
+                        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                        aria-hidden
+                      />
                       {isPopular && (
                         <div className="absolute top-4 right-4 z-10">
-                          <Badge className="bg-accent text-accent-foreground border-0 shadow-md">
-                            <Star className="h-3 w-3 mr-1 fill-current" /> Most Popular
+                          <Badge className="bg-primary text-primary-foreground border border-accent/30">
+                            <Star className="h-3 w-3 mr-1 fill-accent text-accent" /> Most Popular
                           </Badge>
                         </div>
                       )}
                       <CardContent className="relative p-6 md:p-7 flex flex-col h-full min-h-[360px]">
                         <div className="flex items-start justify-between mb-5">
-                          <div className="w-12 h-12 rounded-full bg-background/80 backdrop-blur flex items-center justify-center shadow-sm">
-                            <Icon className="h-5 w-5 text-accent" />
+                          <div
+                            className="w-14 h-14 rounded-sm border border-accent/35 bg-[var(--color-paper)] flex items-center justify-center"
+                            aria-hidden
+                          >
+                            <BrandCategoryGlyph category={glyphCategory} size={26} className="text-primary" />
                           </div>
-                          <span className="text-xs font-jost uppercase tracking-wider text-muted-foreground">
+                          <span className="section-label text-[10px] tracking-[0.2em]">
                             {therapy.category}
                           </span>
                         </div>
@@ -297,7 +297,7 @@ const IVLounge = () => {
                         {therapy.ingredients && therapy.ingredients.length > 0 && (
                           <div className="flex flex-wrap gap-1.5 mb-5">
                             {therapy.ingredients.slice(0, 4).map((ing) => (
-                              <span key={ing} className="text-[11px] px-2 py-1 bg-background/70 backdrop-blur rounded-full text-foreground/80">
+                              <span key={ing} className="text-[11px] px-2 py-1 border border-border/80 bg-muted/50 rounded-sm text-foreground/85 font-jost">
                                 {ing}
                               </span>
                             ))}

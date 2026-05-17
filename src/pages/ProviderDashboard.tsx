@@ -30,7 +30,6 @@ import {
 import { Label } from "@/components/ui/label";
 import LabAnalysisCard from "@/components/provider/LabAnalysisCard";
 import LabCorpRequisition from "@/components/provider/LabCorpRequisition";
-import AILabPanelCard from "@/components/provider/AILabPanelCard";
 import HormoneAddonSelector from "@/components/provider/HormoneAddonSelector";
 import PeptideAddonSelector from "@/components/provider/PeptideAddonSelector";
 import HairRestorationAddonSelector from "@/components/provider/HairRestorationAddonSelector";
@@ -2326,12 +2325,6 @@ const ProviderDashboard = () => {
                   </CardContent>
                 </Card>
               )}
-
-              {/* AI-Suggested Lab Panel */}
-              <AILabPanelCard
-                patientId={selectedPatient.patient.id}
-                existingRecommendation={(selectedPatient.patient as any).lab_panel_recommendation}
-              />
 
               {/* LabCorp Requisition Card */}
               {selectedPatient.labPath?.path === "labcorp" && selectedPatient.labPath.panel && (
