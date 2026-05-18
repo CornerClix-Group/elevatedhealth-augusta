@@ -10,8 +10,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Check, Clock, Droplet, Plus, Star, X } from "lucide-react";
-import { BrandCategoryGlyph, BrandTherapyMark } from "@/components/brand/BrandTherapyMark";
 import { ELEVATED_PROGRAMS, MEMBER_DISCOUNT_PERCENT } from "@/lib/stripeConfig";
+import { IV_THERAPIES_CATALOG } from "@/lib/ivTherapiesCatalog";
 
 interface Therapy {
   id: string;
@@ -63,7 +63,8 @@ const IVLounge = () => {
         supabase.from("iv_therapies").select("*").eq("is_active", true).order("sort_order").order("price"),
         supabase.from("iv_addons").select("*").eq("is_active", true).order("price"),
       ]);
-      setTherapies((t as Therapy[]) || []);
+      const rows = (t as Therapy[]) || [];
+      setTherapies(rows.length > 0 ? rows : (IV_THERAPIES_CATALOG as Therapy[]));
       setAddons((a as Addon[]) || []);
       setLoading(false);
     })();
@@ -145,11 +146,8 @@ const IVLounge = () => {
           <div className="absolute bottom-0 -left-32 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
 
           <div className="relative container mx-auto px-6 lg:px-8 max-w-5xl text-center">
-            <Badge className="mb-6 bg-card text-foreground border border-accent/30 hover:bg-card">
-              <span className="inline-flex items-center gap-1.5">
-                <BrandCategoryGlyph category="IV" size={14} className="text-accent" />
-                Walk-in friendly · No consult needed
-              </span>
+            <Badge className="mb-6 bg-card text-foreground border border-accent/30 hover:bg-card font-jost">
+              Walk-in friendly · No consult needed
             </Badge>
             <h1 className="font-playfair text-4xl md:text-6xl lg:text-7xl text-foreground leading-[1.1] mb-6">
               Pick your drip.<br />
@@ -275,12 +273,7 @@ const IVLounge = () => {
                         </div>
                       )}
                       <CardContent className="relative p-6 md:p-7 flex flex-col h-full min-h-[360px]">
-                        <div className="flex items-start justify-between mb-5">
-                          <BrandTherapyMark
-                            therapyName={therapy.name}
-                            category={therapy.category}
-                            size={56}
-                          />
+                        <div className="flex items-start justify-end mb-4">
                           <span className="section-label text-[10px] tracking-[0.2em]">
                             {therapy.category}
                           </span>
