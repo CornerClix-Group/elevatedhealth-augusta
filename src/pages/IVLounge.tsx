@@ -120,10 +120,21 @@ const IVLounge = () => {
     setSelectedAddonIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
 
   const selectTherapy = (id: string) => {
+    const therapy = therapies.find((t) => t.id === id);
+    if (!therapy) return;
+
     setSelectedTherapyId(id);
-    requestAnimationFrame(() => {
-      document.getElementById("your-drip")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    toast({
+      title: `${therapy.name} selected`,
+      description: "Scroll down to add boosters and check out.",
     });
+
+    window.setTimeout(() => {
+      const target = document.getElementById("your-drip");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 80);
   };
 
   const resolveTherapyIdForCheckout = async (therapy: Therapy): Promise<string> => {
@@ -327,6 +338,14 @@ const IVLounge = () => {
                           : "border-border hover:border-accent/40"
                       }`}
                       onClick={() => selectTherapy(therapy.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          selectTherapy(therapy.id);
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
                     >
                       <div
                         className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
@@ -368,12 +387,17 @@ const IVLounge = () => {
                             <div className="text-[10px] text-muted-foreground">{IV_START_FEE_NOTE}</div>
                           </div>
                           <Button
+                            type="button"
                             size="sm"
                             className={`rounded-full transition-all ${
                               isSelected
                                 ? "bg-accent text-accent-foreground"
                                 : "bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground"
                             }`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              selectTherapy(therapy.id);
+                            }}
                           >
                             {isSelected ? <><Check className="h-4 w-4 mr-1" /> Selected</> : <>Select <ArrowRight className="h-4 w-4 ml-1" /></>}
                           </Button>
@@ -388,7 +412,14 @@ const IVLounge = () => {
         </section>
 
         {/* BUILD YOUR DRIP / CHECKOUT */}
-        <section id="your-drip" className="py-16 md:py-20 bg-secondary/40 scroll-mt-24">
+        <section
+          id="your-drip"
+          className={`py-16 md:py-20 scroll-mt-28 transition-shadow ${
+            selectedTherapy
+              ? "bg-secondary/60 ring-2 ring-accent/40 ring-inset"
+              : "bg-secondary/40"
+          }`}
+        >
           <div className="container mx-auto px-6 lg:px-8 max-w-6xl">
             <div className="text-center mb-12">
               <p className="section-label mb-3">Build Your Drip</p>
@@ -411,10 +442,18 @@ const IVLounge = () => {
                 <h3 className="font-playfair text-xl text-foreground mb-2">Optional Boosters</h3>
                 <p className="text-sm text-muted-foreground mb-4">Stack any add-on for $25 each.</p>
 
-                {loading ? (
+                {!selectedTherapy ? (
+                  <p className="text-sm text-muted-foreground font-jost py-6">
+                    Select a drip from the menu above to unlock booster options.
+                  </p>
+                ) : loading ? (
                   <div className="space-y-3">
                     {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)}
                   </div>
+                ) : addons.length === 0 ? (
+                  <p className="text-sm text-muted-foreground font-jost py-6">
+                    No boosters listed online yet — you can still check out with your drip only, or call us to add boosters at your visit.
+                  </p>
                 ) : (
                   <div className="space-y-3">
                     {addons.map((addon) => {
