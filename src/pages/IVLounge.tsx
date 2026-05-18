@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowRight, Check, Clock, Droplet, Plus, Star, X } from "lucide-react";
+import { ArrowRight, Check, Clock, Droplet, Plus, ShieldCheck, Star, X } from "lucide-react";
 import { ELEVATED_PROGRAMS, MEMBER_DISCOUNT_PERCENT } from "@/lib/stripeConfig";
 import { IV_THERAPIES_CATALOG } from "@/lib/ivTherapiesCatalog";
 
@@ -46,11 +46,16 @@ const CATEGORY_META: Record<string, { tagline: string }> = {
 
 const IV_START_FEE_NOTE = "RN start & monitoring included";
 
+const scrollToMenu = () => {
+  document.getElementById("the-menu")?.scrollIntoView({ behavior: "smooth", block: "start" });
+};
+
 const IVLounge = () => {
   const { toast } = useToast();
-  const [therapies, setTherapies] = useState<Therapy[]>([]);
+  const [therapies, setTherapies] = useState<Therapy[]>(IV_THERAPIES_CATALOG as Therapy[]);
   const [addons, setAddons] = useState<Addon[]>([]);
   const [loading, setLoading] = useState(true);
+  const [menuLoadError, setMenuLoadError] = useState<string | null>(null);
   const [selectedTherapyId, setSelectedTherapyId] = useState<string | null>(null);
   const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("All");
@@ -59,14 +64,40 @@ const IVLounge = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     (async () => {
-      const [{ data: t }, { data: a }] = await Promise.all([
-        supabase.from("iv_therapies").select("*").eq("is_active", true).order("sort_order").order("price"),
-        supabase.from("iv_addons").select("*").eq("is_active", true).order("price"),
-      ]);
-      const rows = (t as Therapy[]) || [];
-      setTherapies(rows.length > 0 ? rows : (IV_THERAPIES_CATALOG as Therapy[]));
-      setAddons((a as Addon[]) || []);
-      setLoading(false);
+      try {
+        const [therapiesRes, addonsRes] = await Promise.all([
+          supabase
+            .from("iv_therapies")
+            .select("*")
+            .eq("is_active", true)
+            .order("sort_order", { ascending: true }),
+          supabase.from("iv_addons").select("*").eq("is_active", true).order("price"),
+        ]);
+
+        if (therapiesRes.error) {
+          throw therapiesRes.error;
+        }
+
+        const rows = (therapiesRes.data as Therapy[]) || [];
+        if (rows.length > 0) {
+          setTherapies(rows);
+        }
+        setMenuLoadError(null);
+
+        if (addonsRes.error) {
+          console.warn("[IVLounge] add-ons load failed:", addonsRes.error.message);
+          setAddons([]);
+        } else {
+          setAddons((addonsRes.data as Addon[]) || []);
+        }
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Could not load menu from server";
+        console.warn("[IVLounge] using built-in menu fallback:", message);
+        setMenuLoadError(message);
+        setTherapies(IV_THERAPIES_CATALOG as Therapy[]);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 
@@ -95,12 +126,33 @@ const IVLounge = () => {
     });
   };
 
+  const resolveTherapyIdForCheckout = async (therapy: Therapy): Promise<string> => {
+    if (!therapy.id.startsWith("catalog-")) {
+      return therapy.id;
+    }
+
+    const { data, error } = await supabase
+      .from("iv_therapies")
+      .select("id")
+      .eq("name", therapy.name)
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (data?.id) return data.id;
+
+    throw new Error(
+      "Online checkout for this drip is not available yet. Please call us at (706) 760-3470 to book."
+    );
+  };
+
   const handleCheckout = async () => {
     if (!selectedTherapy) return;
     setCheckingOut(true);
     try {
+      const therapyId = await resolveTherapyIdForCheckout(selectedTherapy);
       const { data, error } = await supabase.functions.invoke("create-iv-drip-checkout", {
-        body: { therapy_id: selectedTherapy.id, addon_ids: selectedAddonIds },
+        body: { therapy_id: therapyId, addon_ids: selectedAddonIds },
       });
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
@@ -240,9 +292,24 @@ const IVLounge = () => {
               </div>
             </div>
 
-            {loading ? (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[...Array(6)].map((_, i) => <Skeleton key={i} className="h-80 rounded-2xl" />)}
+            {loading && (
+              <p className="text-sm text-muted-foreground mb-4 font-jost">Refreshing menu…</p>
+            )}
+            {menuLoadError && (
+              <p className="text-sm text-amber-700 dark:text-amber-400 mb-4 font-jost">
+                Showing standard menu while we reconnect to booking ({menuLoadError}).
+              </p>
+            )}
+
+            {filtered.length === 0 ? (
+              <div className="rounded-2xl border border-border bg-card p-10 text-center">
+                <p className="font-playfair text-xl text-foreground mb-2">Menu unavailable</p>
+                <p className="text-sm text-muted-foreground mb-6 font-jost">
+                  Please call <a href="tel:+17067603470" className="text-accent underline">(706) 760-3470</a> to book your IV, or try again in a moment.
+                </p>
+                <Button variant="outline" onClick={() => window.location.reload()}>
+                  Reload menu
+                </Button>
               </div>
             ) : (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -328,6 +395,14 @@ const IVLounge = () => {
               <h2 className="font-playfair text-3xl md:text-4xl text-foreground">
                 {selectedTherapy ? "Add boosters & check out" : "Pick a drip above to begin"}
               </h2>
+              <Button
+                type="button"
+                variant="link"
+                className="mt-3 text-accent font-jost"
+                onClick={scrollToMenu}
+              >
+                ← Back to menu
+              </Button>
             </div>
 
             <div className="grid lg:grid-cols-5 gap-8">
@@ -390,6 +465,11 @@ const IVLounge = () => {
                         <div className="py-8 text-center text-muted-foreground text-sm">
                           <Droplet className="h-10 w-10 mx-auto mb-3 opacity-30" />
                           No drip selected yet.<br />Choose one above to continue.
+                          <div className="mt-4">
+                            <Button type="button" variant="outline" size="sm" onClick={scrollToMenu}>
+                              ← Back to menu
+                            </Button>
+                          </div>
                         </div>
                       ) : (
                         <>
