@@ -82,6 +82,7 @@ interface RequestBody {
   // Patient self-serve path
   session_id?: string;
   slot_token?: string;
+  intake_id?: string;
   // Phone (legacy compatibility) — for staff_mode use staff_booking.customer_phone
   customer_phone?: string;
   // Staff attribution (always optional). Must pair with a non-self_service
@@ -137,6 +138,7 @@ serve(async (req) => {
     const {
       session_id,
       slot_token,
+      intake_id,
       customer_phone,
       booked_by_user_id: rawBookedBy,
       booking_source: rawSource,
@@ -509,6 +511,13 @@ serve(async (req) => {
     }
 
     await supabase.from("iv_drip_bookings").update({ appointment_id: appt.id }).eq("id", bookingId);
+
+    if (typeof intake_id === "string" && intake_id) {
+      await supabase
+        .from("iv_intake_responses")
+        .update({ appointment_id: appt.id, updated_at: new Date().toISOString() })
+        .eq("id", intake_id);
+    }
 
     // Fire confirmation. send-booking-confirmation now honours service_label,
     // scheduled_at, duration_minutes, location, and confirmation_number so the

@@ -29,6 +29,7 @@ const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMes
   const [unreadCount, setUnreadCount] = useState(0);
   const [inventoryAlertCount, setInventoryAlertCount] = useState(0);
   const [isBusinessAdmin, setIsBusinessAdmin] = useState(false);
+  const [canSeeIntakeFollowUps, setCanSeeIntakeFollowUps] = useState(false);
 
   const isOnProviderDashboard = location.pathname === "/provider/dashboard";
   const isOnSettings = location.pathname === "/admin/settings";
@@ -40,6 +41,16 @@ const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMes
         data: { user },
       } = await supabase.auth.getUser();
       if (!user || cancelled) return;
+      const { data: myRoles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id);
+      const roleSet = new Set((myRoles || []).map((r) => r.role));
+      if (!cancelled) {
+        setCanSeeIntakeFollowUps(
+          roleSet.has("admin") || roleSet.has("business_admin") || roleSet.has("provider"),
+        );
+      }
       const { data, error } = await supabase.rpc("has_business_admin_role", { _user_id: user.id });
       if (!cancelled && !error) setIsBusinessAdmin(!!data);
     })();
@@ -259,6 +270,14 @@ const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMes
                   Provider Schedules
                 </Link>
               </DropdownMenuItem>
+              {canSeeIntakeFollowUps && (
+                <DropdownMenuItem asChild>
+                  <Link to="/admin/intake-follow-ups" className="cursor-pointer gap-2">
+                    <FileText className="w-4 h-4" />
+                    Intake Follow-ups
+                  </Link>
+                </DropdownMenuItem>
+              )}
               {isBusinessAdmin && (
                 <DropdownMenuItem asChild>
                   <Link to="/admin/consent-versions" className="cursor-pointer gap-2">
@@ -390,6 +409,14 @@ const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMes
                   Provider Schedules
                 </Link>
               </DropdownMenuItem>
+              {canSeeIntakeFollowUps && (
+                <DropdownMenuItem asChild>
+                  <Link to="/admin/intake-follow-ups" className="cursor-pointer gap-2">
+                    <FileText className="w-4 h-4" />
+                    Intake Follow-ups
+                  </Link>
+                </DropdownMenuItem>
+              )}
               {isBusinessAdmin && (
                 <DropdownMenuItem asChild>
                   <Link to="/admin/consent-versions" className="cursor-pointer gap-2">

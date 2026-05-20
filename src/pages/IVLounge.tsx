@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -61,6 +62,7 @@ const IVLounge = () => {
   const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [checkingOut, setCheckingOut] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -140,61 +142,14 @@ const IVLounge = () => {
     }, 80);
   };
 
-  const resolveCatalogRowId = async (
-    table: "iv_therapies" | "iv_addons",
-    catalogId: string,
-    name: string
-  ): Promise<string | null> => {
-    if (!catalogId.startsWith("catalog-")) {
-      return catalogId;
-    }
-    const { data, error } = await supabase
-      .from(table)
-      .select("id")
-      .eq("name", name)
-      .eq("is_active", true)
-      .maybeSingle();
-    if (error) throw error;
-    return data?.id ?? null;
-  };
-
-  const resolveTherapyIdForCheckout = async (therapy: Therapy): Promise<string> => {
-    const id = await resolveCatalogRowId("iv_therapies", therapy.id, therapy.name);
-    if (id) return id;
-
-    throw new Error(
-      "Online checkout for this drip is not available yet. Please call us at (706) 760-3470 to book."
-    );
-  };
-
-  const resolveAddonIdsForCheckout = async (ids: string[]): Promise<string[]> => {
-    const resolved: string[] = [];
-    for (const id of ids) {
-      const addon = addons.find((a) => a.id === id);
-      if (!addon) continue;
-      const dbId = await resolveCatalogRowId("iv_addons", addon.id, addon.name);
-      if (dbId) resolved.push(dbId);
-    }
-    return resolved;
-  };
-
   const handleCheckout = async () => {
     if (!selectedTherapy) return;
     setCheckingOut(true);
     try {
-      const therapyId = await resolveTherapyIdForCheckout(selectedTherapy);
-      const addonIds = await resolveAddonIdsForCheckout(selectedAddonIds);
-      const { data, error } = await supabase.functions.invoke("create-iv-drip-checkout", {
-        body: { therapy_id: therapyId, addon_ids: addonIds },
-      });
-      if (error) throw error;
-      if (data?.url) window.location.href = data.url;
-    } catch (e: any) {
-      toast({
-        title: "Checkout error",
-        description: e?.message || "Please try again or call us at (706) 760-3470.",
-        variant: "destructive",
-      });
+      navigate(`/book/iv/screening?serviceId=${encodeURIComponent(selectedTherapy.id)}`);
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Could not start screening. Please call us to book.";
+      toast({ title: "Unable to continue", description: message, variant: "destructive" });
     } finally {
       setCheckingOut(false);
     }
@@ -247,9 +202,9 @@ const IVLounge = () => {
             <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 text-xs md:text-sm font-jost text-foreground/80 mb-6">
               <span className="inline-flex items-center gap-2"><span className="w-6 h-6 rounded-full bg-accent text-accent-foreground text-[11px] font-semibold flex items-center justify-center">1</span> Pick your drip</span>
               <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="inline-flex items-center gap-2"><span className="w-6 h-6 rounded-full bg-accent text-accent-foreground text-[11px] font-semibold flex items-center justify-center">2</span> Add boosters</span>
+              <span className="inline-flex items-center gap-2"><span className="w-6 h-6 rounded-full bg-accent text-accent-foreground text-[11px] font-semibold flex items-center justify-center">2</span> Complete screening</span>
               <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="inline-flex items-center gap-2"><span className="w-6 h-6 rounded-full bg-accent text-accent-foreground text-[11px] font-semibold flex items-center justify-center">3</span> Pay & schedule</span>
+              <span className="inline-flex items-center gap-2"><span className="w-6 h-6 rounded-full bg-accent text-accent-foreground text-[11px] font-semibold flex items-center justify-center">3</span> Pick slot & pay</span>
             </div>
 
             <div className="flex flex-wrap justify-center gap-3 mb-6">
@@ -443,9 +398,9 @@ const IVLounge = () => {
           <div className="container mx-auto px-6 lg:px-8 max-w-6xl">
             <div className="text-center mb-12">
               <p className="section-label mb-3">Build Your Drip</p>
-              <h2 className="font-playfair text-3xl md:text-4xl text-foreground">
-                {selectedTherapy ? "Add boosters & check out" : "Pick a drip above to begin"}
-              </h2>
+                <h2 className="font-playfair text-3xl md:text-4xl text-foreground">
+                  {selectedTherapy ? "Continue to medical screening" : "Pick a drip above to begin"}
+                </h2>
               <Button
                 type="button"
                 variant="link"
@@ -567,7 +522,7 @@ const IVLounge = () => {
                             size="lg"
                             className="w-full bg-primary text-accent hover:bg-primary-light font-jost font-medium tracking-wide rounded-sm py-6"
                           >
-                            {checkingOut ? "Loading checkout…" : <>Pay & Schedule <ArrowRight className="ml-2 h-4 w-4" /></>}
+                            {checkingOut ? "Loading..." : <>Continue to Screening <ArrowRight className="ml-2 h-4 w-4" /></>}
                           </Button>
 
                           <div className="mt-4 space-y-1.5 text-xs text-muted-foreground text-center">

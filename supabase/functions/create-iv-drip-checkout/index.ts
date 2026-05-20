@@ -35,14 +35,23 @@ serve(async (req) => {
     );
 
     const body = await req.json().catch(() => ({}));
-    const { therapy_id, addon_ids = [], patient_id: bodyPatientId } = body as {
+    const { therapy_id, addon_ids = [], patient_id: bodyPatientId, slot_token, intake_id, success_query } = body as {
       therapy_id?: string;
       addon_ids?: string[];
       patient_id?: string;
+      slot_token?: string;
+      intake_id?: string;
+      success_query?: Record<string, string>;
     };
 
     if (!therapy_id) {
       throw new Error("therapy_id is required");
+    }
+    if (!slot_token) {
+      throw new Error("slot_token is required before checkout");
+    }
+    if (!intake_id) {
+      throw new Error("intake_id is required before checkout");
     }
 
     const authHeader = req.headers.get("Authorization");
@@ -74,6 +83,18 @@ serve(async (req) => {
     const isGuest = !patientId;
 
     const discount = await resolveMemberCouponForCheckout(supabaseService, patientId ?? null, "iv_session");
+
+    const { data: intake, error: intakeErr } = await supabaseService
+      .from("iv_intake_responses")
+      .select("id, screening_result")
+      .eq("id", intake_id)
+      .maybeSingle();
+    if (intakeErr || !intake) {
+      throw new Error("Invalid intake_id.");
+    }
+    if (!["cleared", "warned_acknowledged", "overridden"].includes(intake.screening_result)) {
+      throw new Error("IV screening is not cleared for checkout.");
+    }
 
     const { data: therapy, error: therapyError } = await supabaseAnon
       .from("iv_therapies")
@@ -144,12 +165,24 @@ serve(async (req) => {
       }
     }
 
+    const successParams = new URLSearchParams({
+      session_id: "{CHECKOUT_SESSION_ID}",
+      therapy: therapy.name,
+    });
+    if (slot_token) successParams.set("slot_token", slot_token);
+    if (intake_id) successParams.set("intake_id", intake_id);
+    if (success_query && typeof success_query === "object") {
+      for (const [key, value] of Object.entries(success_query)) {
+        if (typeof value === "string" && value) successParams.set(key, value);
+      }
+    }
+
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
       line_items: lineItems,
       mode: "payment",
-      success_url: `${origin}/iv-payment-success?session_id={CHECKOUT_SESSION_ID}&therapy=${encodeURIComponent(therapy.name)}`,
+      success_url: `${origin}/iv-payment-success?${successParams.toString()}`,
       cancel_url: `${origin}/iv-lounge`,
       metadata: {
         user_id: userId || "",
@@ -160,6 +193,8 @@ serve(async (req) => {
         patient_id: patientId || "",
         is_guest_checkout: isGuest ? "true" : "false",
         applied_discount: discount.applied_discount,
+        intake_id: intake_id || "",
+        slot_token: slot_token || "",
       },
     };
 

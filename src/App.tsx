@@ -68,6 +68,7 @@ import InventoryDashboard from "./pages/InventoryDashboard";
 import EligibilityReviewQueue from "./pages/EligibilityReviewQueue";
 import SchedulingSettings from "./pages/admin/SchedulingSettings";
 import ProviderSchedules from "./pages/admin/ProviderSchedules";
+import IntakeFollowUps from "./pages/admin/IntakeFollowUps";
 import ConsentVersionsAdmin from "./pages/admin/ConsentVersionsAdmin";
 import SubstanceAcknowledgmentsAdmin from "./pages/admin/SubstanceAcknowledgmentsAdmin";
 import FAQ from "./pages/FAQ";
@@ -80,6 +81,11 @@ import IntakeKiosk from "./pages/IntakeKiosk";
 import IntakeStart from "./pages/IntakeStart";
 import ProviderAppointmentRoute from "./pages/provider/ProviderAppointmentRoute";
 import SetNewPassword from "./pages/SetNewPassword";
+import IVScreening from "./pages/IVScreening";
+import IVScreeningWarnings from "./pages/IVScreeningWarnings";
+import IVScreeningBlocked from "./pages/IVScreeningBlocked";
+import IVSlotSelection from "./pages/IVSlotSelection";
+import SafetyConsultBooking from "./pages/SafetyConsultBooking";
 
 const queryClient = new QueryClient();
 
@@ -139,6 +145,12 @@ const App = () => {
           <Route path="/hormones-women" element={<HormonesWomen />} />
           <Route path="/hormones-men" element={<HormonesMen />} />
           <Route path="/iv-lounge" element={<IVLounge />} />
+          <Route path="/book/iv" element={<IVLounge />} />
+          <Route path="/book/iv/screening" element={<IVScreening />} />
+          <Route path="/book/iv/warnings/:intake_id" element={<IVScreeningWarnings />} />
+          <Route path="/book/iv/blocked/:intake_id" element={<IVScreeningBlocked />} />
+          <Route path="/book/iv/slots" element={<IVSlotSelection />} />
+          <Route path="/book/consult/safety" element={<SafetyConsultBooking />} />
           <Route path="/peptides" element={<PeptideTherapy />} />
           <Route path="/membership" element={<Membership />} />
           <Route path="/care-membership" element={<Navigate to="/membership" replace />} />
@@ -177,6 +189,7 @@ const App = () => {
           
           <Route path="/patient-resources" element={<PatientResources />} />
           <Route path="/schedule-consult" element={<ScheduleConsult />} />
+          <Route path="/book/consult" element={<ScheduleConsult />} />
           {/* Public intake form (no auth required, token-validated) */}
           <Route path="/intake" element={<PublicIntake />} />
           <Route path="/intake/start" element={<IntakeStart />} />
@@ -292,6 +305,26 @@ const App = () => {
           <Route path="/admin/provider-schedules" element={
             <ProviderLayout title="Provider Schedules" subtitle="Practice Scheduling" showNavbar={false}>
               <ProviderSchedules />
+            </ProviderLayout>
+          } />
+          <Route path="/admin/intake-follow-ups" element={
+            <ProviderLayout
+              title="Intake Follow-ups"
+              subtitle="Safety Intake Follow-up Queue"
+              showNavbar={false}
+              allowedRoles={["admin", "business_admin", "provider"]}
+            >
+              <IntakeFollowUps />
+            </ProviderLayout>
+          } />
+          <Route path="/admin/intake-follow-ups/:id" element={
+            <ProviderLayout
+              title="Intake Follow-ups"
+              subtitle="Safety Intake Follow-up Queue"
+              showNavbar={false}
+              allowedRoles={["admin", "business_admin", "provider"]}
+            >
+              <IntakeFollowUps />
             </ProviderLayout>
           } />
           <Route path="/office/dashboard" element={

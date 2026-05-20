@@ -83,11 +83,15 @@ const SERVICE_LABEL: Record<string, string> = {
 };
 
 const CONSULT_FEE_USD = 79;
+const SAFETY_CONSULT_LABEL = "Safety Consultation";
+const SAFETY_CONSULT_DURATION_MIN = 30;
+const SAFETY_CONSULT_PRICE_CENTS = 0;
 
 interface RequestBody {
   // Patient self-serve path
   booking_id?: string;
   slot_token?: string;
+  safety_intake_id?: string;
   // Staff attribution
   booked_by_user_id?: string;
   booking_source?: string;
@@ -154,6 +158,7 @@ serve(async (req) => {
     const {
       booking_id,
       slot_token,
+      safety_intake_id,
       booked_by_user_id: rawBookedBy,
       booking_source: rawSource,
       staff_booking,
@@ -170,9 +175,9 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
-    if (!booking_id && !staff_booking) {
+    if (!booking_id && !staff_booking && !safety_intake_id) {
       return new Response(
-        JSON.stringify({ error: "Either booking_id (self-serve) or staff_booking (staff-mode) is required" }),
+        JSON.stringify({ error: "Either booking_id, staff_booking, or safety_intake_id is required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -243,6 +248,167 @@ serve(async (req) => {
         typeof rawBookedBy === "string" && rawBookedBy ? rawBookedBy : auth.callerId;
       isAdmin = auth.isAdmin;
       if (bookingSource === "self_service") bookingSource = "staff_phone";
+    }
+
+    // ------------------------------------------------------------------------
+    // SAFETY-CONSULT PATH (blocked IV intake -> complimentary consult)
+    // ------------------------------------------------------------------------
+    if (safety_intake_id) {
+      const redeemed = await redeemSlotTokenJtiOnce({
+        supabaseAdmin: supabase,
+        jti: verifiedSlot.jti,
+        tokenExpUnix: verifiedSlot.expiresAtUnix,
+        bookingFunction: "book-consult-appointment",
+        bookingRef: safety_intake_id,
+      });
+      if (!redeemed.ok) {
+        return new Response(
+          JSON.stringify({
+            error: "That slot token has already been used. Please pick another time.",
+            error_code: redeemed.code,
+          }),
+          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
+      const { data: intake, error: intakeErr } = await supabase
+        .from("iv_intake_responses")
+        .select("id, first_name, last_name, email, phone, screening_result")
+        .eq("id", safety_intake_id)
+        .maybeSingle();
+      if (intakeErr || !intake) {
+        return new Response(JSON.stringify({ error: "Blocked intake not found" }), {
+          status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+      if (intake.screening_result !== "blocked") {
+        return new Response(JSON.stringify({ error: "Safety consult can only be booked from blocked intake" }), {
+          status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+
+      const slotEnd = new Date(slotStart.getTime() + SAFETY_CONSULT_DURATION_MIN * 60_000);
+      const { data: conflicts } = await supabase
+        .from("appointments")
+        .select("id, scheduled_at, duration_minutes")
+        .eq("provider_id", providerId)
+        .neq("status", "cancelled")
+        .gte("scheduled_at", new Date(slotStart.getTime() - 2 * 60 * 60_000).toISOString())
+        .lte("scheduled_at", slotEnd.toISOString());
+      const taken = (conflicts || []).some((a: { scheduled_at: string; duration_minutes: number | null }) => {
+        const aS = new Date(a.scheduled_at).getTime();
+        const aE = aS + (a.duration_minutes || 30) * 60_000;
+        return slotStart.getTime() < aE && slotEnd.getTime() > aS;
+      });
+      if (taken) {
+        return new Response(
+          JSON.stringify({ error: "Slot just got booked. Please pick another." }),
+          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
+      let patientId: string | null = null;
+      const fullName = `${intake.first_name || ""} ${intake.last_name || ""}`.trim() || intake.email;
+      if (intake.email) {
+        const { data: existingPatient } = await supabase
+          .from("patients")
+          .select("id")
+          .eq("email", intake.email)
+          .maybeSingle();
+        if (existingPatient) {
+          patientId = existingPatient.id;
+        } else {
+          const { data: newPatient } = await supabase
+            .from("patients")
+            .insert({
+              full_name: fullName,
+              email: intake.email,
+              phone: intake.phone || null,
+              primary_program: "consult",
+              onboarding_status: "consultation_pending",
+            })
+            .select("id")
+            .single();
+          patientId = newPatient?.id || null;
+        }
+      }
+      if (!patientId) {
+        return new Response(JSON.stringify({ error: "Could not resolve patient for safety consult" }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+
+      const { data: createdBooking, error: createdBookingErr } = await supabase
+        .from("consultation_bookings")
+        .insert({
+          customer_email: intake.email,
+          customer_name: fullName,
+          customer_phone: intake.phone || null,
+          service_type: "safety_consult",
+          status: "paid",
+          amount_paid: SAFETY_CONSULT_PRICE_CENTS,
+          notes: "Auto-created complimentary safety consult from blocked IV intake",
+          booking_source: "self_service",
+          booked_for: slotStart.toISOString(),
+          calendar_booked_at: new Date().toISOString(),
+        })
+        .select("id")
+        .single();
+      if (createdBookingErr) throw createdBookingErr;
+
+      const { data: appt, error: apptErr } = await supabase
+        .from("appointments")
+        .insert({
+          patient_id: patientId,
+          provider_id: providerId,
+          service_line: "consult",
+          appointment_type: "safety_consult",
+          scheduled_at: slotStart.toISOString(),
+          duration_minutes: SAFETY_CONSULT_DURATION_MIN,
+          status: "scheduled",
+          reason: SAFETY_CONSULT_LABEL,
+          consultation_booking_id: createdBooking.id,
+          booking_source: "self_service",
+          booked_by_user_id: null,
+        })
+        .select("*")
+        .single();
+      if (apptErr) {
+        const mapped = responseForAppointmentInsertError(apptErr);
+        if (mapped) return mapped;
+        throw apptErr;
+      }
+
+      await supabase
+        .from("iv_intake_responses")
+        .update({
+          safety_consult_appointment_id: appt.id,
+          follow_up_status: "consult_scheduled",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", intake.id);
+
+      try {
+        await supabase.functions.invoke("send-booking-confirmation", {
+          body: {
+            email: intake.email,
+            phone: intake.phone,
+            name: fullName,
+            service_label: SAFETY_CONSULT_LABEL,
+            service_line: "consult",
+            scheduled_at: slotStart.toISOString(),
+            duration_minutes: SAFETY_CONSULT_DURATION_MIN,
+            confirmation_number: appt.id.slice(0, 8).toUpperCase(),
+          },
+        });
+      } catch (e) {
+        console.warn("send-booking-confirmation failed", e);
+      }
+
+      return new Response(
+        JSON.stringify({ appointment: appt, booking_id: createdBooking.id, mode: "safety_consult" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
+      );
     }
 
     // ------------------------------------------------------------------------
