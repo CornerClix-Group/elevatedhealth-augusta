@@ -30,7 +30,7 @@ serve(async (req) => {
 
     const { data, error } = await supabase
       .from("iv_intake_responses")
-      .select("id, first_name, last_name, email, phone, selected_therapy_id, screening_result, block_reasons, warn_reasons, acknowledged_warnings, appointment_id")
+      .select("id, first_name, last_name, email, phone, selected_therapy_id, screening_result, block_reasons, warn_reasons, block_severity, has_anaphylaxis_history, acknowledged_warnings, appointment_id")
       .eq("id", intakeId)
       .maybeSingle();
 
@@ -58,6 +58,8 @@ serve(async (req) => {
         screening_result: data.screening_result,
         block_reasons: data.block_reasons ?? [],
         warn_reasons: data.warn_reasons ?? [],
+        block_severity: data.block_severity,
+        has_anaphylaxis_history: !!data.has_anaphylaxis_history,
         acknowledged_warnings: !!data.acknowledged_warnings,
         appointment_id: data.appointment_id,
       }),

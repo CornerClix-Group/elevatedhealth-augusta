@@ -85,7 +85,7 @@ import IVScreening from "./pages/IVScreening";
 import IVScreeningWarnings from "./pages/IVScreeningWarnings";
 import IVScreeningBlocked from "./pages/IVScreeningBlocked";
 import IVSlotSelection from "./pages/IVSlotSelection";
-import SafetyConsultBooking from "./pages/SafetyConsultBooking";
+import SafetyConsultRequest from "./pages/SafetyConsultRequest";
 
 const queryClient = new QueryClient();
 
@@ -150,7 +150,7 @@ const App = () => {
           <Route path="/book/iv/warnings/:intake_id" element={<IVScreeningWarnings />} />
           <Route path="/book/iv/blocked/:intake_id" element={<IVScreeningBlocked />} />
           <Route path="/book/iv/slots" element={<IVSlotSelection />} />
-          <Route path="/book/consult/safety" element={<SafetyConsultBooking />} />
+          <Route path="/book/consult/request" element={<SafetyConsultRequest />} />
           <Route path="/peptides" element={<PeptideTherapy />} />
           <Route path="/membership" element={<Membership />} />
           <Route path="/care-membership" element={<Navigate to="/membership" replace />} />

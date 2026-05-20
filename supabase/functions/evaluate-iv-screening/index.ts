@@ -36,6 +36,14 @@ type EvaluateRequest = {
   acknowledged_disclaimer?: boolean;
 };
 
+type IntakeResponseRow = {
+  id: string;
+  screening_result: string;
+  block_reasons: string[] | null;
+  warn_reasons: string[] | null;
+  block_severity: "hard" | "service_specific" | null;
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -181,6 +189,44 @@ serve(async (req) => {
 
     const screeningResult =
       blockReasons.length > 0 ? "blocked" : warnReasons.length > 0 ? "warned" : "cleared";
+    const blockSeverity =
+      screeningResult === "blocked"
+        ? (body.has_chf || body.has_esrd || body.is_pregnant || body.has_anaphylaxis_history
+          ? "hard"
+          : "service_specific")
+        : null;
+
+    const sixtyMinutesAgoIso = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const { data: existingIntake, error: existingIntakeErr } = await supabase
+      .from("iv_intake_responses")
+      .select("id, screening_result, block_reasons, warn_reasons, block_severity")
+      .eq("email", body.email)
+      .gt("created_at", sixtyMinutesAgoIso)
+      .neq("screening_result", "cleared")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle<IntakeResponseRow>();
+
+    if (existingIntakeErr) {
+      console.error("[evaluate-iv-screening] idempotency lookup error:", existingIntakeErr);
+      return new Response(
+        JSON.stringify({ error: "Failed to process intake screening" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    if (existingIntake) {
+      return new Response(
+        JSON.stringify({
+          intake_id: existingIntake.id,
+          screening_result: existingIntake.screening_result,
+          block_reasons: existingIntake.block_reasons ?? [],
+          warn_reasons: existingIntake.warn_reasons ?? [],
+          block_severity: existingIntake.block_severity,
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
 
     const { data: intake, error: intakeErr } = await supabase
       .from("iv_intake_responses")
@@ -214,8 +260,9 @@ serve(async (req) => {
         screening_result: screeningResult,
         block_reasons: blockReasons,
         warn_reasons: warnReasons,
+        block_severity: blockSeverity,
       })
-      .select("id, screening_result, block_reasons, warn_reasons")
+      .select("id, screening_result, block_reasons, warn_reasons, block_severity")
       .single();
 
     if (intakeErr || !intake) {
@@ -243,6 +290,7 @@ serve(async (req) => {
         screening_result: intake.screening_result,
         block_reasons: intake.block_reasons ?? [],
         warn_reasons: intake.warn_reasons ?? [],
+        block_severity: intake.block_severity,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );

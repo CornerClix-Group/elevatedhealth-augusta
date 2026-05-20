@@ -13,6 +13,7 @@ import { toast } from "sonner";
 type FollowUpStatus =
   | "new"
   | "contacted"
+  | "consult_requested"
   | "consult_scheduled"
   | "converted"
   | "declined"
@@ -26,6 +27,8 @@ type IntakeRow = {
   phone: string | null;
   selected_therapy_id: string | null;
   screening_result: string;
+  block_severity: "hard" | "service_specific" | null;
+  has_anaphylaxis_history: boolean;
   block_reasons: string[];
   warn_reasons: string[];
   follow_up_status: FollowUpStatus;
@@ -39,6 +42,7 @@ type TeamMember = { user_id: string; email: string; full_name: string | null; ro
 
 const STATUS_OPTIONS: FollowUpStatus[] = [
   "new",
+  "consult_requested",
   "contacted",
   "consult_scheduled",
   "converted",
@@ -48,10 +52,17 @@ const STATUS_OPTIONS: FollowUpStatus[] = [
 
 const statusBadgeClass = (status: FollowUpStatus) => {
   if (status === "new") return "bg-amber-100 text-amber-900 border-amber-300";
+  if (status === "consult_requested") return "bg-orange-200 text-orange-900 border-orange-400";
   if (status === "contacted") return "bg-blue-100 text-blue-900 border-blue-300";
   if (status === "consult_scheduled") return "bg-emerald-100 text-emerald-900 border-emerald-300";
   if (status === "converted") return "bg-emerald-600 text-white border-emerald-700";
   return "bg-zinc-100 text-zinc-800 border-zinc-300";
+};
+
+const severityBadgeClass = (severity: IntakeRow["block_severity"]) => {
+  if (severity === "hard") return "bg-red-100 text-red-900 border-red-300";
+  if (severity === "service_specific") return "bg-violet-100 text-violet-900 border-violet-300";
+  return "bg-zinc-100 text-zinc-700 border-zinc-300";
 };
 
 const IntakeFollowUps = () => {
@@ -70,6 +81,7 @@ const IntakeFollowUps = () => {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [assigneeFilter, setAssigneeFilter] = useState<"all" | "me" | "unassigned">("all");
+  const [urgentOnly, setUrgentOnly] = useState(false);
 
   const [detailsStatus, setDetailsStatus] = useState<FollowUpStatus | "">("");
   const [detailsAssignee, setDetailsAssignee] = useState<string>("");
@@ -98,7 +110,7 @@ const IntakeFollowUps = () => {
       const { data, error } = await supabase
         .from("iv_intake_responses")
         .select(
-          "id, first_name, last_name, email, phone, selected_therapy_id, screening_result, block_reasons, warn_reasons, follow_up_status, follow_up_assigned_to, follow_up_notes, safety_consult_appointment_id, created_at",
+          "id, first_name, last_name, email, phone, selected_therapy_id, screening_result, block_severity, has_anaphylaxis_history, block_reasons, warn_reasons, follow_up_status, follow_up_assigned_to, follow_up_notes, safety_consult_appointment_id, created_at",
         )
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -153,10 +165,19 @@ const IntakeFollowUps = () => {
     if (dateTo && row.created_at.slice(0, 10) > dateTo) return false;
     if (assigneeFilter === "me" && row.follow_up_assigned_to !== currentUserId) return false;
     if (assigneeFilter === "unassigned" && !!row.follow_up_assigned_to) return false;
+    if (urgentOnly && row.follow_up_status !== "consult_requested") return false;
     return true;
-  }, [selectedStatuses, dateFrom, dateTo, assigneeFilter, currentUserId]);
+  }, [selectedStatuses, dateFrom, dateTo, assigneeFilter, currentUserId, urgentOnly]);
 
-  const visibleRows = useMemo(() => rows.filter(applyFilters), [rows, applyFilters]);
+  const visibleRows = useMemo(() => {
+    const filtered = rows.filter(applyFilters);
+    if (!urgentOnly) return filtered;
+    return filtered.sort((a, b) => {
+      if (a.has_anaphylaxis_history && !b.has_anaphylaxis_history) return -1;
+      if (!a.has_anaphylaxis_history && b.has_anaphylaxis_history) return 1;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+  }, [rows, applyFilters, urgentOnly]);
 
   const teamName = (id: string | null) => {
     if (!id) return "Unassigned";
@@ -196,7 +217,7 @@ const IntakeFollowUps = () => {
         body: { intake_id: selected.id, reminder_only: true },
       });
       if (error) throw error;
-      toast.success("Patient reminder email sent.");
+      toast.success("Staff alert email sent.");
       await load();
     } catch (e) {
       console.error("[IntakeFollowUps] reminder failed:", e);
@@ -213,7 +234,7 @@ const IntakeFollowUps = () => {
           <CardTitle>Intake Follow-ups</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-5 gap-4">
             <div className="space-y-2">
               <Label>Status filter (multi-select)</Label>
               <select
@@ -252,6 +273,17 @@ const IntakeFollowUps = () => {
                 <option value="unassigned">Unassigned</option>
               </select>
             </div>
+            <div className="space-y-2">
+              <Label>Urgent queue</Label>
+              <label className="h-10 rounded-md border border-input bg-background px-3 text-sm flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={urgentOnly}
+                  onChange={(e) => setUrgentOnly(e.target.checked)}
+                />
+                Consult requested only (anaphylaxis first)
+              </label>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -270,6 +302,7 @@ const IntakeFollowUps = () => {
                   <tr className="text-left border-b">
                     <th className="py-2 pr-3">Patient</th>
                     <th className="py-2 pr-3">Requested service</th>
+                    <th className="py-2 pr-3">Block severity</th>
                     <th className="py-2 pr-3">Reasons</th>
                     <th className="py-2 pr-3">Status</th>
                     <th className="py-2 pr-3">Days since submitted</th>
@@ -289,6 +322,20 @@ const IntakeFollowUps = () => {
                           <div className="text-muted-foreground">{row.phone || "—"}</div>
                         </td>
                         <td className="py-3 pr-3">{therapiesById[row.selected_therapy_id || ""] || "—"}</td>
+                        <td className="py-3 pr-3">
+                          <div className="flex flex-wrap gap-1">
+                            <Badge className={severityBadgeClass(row.block_severity)}>
+                              {row.block_severity === "service_specific"
+                                ? "Service-specific"
+                                : row.block_severity === "hard"
+                                ? "Hard"
+                                : "Unknown"}
+                            </Badge>
+                            {row.has_anaphylaxis_history && (
+                              <Badge className="bg-red-200 text-red-900 border-red-400">Anaphylaxis</Badge>
+                            )}
+                          </div>
+                        </td>
                         <td className="py-3 pr-3">
                           <div className="flex flex-wrap gap-1">
                             {reasons.map((r, idx) => (
@@ -332,6 +379,19 @@ const IntakeFollowUps = () => {
               <div>
                 <p className="text-xs uppercase text-muted-foreground mb-1">Requested service</p>
                 <p>{therapiesById[selected.selected_therapy_id || ""] || "—"}</p>
+                <p className="text-xs uppercase text-muted-foreground mt-2 mb-1">Block severity</p>
+                <div className="flex flex-wrap gap-1">
+                  <Badge className={severityBadgeClass(selected.block_severity)}>
+                    {selected.block_severity === "service_specific"
+                      ? "Service-specific"
+                      : selected.block_severity === "hard"
+                      ? "Hard"
+                      : "Unknown"}
+                  </Badge>
+                  {selected.has_anaphylaxis_history && (
+                    <Badge className="bg-red-200 text-red-900 border-red-400">Anaphylaxis</Badge>
+                  )}
+                </div>
                 <p className="text-xs uppercase text-muted-foreground mt-2 mb-1">Current status</p>
                 <Badge className={statusBadgeClass(selected.follow_up_status)}>{selected.follow_up_status}</Badge>
               </div>
@@ -435,7 +495,7 @@ const IntakeFollowUps = () => {
               )}
               {canWrite && (
                 <Button variant="outline" disabled={saving} onClick={sendReminder}>
-                  Send patient reminder email
+                  Resend blocked staff alert
                 </Button>
               )}
               <Button variant="ghost" onClick={() => navigate("/admin/intake-follow-ups")}>
