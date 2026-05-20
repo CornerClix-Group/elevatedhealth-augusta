@@ -14,7 +14,7 @@ import { format, isSameDay, addDays, startOfDay } from "date-fns";
 import { toast } from "sonner";
 
 interface Slot {
-  provider_id: string;
+  slot_token: string;
   start: string;
   end: string;
 }
@@ -180,10 +180,10 @@ export const SlotPicker = forwardRef<SlotPickerHandle, SlotPickerProps>(function
           ) : (
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
               {slotsForDay.map((s) => {
-                const sel = selectedSlot?.start === s.start;
+                const sel = selectedSlot?.slot_token === s.slot_token;
                 return (
                   <button
-                    key={s.start + s.provider_id}
+                    key={s.start + s.slot_token}
                     onClick={() => setSelectedSlot(s)}
                     className={`px-3 py-2 rounded-lg border text-sm font-jost transition-all ${
                       sel ? "bg-accent text-accent-foreground border-accent" : "hover:border-accent"

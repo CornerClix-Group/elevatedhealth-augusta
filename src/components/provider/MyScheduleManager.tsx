@@ -95,8 +95,12 @@ const colToJsDow = (col: number) => (col + 1) % 7;
 // Main component
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function MyScheduleManager() {
-  const [providerId, setProviderId] = useState<string | null>(null);
+interface MyScheduleManagerProps {
+  providerId?: string | null;
+}
+
+export default function MyScheduleManager({ providerId: providerIdProp }: MyScheduleManagerProps = {}) {
+  const [resolvedProviderId, setResolvedProviderId] = useState<string | null>(null);
   const [providerLoaded, setProviderLoaded] = useState(false);
   const [weekStart, setWeekStart] = useState<Date>(() => startOfWeek(new Date(), { weekStartsOn: 1 }));
   const weekEnd = useMemo(() => endOfWeek(weekStart, { weekStartsOn: 1 }), [weekStart]);
@@ -116,27 +120,33 @@ export default function MyScheduleManager() {
   >(null);
   const [timeOffModalOpen, setTimeOffModalOpen] = useState(false);
 
-  // ── Load provider id ──
+  // ── Resolve provider id: explicit prop first, else auth.uid() ──
   useEffect(() => {
+    if (providerIdProp) {
+      setResolvedProviderId(providerIdProp);
+      setProviderLoaded(true);
+      return;
+    }
+
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      setProviderId(user?.id ?? null);
+      setResolvedProviderId(user?.id ?? null);
       setProviderLoaded(true);
     })();
-  }, []);
+  }, [providerIdProp]);
 
   // ── Load data for visible week ──
   const fetchAll = async () => {
-    if (!providerId) return;
+    if (!resolvedProviderId) return;
     setLoading(true);
     const startISO = weekStart.toISOString();
     const endISO = addDays(weekEnd, 1).toISOString();
     const [schedRes, blockRes, apptRes] = await Promise.all([
-      supabase.from("provider_schedules").select("*").eq("provider_id", providerId).order("day_of_week"),
-      supabase.from("schedule_blocks").select("*").eq("provider_id", providerId)
+      supabase.from("provider_schedules").select("*").eq("provider_id", resolvedProviderId).order("day_of_week"),
+      supabase.from("schedule_blocks").select("*").eq("provider_id", resolvedProviderId)
         .lt("start_at", endISO).gt("end_at", startISO),
       supabase.from("appointments").select("id,provider_id,patient_id,scheduled_at,duration_minutes,service_line,status,patients(full_name)")
-        .eq("provider_id", providerId).neq("status", "cancelled")
+        .eq("provider_id", resolvedProviderId).neq("status", "cancelled")
         .gte("scheduled_at", startISO).lt("scheduled_at", endISO),
     ]);
     setSchedules((schedRes.data as any) || []);
@@ -144,11 +154,11 @@ export default function MyScheduleManager() {
     setAppts(((apptRes.data as any) || []).map((a: any) => ({ ...a, patient_name: a.patients?.full_name ?? null })));
     setLoading(false);
   };
-  useEffect(() => { if (providerId) fetchAll(); }, [providerId, weekStart]);
+  useEffect(() => { if (resolvedProviderId) fetchAll(); }, [resolvedProviderId, weekStart]);
 
   // ── Mutations ──
   const upsertWeekly = async (col: number, startMin: number, endMin: number, services: string[], slotMin: number) => {
-    if (!providerId) return;
+    if (!resolvedProviderId) return;
     const dow = colToJsDow(col);
     // Merge: if there's overlap, expand existing
     const overlapping = schedules.find(
@@ -169,7 +179,7 @@ export default function MyScheduleManager() {
       toast.success("Merged with existing availability");
     } else {
       const { error } = await supabase.from("provider_schedules").insert({
-        provider_id: providerId,
+        provider_id: resolvedProviderId,
         day_of_week: dow,
         start_time: minutesToHHMM(startMin) + ":00",
         end_time: minutesToHHMM(endMin) + ":00",
@@ -199,7 +209,7 @@ export default function MyScheduleManager() {
   };
 
   const addBlock = async (startISO: string, endISO: string, reason: string | null) => {
-    if (!providerId) return;
+    if (!resolvedProviderId) return;
     // Warn if appointments fall in this window
     const conflicts = appts.filter((a) => {
       const aStart = parseISO(a.scheduled_at).getTime();
@@ -208,7 +218,7 @@ export default function MyScheduleManager() {
     });
     if (conflicts.length && !confirm(`${conflicts.length} appointment(s) are scheduled during this time. They will NOT be auto-cancelled. Continue?`)) return;
     const { error } = await supabase.from("schedule_blocks").insert({
-      provider_id: providerId, start_at: startISO, end_at: endISO, reason: reason || null,
+      provider_id: resolvedProviderId, start_at: startISO, end_at: endISO, reason: reason || null,
     });
     if (error) return toast.error(error.message);
     toast.success("Time off added");
@@ -223,7 +233,7 @@ export default function MyScheduleManager() {
   };
 
   const copyWeekForward = async () => {
-    if (!providerId || schedules.length === 0) {
+    if (!resolvedProviderId || schedules.length === 0) {
       toast.error("Nothing to copy — set availability first");
       return;
     }
@@ -232,7 +242,7 @@ export default function MyScheduleManager() {
 
   // ── Render guards ──
   if (!providerLoaded) return <div className="flex justify-center p-8"><Loader2 className="h-6 w-6 animate-spin" /></div>;
-  if (!providerId) {
+  if (!resolvedProviderId) {
     return (
       <Card><CardContent className="p-8 text-center space-y-3">
         <CalendarOff className="h-10 w-10 mx-auto text-muted-foreground" />

@@ -37,6 +37,7 @@ const TeamManagement = () => {
   const [removingMember, setRemovingMember] = useState<TeamMember | null>(null);
   const [isRemoving, setIsRemoving] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUserRoles, setCurrentUserRoles] = useState<string[]>([]);
 
   useEffect(() => {
     loadTeamMembers();
@@ -47,6 +48,15 @@ const TeamManagement = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       setCurrentUserId(user.id);
+      const { data: roles, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id);
+      if (error) {
+        console.error("[TeamManagement] Failed to load current user roles:", error);
+      } else {
+        setCurrentUserRoles((roles || []).map((r) => r.role));
+      }
     }
   };
 
@@ -175,6 +185,11 @@ const TeamManagement = () => {
             Staff
           </Badge>
         )}
+        {roles.includes("provider") && (
+          <Badge className="bg-violet-100 text-violet-800 border-violet-300 dark:bg-violet-900/30 dark:text-violet-400">
+            Provider
+          </Badge>
+        )}
         {roles.includes("business_admin") && (
           <Badge className="bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-400">
             <BarChart3 className="w-3 h-3 mr-1" />
@@ -204,6 +219,8 @@ const TeamManagement = () => {
   const canRemove = (member: TeamMember) => {
     return !member.is_master_admin && member.user_id !== currentUserId;
   };
+
+  const canAssignProvider = currentUserRoles.includes("admin");
 
   return (
     <div className="space-y-6">
@@ -346,6 +363,7 @@ const TeamManagement = () => {
         open={isInviteOpen}
         onOpenChange={setIsInviteOpen}
         onInviteSent={loadTeamMembers}
+        canAssignProvider={canAssignProvider}
       />
 
       {/* Manage Roles Modal */}
@@ -354,6 +372,7 @@ const TeamManagement = () => {
         onOpenChange={(open) => !open && setManagingMember(null)}
         member={managingMember}
         onRolesUpdated={handleRolesUpdated}
+        canAssignProvider={canAssignProvider}
       />
 
       {/* Remove Confirmation Dialog */}

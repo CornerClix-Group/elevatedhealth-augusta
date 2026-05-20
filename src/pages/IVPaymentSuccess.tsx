@@ -32,7 +32,7 @@ const IVPaymentSuccess = () => {
   const handleConfirm = async ({
     slot,
   }: {
-    slot: { provider_id: string; start: string };
+    slot: { slot_token: string; start: string };
   }) => {
     if (!sessionId) {
       toast.error("Missing payment session id. Please call us at " + SITE_CONFIG.phone);
@@ -43,8 +43,7 @@ const IVPaymentSuccess = () => {
       {
         body: {
           session_id: sessionId,
-          slot_start: slot.start,
-          provider_id: slot.provider_id,
+          slot_token: slot.slot_token,
         },
       },
     );

@@ -67,6 +67,7 @@ import ClinicalProtocolEditor from "./components/provider/ClinicalProtocolEditor
 import InventoryDashboard from "./pages/InventoryDashboard";
 import EligibilityReviewQueue from "./pages/EligibilityReviewQueue";
 import SchedulingSettings from "./pages/admin/SchedulingSettings";
+import ProviderSchedules from "./pages/admin/ProviderSchedules";
 import ConsentVersionsAdmin from "./pages/admin/ConsentVersionsAdmin";
 import SubstanceAcknowledgmentsAdmin from "./pages/admin/SubstanceAcknowledgmentsAdmin";
 import FAQ from "./pages/FAQ";
@@ -77,6 +78,7 @@ import PatientReconsent from "./pages/PatientReconsent";
 import PatientSubstanceAcknowledgment from "./pages/PatientSubstanceAcknowledgment";
 import IntakeKiosk from "./pages/IntakeKiosk";
 import IntakeStart from "./pages/IntakeStart";
+import ProviderAppointmentRoute from "./pages/provider/ProviderAppointmentRoute";
 
 const queryClient = new QueryClient();
 
@@ -256,8 +258,23 @@ const App = () => {
           {/* Admin/Provider Routes - Wrapped with ProviderLayout */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/provider/dashboard" element={
-            <ProviderLayout title="Provider Dashboard" subtitle="Clinical Operations" showNavbar={false}>
+            <ProviderLayout
+              title="Provider Dashboard"
+              subtitle="Clinical Operations"
+              showNavbar={false}
+              allowedRoles={["admin", "staff", "business_admin", "provider"]}
+            >
               <ProviderDashboard />
+            </ProviderLayout>
+          } />
+          <Route path="/provider/appointments/:appointmentId" element={
+            <ProviderLayout
+              title="Appointment"
+              subtitle="Clinical Operations"
+              showNavbar={false}
+              allowedRoles={["admin", "staff", "business_admin", "provider"]}
+            >
+              <ProviderAppointmentRoute />
             </ProviderLayout>
           } />
           <Route path="/admin/settings" element={
@@ -268,6 +285,11 @@ const App = () => {
           <Route path="/admin/scheduling" element={
             <ProviderLayout title="Scheduling Settings" subtitle="Practice Settings" showNavbar={false}>
               <SchedulingSettings />
+            </ProviderLayout>
+          } />
+          <Route path="/admin/provider-schedules" element={
+            <ProviderLayout title="Provider Schedules" subtitle="Practice Scheduling" showNavbar={false}>
+              <ProviderSchedules />
             </ProviderLayout>
           } />
           <Route path="/office/dashboard" element={

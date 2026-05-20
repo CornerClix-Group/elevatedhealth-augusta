@@ -12,6 +12,7 @@ interface InviteProviderModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onInviteSent?: () => void;
+  canAssignProvider?: boolean;
 }
 
 const AVAILABLE_ROLES = [
@@ -33,9 +34,20 @@ const AVAILABLE_ROLES = [
     description: "Financial access - revenue metrics, funnel analytics, business dashboard",
     icon: BarChart3 
   },
+  {
+    id: "provider",
+    label: "Provider",
+    description: "Clinical provider schedule and provider directory access (admin only)",
+    icon: Shield,
+  },
 ];
 
-export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: InviteProviderModalProps) => {
+export const InviteProviderModal = ({
+  open,
+  onOpenChange,
+  onInviteSent,
+  canAssignProvider = false,
+}: InviteProviderModalProps) => {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [selectedRoles, setSelectedRoles] = useState<string[]>(["staff"]);
@@ -76,6 +88,10 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
       toast.error("Please select at least one role");
       return;
     }
+    if (selectedRoles.includes("provider") && !canAssignProvider) {
+      toast.error("Only admins can grant provider role.");
+      return;
+    }
     if (mode === "create" && password.length < 8) {
       toast.error("Password must be at least 8 characters");
       return;
@@ -105,6 +121,9 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
         toast.success(`Invitation sent to ${email}`, {
           description: `Roles: ${selectedRoles.map(r => AVAILABLE_ROLES.find(ar => ar.id === r)?.label).join(", ")}`,
         });
+      }
+      if (selectedRoles.includes("provider")) {
+        toast.success("Provider role granted.");
       }
 
       setEmail("");
@@ -226,10 +245,15 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
             <div className="space-y-3">
               {AVAILABLE_ROLES.map((role) => {
                 const Icon = role.icon;
+                const isProviderRole = role.id === "provider";
+                const isDisabled = isSending || (isProviderRole && !canAssignProvider);
                 return (
                   <label
                     key={role.id}
                     className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                      isDisabled
+                        ? "opacity-50 cursor-not-allowed bg-muted/20"
+                        :
                       selectedRoles.includes(role.id)
                         ? "bg-primary/5 border-primary/30"
                         : "bg-muted/30 border-border/50 hover:bg-muted/50"
@@ -239,7 +263,7 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
                       id={role.id}
                       checked={selectedRoles.includes(role.id)}
                       onCheckedChange={() => toggleRole(role.id)}
-                      disabled={isSending}
+                      disabled={isDisabled}
                       className="mt-0.5"
                     />
                     <div className="flex-1">
@@ -250,6 +274,9 @@ export const InviteProviderModal = ({ open, onOpenChange, onInviteSent }: Invite
                       <p className="text-xs text-muted-foreground mt-0.5">
                         {role.description}
                       </p>
+                      {isProviderRole && !canAssignProvider && (
+                        <p className="text-xs text-muted-foreground mt-0.5">Admin role required to grant.</p>
+                      )}
                     </div>
                   </label>
                 );

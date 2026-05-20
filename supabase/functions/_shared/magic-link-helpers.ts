@@ -1,4 +1,4 @@
-import { encode as base64url } from "https://deno.land/std@0.224.0/encoding/base64url.ts";
+import { encodeBase64Url as base64url } from "https://deno.land/std@0.224.0/encoding/base64url.ts";
 
 /** 256-bit URL-safe token for intake magic links. */
 export function generateMagicLinkToken(): string {

@@ -68,10 +68,19 @@ serve(async (req) => {
     }
 
     // Validate new_role
-    if (!["admin", "staff"].includes(new_role)) {
+    const validRoles = ["admin", "staff", "business_admin", "provider"];
+    if (!validRoles.includes(new_role)) {
       return new Response(
-        JSON.stringify({ error: "Invalid role. Must be 'admin' or 'staff'" }),
+        JSON.stringify({ error: `Invalid role. Must be one of: ${validRoles.join(", ")}` }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Explicit guard requested for provider grants.
+    if (new_role === "provider" && !isAdmin) {
+      return new Response(
+        JSON.stringify({ error: "Only admins can assign provider role" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -85,18 +94,93 @@ serve(async (req) => {
 
     console.log("[update-team-role] Updating", target_user_id, "to", new_role);
 
-    // Update the role using service role key
-    const { error: updateError } = await adminClient
+    // Read current managed roles for audit diffing.
+    const { data: existingRoleRows, error: existingRolesError } = await adminClient
       .from("user_roles")
-      .update({ role: new_role })
-      .eq("user_id", target_user_id);
+      .select("role")
+      .eq("user_id", target_user_id)
+      .in("role", validRoles);
 
-    if (updateError) {
-      console.error("[update-team-role] Update error:", updateError);
+    if (existingRolesError) {
+      console.error("[update-team-role] Existing roles read error:", existingRolesError);
+      return new Response(
+        JSON.stringify({ error: "Failed to read existing roles" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const existingRoles = (existingRoleRows || []).map((r) => r.role as string);
+    const existingRoleSet = new Set(existingRoles);
+
+    // Replace managed role set with the requested single role.
+    const { error: deleteError } = await adminClient
+      .from("user_roles")
+      .delete()
+      .eq("user_id", target_user_id)
+      .in("role", validRoles);
+
+    if (deleteError) {
+      console.error("[update-team-role] Delete error:", deleteError);
       return new Response(
         JSON.stringify({ error: "Failed to update role" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    const { error: insertError } = await adminClient
+      .from("user_roles")
+      .insert({ user_id: target_user_id, role: new_role });
+
+    if (insertError) {
+      console.error("[update-team-role] Insert error:", insertError);
+      return new Response(
+        JSON.stringify({ error: "Failed to update role" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Explicit audit write for service-role mutations.
+    const auditRows: Array<{
+      actor_user_id: string;
+      target_user_id: string;
+      action: "INSERT" | "DELETE";
+      old_role: string | null;
+      new_role: string | null;
+      occurred_at: string;
+    }> = [];
+    const occurredAt = new Date().toISOString();
+    for (const role of existingRoleSet) {
+      if (role !== new_role) {
+        auditRows.push({
+          actor_user_id: user.id,
+          target_user_id,
+          action: "DELETE",
+          old_role: role,
+          new_role: null,
+          occurred_at: occurredAt,
+        });
+      }
+    }
+    if (!existingRoleSet.has(new_role)) {
+      auditRows.push({
+        actor_user_id: user.id,
+        target_user_id,
+        action: "INSERT",
+        old_role: null,
+        new_role,
+        occurred_at: occurredAt,
+      });
+    }
+
+    if (auditRows.length > 0) {
+      const { error: auditError } = await adminClient.from("audit_log").insert(auditRows);
+      if (auditError) {
+        console.error("[update-team-role] Audit insert error:", auditError);
+        return new Response(
+          JSON.stringify({ error: "Role changed but audit write failed" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
     }
 
     console.log("[update-team-role] Role updated successfully");

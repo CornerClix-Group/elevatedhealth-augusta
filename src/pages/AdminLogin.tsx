@@ -33,7 +33,13 @@ const AdminLogin = () => {
           .select("role")
           .eq("user_id", session.user.id);
         
-        const hasAccess = roles?.some(r => r.role === 'admin' || r.role === 'staff');
+        const hasAccess = roles?.some(
+          (r) =>
+            r.role === "admin" ||
+            r.role === "staff" ||
+            r.role === "business_admin" ||
+            r.role === "provider",
+        );
         if (hasAccess) {
           const officeManagerEmails = ["kcovington@pmrehab.net"];
           const isOfficeManager = officeManagerEmails.includes(session.user.email?.toLowerCase() || "");
@@ -90,7 +96,7 @@ const AdminLogin = () => {
       }
 
       if (data.user && data.session) {
-        // Check if user has admin or staff role
+        // Check if user has provider-portal access role
         const { data: roles, error: roleError } = await supabase
           .from("user_roles")
           .select("role")
@@ -98,7 +104,13 @@ const AdminLogin = () => {
 
         if (roleError) throw roleError;
 
-        const hasAccess = roles?.some(r => r.role === 'admin' || r.role === 'staff');
+        const hasAccess = roles?.some(
+          (r) =>
+            r.role === "admin" ||
+            r.role === "staff" ||
+            r.role === "business_admin" ||
+            r.role === "provider",
+        );
         
         if (!hasAccess) {
           await supabase.auth.signOut();

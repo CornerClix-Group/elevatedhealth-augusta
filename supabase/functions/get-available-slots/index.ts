@@ -1,5 +1,6 @@
 /**
  * get-available-slots
+ * deploy: 2026-05-19 slot token v1 hardening
  *
  * Returns bookable time slots for the SlotPicker. Reads provider_schedules,
  * schedule_blocks, schedule_exceptions, and appointments to compute live
@@ -16,26 +17,13 @@
  *     because both anonymous storefront flows (post-payment confirmation)
  *     and patient-portal flows need this.
  *
- * KNOWN LEAK (deferred to a follow-up):
- *   The response shape currently includes the raw `provider_id` per slot
- *   so the SlotPicker can pass it back to book-iv-appointment /
- *   book-consult-appointment. This exposes provider identity to any
- *   caller, including unauthenticated flows that reach this fn through
- *   the post-payment confirmation surfaces.
- *
- *   The right fix is an opaque slot_token (HMAC of provider_id + start
- *   time, signed with a server secret). Booking edge fns would decode
- *   the token and validate the HMAC. That requires:
- *     1. New shared secret (SLOT_SIGNING_KEY env var)
- *     2. Token issuance here, validation in book-iv-appointment and
- *        book-consult-appointment
- *     3. SlotPicker + ScheduleConsult.tsx + IVPaymentSuccess.tsx update
- *        to pass slot_token instead of {provider_id, start}
- *   That's a coordinated change across ~5 files. Tracked as audit doc
- *   follow-up under R-5 / get-available-slots.
+ * SECURITY POSTURE (R-5 follow-up):
+ *   Returns opaque signed slot_token values instead of raw provider_id.
+ *   If SLOT_SIGNING_KEY is missing, this function fails closed and emits no slots.
  */
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { getSlotSigningKey, issueSlotToken } from "../_shared/slot-token.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -257,6 +245,20 @@ serve(async (req) => {
     const duration_minutes: number = Number(body.duration_minutes || url.searchParams.get("duration_minutes") || 60);
     const provider_id: string | null = body.provider_id || url.searchParams.get("provider_id") || null;
     const days: number = Number(body.days || url.searchParams.get("days") || 14);
+    const signingKey = getSlotSigningKey();
+    if (!signingKey) {
+      console.error("get-available-slots: SLOT_SIGNING_KEY missing; refusing to emit bookable slots");
+      return new Response(
+        JSON.stringify({
+          error: "Slot signing is not configured.",
+          error_code: "slot_signing_not_configured",
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 500,
+        },
+      );
+    }
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -342,7 +344,7 @@ serve(async (req) => {
 
     const { isSlotRoomAvailable, withinBookingLimits } = buildRoomHelpers(rooms, blackouts, roomAppts, bookingLimits);
 
-    const slots: { provider_id: string; start: string; end: string }[] = [];
+    const slots: { slot_token: string; start: string; end: string }[] = [];
     // Track unique (provider_id, slotStartIso) to avoid duplicates when an
     // addition window overlaps the base schedule.
     const seen = new Set<string>();
@@ -440,10 +442,20 @@ serve(async (req) => {
             if (seen.has(key)) continue;
             seen.add(key);
 
+            const slotStartIso = slotStart.toISOString();
+            const slotEndIso = slotEnd.toISOString();
+            const { token } = await issueSlotToken({
+              signingKey,
+              providerId: providerIdForDay,
+              slotStartIso,
+              slotEndIso,
+              serviceLine: service_line,
+            });
+
             slots.push({
-              provider_id: providerIdForDay,
-              start: slotStart.toISOString(),
-              end: slotEnd.toISOString(),
+              slot_token: token,
+              start: slotStartIso,
+              end: slotEndIso,
             });
           }
         }

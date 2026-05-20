@@ -160,7 +160,7 @@ const ScheduleConsult = () => {
   const handleConfirm = async ({
     slot,
   }: {
-    slot: { provider_id: string; start: string };
+    slot: { slot_token: string; start: string };
   }) => {
     if (!paidBooking) return;
     const { data, error } = await supabase.functions.invoke(
@@ -168,8 +168,7 @@ const ScheduleConsult = () => {
       {
         body: {
           booking_id: paidBooking.id,
-          slot_start: slot.start,
-          provider_id: slot.provider_id,
+          slot_token: slot.slot_token,
         },
       },
     );

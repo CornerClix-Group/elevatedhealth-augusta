@@ -192,7 +192,7 @@ const AlaCartePaymentSuccess = () => {
     };
   }, [sessionId]);
 
-  const handleConfirmSlot = async ({ slot }: { slot: { provider_id: string; start: string } }) => {
+  const handleConfirmSlot = async ({ slot }: { slot: { slot_token: string; start: string } }) => {
     if (!productInfo || !bookingId) {
       toast.error("Booking record not found. Please call us at (706) 760-3470.");
       return;
@@ -201,8 +201,7 @@ const AlaCartePaymentSuccess = () => {
       const { data, error } = await supabase.functions.invoke("book-consult-appointment", {
         body: {
           booking_id: bookingId,
-          slot_start: slot.start,
-          provider_id: slot.provider_id,
+          slot_token: slot.slot_token,
           appointment_type: productInfo.appointmentType,
           duration_minutes: productInfo.durationMinutes,
           service_line_override: productInfo.serviceLine,

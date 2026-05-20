@@ -62,7 +62,7 @@ serve(async (req) => {
       );
     }
 
-    const hasAdminAccess = roles?.some((r) => r.role === "admin" || r.role === "staff");
+    const hasAdminAccess = roles?.some((r) => r.role === "admin" || r.role === "staff" || r.role === "business_admin");
     if (!hasAdminAccess) {
       console.log("[get-team-members] User lacks admin access");
       return new Response(
@@ -71,11 +71,11 @@ serve(async (req) => {
       );
     }
 
-    // Get all users with admin, staff, or business_admin roles
+    // Get all users with admin, staff, business_admin, or provider roles
     const { data: teamRoles, error: teamRolesError } = await adminClient
       .from("user_roles")
       .select("user_id, role, created_at")
-      .in("role", ["admin", "staff", "business_admin"]);
+      .in("role", ["admin", "staff", "business_admin", "provider"]);
 
     if (teamRolesError) {
       console.log("[get-team-members] Team roles query error:", teamRolesError);

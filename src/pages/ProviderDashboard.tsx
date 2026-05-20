@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -185,7 +185,14 @@ interface PendingPharmacyPatient {
   updated_at: string | null;
 }
 
+interface ProviderDashboardRouteState {
+  openPatientId?: string;
+  openTab?: string;
+  appointmentId?: string;
+}
+
 const ProviderDashboard = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [pendingPatients, setPendingPatients] = useState<PatientWithLog[]>([]);
@@ -203,6 +210,7 @@ const ProviderDashboard = () => {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState("triage");
+  const [canManageTeam, setCanManageTeam] = useState(false);
   const [renewingPatientId, setRenewingPatientId] = useState<string | null>(null);
   const [resendingActivationId, setResendingActivationId] = useState<string | null>(null);
   const [deletingActivationId, setDeletingActivationId] = useState<string | null>(null);
@@ -285,6 +293,12 @@ const ProviderDashboard = () => {
     initializeProvider();
   }, []);
 
+  useEffect(() => {
+    if (!canManageTeam && activeTab === "team") {
+      setActiveTab("triage");
+    }
+  }, [canManageTeam, activeTab]);
+
   const initializeProvider = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -292,6 +306,20 @@ const ProviderDashboard = () => {
       // Set provider info based on logged-in user
       if (user?.email) {
         setProviderInfo(getProviderInfo(user.email));
+      }
+
+      if (user?.id) {
+        const { data: roleRows, error: roleError } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id);
+        if (roleError) {
+          throw roleError;
+        }
+        const hasPrivilegedRole = roleRows?.some(
+          (row) => row.role === "admin" || row.role === "staff" || row.role === "business_admin",
+        );
+        setCanManageTeam(!!hasPrivilegedRole);
       }
 
       await loadData();
@@ -590,6 +618,21 @@ const ProviderDashboard = () => {
       riskLevel: "green",
     });
   };
+
+  useEffect(() => {
+    const routeState = location.state as ProviderDashboardRouteState | null;
+    if (!routeState?.openPatientId) return;
+
+    if (routeState.openTab) {
+      setActiveTab(routeState.openTab);
+    }
+
+    void openPatientById(routeState.openPatientId);
+
+    // Clear one-time deep-link state so refresh/back doesn't re-open.
+    navigate(location.pathname, { replace: true, state: null });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state, location.pathname, navigate, pendingPatients]);
 
   useEffect(() => {
     if (
@@ -1083,13 +1126,15 @@ const ProviderDashboard = () => {
                     {pendingPatients.filter(p => !showArchivedPatients ? !p.patient.is_archived : true).length}
                   </Badge>
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="team" 
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm whitespace-nowrap text-sm"
-                >
-                  <Users className="w-4 h-4 flex-shrink-0" />
-                  <span>Team</span>
-                </TabsTrigger>
+                {canManageTeam && (
+                  <TabsTrigger 
+                    value="team" 
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm whitespace-nowrap text-sm"
+                  >
+                    <Users className="w-4 h-4 flex-shrink-0" />
+                    <span>Team</span>
+                  </TabsTrigger>
+                )}
                 <TabsTrigger 
                   value="allpatients" 
                   className="flex items-center gap-2 px-4 py-2.5 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm whitespace-nowrap text-sm"
@@ -1965,9 +2010,11 @@ const ProviderDashboard = () => {
           </TabsContent>
 
           {/* Team Management Tab */}
-          <TabsContent value="team">
-            <TeamManagement />
-          </TabsContent>
+          {canManageTeam && (
+            <TabsContent value="team">
+              <TeamManagement />
+            </TabsContent>
+          )}
 
           {/* All Patients Tab */}
           <TabsContent value="allpatients">

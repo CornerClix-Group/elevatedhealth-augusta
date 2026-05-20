@@ -1,6 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { triggerIntakeMagicLinkDelivery } from "../_shared/trigger-intake-magic-link.ts";
+import {
+  getSlotSigningKey,
+  redeemSlotTokenJtiOnce,
+  verifySlotToken,
+} from "../_shared/slot-token.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -82,9 +87,7 @@ const CONSULT_FEE_USD = 79;
 interface RequestBody {
   // Patient self-serve path
   booking_id?: string;
-  // Slot
-  slot_start?: string;
-  provider_id?: string;
+  slot_token?: string;
   // Staff attribution
   booked_by_user_id?: string;
   booking_source?: string;
@@ -150,8 +153,7 @@ serve(async (req) => {
     const body = (await req.json()) as RequestBody;
     const {
       booking_id,
-      slot_start,
-      provider_id,
+      slot_token,
       booked_by_user_id: rawBookedBy,
       booking_source: rawSource,
       staff_booking,
@@ -162,9 +164,9 @@ serve(async (req) => {
     const apptType = requestedApptType || "rn_wellness_assessment";
     const apptDuration = typeof requestedDuration === "number" && requestedDuration > 0 ? requestedDuration : 30;
 
-    if (!slot_start || !provider_id) {
+    if (!slot_token) {
       return new Response(
-        JSON.stringify({ error: "slot_start and provider_id required" }),
+        JSON.stringify({ error: "slot_token is required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -179,6 +181,44 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
+    const signingKey = getSlotSigningKey();
+    if (!signingKey) {
+      console.error("book-consult-appointment: SLOT_SIGNING_KEY missing; refusing booking validation");
+      return new Response(
+        JSON.stringify({
+          error: "Slot signing is not configured.",
+          error_code: "slot_signing_not_configured",
+        }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    let verifiedSlot;
+    try {
+      verifiedSlot = await verifySlotToken({ token: slot_token, signingKey });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "invalid_slot_token";
+      const code = msg.startsWith("expired_slot_token") ? "expired_slot_token" : "invalid_slot_token";
+      return new Response(
+        JSON.stringify({
+          error: code === "expired_slot_token"
+            ? "That time is no longer valid. Please reload and choose another slot."
+            : "Invalid slot token. Please reload availability and try again.",
+          error_code: code,
+        }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    if (verifiedSlot.serviceLine === "iv") {
+      return new Response(
+        JSON.stringify({
+          error: "Invalid slot for consultation booking.",
+          error_code: "invalid_slot_token",
+        }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    const slotStart = new Date(verifiedSlot.startIso);
+    const providerId = verifiedSlot.providerId;
 
     // Resolve booking_source. Default self_service for the consult-paid flow,
     // staff_phone for staff_booking.
@@ -209,6 +249,23 @@ serve(async (req) => {
     // STAFF-MODE PATH (no pre-existing consultation_bookings row)
     // ------------------------------------------------------------------------
     if (staff_booking) {
+      const redeemed = await redeemSlotTokenJtiOnce({
+        supabaseAdmin: supabase,
+        jti: verifiedSlot.jti,
+        tokenExpUnix: verifiedSlot.expiresAtUnix,
+        bookingFunction: "book-consult-appointment",
+        bookingRef: staff_booking.patient_id,
+      });
+      if (!redeemed.ok) {
+        return new Response(
+          JSON.stringify({
+            error: "That slot token has already been used. Please pick another time.",
+            error_code: redeemed.code,
+          }),
+          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
       if (!STAFF_PAYMENT_STATUS.has(staff_booking.payment_status)) {
         return new Response(
           JSON.stringify({ error: `Invalid payment_status: ${staff_booking.payment_status}` }),
@@ -239,13 +296,12 @@ serve(async (req) => {
         );
       }
 
-      const slotStart = new Date(slot_start);
       const slotEnd = new Date(slotStart.getTime() + apptDuration * 60_000);
 
       const { data: conflicts } = await supabase
         .from("appointments")
         .select("id, scheduled_at, duration_minutes")
-        .eq("provider_id", provider_id)
+        .eq("provider_id", providerId)
         .neq("status", "cancelled")
         .gte("scheduled_at", new Date(slotStart.getTime() - 2 * 60 * 60_000).toISOString())
         .lte("scheduled_at", slotEnd.toISOString());
@@ -298,7 +354,7 @@ serve(async (req) => {
         .from("appointments")
         .insert({
           patient_id: patient.id,
-          provider_id,
+          provider_id: providerId,
           service_line: requestedServiceLine || staff_booking.service_type || "consult",
           appointment_type: apptType,
           scheduled_at: slotStart.toISOString(),
@@ -362,14 +418,29 @@ serve(async (req) => {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" }
       });
     }
+    const redeemed = await redeemSlotTokenJtiOnce({
+      supabaseAdmin: supabase,
+      jti: verifiedSlot.jti,
+      tokenExpUnix: verifiedSlot.expiresAtUnix,
+      bookingFunction: "book-consult-appointment",
+      bookingRef: booking.id,
+    });
+    if (!redeemed.ok) {
+      return new Response(
+        JSON.stringify({
+          error: "That slot token has already been used. Please pick another time.",
+          error_code: redeemed.code,
+        }),
+        { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
 
-    const slotStart = new Date(slot_start);
     const slotEnd = new Date(slotStart.getTime() + apptDuration * 60_000);
 
     const { data: conflicts } = await supabase
       .from("appointments")
       .select("id, scheduled_at, duration_minutes")
-      .eq("provider_id", provider_id)
+      .eq("provider_id", providerId)
       .neq("status", "cancelled")
       .gte("scheduled_at", new Date(slotStart.getTime() - 2 * 60 * 60_000).toISOString())
       .lte("scheduled_at", slotEnd.toISOString());
@@ -420,7 +491,7 @@ serve(async (req) => {
 
     const { data: appt, error: aErr } = await supabase.from("appointments").insert({
       patient_id: patientId,
-      provider_id,
+      provider_id: providerId,
       service_line: resolvedServiceLine,
       appointment_type: apptType,
       scheduled_at: slotStart.toISOString(),

@@ -145,7 +145,7 @@ const StaffBookingModal = ({
 
   // ----- Step 3: slot -----
   const [providerId, setProviderId] = useState<string | null>(null);
-  const [pickedSlot, setPickedSlot] = useState<{ provider_id: string; start: string } | null>(
+  const [pickedSlot, setPickedSlot] = useState<{ slot_token: string; start: string } | null>(
     null,
   );
   const slotPickerRef = useRef<SlotPickerHandle>(null);
@@ -314,8 +314,7 @@ const StaffBookingModal = ({
 
         const { data, error } = await supabase.functions.invoke("book-iv-appointment", {
           body: {
-            slot_start: pickedSlot.start,
-            provider_id: pickedSlot.provider_id,
+            slot_token: pickedSlot.slot_token,
             booking_source: "staff_phone",
             staff_booking: {
               patient_id: patient.id,
@@ -344,8 +343,7 @@ const StaffBookingModal = ({
         // Follow-ups reuse consult lane with its own service_type marker.
         const { data, error } = await supabase.functions.invoke("book-consult-appointment", {
           body: {
-            slot_start: pickedSlot.start,
-            provider_id: pickedSlot.provider_id,
+            slot_token: pickedSlot.slot_token,
             booking_source: "staff_phone",
             staff_booking: {
               patient_id: patient.id,
@@ -374,8 +372,7 @@ const StaffBookingModal = ({
         const paymentStatus: ConsultPaymentMethod = isMember ? "member_no_charge" as ConsultPaymentMethod : consultPayment;
         const { data, error } = await supabase.functions.invoke("book-consult-appointment", {
           body: {
-            slot_start: pickedSlot.start,
-            provider_id: pickedSlot.provider_id,
+            slot_token: pickedSlot.slot_token,
             booking_source: "staff_phone",
             staff_booking: {
               patient_id: patient.id,

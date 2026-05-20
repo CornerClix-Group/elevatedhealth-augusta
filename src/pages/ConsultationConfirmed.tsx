@@ -123,7 +123,7 @@ const ConsultationConfirmed = () => {
   const handleConfirm = async ({
     slot,
   }: {
-    slot: { provider_id: string; start: string };
+    slot: { slot_token: string; start: string };
   }) => {
     if (!bookingId) {
       toast.error("Booking record missing. Please call us at " + SITE_CONFIG.phone);
@@ -134,8 +134,7 @@ const ConsultationConfirmed = () => {
       {
         body: {
           booking_id: bookingId,
-          slot_start: slot.start,
-          provider_id: slot.provider_id,
+          slot_token: slot.slot_token,
         },
       },
     );

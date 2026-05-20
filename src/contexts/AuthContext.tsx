@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       console.log('[AuthContext] Fetching user details for:', userId);
       
-      // Check if user is a provider (admin or staff)
+      // Check if user is a provider-side user (admin, staff, business_admin, or provider)
       const { data: roles, error: rolesError } = await supabase
         .from("user_roles")
         .select("role")
@@ -38,7 +38,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.error('[AuthContext] Error fetching roles:', rolesError);
       }
       
-      const hasProviderRole = roles?.some(r => r.role === "admin" || r.role === "staff" || r.role === "business_admin");
+      const hasProviderRole = roles?.some(
+        (r) =>
+          r.role === "admin" ||
+          r.role === "staff" ||
+          r.role === "business_admin" ||
+          r.role === "provider",
+      );
       setIsProvider(hasProviderRole || false);
       console.log('[AuthContext] Is provider:', hasProviderRole);
       

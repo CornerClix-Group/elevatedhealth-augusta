@@ -253,6 +253,12 @@ const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMes
                   Scheduling Settings
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/admin/provider-schedules" className="cursor-pointer gap-2">
+                  <CalendarDays className="w-4 h-4" />
+                  Provider Schedules
+                </Link>
+              </DropdownMenuItem>
               {isBusinessAdmin && (
                 <DropdownMenuItem asChild>
                   <Link to="/admin/consent-versions" className="cursor-pointer gap-2">
@@ -376,6 +382,12 @@ const AdminNavbar = ({ title, subtitle, onRefresh, isRefreshing, onNavigateToMes
                 <Link to="/admin/scheduling" className="cursor-pointer gap-2">
                   <CalendarDays className="w-4 h-4" />
                   Scheduling Settings
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/admin/provider-schedules" className="cursor-pointer gap-2">
+                  <CalendarDays className="w-4 h-4" />
+                  Provider Schedules
                 </Link>
               </DropdownMenuItem>
               {isBusinessAdmin && (

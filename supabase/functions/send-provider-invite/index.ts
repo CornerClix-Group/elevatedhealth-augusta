@@ -75,11 +75,14 @@ serve(async (req: Request) => {
     }
 
     // Validate roles
-    const validRoles = ["admin", "staff", "business_admin"];
+    const validRoles = ["admin", "staff", "business_admin", "provider"];
     for (const role of roles) {
       if (!validRoles.includes(role)) {
         throw new Error(`Invalid role: ${role}. Valid roles are: ${validRoles.join(", ")}`);
       }
+    }
+    if (roles.includes("provider") && !isAdmin) {
+      throw new Error("Only admins can assign provider role");
     }
 
     // Create admin client
@@ -134,6 +137,14 @@ serve(async (req: Request) => {
 
     // Add all selected roles to user_roles table
     if (createdUserId) {
+      const auditRows: Array<{
+        actor_user_id: string;
+        target_user_id: string;
+        action: string;
+        old_role: string | null;
+        new_role: string | null;
+      }> = [];
+
       for (const role of roles) {
         const { error: roleError } = await adminClient
           .from("user_roles")
@@ -144,6 +155,25 @@ serve(async (req: Request) => {
 
         if (roleError) {
           console.error(`Role assignment error for ${role}:`, roleError);
+          continue;
+        }
+
+        auditRows.push({
+          actor_user_id: user.id,
+          target_user_id: createdUserId,
+          action: "INSERT",
+          old_role: null,
+          new_role: role,
+        });
+      }
+
+      if (auditRows.length > 0) {
+        const { error: auditError } = await adminClient
+          .from("audit_log")
+          .insert(auditRows);
+        if (auditError) {
+          console.error("Audit log write error:", auditError);
+          throw new Error("Failed to write role assignment audit log");
         }
       }
     }

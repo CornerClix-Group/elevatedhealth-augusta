@@ -17,6 +17,7 @@ interface ManageRolesModalProps {
     is_master_admin: boolean;
   } | null;
   onRolesUpdated?: (userId: string, newRoles: string[]) => void;
+  canAssignProvider?: boolean;
 }
 
 const AVAILABLE_ROLES = [
@@ -38,9 +39,21 @@ const AVAILABLE_ROLES = [
     description: "Financial access - revenue metrics, funnel analytics, business dashboard",
     icon: BarChart3 
   },
+  {
+    id: "provider",
+    label: "Provider",
+    description: "Clinical provider schedule and provider directory access",
+    icon: Shield,
+  },
 ];
 
-export const ManageRolesModal = ({ open, onOpenChange, member, onRolesUpdated }: ManageRolesModalProps) => {
+export const ManageRolesModal = ({
+  open,
+  onOpenChange,
+  member,
+  onRolesUpdated,
+  canAssignProvider = false,
+}: ManageRolesModalProps) => {
   const [selectedRoles, setSelectedRoles] = useState<string[]>(member?.roles || []);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -100,6 +113,9 @@ export const ManageRolesModal = ({ open, onOpenChange, member, onRolesUpdated }:
       if (data?.error) throw new Error(data.error);
 
       toast.success("Roles updated successfully");
+      if (!member.roles.includes("provider") && selectedRoles.includes("provider")) {
+        toast.success("Provider role granted.");
+      }
       onRolesUpdated?.(member.user_id, selectedRoles);
       onOpenChange(false);
     } catch (error: any) {
@@ -130,7 +146,10 @@ export const ManageRolesModal = ({ open, onOpenChange, member, onRolesUpdated }:
         <div className="space-y-3 py-4">
           {AVAILABLE_ROLES.map((role) => {
             const Icon = role.icon;
-            const isDisabled = member.is_master_admin && role.id === "admin";
+            const isProviderRole = role.id === "provider";
+            const isDisabled =
+              (member.is_master_admin && role.id === "admin") ||
+              (isProviderRole && !canAssignProvider);
             
             return (
               <label
@@ -154,8 +173,13 @@ export const ManageRolesModal = ({ open, onOpenChange, member, onRolesUpdated }:
                   <div className="flex items-center gap-2">
                     <Icon className="w-4 h-4 text-muted-foreground" />
                     <span className="font-medium text-sm">{role.label}</span>
-                    {isDisabled && (
+                    {member.is_master_admin && role.id === "admin" && (
                       <span className="text-xs text-muted-foreground">(required)</span>
+                    )}
+                    {isProviderRole && (
+                      <span className="text-xs text-muted-foreground">
+                        {canAssignProvider ? "(admin grantable)" : "(admin only)"}
+                      </span>
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5">

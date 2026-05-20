@@ -13,6 +13,7 @@ interface ProviderLayoutProps {
   isRefreshing?: boolean;
   onNavigateToMessages?: () => void;
   showNavbar?: boolean;
+  allowedRoles?: Array<"admin" | "staff" | "business_admin" | "provider">;
 }
 
 /**
@@ -20,7 +21,7 @@ interface ProviderLayoutProps {
  * 
  * This component ensures:
  * 1. User is authenticated
- * 2. User has provider role (admin, staff, or business_admin)
+ * 2. User has one of the allowed provider-portal roles
  * 3. Consistent navigation and layout across all provider pages
  * 4. Complete separation from patient portal
  */
@@ -32,6 +33,7 @@ const ProviderLayout = ({
   isRefreshing,
   onNavigateToMessages,
   showNavbar = true,
+  allowedRoles = ["admin", "staff", "business_admin"],
 }: ProviderLayoutProps) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
@@ -50,7 +52,7 @@ const ProviderLayout = ({
         return;
       }
 
-      // Check if user has provider role (admin, staff, or business_admin)
+      // Check if user has one of the allowed roles for this route
       const { data: roles, error } = await supabase
         .from("user_roles")
         .select("role")
@@ -63,12 +65,12 @@ const ProviderLayout = ({
         return;
       }
 
-      const hasProviderRole = roles?.some(r => 
-        r.role === "admin" || r.role === "staff" || r.role === "business_admin"
+      const hasProviderRole = roles?.some((r) =>
+        allowedRoles.includes(r.role as "admin" | "staff" | "business_admin" | "provider"),
       );
 
       if (!hasProviderRole) {
-        toast.error("Access denied - Provider privileges required");
+        toast.error("Access denied - insufficient privileges for this page");
         navigate("/admin/login");
         return;
       }

@@ -1,6 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@14.21.0";
+import {
+  getSlotSigningKey,
+  redeemSlotTokenJtiOnce,
+  verifySlotToken,
+} from "../_shared/slot-token.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -76,9 +81,7 @@ const STAFF_PAYMENT_STATUS = new Set([
 interface RequestBody {
   // Patient self-serve path
   session_id?: string;
-  // Slot
-  slot_start?: string;
-  provider_id?: string;
+  slot_token?: string;
   // Phone (legacy compatibility) — for staff_mode use staff_booking.customer_phone
   customer_phone?: string;
   // Staff attribution (always optional). Must pair with a non-self_service
@@ -133,17 +136,16 @@ serve(async (req) => {
     const body = (await req.json()) as RequestBody;
     const {
       session_id,
-      slot_start,
-      provider_id,
+      slot_token,
       customer_phone,
       booked_by_user_id: rawBookedBy,
       booking_source: rawSource,
       staff_booking,
     } = body;
 
-    if (!slot_start || !provider_id) {
+    if (!slot_token) {
       return new Response(
-        JSON.stringify({ error: "slot_start and provider_id are required" }),
+        JSON.stringify({ error: "slot_token is required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -158,6 +160,44 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
+    const signingKey = getSlotSigningKey();
+    if (!signingKey) {
+      console.error("book-iv-appointment: SLOT_SIGNING_KEY missing; refusing booking validation");
+      return new Response(
+        JSON.stringify({
+          error: "Slot signing is not configured.",
+          error_code: "slot_signing_not_configured",
+        }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    let verifiedSlot;
+    try {
+      verifiedSlot = await verifySlotToken({ token: slot_token, signingKey });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "invalid_slot_token";
+      const code = msg.startsWith("expired_slot_token") ? "expired_slot_token" : "invalid_slot_token";
+      return new Response(
+        JSON.stringify({
+          error: code === "expired_slot_token"
+            ? "That time is no longer valid. Please reload and choose another slot."
+            : "Invalid slot token. Please reload availability and try again.",
+          error_code: code,
+        }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    if (verifiedSlot.serviceLine !== "iv") {
+      return new Response(
+        JSON.stringify({
+          error: "Invalid slot for IV booking.",
+          error_code: "invalid_slot_token",
+        }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    const slotStart = new Date(verifiedSlot.startIso);
+    const providerId = verifiedSlot.providerId;
 
     // Resolve booking_source. Default self_service for the Stripe-paid flow,
     // staff_phone (or the value from rawSource) for the staff_booking flow.
@@ -192,6 +232,23 @@ serve(async (req) => {
     // STAFF-MODE PATH (no Stripe verification)
     // ------------------------------------------------------------------------
     if (staff_booking) {
+      const redeemed = await redeemSlotTokenJtiOnce({
+        supabaseAdmin: supabase,
+        jti: verifiedSlot.jti,
+        tokenExpUnix: verifiedSlot.expiresAtUnix,
+        bookingFunction: "book-iv-appointment",
+        bookingRef: staff_booking.patient_id,
+      });
+      if (!redeemed.ok) {
+        return new Response(
+          JSON.stringify({
+            error: "That slot token has already been used. Please pick another time.",
+            error_code: redeemed.code,
+          }),
+          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
       if (!STAFF_PAYMENT_STATUS.has(staff_booking.payment_status)) {
         return new Response(
           JSON.stringify({ error: `Invalid payment_status: ${staff_booking.payment_status}` }),
@@ -220,13 +277,12 @@ serve(async (req) => {
         .maybeSingle();
       const therapyName = staff_booking.therapy_name || therapy?.name || "IV Therapy";
 
-      const slotStart = new Date(slot_start);
       const slotEnd = new Date(slotStart.getTime() + 60 * 60_000);
 
       const { data: conflicts } = await supabase
         .from("appointments")
         .select("id, scheduled_at, duration_minutes")
-        .eq("provider_id", provider_id)
+        .eq("provider_id", providerId)
         .neq("status", "cancelled")
         .gte("scheduled_at", new Date(slotStart.getTime() - 2 * 60 * 60_000).toISOString())
         .lte("scheduled_at", slotEnd.toISOString());
@@ -264,7 +320,7 @@ serve(async (req) => {
         .from("appointments")
         .insert({
           patient_id: patient.id,
-          provider_id,
+          provider_id: providerId,
           service_line: "iv",
           appointment_type: "iv_session",
           scheduled_at: slotStart.toISOString(),
@@ -320,6 +376,22 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    const redeemed = await redeemSlotTokenJtiOnce({
+      supabaseAdmin: supabase,
+      jti: verifiedSlot.jti,
+      tokenExpUnix: verifiedSlot.expiresAtUnix,
+      bookingFunction: "book-iv-appointment",
+      bookingRef: session_id,
+    });
+    if (!redeemed.ok) {
+      return new Response(
+        JSON.stringify({
+          error: "That slot token has already been used. Please pick another time.",
+          error_code: redeemed.code,
+        }),
+        { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, { apiVersion: "2023-10-16" });
     const session = await stripe.checkout.sessions.retrieve(session_id);
@@ -370,14 +442,13 @@ serve(async (req) => {
       });
     }
 
-    const slotStart = new Date(slot_start);
     const slotEnd = new Date(slotStart.getTime() + 60 * 60_000);
 
     // Conflict check
     const { data: conflicts } = await supabase
       .from("appointments")
       .select("id, scheduled_at, duration_minutes")
-      .eq("provider_id", provider_id)
+      .eq("provider_id", providerId)
       .neq("status", "cancelled")
       .gte("scheduled_at", new Date(slotStart.getTime() - 2 * 60 * 60_000).toISOString())
       .lte("scheduled_at", slotEnd.toISOString());
@@ -419,7 +490,7 @@ serve(async (req) => {
 
     const { data: appt, error: aErr } = await supabase.from("appointments").insert({
       patient_id: patientId,
-      provider_id,
+      provider_id: providerId,
       service_line: "iv",
       appointment_type: "iv_session",
       scheduled_at: slotStart.toISOString(),
