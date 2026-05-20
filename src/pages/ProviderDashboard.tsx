@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { type KeyboardEvent, useCallback, useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Loader2, AlertTriangle, Check, User, TrendingUp, TrendingDown, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet, Activity, MessageSquare, Pill, Phone, Mail, Save, Clock, CreditCard, RotateCcw, CheckSquare, Square, UserPlus, FileText, MessageCircle, Ban, Archive, Trash2, ArchiveRestore, Users } from "lucide-react";
+import { Loader2, AlertTriangle, Check, User, TrendingUp, TrendingDown, X, Send, ShieldCheck, ShieldAlert, TestTube, Droplet, Activity, MessageSquare, Pill, Phone, Mail, Save, Clock, CreditCard, RotateCcw, CheckSquare, Square, UserPlus, FileText, MessageCircle, Ban, Archive, Trash2, ArchiveRestore, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import confetti from "canvas-confetti";
@@ -256,6 +256,9 @@ const ProviderDashboard = () => {
   const [isPharmacyModalOpen, setIsPharmacyModalOpen] = useState(false);
   // Recommended medications from lab analysis
   const [recommendedMedications, setRecommendedMedications] = useState<import("@/lib/medicationMapping").MedicationRecommendation[]>([]);
+  const tabsScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollTabsLeft, setCanScrollTabsLeft] = useState(false);
+  const [canScrollTabsRight, setCanScrollTabsRight] = useState(false);
   
   // Ref for scrolling to pharmacy card
   const pharmacyCardRef = useRef<HTMLDivElement>(null);
@@ -298,6 +301,66 @@ const ProviderDashboard = () => {
       setActiveTab("triage");
     }
   }, [canManageTeam, activeTab]);
+
+  const updateTabOverflow = useCallback(() => {
+    const container = tabsScrollRef.current;
+    if (!container) return;
+    const hasOverflow = container.scrollWidth > container.clientWidth + 1;
+    if (!hasOverflow) {
+      setCanScrollTabsLeft(false);
+      setCanScrollTabsRight(false);
+      return;
+    }
+    setCanScrollTabsLeft(container.scrollLeft > 4);
+    setCanScrollTabsRight(container.scrollLeft + container.clientWidth < container.scrollWidth - 4);
+  }, []);
+
+  const scrollTabsBy = useCallback((delta: number) => {
+    const container = tabsScrollRef.current;
+    if (!container) return;
+    container.scrollBy({ left: delta, behavior: "smooth" });
+  }, []);
+
+  const handleTabStripKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        scrollTabsBy(200);
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        scrollTabsBy(-200);
+      }
+    },
+    [scrollTabsBy],
+  );
+
+  useEffect(() => {
+    const container = tabsScrollRef.current;
+    if (!container) return;
+
+    const syncOverflow = () => updateTabOverflow();
+    syncOverflow();
+    container.addEventListener("scroll", syncOverflow, { passive: true });
+    window.addEventListener("resize", syncOverflow);
+
+    return () => {
+      container.removeEventListener("scroll", syncOverflow);
+      window.removeEventListener("resize", syncOverflow);
+    };
+  }, [updateTabOverflow, canManageTeam]);
+
+  useEffect(() => {
+    const container = tabsScrollRef.current;
+    if (!container) return;
+
+    const rafId = window.requestAnimationFrame(() => {
+      const activeTabButton = container.querySelector<HTMLElement>('[role="tab"][data-state="active"]');
+      activeTabButton?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+      updateTabOverflow();
+    });
+
+    return () => window.cancelAnimationFrame(rafId);
+  }, [activeTab, updateTabOverflow, canManageTeam]);
 
   const initializeProvider = async () => {
     try {
@@ -1114,7 +1177,13 @@ const ProviderDashboard = () => {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Clean scrollable tabs with proper spacing */}
           <div className="relative mb-8">
-            <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2">
+            <div
+              ref={tabsScrollRef}
+              className="dashboard-tab-scroll overflow-x-auto -mx-4 px-4 pb-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              tabIndex={0}
+              onKeyDown={handleTabStripKeyDown}
+              aria-label="Dashboard sections"
+            >
               <TabsList className="inline-flex h-auto gap-2 p-1.5 bg-muted/50 rounded-xl flex-nowrap">
                 <TabsTrigger 
                   value="triage" 
@@ -1248,9 +1317,38 @@ const ProviderDashboard = () => {
                 </TabsTrigger>
               </TabsList>
             </div>
-            {/* Scroll fade indicators */}
-            <div className="absolute left-0 top-0 bottom-2 w-6 bg-gradient-to-r from-background to-transparent pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-2 w-6 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+
+            {canScrollTabsLeft && (
+              <>
+                <div className="pointer-events-none absolute left-0 top-0 bottom-2 w-8 bg-gradient-to-r from-background to-transparent" />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => scrollTabsBy(-200)}
+                  className="absolute left-1 top-1/2 z-10 h-8 w-8 -translate-y-1/2 rounded-full border-border/70 bg-background/95 text-[#2A2826] hover:text-[#B8956A]"
+                  aria-label="Scroll dashboard tabs left"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+              </>
+            )}
+
+            {canScrollTabsRight && (
+              <>
+                <div className="pointer-events-none absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background to-transparent" />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => scrollTabsBy(200)}
+                  className="absolute right-1 top-1/2 z-10 h-8 w-8 -translate-y-1/2 rounded-full border-border/70 bg-background/95 text-[#2A2826] hover:text-[#B8956A]"
+                  aria-label="Scroll dashboard tabs right"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </>
+            )}
           </div>
 
           {/* High-Risk Patients Tab */}

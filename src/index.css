@@ -325,6 +325,29 @@ label {
   display: none;
 }
 
+.dashboard-tab-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #b8956a rgba(42, 40, 38, 0.2);
+}
+
+.dashboard-tab-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.dashboard-tab-scroll::-webkit-scrollbar-track {
+  background: rgba(42, 40, 38, 0.15);
+  border-radius: 9999px;
+}
+
+.dashboard-tab-scroll::-webkit-scrollbar-thumb {
+  background: #b8956a;
+  border-radius: 9999px;
+}
+
+.dashboard-tab-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a6865f;
+}
+
 /* Touch feedback */
 @layer utilities {
   .touch-feedback {
